@@ -1,177 +1,370 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function InstitutionalSection() {
   return (
     <section
-      id="contato"
       className="
         relative
         overflow-hidden
-        bg-[#02110b]
-        border-t
-        border-white/5
         py-32
       "
     >
 
+      {/* Background */}
       <div className="
         absolute
-        top-0
-        left-1/2
-        -translate-x-1/2
-        w-[700px]
-        h-[700px]
-        bg-green-500/10
-        blur-3xl
-        rounded-full
-      " />
-
-      <div className="relative max-w-7xl mx-auto px-6">
+        inset-0
+        overflow-hidden
+      ">
 
         <div className="
-          grid
-          lg:grid-cols-4
-          gap-14
-          border
-          border-white/10
-          bg-white/5
-          backdrop-blur-2xl
-          rounded-[40px]
-          p-12
-        ">
+          absolute
+          top-0
+          left-1/2
+          -translate-x-1/2
+          w-[1000px]
+          h-[1000px]
+          bg-emerald-500/10
+          blur-[180px]
+          rounded-full
+        " />
 
-          <div>
+      </div>
 
-            <div className="flex items-center gap-4 mb-8">
+      <div className="
+        relative
+        max-w-7xl
+        mx-auto
+        px-6
+        md:px-10
+      ">
+
+        {/* TOP CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="
+            relative
+            overflow-hidden
+            rounded-[40px]
+            border
+            border-white/10
+            bg-white/5
+            backdrop-blur-2xl
+            p-10
+            md:p-16
+          "
+        >
+
+          {/* Glow */}
+          <div className="
+            absolute
+            inset-0
+            bg-gradient-to-br
+            from-emerald-500/10
+            to-cyan-500/10
+          " />
+
+          <div className="
+            relative
+            grid
+            lg:grid-cols-2
+            gap-16
+            items-center
+          ">
+
+            <div>
+
+              <span className="
+                inline-flex
+                items-center
+                gap-2
+                px-4
+                py-2
+                rounded-full
+                border
+                border-emerald-400/20
+                bg-emerald-400/10
+                text-emerald-300
+                text-sm
+              ">
+                ♻ Plataforma Institucional ESG
+              </span>
+
+              <h2 className="
+                mt-8
+                text-4xl
+                md:text-6xl
+                font-black
+                leading-tight
+              ">
+                Juntos pela reciclagem e transformação social
+              </h2>
+
+              <p className="
+                mt-8
+                text-gray-400
+                text-lg
+                md:text-xl
+                leading-relaxed
+                max-w-2xl
+              ">
+                A ACMRB promove inclusão social, sustentabilidade e
+                logística reversa através de ações ambientais,
+                educação ecológica e fortalecimento dos catadores.
+              </p>
 
               <div className="
-                w-14
-                h-14
-                rounded-2xl
-                bg-green-500
                 flex
-                items-center
-                justify-center
-                text-black
-                font-black
-                text-xl
+                flex-col
+                sm:flex-row
+                gap-5
+                mt-10
               ">
-                A
-              </div>
 
-              <div>
-                <h2 className="text-white font-black text-2xl">
-                  ACMRB
-                </h2>
+                <button className="
+                  px-8
+                  py-4
+                  rounded-2xl
+                  bg-gradient-to-r
+                  from-emerald-400
+                  to-cyan-500
+                  text-black
+                  font-bold
+                  shadow-xl
+                  shadow-emerald-500/20
+                  hover:scale-105
+                  transition
+                ">
+                  Seja Parceiro
+                </button>
 
-                <p className="text-green-400 text-sm">
-                  Plataforma ESG Institucional
-                </p>
+                <button className="
+                  px-8
+                  py-4
+                  rounded-2xl
+                  border
+                  border-white/10
+                  hover:border-emerald-400
+                  transition
+                  backdrop-blur-xl
+                ">
+                  Conhecer Projetos
+                </button>
+
               </div>
 
             </div>
 
-            <p className="text-zinc-400 leading-relaxed">
-              Associação dos Catadores de Materiais Recicláveis de Baturité,
-              promovendo sustentabilidade, logística reversa e inclusão social.
-            </p>
+            {/* Right Grid */}
+            <div className="
+              grid
+              grid-cols-2
+              gap-5
+            ">
 
-            <div className="mt-8 space-y-3 text-zinc-300 text-sm">
-
-              <p>Baturité • Ceará • Brasil</p>
-
-              <p>(85) 99999-9999</p>
-
-              <p>contato@acmrb.org</p>
+              {[
+                "Logística Reversa",
+                "Educação Ambiental",
+                "Economia Circular",
+                "Inclusão Social",
+              ].map((item) => (
+                <div
+                  key={item}
+                  className="
+                    rounded-3xl
+                    border
+                    border-white/10
+                    bg-white/5
+                    backdrop-blur-xl
+                    p-6
+                    min-h-[140px]
+                    flex
+                    items-end
+                    text-lg
+                    font-semibold
+                    hover:border-emerald-400/30
+                    transition
+                  "
+                >
+                  {item}
+                </div>
+              ))}
 
             </div>
 
           </div>
 
+        </motion.div>
+
+        {/* INSTITUTIONAL GRID */}
+        <div className="
+          grid
+          md:grid-cols-2
+          xl:grid-cols-4
+          gap-8
+          mt-20
+        ">
+
+          {/* COLUNA 1 */}
           <div>
 
-            <h3 className="text-white font-bold text-xl mb-8">
+            <h3 className="
+              text-white
+              font-black
+              text-xl
+              mb-6
+            ">
               Institucional
             </h3>
 
-            <div className="space-y-4 text-zinc-400">
+            <div className="
+              flex
+              flex-col
+              gap-4
+              text-gray-400
+            ">
 
-              <a href="#" className="block hover:text-green-400 transition">
-                Início
-              </a>
-
-              <a
-                href="#quem-somos"
-                className="block hover:text-green-400 transition"
-              >
+              <a href="#" className="hover:text-white transition">
                 Quem Somos
               </a>
 
-              <a href="#" className="block hover:text-green-400 transition">
+              <a href="#" className="hover:text-white transition">
                 Transparência
               </a>
 
-              <a href="#" className="block hover:text-green-400 transition">
-                Projetos
+              <a href="#" className="hover:text-white transition">
+                Relatórios ESG
               </a>
 
-              <a
-                href="#noticias"
-                className="block hover:text-green-400 transition"
-              >
-                Notícias
+              <a href="#" className="hover:text-white transition">
+                Certificações
               </a>
 
             </div>
 
           </div>
 
+          {/* COLUNA 2 */}
           <div>
 
-            <h3 className="text-white font-bold text-xl mb-8">
-              ESG & Sustentabilidade
-            </h3>
-
-            <div className="space-y-4 text-zinc-400">
-
-              <p>Logística Reversa</p>
-
-              <p>Economia Circular</p>
-
-              <p>Educação Ambiental</p>
-
-              <p>Gestão de Resíduos</p>
-
-              <p>Impacto Social</p>
-
-            </div>
-
-          </div>
-
-          <div>
-
-            <h3 className="text-white font-bold text-xl mb-8">
-              Certificação Institucional
+            <h3 className="
+              text-white
+              font-black
+              text-xl
+              mb-6
+            ">
+              Projetos
             </h3>
 
             <div className="
-              border
-              border-green-500/30
-              bg-green-500/10
-              rounded-3xl
-              p-8
+              flex
+              flex-col
+              gap-4
+              text-gray-400
             ">
 
-              <span className="text-green-400 text-sm uppercase tracking-widest">
-                ESG VERIFIED
-              </span>
+              <a href="#" className="hover:text-white transition">
+                Coleta Seletiva
+              </a>
 
-              <h4 className="text-white font-black text-3xl mt-4">
-                Plataforma Sustentável
-              </h4>
+              <a href="#" className="hover:text-white transition">
+                Educação Ambiental
+              </a>
 
-              <p className="text-zinc-300 mt-4 leading-relaxed">
-                Compromisso com desenvolvimento sustentável, inclusão social e
-                impacto ambiental positivo.
-              </p>
+              <a href="#" className="hover:text-white transition">
+                Logística Reversa
+              </a>
+
+              <a href="#" className="hover:text-white transition">
+                Voluntariado
+              </a>
+
+            </div>
+
+          </div>
+
+          {/* COLUNA 3 */}
+          <div>
+
+            <h3 className="
+              text-white
+              font-black
+              text-xl
+              mb-6
+            ">
+              Compliance
+            </h3>
+
+            <div className="
+              flex
+              flex-col
+              gap-4
+              text-gray-400
+            ">
+
+              <a href="#" className="hover:text-white transition">
+                LGPD
+              </a>
+
+              <a href="#" className="hover:text-white transition">
+                Denúncias
+              </a>
+
+              <a href="#" className="hover:text-white transition">
+                Integridade
+              </a>
+
+              <a href="#" className="hover:text-white transition">
+                Transparência
+              </a>
+
+            </div>
+
+          </div>
+
+          {/* COLUNA 4 */}
+          <div>
+
+            <h3 className="
+              text-white
+              font-black
+              text-xl
+              mb-6
+            ">
+              Parceiros
+            </h3>
+
+            <div className="
+              grid
+              grid-cols-2
+              gap-4
+            ">
+
+              {[1, 2, 3, 4].map((item) => (
+                <div
+                  key={item}
+                  className="
+                    h-20
+                    rounded-2xl
+                    border
+                    border-white/10
+                    bg-white/5
+                    backdrop-blur-xl
+                    flex
+                    items-center
+                    justify-center
+                    text-gray-500
+                    text-sm
+                  "
+                >
+                  Logo
+                </div>
+              ))}
 
             </div>
 
