@@ -1,82 +1,38 @@
-'use client'
+"use client";
 
-import Logo from './Logo'
+type Props = {
+  onSecretClick?: () => void;
+};
 
-interface HeaderProps {
-  onSecretClick?: () => void
-}
+export default function Logo({
+  onSecretClick,
+}: Props) {
 
-export default function Header({
-  onSecretClick
-}: HeaderProps) {
   return (
-    <header
-      className="
-        fixed top-0 left-0 w-full z-50
-        bg-[#052e16]/95
-        backdrop-blur-md
-        border-b border-green-900
-      "
+
+    <button
+      onClick={onSecretClick}
+      className="flex items-center gap-4"
     >
-      <div
-        className="
-          max-w-7xl mx-auto
-          px-6 py-4
-          flex items-center justify-between
-        "
-      >
-        <Logo onSecretClick={onSecretClick} />
 
-        <nav
-          className="
-            hidden lg:flex
-            items-center gap-8
-            text-sm text-white
-          "
-        >
-          <a href="#" className="hover:text-green-400 transition">
-            Início
-          </a>
+      <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
 
-          <a href="#" className="hover:text-green-400 transition">
-            Quem Somos
-          </a>
+        <div className="w-6 h-6 rounded-full bg-white/90" />
 
-          <a href="#" className="hover:text-green-400 transition">
-            Logística Reversa
-          </a>
-
-          <a href="#" className="hover:text-green-400 transition">
-            Projetos
-          </a>
-
-          <a href="#" className="hover:text-green-400 transition">
-            Notícias
-          </a>
-
-          <a href="#" className="hover:text-green-400 transition">
-            Transparência
-          </a>
-
-          <a href="#" className="hover:text-green-400 transition">
-            Contato
-          </a>
-        </nav>
-
-        <button
-          className="
-            hidden md:flex
-            bg-green-600 hover:bg-green-500
-            text-white
-            px-5 py-3
-            rounded-full
-            text-sm font-medium
-            transition
-          "
-        >
-          Seja Parceiro
-        </button>
       </div>
-    </header>
-  )
+
+      <div className="text-left">
+
+        <h1 className="text-2xl font-black tracking-[-0.04em] text-zinc-900">
+          ACMRB
+        </h1>
+
+        <p className="text-sm text-zinc-500 font-medium">
+          Plataforma ESG
+        </p>
+
+      </div>
+
+    </button>
+  );
 }

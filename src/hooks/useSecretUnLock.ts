@@ -1,28 +1,38 @@
-import { useEffect, useState } from 'react'
+"use client";
+
+import { useState } from "react";
 
 export function useSecretUnlock() {
-  const [clicks, setClicks] = useState(0)
-  const [unlocked, setUnlocked] = useState(false)
 
-  useEffect(() => {
-    if (clicks >= 5) {
-      setUnlocked(true)
-      setClicks(0)
+  const [clicks, setClicks] = useState(0);
+
+  const [unlocked, setUnlocked] = useState(false);
+
+  function handleSecretClick() {
+
+    const next = clicks + 1;
+
+    setClicks(next);
+
+    if (next >= 5) {
+
+      setUnlocked(true);
+
+      setClicks(0);
+
     }
 
-    const timer = setTimeout(() => {
-      setClicks(0)
-    }, 3000)
+  }
 
-    return () => clearTimeout(timer)
-  }, [clicks])
+  function closeAdmin() {
 
-  const registerClick = () => {
-    setClicks((prev) => prev + 1)
+    setUnlocked(false);
+
   }
 
   return {
     unlocked,
-    registerClick
-  }
+    handleSecretClick,
+    closeAdmin,
+  };
 }

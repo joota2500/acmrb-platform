@@ -1,3 +1,9 @@
+"use client";
+
+import { useState } from "react";
+
+import { supabase } from "../../lib/supabase";
+
 type Props = {
   open: boolean;
   onClose: () => void;
@@ -8,190 +14,126 @@ export default function AdminModal({
   onClose,
 }: Props) {
 
+  const [email, setEmail] = useState("");
+
+  const [password, setPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const [error, setError] = useState("");
+
+  async function handleLogin() {
+
+    try {
+
+      setLoading(true);
+
+      setError("");
+
+      const { error } =
+        await supabase.auth.signInWithPassword({
+
+          email,
+          password,
+
+        });
+
+      if (error) {
+
+        setError(error.message);
+
+        return;
+
+      }
+
+      alert("Login realizado com sucesso.");
+
+      onClose();
+
+    } catch {
+
+      setError("Erro inesperado.");
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
   if (!open) return null;
 
   return (
-    <div
-      className="
-        fixed
-        inset-0
-        z-[9999]
-        bg-black/80
-        backdrop-blur-xl
-        flex
-        items-center
-        justify-center
-        px-6
-      "
-    >
 
-      <div
-        className="
-          relative
-          w-full
-          max-w-md
-          rounded-[40px]
-          border
-          border-white/10
-          bg-[#04130c]/90
-          backdrop-blur-2xl
-          p-10
-          overflow-hidden
-        "
-      >
+    <div className="fixed inset-0 z-999 bg-black/40 backdrop-blur-sm flex items-center justify-center p-6">
 
-        <div
-          className="
-            absolute
-            top-0
-            left-1/2
-            -translate-x-1/2
-            w-72
-            h-72
-            bg-green-500/10
-            blur-3xl
-            rounded-full
-          "
-        />
+      <div className="w-full max-w-md rounded-4xl bg-white shadow-2xl p-8">
 
-        <button
-          onClick={onClose}
-          className="
-            absolute
-            top-6
-            right-6
-            text-zinc-400
-            hover:text-white
-            transition
-            text-2xl
-          "
-        >
-          ×
-        </button>
+        <div className="flex items-center justify-between mb-8">
 
-        <div className="relative">
+          <div>
 
-          <div className="text-center">
-
-            <div
-              className="
-                w-20
-                h-20
-                rounded-3xl
-                bg-green-500
-                flex
-                items-center
-                justify-center
-                text-black
-                text-3xl
-                font-black
-                mx-auto
-              "
-            >
-              A
-            </div>
-
-            <h2 className="
-              text-white
-              text-3xl
-              font-black
-              mt-6
-            ">
-              Área Administrativa
+            <h2 className="text-3xl font-black text-zinc-900">
+              Admin Login
             </h2>
 
-            <p className="
-              text-zinc-400
-              mt-4
-              leading-relaxed
-            ">
-              Plataforma institucional ACMRB
+            <p className="text-zinc-500 mt-2">
+              Acesso administrativo ACMRB
             </p>
 
           </div>
 
-          <form className="mt-10 space-y-6">
+          <button
+            onClick={onClose}
+            className="text-zinc-500 hover:text-zinc-900"
+          >
+            ✕
+          </button>
 
-            <div>
+        </div>
 
-              <label className="
-                block
-                text-sm
-                text-zinc-400
-                mb-3
-              ">
-                Email institucional
-              </label>
+        <div className="space-y-5">
 
-              <input
-                type="email"
-                placeholder="admin@acmrb.org"
-                className="
-                  w-full
-                  h-14
-                  rounded-2xl
-                  bg-white/5
-                  border
-                  border-white/10
-                  px-5
-                  text-white
-                  outline-none
-                  focus:border-green-500
-                  transition
-                "
-              />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+            className="w-full h-14 rounded-2xl border border-zinc-200 px-5 outline-none focus:border-emerald-500"
+          />
 
+          <input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
+            className="w-full h-14 rounded-2xl border border-zinc-200 px-5 outline-none focus:border-emerald-500"
+          />
+
+          {error && (
+
+            <div className="text-red-500 text-sm">
+              {error}
             </div>
 
-            <div>
+          )}
 
-              <label className="
-                block
-                text-sm
-                text-zinc-400
-                mb-3
-              ">
-                Senha
-              </label>
+          <button
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full h-14 rounded-2xl bg-linear-to-r from-emerald-500 to-teal-600 text-white font-bold hover:scale-[1.02] transition-all"
+          >
 
-              <input
-                type="password"
-                placeholder="••••••••"
-                className="
-                  w-full
-                  h-14
-                  rounded-2xl
-                  bg-white/5
-                  border
-                  border-white/10
-                  px-5
-                  text-white
-                  outline-none
-                  focus:border-green-500
-                  transition
-                "
-              />
+            {loading
+              ? "Entrando..."
+              : "Entrar"}
 
-            </div>
-
-            <button
-              type="submit"
-              className="
-                w-full
-                h-14
-                rounded-2xl
-                bg-green-500
-                hover:bg-green-400
-                transition
-                text-black
-                font-black
-                text-lg
-              "
-            >
-              Entrar
-            </button>
-
-          </form>
+          </button>
 
         </div>
 

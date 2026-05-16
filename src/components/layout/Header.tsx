@@ -2,9 +2,19 @@
 
 import { useEffect, useState } from "react";
 
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+} from "framer-motion";
 
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+} from "lucide-react";
+
+import AdminModal from "../admin/AdminModal";
+
+import { useSecretUnlock } from "../../hooks/useSecretUnlock";
 
 const links = [
   {
@@ -30,22 +40,38 @@ const links = [
 ];
 
 export default function Header() {
-  const [scrolled, setScrolled] = useState(false);
 
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] =
+    useState(false);
+
+  const [menuOpen, setMenuOpen] =
+    useState(false);
+
+  const {
+    unlocked,
+    handleSecretClick,
+    closeAdmin,
+  } = useSecretUnlock();
 
   useEffect(() => {
+
     const handleScroll = () => {
+
       setScrolled(window.scrollY > 20);
+
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener(
+      "scroll",
+      handleScroll
+    );
 
     return () =>
       window.removeEventListener(
         "scroll",
         handleScroll
       );
+
   }, []);
 
   return (
@@ -113,7 +139,9 @@ export default function Header() {
           >
 
             {/* LOGO */}
-            <div
+
+            <button
+              onClick={handleSecretClick}
               className="
                 flex
                 items-center
@@ -166,9 +194,10 @@ export default function Header() {
 
               </div>
 
-            </div>
+            </button>
 
             {/* DESKTOP MENU */}
+
             <nav
               className="
                 hidden
@@ -213,6 +242,7 @@ export default function Header() {
             </nav>
 
             {/* RIGHT */}
+
             <div
               className="
                 flex
@@ -222,6 +252,7 @@ export default function Header() {
             >
 
               {/* CTA */}
+
               <button
                 className="
                   hidden
@@ -244,6 +275,7 @@ export default function Header() {
               </button>
 
               {/* MOBILE BUTTON */}
+
               <button
                 onClick={() =>
                   setMenuOpen(!menuOpen)
@@ -262,11 +294,13 @@ export default function Header() {
                   text-[#1F2937]
                 "
               >
+
                 {menuOpen ? (
                   <X size={22} />
                 ) : (
                   <Menu size={22} />
                 )}
+
               </button>
 
             </div>
@@ -278,6 +312,7 @@ export default function Header() {
       </motion.header>
 
       {/* MOBILE MENU */}
+
       <AnimatePresence>
 
         {menuOpen && (
@@ -367,6 +402,14 @@ export default function Header() {
         )}
 
       </AnimatePresence>
+
+      {/* ADMIN MODAL */}
+
+      <AdminModal
+        open={unlocked}
+        onClose={closeAdmin}
+      />
+
     </>
   );
 }
