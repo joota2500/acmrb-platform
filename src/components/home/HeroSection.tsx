@@ -5,7 +5,17 @@ import { ArrowRight, Leaf, Recycle, ShieldCheck } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden min-h-screen flex items-center">
+    <section
+  className="
+    relative
+    overflow-hidden
+    min-h-screen
+    flex
+    items-center
+    pt-36
+    md:pt-40
+  "
+>
 
       {/* BACKGROUND */}
 

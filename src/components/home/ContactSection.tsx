@@ -102,7 +102,7 @@ export default function ContactSection() {
                   </h3>
 
                   <p className="text-zinc-600 mt-2 leading-7">
-                    (85) 98121-4864
+                    (85) 98921-4864
                   </p>
 
                 </div>
@@ -242,7 +242,8 @@ export default function ContactSection() {
 
         {/* CTA */}
 
-        <motion.div
+       <motion.div
+          id="projetos"
           initial={{
             opacity: 0,
             y: 25,
@@ -256,7 +257,7 @@ export default function ContactSection() {
             delay: 0.2,
           }}
           viewport={{ once: true }}
-          className="mt-20"
+          className="mt-20 scroll-mt-40"
         >
 
           <div className="glass-card rounded-[2rem] p-10 md:p-14 text-center">
@@ -282,13 +283,38 @@ export default function ContactSection() {
 
               </p>
 
-              <a
-                href="https://wa.me/5585981214864"
-                target="_blank"
-                className="primary-button mt-10"
-              >
-                Entrar em contato
-              </a>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
+
+                  {/* WHATSAPP */}
+
+                  <a
+                    href="https://wa.me/5585981214864"
+                    target="_blank"
+                    className="primary-button"
+                  >
+                    Entrar em contato
+                  </a>
+
+                  {/* PROJETOS */}
+
+                  <a
+                    href="/projetos"
+                    className="
+                      px-6
+                      py-4
+                      rounded-2xl
+                      border
+                      border-emerald-200
+                      text-emerald-700
+                      font-semibold
+                      hover:bg-emerald-50
+                      transition-all
+                    "
+                  >
+                    Ver projetos desenvolvidos
+                  </a>
+
+                </div>
 
             </div>
 
