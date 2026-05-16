@@ -50,7 +50,7 @@ export default function InstitutionalSection() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/40 to-white" />
+      <div className="absolute inset-0 bg-linear-to-b from-emerald-50/40 to-white" />
 
       <div className="container-custom relative z-10">
 
@@ -114,7 +114,7 @@ export default function InstitutionalSection() {
                 delay: index * 0.08,
               }}
               viewport={{ once: true }}
-              className="glass-card rounded-[2rem] p-8"
+              className="glass-card rounded-4xl p-8"
             >
 
               <h3 className="text-2xl font-bold text-zinc-900">
@@ -163,11 +163,11 @@ export default function InstitutionalSection() {
           className="mt-20"
         >
 
-          <div className="glass-card rounded-[2rem] p-10 md:p-16 overflow-hidden relative">
+          <div className="glass-card rounded-4xl p-10 md:p-16 overflow-hidden relative">
 
             {/* DECORATION */}
 
-            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-200/20 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 w-75 h-75 bg-emerald-200/20 rounded-full blur-3xl" />
 
             <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
 

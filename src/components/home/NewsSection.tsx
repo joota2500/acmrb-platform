@@ -42,7 +42,7 @@ export default function NewsSection() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-white to-emerald-50/40" />
+      <div className="absolute inset-0 bg-linear-to-b from-white to-emerald-50/40" />
 
       <div className="container-custom relative z-10">
 
@@ -118,12 +118,12 @@ export default function NewsSection() {
                 delay: index * 0.1,
               }}
               viewport={{ once: true }}
-              className="glass-card rounded-[2rem] overflow-hidden group"
+              className="glass-card rounded-4xl overflow-hidden group"
             >
 
               {/* IMAGE */}
 
-              <div className="h-[240px] bg-gradient-to-br from-emerald-200 to-teal-100 relative overflow-hidden">
+              <div className="h-60 bg-linear-to-br from-emerald-200 to-teal-100 relative overflow-hidden">
 
                 <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all duration-300" />
 

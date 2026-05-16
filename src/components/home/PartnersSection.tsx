@@ -20,7 +20,7 @@ export default function PartnersSection() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/40 to-white" />
+      <div className="absolute inset-0 bg-linear-to-b from-emerald-50/40 to-white" />
 
       <div className="container-custom relative z-10">
 
@@ -82,7 +82,7 @@ export default function PartnersSection() {
                 delay: index * 0.08,
               }}
               viewport={{ once: true }}
-              className="glass-card rounded-[1.8rem] h-[140px] flex items-center justify-center p-6 text-center"
+              className="glass-card rounded-[1.8rem] h-35 flex items-center justify-center p-6 text-center"
             >
 
               <div>
@@ -129,7 +129,7 @@ export default function PartnersSection() {
           className="mt-20"
         >
 
-          <div className="glass-card rounded-[2rem] p-10 md:p-14 text-center">
+          <div className="glass-card rounded-4xl p-10 md:p-14 text-center">
 
             <div className="max-w-4xl mx-auto">
 

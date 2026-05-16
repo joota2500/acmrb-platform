@@ -46,7 +46,7 @@ export default function ReverseLogisticsSection() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-white to-emerald-50/40" />
+      <div className="absolute inset-0 bg-linear-to-b from-white to-emerald-50/40" />
 
       <div className="container-custom relative z-10">
 
@@ -85,7 +85,7 @@ export default function ReverseLogisticsSection() {
 
             <div className="grid gap-6 mt-12">
 
-              <div className="glass-card rounded-[1.5rem] p-6">
+              <div className="glass-card rounded-3xl p-6">
 
                 <h3 className="text-xl font-bold text-zinc-900">
                   Gestão Sustentável
@@ -100,7 +100,7 @@ export default function ReverseLogisticsSection() {
 
               </div>
 
-              <div className="glass-card rounded-[1.5rem] p-6">
+              <div className="glass-card rounded-3xl p-6">
 
                 <h3 className="text-xl font-bold text-zinc-900">
                   Responsabilidade Ambiental
@@ -163,7 +163,7 @@ export default function ReverseLogisticsSection() {
                       delay: index * 0.1,
                     }}
                     viewport={{ once: true }}
-                    className="glass-card rounded-[2rem] p-8"
+                    className="glass-card rounded-4xl p-8"
                   >
 
                     <div className="flex gap-5 items-start">

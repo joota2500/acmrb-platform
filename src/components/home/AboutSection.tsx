@@ -12,7 +12,7 @@ export default function AboutSection() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-white to-emerald-50/40" />
+      <div className="absolute inset-0 bg-linear-to-b from-white to-emerald-50/40" />
 
       <div className="container-custom relative z-10">
 
@@ -59,7 +59,7 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="glass-card rounded-[2rem] p-8"
+            className="glass-card rounded-4xl p-8"
           >
 
             <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 mb-6">
@@ -89,7 +89,7 @@ export default function AboutSection() {
               delay: 0.1,
             }}
             viewport={{ once: true }}
-            className="glass-card rounded-[2rem] p-8"
+            className="glass-card rounded-4xl p-8"
           >
 
             <div className="w-16 h-16 rounded-2xl bg-teal-100 flex items-center justify-center text-teal-700 mb-6">
@@ -119,7 +119,7 @@ export default function AboutSection() {
               delay: 0.2,
             }}
             viewport={{ once: true }}
-            className="glass-card rounded-[2rem] p-8"
+            className="glass-card rounded-4xl p-8"
           >
 
             <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 mb-6">
@@ -154,7 +154,7 @@ export default function AboutSection() {
           className="mt-20"
         >
 
-          <div className="glass-card rounded-[2rem] p-10 md:p-14 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
+          <div className="glass-card rounded-4xl p-10 md:p-14 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10">
 
             <div className="max-w-3xl">
 

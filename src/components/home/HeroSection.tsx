@@ -19,11 +19,11 @@ export default function HeroSection() {
 
       {/* BACKGROUND */}
 
-      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+      <div className="absolute inset-0 bg-linear-to-br from-emerald-50 via-white to-teal-50" />
 
-      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-emerald-200/20 rounded-full blur-3xl" />
+      <div className="absolute top-0 left-0 w-125 h-125 bg-emerald-200/20 rounded-full blur-3xl" />
 
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-200/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-0 w-125 h-125 bg-teal-200/20 rounded-full blur-3xl" />
 
       {/* CONTENT */}
 
@@ -42,12 +42,12 @@ export default function HeroSection() {
             {/* TAG */}
 
             <div className="section-tag mb-8">
-              Associação de Catadores • ESG • Sustentabilidade
+              Associação de Catadores • Baturité CE • Sustentabilidade
             </div>
 
             {/* TITLE */}
 
-            <h1 className="text-[2.7rem] md:text-[4.8rem] font-black leading-[0.95] tracking-[-0.05em] text-zinc-900">
+            <h1 className="text-[2.7rem] md:text-[4.8rem] font-black leading-[0.95] tracking-tighter text-zinc-900">
 
               Transformando resíduos em
               <span className="text-emerald-700"> impacto ambiental </span>
@@ -91,7 +91,7 @@ export default function HeroSection() {
 
               <div>
                 <h3 className="text-3xl md:text-4xl font-black text-emerald-700">
-                  +120t
+                  +1 T
                 </h3>
 
                 <p className="text-sm text-zinc-500 mt-2">
@@ -132,7 +132,7 @@ export default function HeroSection() {
             className="relative"
           >
 
-            <div className="glass-card rounded-[2rem] p-8 md:p-10">
+            <div className="glass-card rounded-4xl p-8 md:p-10">
 
               <div className="grid gap-6">
 
@@ -186,7 +186,7 @@ export default function HeroSection() {
 
                   <div>
                     <h3 className="font-bold text-xl text-zinc-900">
-                      Transparência ESG
+                      Cidades Mais Limpas
                     </h3>
 
                     <p className="text-zinc-600 mt-2 leading-7">

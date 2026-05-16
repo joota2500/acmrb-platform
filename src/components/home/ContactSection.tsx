@@ -18,7 +18,7 @@ export default function ContactSection() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-white to-emerald-50/40" />
+      <div className="absolute inset-0 bg-linear-to-b from-white to-emerald-50/40" />
 
       <div className="container-custom relative z-10">
 
@@ -80,7 +80,7 @@ export default function ContactSection() {
               duration: 0.6,
             }}
             viewport={{ once: true }}
-            className="glass-card rounded-[2rem] p-8 md:p-10"
+            className="glass-card rounded-4xl p-8 md:p-10"
           >
 
             <div className="space-y-8">
@@ -200,12 +200,12 @@ export default function ContactSection() {
               duration: 0.6,
             }}
             viewport={{ once: true }}
-            className="glass-card rounded-[2rem] overflow-hidden"
+            className="glass-card rounded-4xl overflow-hidden"
           >
 
             {/* MAP */}
 
-            <div className="h-full min-h-[450px] bg-gradient-to-br from-emerald-100 to-teal-50 relative">
+            <div className="h-full min-h-112.5 bg-linear-to-br from-emerald-100 to-teal-50 relative">
 
               <div className="absolute inset-0 flex items-center justify-center">
 
@@ -260,7 +260,7 @@ export default function ContactSection() {
           className="mt-20 scroll-mt-40"
         >
 
-          <div className="glass-card rounded-[2rem] p-10 md:p-14 text-center">
+          <div className="glass-card rounded-4xl p-10 md:p-14 text-center">
 
             <div className="max-w-4xl mx-auto">
 

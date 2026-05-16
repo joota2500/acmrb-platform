@@ -11,15 +11,15 @@ import {
 const stats = [
   {
     icon: Recycle,
-    value: "+120t",
-    title: "Materiais reciclados",
+    value: "+1t",
+    title: "Materiais Reciclados",
     description:
       "Resíduos desviados do descarte inadequado através da coleta seletiva.",
   },
 
   {
     icon: Trees,
-    value: "+18t",
+    value: "+10t",
     title: "CO₂ evitado",
     description:
       "Estimativa de emissões reduzidas através da reciclagem e reaproveitamento.",
@@ -35,7 +35,7 @@ const stats = [
 
   {
     icon: Factory,
-    value: "+20",
+    value: "+5",
     title: "Parcerias institucionais",
     description:
       "Empresas, instituições e organizações apoiando ações sustentáveis.",
@@ -48,7 +48,7 @@ export default function StatsSection() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-white" />
+      <div className="absolute inset-0 bg-linear-to-b from-emerald-50/50 to-white" />
 
       <div className="container-custom relative z-10">
 
@@ -106,7 +106,7 @@ export default function StatsSection() {
                   delay: index * 0.1,
                 }}
                 viewport={{ once: true }}
-                className="glass-card rounded-[2rem] p-8 md:p-10"
+                className="glass-card rounded-4xl p-8 md:p-10"
               >
 
                 {/* ICON */}
@@ -119,7 +119,7 @@ export default function StatsSection() {
 
                 {/* VALUE */}
 
-                <div className="text-5xl md:text-6xl font-black text-zinc-900 tracking-[-0.05em]">
+                <div className="text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter">
 
                   {item.value}
 

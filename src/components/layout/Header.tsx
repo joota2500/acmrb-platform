@@ -88,7 +88,7 @@ export default function Header() {
               flex
               items-center
               justify-between
-              rounded-[24px]
+              rounded-3xl
               border
               backdrop-blur-2xl
               transition-all
@@ -126,7 +126,7 @@ export default function Header() {
                   w-12
                   h-12
                   rounded-2xl
-                  bg-gradient-to-br
+                  bg-linear-to-br
                   from-[#2E5E4E]
                   to-[#4F8A73]
                   flex
@@ -161,7 +161,7 @@ export default function Header() {
                     mt-1
                   "
                 >
-                  Plataforma ESG
+                  Associação Reciclaê - Baturité CE
                 </p>
 
               </div>
@@ -199,7 +199,7 @@ export default function Header() {
                       left-0
                       -bottom-2
                       w-0
-                      h-[2px]
+                      h-0.5
                       bg-[#2E5E4E]
                       transition-all
                       duration-300

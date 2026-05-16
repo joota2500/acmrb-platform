@@ -13,7 +13,7 @@ export default function Footer() {
 
       {/* BG */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-white" />
+      <div className="absolute inset-0 bg-linear-to-b from-emerald-50/50 to-white" />
 
       <div className="container-custom relative z-10">
 
@@ -27,7 +27,7 @@ export default function Footer() {
 
             <div className="flex items-center gap-4">
 
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-xl">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-xl">
 
                 ♻
 

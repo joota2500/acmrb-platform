@@ -5,16 +5,16 @@ import { motion } from "framer-motion";
 const metrics = [
   {
     title: "Resíduos reciclados",
-    value: "+120t",
-    progress: "82%",
+    value: "+1t",
+    progress: "20%",
     description:
       "Materiais destinados corretamente através da coleta seletiva.",
   },
 
   {
     title: "CO₂ evitado",
-    value: "18t",
-    progress: "67%",
+    value: "10t",
+    progress: "50%",
     description:
       "Estimativa de redução de emissões ambientais.",
   },
@@ -22,15 +22,15 @@ const metrics = [
   {
     title: "Famílias impactadas",
     value: "+45",
-    progress: "91%",
+    progress: "45%",
     description:
       "Catadores e famílias beneficiadas pelas ações da associação.",
   },
 
   {
     title: "Parcerias ESG",
-    value: "+20",
-    progress: "74%",
+    value: "+5",
+    progress: "5%",
     description:
       "Instituições e empresas apoiando ações sustentáveis.",
   },
@@ -42,7 +42,7 @@ export default function ESGMetrics() {
 
       {/* BACKGROUND */}
 
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/40 to-white" />
+      <div className="absolute inset-0 bg-linear-to-b from-emerald-50/40 to-white" />
 
       <div className="container-custom relative z-10">
 
@@ -105,7 +105,7 @@ export default function ESGMetrics() {
                 delay: index * 0.1,
               }}
               viewport={{ once: true }}
-              className="glass-card rounded-[2rem] p-8 md:p-10"
+              className="glass-card rounded-4xl p-8 md:p-10"
             >
 
               {/* TOP */}
@@ -120,7 +120,7 @@ export default function ESGMetrics() {
 
                   </p>
 
-                  <h3 className="text-5xl md:text-6xl font-black text-zinc-900 tracking-[-0.05em] mt-4">
+                  <h3 className="text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter mt-4">
 
                     {metric.value}
 
@@ -173,7 +173,7 @@ export default function ESGMetrics() {
                       duration: 1,
                     }}
                     viewport={{ once: true }}
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-600 to-teal-500"
+                    className="h-full rounded-full bg-linear-to-r from-emerald-600 to-teal-500"
                   />
 
                 </div>
@@ -203,7 +203,7 @@ export default function ESGMetrics() {
           className="mt-20"
         >
 
-          <div className="glass-card rounded-[2rem] p-10 md:p-14">
+          <div className="glass-card rounded-4xl p-10 md:p-14">
 
             <div className="grid lg:grid-cols-2 gap-10 items-center">
 
