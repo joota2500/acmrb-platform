@@ -1,140 +1,186 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ArrowRight, Leaf, Recycle, ShieldCheck } from "lucide-react";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#07111F] text-white min-h-screen flex items-center">
-      
-      {/* Background Effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-emerald-500/20 blur-[120px] rounded-full" />
-        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-cyan-500/20 blur-[120px] rounded-full" />
+    <section className="relative overflow-hidden min-h-screen flex items-center">
 
-        <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(to_right,#ffffff22_1px,transparent_1px),linear-gradient(to_bottom,#ffffff22_1px,transparent_1px)] bg-[size:60px_60px]" />
-      </div>
+      {/* BACKGROUND */}
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 py-24 w-full">
+      <div className="absolute inset-0 bg-gradient-to-br from-emerald-50 via-white to-teal-50" />
+
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-emerald-200/20 rounded-full blur-3xl" />
+
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-teal-200/20 rounded-full blur-3xl" />
+
+      {/* CONTENT */}
+
+      <div className="container-custom relative z-10">
 
         <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-          {/* Left */}
+          {/* LEFT */}
+
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
 
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 text-emerald-300 text-sm mb-6">
-              ♻ Plataforma ESG • Baturité/CE
+            {/* TAG */}
+
+            <div className="section-tag mb-8">
+              Associação de Catadores • ESG • Sustentabilidade
             </div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-tight">
-              Transformando resíduos em{" "}
-              <span className="text-emerald-400">
-                impacto ambiental
-              </span>
+            {/* TITLE */}
+
+            <h1 className="text-[2.7rem] md:text-[4.8rem] font-black leading-[0.95] tracking-[-0.05em] text-zinc-900">
+
+              Transformando resíduos em
+              <span className="text-emerald-700"> impacto ambiental </span>
+              e inclusão social.
             </h1>
 
-            <p className="mt-8 text-gray-300 text-lg md:text-xl leading-relaxed max-w-2xl">
-              A ACMRB fortalece a reciclagem, gera renda para famílias
-              catadoras e promove sustentabilidade através da logística
-              reversa e educação ambiental.
+            {/* DESCRIPTION */}
+
+            <p className="mt-8 text-zinc-600 text-lg leading-8 max-w-2xl">
+
+              A ACMRB atua na coleta seletiva, logística reversa e educação ambiental,
+              promovendo sustentabilidade, geração de renda e fortalecimento da economia circular
+              em Baturité e região.
+
             </p>
+
+            {/* BUTTONS */}
 
             <div className="flex flex-col sm:flex-row gap-4 mt-10">
 
-              <button className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 transition rounded-2xl font-semibold text-lg shadow-2xl shadow-emerald-500/30">
-                Seja Parceiro
-              </button>
+              <a
+                href="#quem-somos"
+                className="primary-button"
+              >
+                Conheça a associação
+                <ArrowRight size={18} />
+              </a>
 
-              <button className="px-8 py-4 border border-white/20 hover:border-emerald-400 transition rounded-2xl font-semibold text-lg backdrop-blur-xl">
-                Conheça a Associação
-              </button>
+              <a
+                href="#contato"
+                className="px-6 py-4 rounded-2xl border border-zinc-300 text-zinc-700 font-semibold hover:bg-zinc-100 transition-all"
+              >
+                Seja parceiro
+              </a>
 
             </div>
 
-            {/* ESG Numbers */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16">
+            {/* METRICS */}
 
-              {[
-                ["+120", "Famílias Impactadas"],
-                ["+85t", "Reciclados"],
-                ["+20", "Parceiros"],
-                ["100%", "Compromisso ESG"],
-              ].map(([number, label]) => (
-                <div key={label}>
-                  <h3 className="text-3xl font-black text-emerald-400">
-                    {number}
-                  </h3>
+            <div className="grid grid-cols-3 gap-6 mt-14">
 
-                  <p className="text-sm text-gray-400 mt-1">
-                    {label}
-                  </p>
-                </div>
-              ))}
+              <div>
+                <h3 className="text-3xl md:text-4xl font-black text-emerald-700">
+                  +120t
+                </h3>
+
+                <p className="text-sm text-zinc-500 mt-2">
+                  resíduos reciclados
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-3xl md:text-4xl font-black text-emerald-700">
+                  +45
+                </h3>
+
+                <p className="text-sm text-zinc-500 mt-2">
+                  famílias impactadas
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-3xl md:text-4xl font-black text-emerald-700">
+                  ESG
+                </h3>
+
+                <p className="text-sm text-zinc-500 mt-2">
+                  impacto sustentável
+                </p>
+              </div>
 
             </div>
 
           </motion.div>
 
-          {/* Right */}
+          {/* RIGHT */}
+
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1 }}
-            className="relative flex justify-center"
+            className="relative"
           >
 
-            <div className="relative w-full max-w-[500px]">
+            <div className="glass-card rounded-[2rem] p-8 md:p-10">
 
-              <div className="absolute inset-0 bg-emerald-500 blur-[100px] opacity-20 rounded-full" />
+              <div className="grid gap-6">
 
-              <div className="relative rounded-[40px] border border-white/10 bg-white/5 backdrop-blur-2xl p-8 shadow-2xl">
+                {/* CARD 1 */}
 
-                <div className="space-y-6">
+                <div className="flex gap-5 items-start">
 
-                  <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
-                    <p className="text-gray-400 text-sm">
-                      Resíduos coletados
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700">
+                    <Recycle size={28} />
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-xl text-zinc-900">
+                      Logística Reversa
+                    </h3>
+
+                    <p className="text-zinc-600 mt-2 leading-7">
+                      Soluções ambientais para empresas, instituições e órgãos públicos.
                     </p>
-
-                    <h2 className="text-5xl font-black mt-2">
-                      5 Toneladas
-                    </h2>
-
-                    <div className="w-full bg-white/10 rounded-full h-3 mt-4">
-                      <div className="bg-emerald-400 h-3 rounded-full w-[78%]" />
-                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                </div>
 
-                    <div className="bg-white/5 border border-white/10 rounded-3xl p-5">
-                      <p className="text-gray-400 text-sm">
-                        CO₂ evitado
-                      </p>
+                {/* CARD 2 */}
 
-                      <h3 className="text-3xl font-black mt-2 text-cyan-400">
-                        48t
-                      </h3>
-                    </div>
+                <div className="flex gap-5 items-start">
 
-                    <div className="bg-white/5 border border-white/10 rounded-3xl p-5">
-                      <p className="text-gray-400 text-sm">
-                        Educação Ambiental
-                      </p>
-
-                      <h3 className="text-3xl font-black mt-2 text-emerald-400">
-                        32 ações
-                      </h3>
-                    </div>
-
+                  <div className="w-14 h-14 rounded-2xl bg-teal-100 flex items-center justify-center text-teal-700">
+                    <Leaf size={28} />
                   </div>
 
-                  <div className="bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-3xl p-6 text-black">
-                    <p className="font-semibold">
-                      Plataforma institucional ESG em desenvolvimento.
+                  <div>
+                    <h3 className="font-bold text-xl text-zinc-900">
+                      Educação Ambiental
+                    </h3>
+
+                    <p className="text-zinc-600 mt-2 leading-7">
+                      Ações educativas e conscientização sobre reciclagem e sustentabilidade.
+                    </p>
+                  </div>
+
+                </div>
+
+                {/* CARD 3 */}
+
+                <div className="flex gap-5 items-start">
+
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700">
+                    <ShieldCheck size={28} />
+                  </div>
+
+                  <div>
+                    <h3 className="font-bold text-xl text-zinc-900">
+                      Transparência ESG
+                    </h3>
+
+                    <p className="text-zinc-600 mt-2 leading-7">
+                      Indicadores ambientais, impacto social e resultados públicos.
                     </p>
                   </div>
 
@@ -145,10 +191,11 @@ export default function HeroSection() {
             </div>
 
           </motion.div>
-
+ 
         </div>
 
       </div>
+
     </section>
   );
 }

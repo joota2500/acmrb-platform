@@ -3,336 +3,206 @@
 import { motion } from "framer-motion";
 
 import {
-  Truck,
-  Factory,
+  ArrowRight,
+  Building2,
   Recycle,
+  Truck,
   ShieldCheck,
 } from "lucide-react";
 
 const services = [
   {
-    title: "Coleta Seletiva",
-    description:
-      "Soluções sustentáveis de coleta seletiva para empresas, escolas e instituições públicas.",
     icon: Truck,
-  },
-  {
-    title: "Logística Reversa",
+    title: "Coleta Programada",
     description:
-      "Gestão ambiental inteligente voltada para descarte correto e reaproveitamento de resíduos.",
+      "Planejamento e execução de coleta seletiva para empresas, órgãos públicos e instituições.",
+  },
+
+  {
     icon: Recycle,
-  },
-  {
-    title: "ESG Corporativo",
+    title: "Destinação Correta",
     description:
-      "Projetos ambientais alinhados às metas ESG e sustentabilidade empresarial.",
-    icon: Factory,
+      "Encaminhamento ambientalmente adequado de resíduos recicláveis e reaproveitáveis.",
   },
+
   {
-    title: "Compliance Ambiental",
+    icon: Building2,
+    title: "Parcerias Institucionais",
     description:
-      "Fortalecimento de práticas ambientais responsáveis e regulamentação sustentável.",
+      "Soluções sustentáveis voltadas para responsabilidade socioambiental corporativa.",
+  },
+
+  {
     icon: ShieldCheck,
+    title: "Indicadores ESG",
+    description:
+      "Relatórios de impacto ambiental e apoio às metas de sustentabilidade organizacional.",
   },
 ];
 
-export default function ReverseLogisticsSections() {
+export default function ReverseLogisticsSection() {
   return (
-    <section
-      className="
-        relative
-        overflow-hidden
-        py-32
-      "
-    >
+    <section className="section-spacing relative overflow-hidden">
 
-      {/* BACKGROUND */}
-      <div
-        className="
-          absolute
-          inset-0
-          overflow-hidden
-        "
-      >
+      {/* BG */}
 
-        <div
-          className="
-            absolute
-            top-1/2
-            left-1/2
-            -translate-x-1/2
-            -translate-y-1/2
-            w-[900px]
-            h-[900px]
-            bg-cyan-500/10
-            blur-[160px]
-            rounded-full
-          "
-        />
+      <div className="absolute inset-0 bg-gradient-to-b from-white to-emerald-50/40" />
 
-      </div>
+      <div className="container-custom relative z-10">
 
-      <div
-        className="
-          relative
-          max-w-7xl
-          mx-auto
-          px-6
-          md:px-10
-        "
-      >
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
 
-        <div
-          className="
-            grid
-            lg:grid-cols-2
-            gap-20
-            items-center
-          "
-        >
+          {/* LEFT */}
 
-          {/* LEFT SIDE */}
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
           >
 
-            <span
-              className="
-                inline-flex
-                items-center
-                gap-2
-                px-4
-                py-2
-                rounded-full
-                border
-                border-cyan-400/20
-                bg-cyan-400/10
-                text-cyan-300
-                text-sm
-              "
-            >
-              🚛 Logística Reversa
-            </span>
+            <div className="section-tag mb-6">
+              Logística Reversa
+            </div>
 
-            <h2
-              className="
-                mt-8
-                text-4xl
-                md:text-6xl
-                font-black
-                leading-tight
-              "
-            >
-              Soluções ambientais para empresas e instituições
+            <h2 className="section-title">
+
+              Soluções ambientais
+              para empresas,
+              instituições e parceiros.
+
             </h2>
 
-            <p
-              className="
-                mt-8
-                text-gray-400
-                text-lg
-                md:text-xl
-                leading-relaxed
-              "
-            >
-              A ACMRB desenvolve soluções sustentáveis voltadas para
-              coleta seletiva, logística reversa, educação ambiental
-              e fortalecimento de práticas ESG em empresas,
-              instituições e órgãos públicos.
+            <p className="section-description mt-8">
+
+              A ACMRB atua no desenvolvimento de ações de logística reversa,
+              coleta seletiva e destinação ambientalmente adequada de resíduos,
+              fortalecendo práticas sustentáveis e metas ESG.
+
             </p>
 
             {/* FEATURES */}
-            <div
-              className="
-                mt-10
-                grid
-                sm:grid-cols-2
-                gap-5
-              "
-            >
 
-              {[
-                "Coleta sustentável",
-                "Redução de impactos ambientais",
-                "Projetos ESG",
-                "Educação ambiental",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="
-                    rounded-2xl
-                    border
-                    border-white/10
-                    bg-white/5
-                    backdrop-blur-xl
-                    px-5
-                    py-4
-                    text-gray-300
-                    text-sm
-                  "
-                >
-                  {item}
-                </div>
-              ))}
+            <div className="grid gap-6 mt-12">
+
+              <div className="glass-card rounded-[1.5rem] p-6">
+
+                <h3 className="text-xl font-bold text-zinc-900">
+                  Gestão Sustentável
+                </h3>
+
+                <p className="text-zinc-600 mt-3 leading-7">
+
+                  Estruturação de processos sustentáveis
+                  para descarte e reaproveitamento de materiais recicláveis.
+
+                </p>
+
+              </div>
+
+              <div className="glass-card rounded-[1.5rem] p-6">
+
+                <h3 className="text-xl font-bold text-zinc-900">
+                  Responsabilidade Ambiental
+                </h3>
+
+                <p className="text-zinc-600 mt-3 leading-7">
+
+                  Apoio a organizações que buscam fortalecer
+                  ações ambientais e indicadores ESG.
+
+                </p>
+
+              </div>
 
             </div>
 
-            {/* BUTTONS */}
-            <div
-              className="
-                flex
-                flex-col
-                sm:flex-row
-                gap-5
-                mt-12
-              "
-            >
+            {/* BUTTON */}
 
-              <button
-                className="
-                  px-8
-                  py-4
-                  rounded-2xl
-                  bg-gradient-to-r
-                  from-cyan-400
-                  to-emerald-400
-                  text-black
-                  font-bold
-                  shadow-xl
-                  shadow-cyan-500/20
-                  hover:scale-105
-                  transition
-                "
-              >
-                Solicitar Parceria
-              </button>
+            <div className="mt-10">
 
-              <button
-                className="
-                  px-8
-                  py-4
-                  rounded-2xl
-                  border
-                  border-white/10
-                  hover:border-cyan-400
-                  transition
-                  backdrop-blur-xl
-                "
+              <a
+                href="#contato"
+                className="primary-button"
               >
-                Falar com Especialista
-              </button>
+                Solicitar parceria
+                <ArrowRight size={18} />
+              </a>
 
             </div>
 
           </motion.div>
 
-          {/* RIGHT SIDE */}
-          <div
-            className="
-              grid
-              sm:grid-cols-2
-              gap-6
-            "
+          {/* RIGHT */}
+
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
           >
 
-            {services.map((service, index) => {
-              const Icon = service.icon;
+            <div className="grid gap-6">
 
-              return (
-                <motion.div
-                  key={service.title}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{
-                    duration: 0.6,
-                    delay: index * 0.1,
-                  }}
-                  whileHover={{
-                    y: -8,
-                  }}
-                  className="
-                    relative
-                    overflow-hidden
-                    rounded-[32px]
-                    border
-                    border-white/10
-                    bg-white/5
-                    backdrop-blur-2xl
-                    p-8
-                    hover:border-cyan-400/30
-                    transition
-                  "
-                >
+              {services.map((item, index) => {
+                const Icon = item.icon;
 
-                  {/* CARD GLOW */}
-                  <div
-                    className="
-                      absolute
-                      inset-0
-                      bg-gradient-to-br
-                      from-cyan-500/10
-                      to-emerald-500/10
-                    "
-                  />
+                return (
+                  <motion.div
+                    key={item.title}
+                    initial={{
+                      opacity: 0,
+                      y: 30,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.1,
+                    }}
+                    viewport={{ once: true }}
+                    className="glass-card rounded-[2rem] p-8"
+                  >
 
-                  <div className="relative">
+                    <div className="flex gap-5 items-start">
 
-                    {/* ICON */}
-                    <div
-                      className="
-                        w-16
-                        h-16
-                        rounded-2xl
-                        bg-gradient-to-br
-                        from-cyan-400
-                        to-emerald-400
-                        flex
-                        items-center
-                        justify-center
-                        shadow-xl
-                      "
-                    >
+                      {/* ICON */}
 
-                      <Icon
-                        size={28}
-                        className="text-black"
-                      />
+                      <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0">
+
+                        <Icon size={30} />
+
+                      </div>
+
+                      {/* CONTENT */}
+
+                      <div>
+
+                        <h3 className="text-2xl font-bold text-zinc-900">
+
+                          {item.title}
+
+                        </h3>
+
+                        <p className="text-zinc-600 leading-8 mt-4">
+
+                          {item.description}
+
+                        </p>
+
+                      </div>
 
                     </div>
 
-                    {/* TITLE */}
-                    <h3
-                      className="
-                        mt-8
-                        text-2xl
-                        font-bold
-                      "
-                    >
-                      {service.title}
-                    </h3>
+                  </motion.div>
+                );
+              })}
 
-                    {/* DESCRIPTION */}
-                    <p
-                      className="
-                        mt-4
-                        text-gray-400
-                        leading-relaxed
-                      "
-                    >
-                      {service.description}
-                    </p>
+            </div>
 
-                  </div>
-
-                </motion.div>
-              );
-            })}
-
-          </div>
+          </motion.div>
 
         </div>
 

@@ -2,375 +2,229 @@
 
 import { motion } from "framer-motion";
 
+const institutionalLinks = [
+  {
+    title: "Quem Somos",
+    items: [
+      "História da associação",
+      "Missão e visão",
+      "Equipe e associados",
+      "Atuação institucional",
+    ],
+  },
+
+  {
+    title: "Sustentabilidade",
+    items: [
+      "Logística reversa",
+      "Educação ambiental",
+      "Economia circular",
+      "Impacto ESG",
+    ],
+  },
+
+  {
+    title: "Transparência",
+    items: [
+      "Relatórios institucionais",
+      "Projetos e ações",
+      "Prestação de contas",
+      "Documentos públicos",
+    ],
+  },
+
+  {
+    title: "Parcerias",
+    items: [
+      "Empresas parceiras",
+      "Projetos ambientais",
+      "Apoiadores",
+      "Parcerias ESG",
+    ],
+  },
+];
+
 export default function InstitutionalSection() {
   return (
-    <section
-      className="
-        relative
-        overflow-hidden
-        py-32
-      "
-    >
+    <section className="section-spacing relative overflow-hidden">
 
-      {/* Background */}
-      <div className="
-        absolute
-        inset-0
-        overflow-hidden
-      ">
+      {/* BG */}
 
-        <div className="
-          absolute
-          top-0
-          left-1/2
-          -translate-x-1/2
-          w-[1000px]
-          h-[1000px]
-          bg-emerald-500/10
-          blur-[180px]
-          rounded-full
-        " />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/40 to-white" />
 
-      </div>
+      <div className="container-custom relative z-10">
 
-      <div className="
-        relative
-        max-w-7xl
-        mx-auto
-        px-6
-        md:px-10
-      ">
+        {/* TOP */}
 
-        {/* TOP CTA */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="
-            relative
-            overflow-hidden
-            rounded-[40px]
-            border
-            border-white/10
-            bg-white/5
-            backdrop-blur-2xl
-            p-10
-            md:p-16
-          "
+          className="max-w-5xl"
         >
 
-          {/* Glow */}
-          <div className="
-            absolute
-            inset-0
-            bg-gradient-to-br
-            from-emerald-500/10
-            to-cyan-500/10
-          " />
+          <div className="section-tag mb-6">
+            Plataforma Institucional
+          </div>
 
-          <div className="
-            relative
-            grid
-            lg:grid-cols-2
-            gap-16
-            items-center
-          ">
+          <h2 className="section-title">
 
-            <div>
+            Transparência,
+            sustentabilidade
+            e impacto social.
 
-              <span className="
-                inline-flex
-                items-center
-                gap-2
-                px-4
-                py-2
-                rounded-full
-                border
-                border-emerald-400/20
-                bg-emerald-400/10
-                text-emerald-300
-                text-sm
-              ">
-                ♻ Plataforma Institucional ESG
-              </span>
+          </h2>
 
-              <h2 className="
-                mt-8
-                text-4xl
-                md:text-6xl
-                font-black
-                leading-tight
-              ">
-                Juntos pela reciclagem e transformação social
-              </h2>
+          <p className="section-description mt-8">
 
-              <p className="
-                mt-8
-                text-gray-400
-                text-lg
-                md:text-xl
-                leading-relaxed
-                max-w-2xl
-              ">
-                A ACMRB promove inclusão social, sustentabilidade e
-                logística reversa através de ações ambientais,
-                educação ecológica e fortalecimento dos catadores.
-              </p>
+            A ACMRB desenvolve ações ambientais, inclusão social,
+            logística reversa e iniciativas sustentáveis voltadas
+            para transformação ambiental e fortalecimento institucional.
 
-              <div className="
-                flex
-                flex-col
-                sm:flex-row
-                gap-5
-                mt-10
-              ">
+          </p>
 
-                <button className="
-                  px-8
-                  py-4
-                  rounded-2xl
-                  bg-gradient-to-r
-                  from-emerald-400
-                  to-cyan-500
-                  text-black
-                  font-bold
-                  shadow-xl
-                  shadow-emerald-500/20
-                  hover:scale-105
-                  transition
-                ">
-                  Seja Parceiro
-                </button>
+        </motion.div>
 
-                <button className="
-                  px-8
-                  py-4
-                  rounded-2xl
-                  border
-                  border-white/10
-                  hover:border-emerald-400
-                  transition
-                  backdrop-blur-xl
-                ">
-                  Conhecer Projetos
-                </button>
+        {/* GRID */}
+
+        <div className="grid lg:grid-cols-4 gap-8 mt-20">
+
+          {institutionalLinks.map((group, index) => (
+            <motion.div
+              key={group.title}
+              initial={{
+                opacity: 0,
+                y: 30,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.08,
+              }}
+              viewport={{ once: true }}
+              className="glass-card rounded-[2rem] p-8"
+            >
+
+              <h3 className="text-2xl font-bold text-zinc-900">
+
+                {group.title}
+
+              </h3>
+
+              <div className="mt-8 space-y-5">
+
+                {group.items.map((item) => (
+                  <a
+                    key={item}
+                    href="#"
+                    className="block text-zinc-600 hover:text-emerald-700 transition-all leading-7"
+                  >
+
+                    {item}
+
+                  </a>
+                ))}
 
               </div>
 
-            </div>
+            </motion.div>
+          ))}
 
-            {/* Right Grid */}
-            <div className="
-              grid
-              grid-cols-2
-              gap-5
-            ">
+        </div>
 
-              {[
-                "Logística Reversa",
-                "Educação Ambiental",
-                "Economia Circular",
-                "Inclusão Social",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="
-                    rounded-3xl
-                    border
-                    border-white/10
-                    bg-white/5
-                    backdrop-blur-xl
-                    p-6
-                    min-h-[140px]
-                    flex
-                    items-end
-                    text-lg
-                    font-semibold
-                    hover:border-emerald-400/30
-                    transition
-                  "
-                >
-                  {item}
+        {/* LARGE CTA */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.7,
+            delay: 0.2,
+          }}
+          viewport={{ once: true }}
+          className="mt-20"
+        >
+
+          <div className="glass-card rounded-[2rem] p-10 md:p-16 overflow-hidden relative">
+
+            {/* DECORATION */}
+
+            <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-200/20 rounded-full blur-3xl" />
+
+            <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+
+              {/* LEFT */}
+
+              <div>
+
+                <div className="section-tag mb-6">
+                  Impacto Ambiental
                 </div>
-              ))}
+
+                <h3 className="text-4xl md:text-5xl font-black leading-tight tracking-[-0.04em] text-zinc-900">
+
+                  Construindo uma
+                  plataforma sustentável
+                  para o futuro.
+
+                </h3>
+
+              </div>
+
+              {/* RIGHT */}
+
+              <div>
+
+                <p className="text-zinc-600 leading-8 text-lg">
+
+                  A ACMRB fortalece ações ambientais,
+                  educação sustentável, logística reversa,
+                  inclusão social e desenvolvimento regional
+                  através da reciclagem e economia circular.
+
+                </p>
+
+                <div className="flex flex-wrap gap-4 mt-10">
+
+                  <div className="px-5 py-3 rounded-2xl bg-emerald-100 text-emerald-700 font-semibold">
+                    ESG
+                  </div>
+
+                  <div className="px-5 py-3 rounded-2xl bg-teal-100 text-teal-700 font-semibold">
+                    Sustentabilidade
+                  </div>
+
+                  <div className="px-5 py-3 rounded-2xl bg-emerald-100 text-emerald-700 font-semibold">
+                    Economia Circular
+                  </div>
+
+                </div>
+
+              </div>
 
             </div>
 
           </div>
 
         </motion.div>
-
-        {/* INSTITUTIONAL GRID */}
-        <div className="
-          grid
-          md:grid-cols-2
-          xl:grid-cols-4
-          gap-8
-          mt-20
-        ">
-
-          {/* COLUNA 1 */}
-          <div>
-
-            <h3 className="
-              text-white
-              font-black
-              text-xl
-              mb-6
-            ">
-              Institucional
-            </h3>
-
-            <div className="
-              flex
-              flex-col
-              gap-4
-              text-gray-400
-            ">
-
-              <a href="#" className="hover:text-white transition">
-                Quem Somos
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Transparência
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Relatórios ESG
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Certificações
-              </a>
-
-            </div>
-
-          </div>
-
-          {/* COLUNA 2 */}
-          <div>
-
-            <h3 className="
-              text-white
-              font-black
-              text-xl
-              mb-6
-            ">
-              Projetos
-            </h3>
-
-            <div className="
-              flex
-              flex-col
-              gap-4
-              text-gray-400
-            ">
-
-              <a href="#" className="hover:text-white transition">
-                Coleta Seletiva
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Educação Ambiental
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Logística Reversa
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Voluntariado
-              </a>
-
-            </div>
-
-          </div>
-
-          {/* COLUNA 3 */}
-          <div>
-
-            <h3 className="
-              text-white
-              font-black
-              text-xl
-              mb-6
-            ">
-              Compliance
-            </h3>
-
-            <div className="
-              flex
-              flex-col
-              gap-4
-              text-gray-400
-            ">
-
-              <a href="#" className="hover:text-white transition">
-                LGPD
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Denúncias
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Integridade
-              </a>
-
-              <a href="#" className="hover:text-white transition">
-                Transparência
-              </a>
-
-            </div>
-
-          </div>
-
-          {/* COLUNA 4 */}
-          <div>
-
-            <h3 className="
-              text-white
-              font-black
-              text-xl
-              mb-6
-            ">
-              Parceiros
-            </h3>
-
-            <div className="
-              grid
-              grid-cols-2
-              gap-4
-            ">
-
-              {[1, 2, 3, 4].map((item) => (
-                <div
-                  key={item}
-                  className="
-                    h-20
-                    rounded-2xl
-                    border
-                    border-white/10
-                    bg-white/5
-                    backdrop-blur-xl
-                    flex
-                    items-center
-                    justify-center
-                    text-gray-500
-                    text-sm
-                  "
-                >
-                  Logo
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-
-        </div>
 
       </div>
 

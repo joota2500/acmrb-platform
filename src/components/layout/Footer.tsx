@@ -1,262 +1,262 @@
 "use client";
 
-import { motion } from "framer-motion";
+import {
+  AtSign,
+  Globe,
+  Mail,
+  MapPin,
+} from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer
-      className="
-        relative
-        overflow-hidden
-        pt-28
-        pb-10
-        border-t
-        border-white/10
-      "
-    >
+    <footer className="relative overflow-hidden border-t border-emerald-100 bg-white">
 
-      {/* BACKGROUND */}
-      <div
-        className="
-          absolute
-          inset-0
-          overflow-hidden
-        "
-      >
+      {/* BG */}
 
-        <div
-          className="
-            absolute
-            bottom-0
-            left-1/2
-            -translate-x-1/2
-            w-[1200px]
-            h-[700px]
-            bg-cyan-500/5
-            blur-[180px]
-            rounded-full
-          "
-        />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-white" />
 
-      </div>
-
-      <div
-        className="
-          relative
-          max-w-7xl
-          mx-auto
-          px-6
-          md:px-10
-        "
-      >
+      <div className="container-custom relative z-10">
 
         {/* TOP */}
-        <div
-          className="
-            grid
-            md:grid-cols-2
-            xl:grid-cols-4
-            gap-14
-            pb-20
-          "
-        >
+
+        <div className="grid lg:grid-cols-4 gap-12 py-20">
 
           {/* BRAND */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
+
+          <div>
 
             <div className="flex items-center gap-4">
 
-              <div
-                className="
-                  w-14
-                  h-14
-                  rounded-2xl
-                  bg-gradient-to-br
-                  from-emerald-400
-                  to-cyan-500
-                  flex
-                  items-center
-                  justify-center
-                  text-black
-                  font-black
-                  text-xl
-                  shadow-xl
-                "
-              >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white font-black text-xl">
+
                 ♻
+
               </div>
 
               <div>
 
-                <h2
-                  className="
-                    text-2xl
-                    font-black
-                  "
-                >
+                <h3 className="text-2xl font-black text-zinc-900">
                   ACMRB
-                </h2>
+                </h3>
 
-                <p className="text-emerald-300 text-sm">
-                  Plataforma ESG
+                <p className="text-zinc-500 text-sm mt-1">
+                  Plataforma ESG Institucional
                 </p>
 
               </div>
 
             </div>
 
-            <p
-              className="
-                mt-8
-                text-gray-400
-                leading-relaxed
-              "
-            >
-              Associação dos Catadores de Materiais Recicláveis
-              de Baturité promovendo sustentabilidade, inclusão
-              social e impacto ambiental positivo.
+            <p className="text-zinc-600 leading-8 mt-8">
+
+              Associação dos Catadores de Materiais
+              Recicláveis de Baturité atuando em sustentabilidade,
+              inclusão social e logística reversa.
+
             </p>
 
-          </motion.div>
+          </div>
 
           {/* LINKS */}
-          {[
-            {
-              title: "Institucional",
-              items: [
-                "Quem Somos",
-                "Transparência",
-                "Projetos",
-                "Parceiros",
-              ],
-            },
-            {
-              title: "ESG",
-              items: [
-                "Impacto Ambiental",
-                "Logística Reversa",
-                "Educação Ambiental",
-                "Sustentabilidade",
-              ],
-            },
-            {
-              title: "Contato",
-              items: [
-                "(85) 98121-4864",
-                "@reciclae",
-                "Centro • Baturité",
-                "contato@acmrb.org",
-              ],
-            },
-          ].map((group, index) => (
-            <motion.div
-              key={group.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                delay: index * 0.1,
-              }}
-            >
 
-              <h3
-                className="
-                  text-xl
-                  font-bold
-                  mb-6
-                "
-              >
-                {group.title}
-              </h3>
+          <div>
 
-              <div className="space-y-4">
+            <h4 className="text-lg font-bold text-zinc-900">
+              Institucional
+            </h4>
 
-                {group.items.map((item) => (
-                  <a
-                    key={item}
-                    href="#"
-                    className="
-                      block
-                      text-gray-400
-                      hover:text-cyan-300
-                      transition
-                    "
-                  >
-                    {item}
-                  </a>
-                ))}
+            <div className="space-y-4 mt-8">
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Quem Somos
+              </a>
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Projetos
+              </a>
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Transparência
+              </a>
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Notícias
+              </a>
+
+            </div>
+
+          </div>
+
+          {/* ESG */}
+
+          <div>
+
+            <h4 className="text-lg font-bold text-zinc-900">
+              Sustentabilidade
+            </h4>
+
+            <div className="space-y-4 mt-8">
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Logística Reversa
+              </a>
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Educação Ambiental
+              </a>
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Economia Circular
+              </a>
+
+              <a href="#" className="block text-zinc-600 hover:text-emerald-700 transition">
+                Indicadores ESG
+              </a>
+
+            </div>
+
+          </div>
+
+          {/* CONTACT */}
+
+          <div>
+
+            <h4 className="text-lg font-bold text-zinc-900">
+              Contato
+            </h4>
+
+            <div className="space-y-6 mt-8">
+
+              <div className="flex gap-4">
+
+                <PhoneFallback />
+
+                <div>
+
+                  <p className="text-sm text-zinc-500">
+                    WhatsApp
+                  </p>
+
+                  <p className="text-zinc-700 font-medium">
+                    (85) 98121-4864
+                  </p>
+
+                </div>
 
               </div>
 
-            </motion.div>
-          ))}
+              <div className="flex gap-4">
+
+                <Mail className="text-emerald-700 shrink-0" size={22} />
+
+                <div>
+
+                  <p className="text-sm text-zinc-500">
+                    E-mail
+                  </p>
+
+                  <p className="text-zinc-700 font-medium">
+                    contato@acmrb.org
+                  </p>
+
+                </div>
+
+              </div>
+
+              <div className="flex gap-4">
+
+                <MapPin className="text-emerald-700 shrink-0" size={22} />
+
+                <div>
+
+                  <p className="text-sm text-zinc-500">
+                    Localização
+                  </p>
+
+                  <p className="text-zinc-700 font-medium">
+                    Baturité • Ceará
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 
         {/* BOTTOM */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="
-            border-t
-            border-white/10
-            pt-8
-            flex
-            flex-col
-            lg:flex-row
-            items-center
-            justify-between
-            gap-5
-          "
-        >
 
-          <p className="text-gray-500 text-sm text-center">
-            © 2026 ACMRB • Associação dos Catadores de Materiais
-            Recicláveis de Baturité • Todos os direitos reservados.
-          </p>
+        <div className="border-t border-emerald-100 py-8 flex flex-col md:flex-row gap-6 items-center justify-between">
 
-          <div
-            className="
-              flex
-              items-center
-              gap-6
-              text-sm
-              text-gray-500
-            "
-          >
+          {/* COPYRIGHT */}
+
+          <div>
+
+            <p className="text-zinc-500 text-sm text-center md:text-left">
+
+              © 2026 ACMRB — Associação dos Catadores de Materiais Recicláveis de Baturité.
+              Todos os direitos reservados.
+
+            </p>
+
+          </div>
+
+          {/* DEV */}
+
+          <div className="flex items-center gap-5">
+
+            <p className="text-zinc-500 text-sm">
+
+              Desenvolvido por
+              <span className="font-semibold text-emerald-700 ml-1">
+                JDevJ2500
+              </span>
+
+            </p>
+
+            {/* INSTAGRAM */}
 
             <a
-              href="#"
-              className="hover:text-cyan-300 transition"
+              href="https://instagram.com/j2500"
+              target="_blank"
+              className="w-10 h-10 rounded-xl bg-emerald-100 hover:bg-emerald-200 transition flex items-center justify-center text-emerald-700"
             >
-              LGPD
+
+              <AtSign size={18} />
+
             </a>
 
-            <a
-              href="#"
-              className="hover:text-cyan-300 transition"
-            >
-              Privacidade
-            </a>
+            {/* GITHUB */}
 
             <a
               href="#"
-              className="hover:text-cyan-300 transition"
+              target="_blank"
+              className="w-10 h-10 rounded-xl bg-zinc-100 hover:bg-zinc-200 transition flex items-center justify-center text-zinc-700"
             >
-              Transparência
+
+              <Globe size={18} />
+
             </a>
 
           </div>
 
-        </motion.div>
+        </div>
 
       </div>
 
     </footer>
+  );
+}
+
+/* FALLBACK PHONE ICON */
+
+function PhoneFallback() {
+  return (
+    <div className="text-emerald-700 shrink-0 text-[22px] leading-none">
+      ☎
+    </div>
   );
 }

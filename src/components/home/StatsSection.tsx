@@ -1,235 +1,145 @@
 "use client";
 
 import { motion } from "framer-motion";
-
 import {
   Recycle,
-  Leaf,
+  Trees,
   Users,
-  Building2,
+  Factory,
 } from "lucide-react";
 
 const stats = [
   {
-    number: "85",
-    suffix: "t",
-    label: "Resíduos Reciclados",
     icon: Recycle,
-    color: "from-emerald-400 to-green-500",
+    value: "+120t",
+    title: "Materiais reciclados",
+    description:
+      "Resíduos desviados do descarte inadequado através da coleta seletiva.",
   },
+
   {
-    number: "120",
-    suffix: "+",
-    label: "Famílias Impactadas",
+    icon: Trees,
+    value: "+18t",
+    title: "CO₂ evitado",
+    description:
+      "Estimativa de emissões reduzidas através da reciclagem e reaproveitamento.",
+  },
+
+  {
     icon: Users,
-    color: "from-cyan-400 to-blue-500",
+    value: "+45",
+    title: "Famílias impactadas",
+    description:
+      "Catadores e famílias beneficiadas diretamente pelas atividades da associação.",
   },
+
   {
-    number: "20",
-    suffix: "+",
-    label: "Parceiros ESG",
-    icon: Building2,
-    color: "from-lime-400 to-emerald-500",
-  },
-  {
-    number: "48",
-    suffix: "t",
-    label: "CO₂ Evitado",
-    icon: Leaf,
-    color: "from-teal-400 to-cyan-500",
+    icon: Factory,
+    value: "+20",
+    title: "Parcerias institucionais",
+    description:
+      "Empresas, instituições e organizações apoiando ações sustentáveis.",
   },
 ];
 
 export default function StatsSection() {
   return (
-    <section
-      className="
-        relative
-        overflow-hidden
-        py-28
-      "
-    >
+    <section className="section-spacing relative overflow-hidden">
 
-      {/* Glow Background */}
-      <div className="
-        absolute
-        inset-0
-        overflow-hidden
-      ">
+      {/* BG */}
 
-        <div className="
-          absolute
-          top-0
-          left-1/2
-          -translate-x-1/2
-          w-[800px]
-          h-[800px]
-          bg-emerald-500/10
-          blur-[140px]
-          rounded-full
-        " />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-50/50 to-white" />
 
-      </div>
-
-      <div className="
-        relative
-        max-w-7xl
-        mx-auto
-        px-6
-        md:px-10
-      ">
+      <div className="container-custom relative z-10">
 
         {/* HEADER */}
+
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 25 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="
-            text-center
-            max-w-4xl
-            mx-auto
-            mb-20
-          "
+          viewport={{ once: true }}
+          className="text-center max-w-4xl mx-auto"
         >
 
-          <span className="
-            inline-flex
-            items-center
-            gap-2
-            px-4
-            py-2
-            rounded-full
-            border
-            border-emerald-400/20
-            bg-emerald-400/10
-            text-emerald-300
-            text-sm
-          ">
-            ♻ Impacto ESG
-          </span>
+          <div className="section-tag mb-6">
+            Indicadores ESG
+          </div>
 
-          <h2 className="
-            mt-8
-            text-4xl
-            md:text-6xl
-            font-black
-            leading-tight
-          ">
-            Resultados ambientais e sociais que transformam comunidades
+          <h2 className="section-title">
+
+            Impacto ambiental e social
+            gerando transformação real.
+
           </h2>
 
-          <p className="
-            mt-8
-            text-gray-400
-            text-lg
-            md:text-xl
-            leading-relaxed
-          ">
-            A ACMRB atua na valorização dos catadores, fortalecimento da
-            economia circular e redução dos impactos ambientais.
+          <p className="section-description mx-auto mt-8">
+
+            Acompanhamos indicadores ambientais, sociais e institucionais
+            para garantir transparência, impacto positivo e fortalecimento
+            das ações sustentáveis desenvolvidas pela associação.
+
           </p>
 
         </motion.div>
 
         {/* GRID */}
-        <div className="
-          grid
-          grid-cols-1
-          sm:grid-cols-2
-          xl:grid-cols-4
-          gap-8
-        ">
+
+        <div className="auto-grid mt-20">
 
           {stats.map((item, index) => {
             const Icon = item.icon;
 
             return (
               <motion.div
-                key={item.label}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                key={item.title}
+                initial={{
+                  opacity: 0,
+                  y: 40,
+                }}
+                whileInView={{
+                  opacity: 1,
+                  y: 0,
+                }}
                 transition={{
-                  duration: 0.6,
+                  duration: 0.5,
                   delay: index * 0.1,
                 }}
-                whileHover={{
-                  y: -10,
-                }}
-                className="
-                  relative
-                  overflow-hidden
-                  rounded-[32px]
-                  border
-                  border-white/10
-                  bg-white/5
-                  backdrop-blur-2xl
-                  p-8
-                  shadow-2xl
-                "
+                viewport={{ once: true }}
+                className="glass-card rounded-[2rem] p-8 md:p-10"
               >
 
-                {/* Glow */}
-                <div className={`
-                  absolute
-                  inset-0
-                  opacity-10
-                  bg-gradient-to-br
-                  ${item.color}
-                `} />
+                {/* ICON */}
 
-                <div className="relative">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 mb-8">
 
-                  {/* Icon */}
-                  <div className={`
-                    w-16
-                    h-16
-                    rounded-2xl
-                    bg-gradient-to-br
-                    ${item.color}
-                    flex
-                    items-center
-                    justify-center
-                    shadow-xl
-                  `}>
-
-                    <Icon size={30} className="text-black" />
-
-                  </div>
-
-                  {/* Number */}
-                  <div className="mt-8 flex items-end gap-1">
-
-                    <h3 className="
-                      text-5xl
-                      md:text-6xl
-                      font-black
-                    ">
-                      {item.number}
-                    </h3>
-
-                    <span className="
-                      text-2xl
-                      text-emerald-400
-                      font-bold
-                    ">
-                      {item.suffix}
-                    </span>
-
-                  </div>
-
-                  {/* Label */}
-                  <p className="
-                    mt-4
-                    text-gray-400
-                    text-lg
-                    leading-relaxed
-                  ">
-                    {item.label}
-                  </p>
+                  <Icon size={30} />
 
                 </div>
+
+                {/* VALUE */}
+
+                <div className="text-5xl md:text-6xl font-black text-zinc-900 tracking-[-0.05em]">
+
+                  {item.value}
+
+                </div>
+
+                {/* TITLE */}
+
+                <h3 className="text-2xl font-bold text-zinc-900 mt-6">
+
+                  {item.title}
+
+                </h3>
+
+                {/* DESCRIPTION */}
+
+                <p className="text-zinc-600 leading-8 mt-5">
+
+                  {item.description}
+
+                </p>
 
               </motion.div>
             );

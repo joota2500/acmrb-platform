@@ -2,310 +2,190 @@
 
 import { motion } from "framer-motion";
 
+import {
+  ArrowRight,
+  CalendarDays,
+} from "lucide-react";
+
 const news = [
   {
     category: "Sustentabilidade",
+    date: "15 Maio 2026",
     title:
-      "ACMRB fortalece ações ambientais em Baturité",
+      "ACMRB amplia ações de coleta seletiva em Baturité",
     description:
-      "Projetos de reciclagem e inclusão social ampliam impacto ambiental positivo.",
-    featured: true,
+      "Novas ações fortalecem a reciclagem, inclusão social e conscientização ambiental no município.",
   },
+
   {
     category: "Educação Ambiental",
+    date: "10 Maio 2026",
     title:
-      "Escolas recebem ações de conscientização",
+      "Projeto ambiental promove conscientização em escolas",
+    description:
+      "Atividades educativas incentivam sustentabilidade e descarte correto de resíduos.",
   },
+
   {
     category: "Parcerias ESG",
+    date: "02 Maio 2026",
     title:
-      "Novos parceiros fortalecem logística reversa",
-  },
-  {
-    category: "Impacto Social",
-    title:
-      "Famílias catadoras ampliam geração de renda",
+      "Empresas fortalecem iniciativas sustentáveis da associação",
+    description:
+      "Parcerias ampliam impacto ambiental positivo e apoio às ações sociais.",
   },
 ];
 
 export default function NewsSection() {
   return (
-    <section
-      id="noticias"
-      className="
-        relative
-        overflow-hidden
-        py-32
-      "
-    >
+    <section className="section-spacing relative overflow-hidden">
 
-      {/* Background */}
-      <div className="
-        absolute
-        inset-0
-        overflow-hidden
-      ">
+      {/* BG */}
 
-        <div className="
-          absolute
-          top-1/2
-          right-0
-          w-[700px]
-          h-[700px]
-          bg-cyan-500/10
-          blur-[140px]
-          rounded-full
-        " />
+      <div className="absolute inset-0 bg-gradient-to-b from-white to-emerald-50/40" />
 
-      </div>
-
-      <div className="
-        relative
-        max-w-7xl
-        mx-auto
-        px-6
-        md:px-10
-      ">
+      <div className="container-custom relative z-10">
 
         {/* HEADER */}
+
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="
-            flex
-            flex-col
-            lg:flex-row
-            lg:items-end
-            lg:justify-between
-            gap-8
-            mb-20
-          "
+          className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10"
         >
 
-          <div>
+          <div className="max-w-4xl">
 
-            <span className="
-              inline-flex
-              items-center
-              gap-2
-              px-4
-              py-2
-              rounded-full
-              border
-              border-cyan-400/20
-              bg-cyan-400/10
-              text-cyan-300
-              text-sm
-            ">
-              📰 Portal Institucional
-            </span>
+            <div className="section-tag mb-6">
+              Notícias e Atualizações
+            </div>
 
-            <h2 className="
-              mt-8
-              text-4xl
-              md:text-6xl
-              font-black
-              leading-tight
-            ">
-              Últimas notícias e ações da associação
+            <h2 className="section-title">
+
+              Transparência, ações ambientais
+              e impacto social.
+
             </h2>
+
+            <p className="section-description mt-8">
+
+              Acompanhe notícias, projetos, iniciativas ambientais,
+              ações sociais e parcerias desenvolvidas pela ACMRB.
+
+            </p>
 
           </div>
 
-          <button className="
-            px-8
-            py-4
-            rounded-2xl
-            border
-            border-white/10
-            hover:border-cyan-400
-            transition
-            backdrop-blur-xl
-            text-white
-            font-semibold
-          ">
-            Ver todas notícias
-          </button>
+          {/* BUTTON */}
+
+          <a
+            href="/noticias"
+            className="primary-button whitespace-nowrap"
+          >
+            Ver todas
+            <ArrowRight size={18} />
+          </a>
 
         </motion.div>
 
         {/* GRID */}
-        <div className="
-          grid
-          lg:grid-cols-3
-          gap-8
-        ">
 
-          {/* FEATURED */}
-          <motion.article
-            initial={{ opacity: 0, y: 60 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            whileHover={{ y: -8 }}
-            className="
-              lg:col-span-2
-              relative
-              overflow-hidden
-              rounded-[40px]
-              border
-              border-white/10
-              bg-white/5
-              backdrop-blur-2xl
-              shadow-2xl
-            "
-          >
+        <div className="grid lg:grid-cols-3 gap-8 mt-20">
 
-            {/* Image */}
-            <div className="
-              h-[300px]
-              md:h-[420px]
-              bg-gradient-to-br
-              from-emerald-500/20
-              via-cyan-500/10
-              to-blue-500/20
-              relative
-              overflow-hidden
-            ">
+          {news.map((item, index) => (
+            <motion.article
+              key={item.title}
+              initial={{
+                opacity: 0,
+                y: 40,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.1,
+              }}
+              viewport={{ once: true }}
+              className="glass-card rounded-[2rem] overflow-hidden group"
+            >
 
-              <div className="
-                absolute
-                inset-0
-                bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.15),transparent_60%)]
-              " />
+              {/* IMAGE */}
 
-            </div>
+              <div className="h-[240px] bg-gradient-to-br from-emerald-200 to-teal-100 relative overflow-hidden">
 
-            {/* Content */}
-            <div className="p-8 md:p-10">
+                <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-all duration-300" />
 
-              <span className="
-                inline-flex
-                px-4
-                py-2
-                rounded-full
-                bg-emerald-400/10
-                border
-                border-emerald-400/20
-                text-emerald-300
-                text-sm
-              ">
-                {news[0].category}
-              </span>
+                <div className="absolute top-6 left-6">
 
-              <h3 className="
-                mt-6
-                text-3xl
-                md:text-5xl
-                font-black
-                leading-tight
-              ">
-                {news[0].title}
-              </h3>
+                  <span className="px-4 py-2 rounded-full bg-white/80 backdrop-blur-md text-sm font-semibold text-emerald-700">
 
-              <p className="
-                mt-6
-                text-gray-400
-                text-lg
-                leading-relaxed
-                max-w-3xl
-              ">
-                {news[0].description}
-              </p>
-
-              <button className="
-                mt-8
-                px-7
-                py-4
-                rounded-2xl
-                bg-gradient-to-r
-                from-emerald-400
-                to-cyan-500
-                text-black
-                font-bold
-                shadow-xl
-                shadow-cyan-500/20
-              ">
-                Ler matéria completa
-              </button>
-
-            </div>
-
-          </motion.article>
-
-          {/* SIDE NEWS */}
-          <div className="space-y-8">
-
-            {news.slice(1).map((item, index) => (
-              <motion.article
-                key={item.title}
-                initial={{ opacity: 0, x: 40 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.6,
-                  delay: index * 0.1,
-                }}
-                whileHover={{ x: 5 }}
-                className="
-                  group
-                  rounded-[32px]
-                  border
-                  border-white/10
-                  bg-white/5
-                  backdrop-blur-xl
-                  overflow-hidden
-                  hover:border-cyan-400/30
-                  transition
-                "
-              >
-
-                <div className="
-                  h-36
-                  bg-gradient-to-br
-                  from-cyan-500/20
-                  to-emerald-500/20
-                " />
-
-                <div className="p-6">
-
-                  <span className="
-                    text-cyan-300
-                    text-sm
-                    font-medium
-                  ">
                     {item.category}
+
                   </span>
-
-                  <h3 className="
-                    mt-4
-                    text-xl
-                    font-bold
-                    leading-snug
-                    group-hover:text-cyan-300
-                    transition
-                  ">
-                    {item.title}
-                  </h3>
-
-                  <button className="
-                    mt-5
-                    text-sm
-                    text-gray-400
-                    hover:text-cyan-300
-                    transition
-                  ">
-                    Ler notícia →
-                  </button>
 
                 </div>
 
-              </motion.article>
-            ))}
+              </div>
 
-          </div>
+              {/* CONTENT */}
+
+              <div className="p-8">
+
+                {/* DATE */}
+
+                <div className="flex items-center gap-2 text-zinc-500 text-sm">
+
+                  <CalendarDays size={16} />
+
+                  <span>{item.date}</span>
+
+                </div>
+
+                {/* TITLE */}
+
+                <h3 className="text-2xl font-bold text-zinc-900 mt-5 leading-tight">
+
+                  {item.title}
+
+                </h3>
+
+                {/* DESCRIPTION */}
+
+                <p className="text-zinc-600 leading-8 mt-5">
+
+                  {item.description}
+
+                </p>
+
+                {/* LINK */}
+
+                <a
+                  href="/noticias"
+                  className="inline-flex items-center gap-2 text-emerald-700 font-semibold mt-8 hover:gap-3 transition-all"
+                >
+
+                  Ler mais
+
+                  <ArrowRight size={18} />
+
+                </a>
+
+              </div>
+
+            </motion.article>
+          ))}
 
         </div>
 

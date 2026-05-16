@@ -9,6 +9,7 @@ import NewsSection from "../components/home/NewsSection";
 import PartnersSection from "../components/home/PartnersSection";
 import InstitutionalSection from "../components/home/InstitutionalSection";
 import ContactSection from "../components/home/ContactSection";
+import ESGMetrics from "../components/home/ESGMetrics";
 
 export default function Home() {
   return (
@@ -21,6 +22,8 @@ export default function Home() {
       <StatsSection />
 
       <AboutSection />
+
+      <ESGMetrics />
 
       <ReverseLogisticsSection />
 
