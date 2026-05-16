@@ -212,7 +212,7 @@ export default function Footer() {
 
               Desenvolvido por
               <span className="font-semibold text-emerald-700 ml-1">
-                JDevJ2500
+                DevJ-2500
               </span>
 
             </p>
@@ -220,7 +220,7 @@ export default function Footer() {
             {/* INSTAGRAM */}
 
             <a
-              href="https://instagram.com/j2500"
+              href="https://www.instagram.com/devjunior2500?igsh=dGpqdHZ5bWFqODM1&utm_source=qr"
               target="_blank"
               className="w-10 h-10 rounded-xl bg-emerald-100 hover:bg-emerald-200 transition flex items-center justify-center text-emerald-700"
             >
@@ -232,7 +232,7 @@ export default function Footer() {
             {/* GITHUB */}
 
             <a
-              href="#"
+              href="https://github.com/joota2500"
               target="_blank"
               className="w-10 h-10 rounded-xl bg-zinc-100 hover:bg-zinc-200 transition flex items-center justify-center text-zinc-700"
             >

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { useRouter }  from  "next/navigation";
+
 import { supabase } from "../../lib/supabase";
 
 type Props = {
@@ -21,6 +23,8 @@ export default function AdminModal({
   const [loading, setLoading] = useState(false);
 
   const [error, setError] = useState("");
+
+  const router = useRouter();
 
   async function handleLogin() {
 
@@ -46,7 +50,7 @@ export default function AdminModal({
 
       }
 
-      alert("Login realizado com sucesso.");
+      router.push("/admin");
 
       onClose();
 

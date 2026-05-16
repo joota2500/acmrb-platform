@@ -34,6 +34,10 @@ const links = [
     href: "#parceiros",
   },
   {
+    name: "Denúncias",
+    href: "#denuncias",
+  },
+  {
     name: "Contato",
     href: "#contato",
   },
