@@ -12,6 +12,7 @@ import {
   Newspaper,
   Settings,
   ChevronRight,
+  PackageSearch,
 } from "lucide-react";
 
 const items = [
@@ -19,38 +20,52 @@ const items = [
     icon: LayoutDashboard,
     label: "Dashboard",
   },
+
   {
     icon: Newspaper,
     label: "Notícias",
   },
+
   {
     icon: Users,
     label: "Associados",
   },
+
   {
     icon: ShieldAlert,
     label: "Denúncias",
   },
+
   {
     icon: Handshake,
     label: "Parceiros",
   },
+
+  {
+    icon: PackageSearch,
+    label: "Materiais",
+  },
+
   {
     icon: FolderKanban,
     label: "Projetos",
   },
+
   {
     icon: Leaf,
     label: "Indicadores ESG",
   },
+
   {
     icon: CalendarDays,
     label: "Coletas",
   },
+
   {
     icon: FileText,
     label: "Relatórios",
   },
+
   {
     icon: Settings,
     label: "Configurações",
