@@ -35,9 +35,14 @@ export function useESGMetrics() {
   ] = useState<any[]>([]);
 
   const [
-    dashboardMetricas,
-    setDashboardMetricas,
+    materiaisAgrupados,
+    setMateriaisAgrupados,
   ] = useState<any[]>([]);
+
+  const [
+    familiasImpactadas,
+    setFamiliasImpactadas,
+  ] = useState(0);
 
   useEffect(() => {
 
@@ -70,19 +75,24 @@ export function useESGMetrics() {
         `);
 
       /* =========================
-         DASHBOARD
+         ASSOCIADOS
       ========================= */
 
       const {
-        data: dashboard,
+        count,
       } = await supabase
-        .from(
-          "dashboard_metricas",
-        )
-        .select("*");
+        .from("associados")
+        .select("*", {
+          count: "exact",
+          head: true,
+        });
 
       const materiais =
         materiaisData || [];
+
+      /* =========================
+         PESO TOTAL
+      ========================= */
 
       const peso =
         materiais.reduce(
@@ -97,17 +107,96 @@ export function useESGMetrics() {
           0,
         );
 
+      /* =========================
+         VALOR TOTAL
+      ========================= */
+
       const valor =
         materiais.reduce(
           (
             acc,
             item,
-          ) =>
-            acc +
-            Number(
-              item.subtotal || 0,
-            ),
+          ) => {
+
+            const peso =
+              Number(
+                item.peso || 0,
+              );
+
+            const valorKg =
+              Number(
+                item.valor_kg || 0,
+              );
+
+            return (
+              acc +
+              peso * valorKg
+            );
+
+          },
           0,
+        );
+
+      /* =========================
+         AGRUPAMENTO
+      ========================= */
+
+      const agrupados =
+        materiais.reduce(
+          (
+            acc,
+            item,
+          ) => {
+
+            const nome =
+              item
+                ?.materiais_tipos
+                ?.nome ||
+              "Sem nome";
+
+            if (!acc[nome]) {
+
+              acc[nome] = {
+
+                nome,
+
+                peso: 0,
+
+                valor: 0,
+
+                quantidade: 0,
+
+              };
+
+            }
+
+            const peso =
+              Number(
+                item.peso || 0,
+              );
+
+            const valorKg =
+              Number(
+                item.valor_kg || 0,
+              );
+
+            acc[nome].peso +=
+              peso;
+
+            acc[nome].valor +=
+              peso * valorKg;
+
+            acc[
+              nome
+            ].quantidade += 1;
+
+            return acc;
+
+          },
+          {} as Record<
+            string,
+            any
+          >,
         );
 
       setTotalPeso(peso);
@@ -122,8 +211,14 @@ export function useESGMetrics() {
         materiais,
       );
 
-      setDashboardMetricas(
-        dashboard || [],
+      setMateriaisAgrupados(
+        Object.values(
+          agrupados,
+        ),
+      );
+
+      setFamiliasImpactadas(
+        count || 0,
       );
 
     } finally {
@@ -135,7 +230,7 @@ export function useESGMetrics() {
   }
 
   /* =========================
-     ESG CALCULATIONS
+     ESG
   ========================= */
 
   const co2 =
@@ -144,79 +239,8 @@ export function useESGMetrics() {
   const arvores =
     totalPeso * 0.12;
 
-  /* =========================
-     METRIC VALUE
-  ========================= */
-
-  function getMetric(
-    titulo: string,
-  ) {
-
-    const item =
-      dashboardMetricas.find(
-        (m) =>
-          m.titulo ===
-          titulo,
-      );
-
-    return (
-      item?.valor || 0
-    );
-
-  }
-
-  /* =========================
-     MATERIAIS AGRUPADOS
-  ========================= */
-
-  const materiaisAgrupados =
-    materiais.reduce(
-      (acc, item) => {
-
-        const nome =
-          item
-            ?.materiais_tipos
-            ?.nome ||
-          "Sem nome";
-
-        if (!acc[nome]) {
-
-          acc[nome] = {
-
-            nome,
-
-            peso: 0,
-
-            valor: 0,
-
-            quantidade: 0,
-
-          };
-
-        }
-
-        acc[nome].peso +=
-          Number(
-            item.peso || 0,
-          );
-
-        acc[nome].valor +=
-          Number(
-            item.subtotal || 0,
-          );
-
-        acc[
-          nome
-        ].quantidade += 1;
-
-        return acc;
-
-      },
-      {} as Record<
-        string,
-        any
-      >,
-    );
+  const energia =
+    totalPeso * 95;
 
   return {
 
@@ -228,28 +252,17 @@ export function useESGMetrics() {
 
     totalRegistros,
 
+    materiais,
+
+    materiaisAgrupados,
+
+    familiasImpactadas,
+
     co2,
 
     arvores,
 
-    materiais,
-
-    dashboardMetricas,
-
-    materiaisAgrupados:
-      Object.values(
-        materiaisAgrupados,
-      ),
-
-    familiasImpactadas:
-      getMetric(
-        "Famílias Impactadas",
-      ),
-
-    empresasParceiras:
-      getMetric(
-        "Empresas Parceiras",
-      ),
+    energia,
 
   };
 

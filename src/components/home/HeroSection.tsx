@@ -4,14 +4,22 @@ import { motion } from "framer-motion";
 
 import {
   ArrowRight,
-  Leaf,
   Recycle,
   ShieldCheck,
   TrendingUp,
   Factory,
 } from "lucide-react";
 
+import { useESGMetrics } from "@/hooks/useESGMetrics";
+
 export default function HeroSection() {
+
+  const {
+    loading,
+    totalPeso,
+    familiasImpactadas,
+    co2,
+  } = useESGMetrics();
 
   return (
 
@@ -172,7 +180,7 @@ export default function HeroSection() {
               </a>
 
               <a
-                href="#contato"
+                href="/transparencia"
                 className="
                   h-15
                   px-8
@@ -190,7 +198,7 @@ export default function HeroSection() {
                 "
               >
 
-                Seja parceiro ESG
+                Ver transparência ESG
 
               </a>
 
@@ -210,6 +218,8 @@ export default function HeroSection() {
               "
             >
 
+              {/* PESO */}
+
               <div>
 
                 <h3
@@ -220,7 +230,9 @@ export default function HeroSection() {
                   "
                 >
 
-                  434kg
+                  {loading
+                    ? "--"
+                    : `${totalPeso.toFixed(0)}kg`}
 
                 </h3>
 
@@ -238,6 +250,8 @@ export default function HeroSection() {
 
               </div>
 
+              {/* FAMÍLIAS */}
+
               <div>
 
                 <h3
@@ -248,7 +262,9 @@ export default function HeroSection() {
                   "
                 >
 
-                  50+
+                  {loading
+                    ? "--"
+                    : `${familiasImpactadas}+`}
 
                 </h3>
 
@@ -266,6 +282,8 @@ export default function HeroSection() {
 
               </div>
 
+              {/* CO2 */}
+
               <div>
 
                 <h3
@@ -276,7 +294,9 @@ export default function HeroSection() {
                   "
                 >
 
-                  ESG
+                  {loading
+                    ? "--"
+                    : `${co2.toFixed(0)}kg`}
 
                 </h3>
 
@@ -288,7 +308,7 @@ export default function HeroSection() {
                   "
                 >
 
-                  métricas ambientais
+                  CO₂ evitado
 
                 </p>
 
@@ -464,7 +484,7 @@ export default function HeroSection() {
                       "
                     >
 
-                      Parcerias Sustentáveis
+                      Gestão Sustentável
 
                     </h3>
 
@@ -476,8 +496,9 @@ export default function HeroSection() {
                       "
                     >
 
-                      Soluções ESG para empresas,
-                      instituições e setor público.
+                      Indicadores públicos,
+                      rastreabilidade ambiental
+                      e controle operacional ESG.
 
                     </p>
 

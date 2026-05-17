@@ -10,7 +10,6 @@ import {
   Wallet,
   Cloud,
   Users,
-  Factory,
 } from "lucide-react";
 
 import { useESGMetrics } from "@/hooks/useESGMetrics";
@@ -30,8 +29,6 @@ export default function EnvironmentalImpactSection() {
     arvores,
 
     familiasImpactadas,
-
-    empresasParceiras,
 
   } = useESGMetrics();
 
@@ -192,21 +189,6 @@ export default function EnvironmentalImpactSection() {
       icon: Users,
 
       bg: "from-orange-500 to-red-500",
-    },
-
-    {
-      titulo:
-        "Parcerias ESG",
-
-      valor:
-        `${empresasParceiras || 0}+`,
-
-      descricao:
-        "Empresas e instituições apoiando iniciativas sustentáveis.",
-
-      icon: Factory,
-
-      bg: "from-indigo-500 to-violet-500",
     },
 
   ];
@@ -377,6 +359,9 @@ export default function EnvironmentalImpactSection() {
                   }}
                   viewport={{
                     once: true,
+                  }}
+                  whileHover={{
+                    y: -6,
                   }}
                   className={`
                     relative

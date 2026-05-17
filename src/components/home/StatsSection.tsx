@@ -1,227 +1,113 @@
 "use client";
 
 import {
-  useEffect,
-  useState,
-} from "react";
+  motion,
+} from "framer-motion";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
 
 import {
   Recycle,
   Trees,
   Users,
-  Factory,
   Wallet,
   Cloud,
+  ArrowRight,
 } from "lucide-react";
 
-import { supabase } from "@/lib/supabase";
+import {
+  useESGMetrics,
+} from "@/hooks/useESGMetrics";
 
 export default function StatsSection() {
 
-  const [
+  const {
     loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
     totalPeso,
-    setTotalPeso,
-  ] = useState(0);
-
-  const [
     totalValor,
-    setTotalValor,
-  ] = useState(0);
-
-  const [
-    metricas,
-    setMetricas,
-  ] = useState<any[]>([]);
-
-  useEffect(() => {
-
-    carregarDados();
-
-  }, []);
-
-  async function carregarDados() {
-
-    try {
-
-      setLoading(true);
-
-      /* =========================
-         MATERIAIS
-      ========================= */
-
-      const {
-        data: materiais,
-      } = await supabase
-        .from("materiais_registros")
-        .select(`
-          peso,
-          subtotal
-        `);
-
-      const peso =
-        materiais?.reduce(
-          (
-            acc,
-            item,
-          ) =>
-            acc +
-            Number(
-              item.peso || 0,
-            ),
-          0,
-        ) || 0;
-
-      const valor =
-        materiais?.reduce(
-          (
-            acc,
-            item,
-          ) =>
-            acc +
-            Number(
-              item.subtotal || 0,
-            ),
-          0,
-        ) || 0;
-
-      setTotalPeso(peso);
-
-      setTotalValor(valor);
-
-      /* =========================
-         DASHBOARD METRICAS
-      ========================= */
-
-      const {
-        data: dashboard,
-      } = await supabase
-        .from("dashboard_metricas")
-        .select("*");
-
-      setMetricas(
-        dashboard || [],
-      );
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  }
-
-  /* =========================
-     ESG CALCULATIONS
-  ========================= */
-
-  const co2 =
-    totalPeso * 1.8;
-
-  const arvores =
-    totalPeso * 0.12;
-
-  /* =========================
-     DASHBOARD VALUES
-  ========================= */
-
-  function getMetricValue(
-    titulo: string,
-  ) {
-
-    const metrica =
-      metricas.find(
-        (item) =>
-          item.titulo ===
-          titulo,
-      );
-
-    return (
-      metrica?.valor || 0
-    );
-
-  }
+    co2,
+    arvores,
+    familiasImpactadas,
+  } = useESGMetrics();
 
   const stats = [
 
     {
       icon: Recycle,
+
       value:
         `${totalPeso.toFixed(0)}kg`,
+
       title:
         "Resíduos reciclados",
+
       description:
-        "Materiais recuperados e desviados do descarte inadequado.",
+        "Total acumulado de materiais recicláveis recuperados pela ACMRB.",
+
       color:
         "from-[#2E5E4E] to-[#5C9B80]",
     },
 
     {
       icon: Cloud,
+
       value:
         `${co2.toFixed(0)}kg`,
+
       title:
         "CO₂ evitado",
+
       description:
-        "Redução estimada de emissões através da reciclagem.",
+        "Estimativa de emissões reduzidas através da reciclagem.",
+
       color:
         "from-cyan-500 to-blue-500",
     },
 
     {
       icon: Trees,
+
       value:
         `${arvores.toFixed(0)}`,
+
       title:
         "Árvores preservadas",
+
       description:
-        "Impacto ambiental equivalente estimado.",
+        "Estimativa equivalente de preservação ambiental.",
+
       color:
         "from-emerald-500 to-green-500",
     },
 
     {
       icon: Users,
+
       value:
-        getMetricValue(
-          "Famílias Impactadas",
-        ) || "0",
+        `${familiasImpactadas}`,
+
       title:
         "Famílias impactadas",
+
       description:
-        "Pessoas beneficiadas diretamente pelas ações da associação.",
+        "Famílias beneficiadas diretamente pelas atividades da associação.",
+
       color:
         "from-violet-500 to-fuchsia-500",
     },
 
     {
-      icon: Factory,
-      value:
-        getMetricValue(
-          "Empresas Parceiras",
-        ) || "0",
-      title:
-        "Parcerias institucionais",
-      description:
-        "Empresas e instituições conectadas ao ecossistema ESG.",
-      color:
-        "from-orange-500 to-yellow-400",
-    },
-
-    {
       icon: Wallet,
+
       value:
         `R$ ${totalValor.toFixed(2)}`,
+
       title:
         "Renda gerada",
+
       description:
-        "Valor operacional movimentado pelos materiais recicláveis.",
+        "Movimentação financeira gerada pelos materiais recicláveis.",
+
       color:
         "from-teal-500 to-cyan-400",
     },
@@ -247,7 +133,7 @@ export default function StatsSection() {
 
         <div className="absolute top-0 left-0 w-125 h-125 bg-emerald-200/20 blur-3xl rounded-full" />
 
-        <div className="absolute bottom-0 right-0 w-112.5 h-112.5 bg-cyan-200/20 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-0 w-md h-112 bg-cyan-200/20 blur-3xl rounded-full" />
 
       </div>
 
@@ -272,7 +158,7 @@ export default function StatsSection() {
           }}
           className="
             text-center
-            max-w-4xl
+            max-w-5xl
             mx-auto
           "
         >
@@ -304,12 +190,13 @@ export default function StatsSection() {
               font-black
               text-[#111827]
               leading-tight
+              tracking-tighter
             "
           >
 
             Transparência,
-            impacto e
-            sustentabilidade
+            impacto ambiental
+            e responsabilidade social.
 
           </h2>
 
@@ -319,14 +206,15 @@ export default function StatsSection() {
               text-xl
               leading-9
               mt-8
+              max-w-4xl
+              mx-auto
             "
           >
 
-            Métricas ambientais,
-            sociais e operacionais
-            geradas em tempo real
-            a partir das atividades
-            da ACMRB.
+            Indicadores ambientais e operacionais
+            gerados automaticamente a partir
+            das atividades de reciclagem
+            e logística reversa da ACMRB.
 
           </p>
 
@@ -338,7 +226,7 @@ export default function StatsSection() {
           className="
             grid
             sm:grid-cols-2
-            xl:grid-cols-3
+            xl:grid-cols-5
             gap-8
             mt-24
           "
@@ -455,6 +343,55 @@ export default function StatsSection() {
           )}
 
         </div>
+
+        {/* CTA */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.7,
+          }}
+          viewport={{
+            once: true,
+          }}
+          className="
+            mt-24
+            text-center
+          "
+        >
+
+          <Link
+            href="/transparencia"
+            className="
+              inline-flex
+              items-center
+              gap-3
+              h-15
+              px-8
+              rounded-2xl
+              bg-[#2E5E4E]
+              hover:bg-[#23473A]
+              transition-all
+              text-white
+              font-black
+              shadow-xl
+            "
+          >
+
+            Ver relatório completo
+
+            <ArrowRight size={20} />
+
+          </Link>
+
+        </motion.div>
 
       </div>
 

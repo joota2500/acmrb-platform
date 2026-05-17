@@ -1,11 +1,16 @@
 "use client";
 
+import Link from "next/link";
+
 import {
   useEffect,
+  useMemo,
   useState,
 } from "react";
 
-import { motion } from "framer-motion";
+import {
+  motion,
+} from "framer-motion";
 
 import {
   Recycle,
@@ -13,15 +18,21 @@ import {
   Wallet,
   TrendingUp,
   Boxes,
+  ArrowRight,
+  Leaf,
+  BarChart3,
 } from "lucide-react";
 
-import { supabase } from "@/lib/supabase";
+import {
+  supabase,
+} from "@/lib/supabase";
 
 type MaterialResumo = {
   nome: string;
   peso: number;
   valor: number;
   quantidade: number;
+  percentual: number;
 };
 
 export default function MaterialsPublicSection() {
@@ -48,6 +59,16 @@ export default function MaterialsPublicSection() {
     setTotalValor,
   ] = useState(0);
 
+  const [
+    totalRegistros,
+    setTotalRegistros,
+  ] = useState(0);
+
+  const [
+    co2Evitado,
+    setCo2Evitado,
+  ] = useState(0);
+
   useEffect(() => {
 
     carregarDados();
@@ -62,6 +83,7 @@ export default function MaterialsPublicSection() {
 
       const {
         data,
+        error,
       } = await supabase
         .from(
           "materiais_registros",
@@ -74,7 +96,18 @@ export default function MaterialsPublicSection() {
           )
         `);
 
-      if (!data) return;
+      if (
+        error ||
+        !data
+      ) {
+
+        console.error(
+          error,
+        );
+
+        return;
+
+      }
 
       const resumo:
         Record<
@@ -85,6 +118,8 @@ export default function MaterialsPublicSection() {
       let pesoTotal = 0;
 
       let valorTotal = 0;
+
+      let registrosTotal = 0;
 
       data.forEach(
         (item: any) => {
@@ -109,6 +144,8 @@ export default function MaterialsPublicSection() {
 
           valorTotal += valor;
 
+          registrosTotal += 1;
+
           if (
             !resumo[nome]
           ) {
@@ -122,6 +159,8 @@ export default function MaterialsPublicSection() {
               valor: 0,
 
               quantidade: 0,
+
+              percentual: 0,
 
             };
 
@@ -143,11 +182,32 @@ export default function MaterialsPublicSection() {
       const lista =
         Object.values(
           resumo,
-        ).sort(
-          (a, b) =>
-            b.peso -
-            a.peso,
-        );
+        )
+          .map(
+            (item) => ({
+
+              ...item,
+
+              percentual:
+                pesoTotal > 0
+                  ? Number(
+                      (
+                        (item.peso /
+                          pesoTotal) *
+                        100
+                      ).toFixed(
+                        1,
+                      ),
+                    )
+                  : 0,
+
+            }),
+          )
+          .sort(
+            (a, b) =>
+              b.peso -
+              a.peso,
+          );
 
       setMateriais(
         lista,
@@ -161,6 +221,24 @@ export default function MaterialsPublicSection() {
         valorTotal,
       );
 
+      setTotalRegistros(
+        registrosTotal,
+      );
+
+      /* =========================
+         ESG
+      ========================= */
+
+      setCo2Evitado(
+        pesoTotal * 1.8,
+      );
+
+    } catch (err) {
+
+      console.error(
+        err,
+      );
+
     } finally {
 
       setLoading(false);
@@ -168,6 +246,16 @@ export default function MaterialsPublicSection() {
     }
 
   }
+
+  const topMateriais =
+    useMemo(
+      () =>
+        materiais.slice(
+          0,
+          3,
+        ),
+      [materiais],
+    );
 
   return (
 
@@ -180,13 +268,13 @@ export default function MaterialsPublicSection() {
       "
     >
 
-      {/* BG */}
+      {/* BACKGROUND */}
 
       <div className="absolute inset-0">
 
-        <div className="absolute top-0 left-0 w-125 h-125 bg-emerald-200/20 blur-3xl rounded-full" />
+        <div className="absolute top-0 left-0 w-137.5 h-137.5 bg-emerald-200/20 blur-3xl rounded-full" />
 
-        <div className="absolute bottom-0 right-0 w-100 h-100 bg-cyan-200/20 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-0 w-112.5 h-112.5 bg-cyan-200/20 blur-3xl rounded-full" />
 
       </div>
 
@@ -264,14 +352,16 @@ export default function MaterialsPublicSection() {
               text-xl
               leading-9
               text-zinc-600
+              max-w-4xl
+              mx-auto
             "
           >
 
-            Painel público de rastreabilidade
-            ambiental com dados operacionais,
-            indicadores ESG e volume
-            de resíduos recicláveis
-            recebidos pela associação.
+            Plataforma pública com
+            indicadores operacionais,
+            rastreabilidade ambiental,
+            coleta seletiva e métricas ESG
+            geradas em tempo real.
 
           </p>
 
@@ -291,7 +381,10 @@ export default function MaterialsPublicSection() {
 
           {/* PESO */}
 
-          <div
+          <motion.div
+            whileHover={{
+              y: -5,
+            }}
             className="
               rounded-4xl
               p-8
@@ -342,11 +435,14 @@ export default function MaterialsPublicSection() {
 
             </h3>
 
-          </div>
+          </motion.div>
 
           {/* VALOR */}
 
-          <div
+          <motion.div
+            whileHover={{
+              y: -5,
+            }}
             className="
               rounded-4xl
               p-8
@@ -398,11 +494,14 @@ export default function MaterialsPublicSection() {
 
             </h3>
 
-          </div>
+          </motion.div>
 
-          {/* MATERIAIS */}
+          {/* TIPOS */}
 
-          <div
+          <motion.div
+            whileHover={{
+              y: -5,
+            }}
             className="
               rounded-4xl
               p-8
@@ -449,11 +548,14 @@ export default function MaterialsPublicSection() {
 
             </h3>
 
-          </div>
+          </motion.div>
 
           {/* REGISTROS */}
 
-          <div
+          <motion.div
+            whileHover={{
+              y: -5,
+            }}
             className="
               rounded-4xl
               p-8
@@ -496,23 +598,231 @@ export default function MaterialsPublicSection() {
               "
             >
 
-              {materiais.reduce(
-                (
-                  acc,
-                  item,
-                ) =>
-                  acc +
-                  item.quantidade,
-                0,
-              )}
+              {totalRegistros}
 
             </h3>
 
-          </div>
+          </motion.div>
 
         </div>
 
-        {/* GRID MATERIAIS */}
+        {/* ESG QUICK */}
+
+        <div
+          className="
+            grid
+            lg:grid-cols-2
+            gap-8
+            mt-10
+          "
+        >
+
+          {/* CO2 */}
+
+          <motion.div
+            whileHover={{
+              y: -5,
+            }}
+            className="
+              rounded-4xl
+              p-10
+              bg-white/80
+              backdrop-blur-xl
+              border
+              border-white/50
+              shadow-xl
+            "
+          >
+
+            <div
+              className="
+                flex
+                items-center
+                gap-5
+              "
+            >
+
+              <div
+                className="
+                  w-18
+                  h-18
+                  rounded-3xl
+                  bg-emerald-100
+                  text-emerald-700
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+
+                <Leaf size={34} />
+
+              </div>
+
+              <div>
+
+                <p
+                  className="
+                    text-zinc-500
+                    font-medium
+                  "
+                >
+
+                  CO₂ evitado
+
+                </p>
+
+                <h3
+                  className="
+                    text-5xl
+                    font-black
+                    text-[#111827]
+                    mt-2
+                  "
+                >
+
+                  {loading
+                    ? "--"
+                    : `${co2Evitado.toFixed(
+                        0,
+                      )}kg`}
+
+                </h3>
+
+              </div>
+
+            </div>
+
+            <p
+              className="
+                text-zinc-600
+                leading-8
+                mt-8
+              "
+            >
+
+              Estimativa baseada
+              no volume total
+              de resíduos recicláveis
+              recuperados pela associação.
+
+            </p>
+
+          </motion.div>
+
+          {/* CTA */}
+
+          <motion.div
+            whileHover={{
+              y: -5,
+            }}
+            className="
+              rounded-4xl
+              p-10
+              text-white
+              shadow-2xl
+              bg-linear-to-br
+              from-[#111827]
+              to-[#1F2937]
+            "
+          >
+
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                gap-6
+              "
+            >
+
+              <div>
+
+                <p className="text-white/70">
+
+                  Transparência ESG
+
+                </p>
+
+                <h3
+                  className="
+                    text-4xl
+                    font-black
+                    mt-3
+                  "
+                >
+
+                  Relatório completo
+
+                </h3>
+
+              </div>
+
+              <div
+                className="
+                  w-18
+                  h-18
+                  rounded-3xl
+                  bg-white/10
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+
+                <BarChart3
+                  size={34}
+                />
+
+              </div>
+
+            </div>
+
+            <p
+              className="
+                text-white/75
+                leading-8
+                mt-8
+              "
+            >
+
+              Consulte indicadores ESG,
+              materiais recicláveis,
+              impacto ambiental,
+              registros operacionais
+              e métricas públicas detalhadas.
+
+            </p>
+
+            <Link
+              href="/transparencia"
+              className="
+                mt-10
+                inline-flex
+                items-center
+                gap-3
+                h-14
+                px-8
+                rounded-2xl
+                bg-white
+                hover:bg-zinc-100
+                transition-all
+                text-[#111827]
+                font-black
+              "
+            >
+
+              Acessar transparência
+
+              <ArrowRight size={20} />
+
+            </Link>
+
+          </motion.div>
+
+        </div>
+
+        {/* TOP MATERIAIS */}
 
         <div className="mt-28">
 
@@ -521,9 +831,9 @@ export default function MaterialsPublicSection() {
               flex
               items-center
               justify-between
-              gap-4
+              gap-6
               flex-wrap
-              mb-10
+              mb-12
             "
           >
 
@@ -537,7 +847,7 @@ export default function MaterialsPublicSection() {
                 "
               >
 
-                Ranking de materiais
+                Principais materiais
 
               </h3>
 
@@ -548,14 +858,41 @@ export default function MaterialsPublicSection() {
                 "
               >
 
-                Distribuição operacional
-                dos resíduos recicláveis.
+                Materiais com maior
+                volume operacional
+                dentro da associação.
 
               </p>
 
             </div>
 
+            <Link
+              href="/transparencia"
+              className="
+                h-14
+                px-8
+                rounded-2xl
+                bg-[#2E5E4E]
+                hover:bg-[#23473A]
+                transition-all
+                text-white
+                font-black
+                flex
+                items-center
+                gap-3
+                shadow-lg
+              "
+            >
+
+              Ver relatório completo
+
+              <ArrowRight size={20} />
+
+            </Link>
+
           </div>
+
+          {/* GRID */}
 
           <div
             className="
@@ -566,197 +903,119 @@ export default function MaterialsPublicSection() {
             "
           >
 
-            {materiais.map(
+            {topMateriais.map(
               (
                 item,
                 index,
-              ) => {
+              ) => (
 
-                const percentual =
-                  totalPeso > 0
-                    ? (
-                        (item.peso /
-                          totalPeso) *
-                        100
-                      ).toFixed(
-                        1,
-                      )
-                    : "0";
+                <motion.div
+                  key={item.nome}
+                  initial={{
+                    opacity: 0,
+                    y: 40,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay:
+                      index * 0.08,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
+                  whileHover={{
+                    y: -5,
+                  }}
+                  className="
+                    bg-white/80
+                    backdrop-blur-xl
+                    border
+                    border-white/50
+                    rounded-4xl
+                    p-8
+                    shadow-xl
+                  "
+                >
 
-                return (
+                  {/* TOP */}
 
-                  <motion.div
-                    key={item.nome}
-                    initial={{
-                      opacity: 0,
-                      y: 40,
-                    }}
-                    whileInView={{
-                      opacity: 1,
-                      y: 0,
-                    }}
-                    transition={{
-                      duration: 0.5,
-                      delay:
-                        index * 0.08,
-                    }}
-                    viewport={{
-                      once: true,
-                    }}
+                  <div
                     className="
-                      bg-white/80
-                      backdrop-blur-xl
-                      border
-                      border-white/50
-                      rounded-4xl
-                      p-8
-                      shadow-xl
+                      flex
+                      items-center
+                      justify-between
+                      gap-4
                     "
                   >
 
-                    {/* TOP */}
-
                     <div
                       className="
+                        w-16
+                        h-16
+                        rounded-3xl
+                        bg-[#E8F3EE]
+                        text-[#2E5E4E]
                         flex
                         items-center
-                        justify-between
-                        gap-4
+                        justify-center
                       "
                     >
 
-                      <div
-                        className="
-                          w-16
-                          h-16
-                          rounded-3xl
-                          bg-[#E8F3EE]
-                          text-[#2E5E4E]
-                          flex
-                          items-center
-                          justify-center
-                        "
-                      >
-
-                        <Recycle
-                          size={30}
-                        />
-
-                      </div>
-
-                      <div
-                        className="
-                          px-4
-                          py-2
-                          rounded-full
-                          bg-emerald-100
-                          text-emerald-700
-                          text-sm
-                          font-black
-                        "
-                      >
-
-                        #{index + 1}
-
-                      </div>
+                      <Recycle
+                        size={30}
+                      />
 
                     </div>
-
-                    {/* NOME */}
-
-                    <h3
-                      className="
-                        text-3xl
-                        font-black
-                        text-[#111827]
-                        mt-8
-                      "
-                    >
-
-                      {item.nome}
-
-                    </h3>
-
-                    {/* GRID */}
 
                     <div
                       className="
-                        grid
-                        grid-cols-2
-                        gap-6
-                        mt-8
+                        px-4
+                        py-2
+                        rounded-full
+                        bg-emerald-100
+                        text-emerald-700
+                        text-sm
+                        font-black
                       "
                     >
 
-                      <div>
-
-                        <p
-                          className="
-                            text-xs
-                            uppercase
-                            tracking-widest
-                            text-zinc-400
-                            font-bold
-                          "
-                        >
-
-                          Peso
-
-                        </p>
-
-                        <h4
-                          className="
-                            text-3xl
-                            font-black
-                            text-[#2E5E4E]
-                            mt-2
-                          "
-                        >
-
-                          {item.peso.toFixed(
-                            0,
-                          )}kg
-
-                        </h4>
-
-                      </div>
-
-                      <div>
-
-                        <p
-                          className="
-                            text-xs
-                            uppercase
-                            tracking-widest
-                            text-zinc-400
-                            font-bold
-                          "
-                        >
-
-                          Participação
-
-                        </p>
-
-                        <h4
-                          className="
-                            text-3xl
-                            font-black
-                            text-cyan-600
-                            mt-2
-                          "
-                        >
-
-                          {percentual}%
-
-                        </h4>
-
-                      </div>
+                      #{index + 1}
 
                     </div>
 
-                    {/* VALOR */}
+                  </div>
 
-                    <div className="mt-8">
+                  {/* NOME */}
+
+                  <h3
+                    className="
+                      text-3xl
+                      font-black
+                      text-[#111827]
+                      mt-8
+                    "
+                  >
+
+                    {item.nome}
+
+                  </h3>
+
+                  {/* GRID */}
+
+                  <div
+                    className="
+                      grid
+                      grid-cols-2
+                      gap-6
+                      mt-8
+                    "
+                  >
+
+                    <div>
 
                       <p
                         className="
@@ -768,76 +1027,144 @@ export default function MaterialsPublicSection() {
                         "
                       >
 
-                        Valor operacional
+                        Peso
 
                       </p>
 
                       <h4
                         className="
-                          text-4xl
+                          text-3xl
                           font-black
-                          text-[#111827]
+                          text-[#2E5E4E]
                           mt-2
                         "
                       >
 
-                        R$ {item.valor.toFixed(
-                          2,
-                        )}
+                        {item.peso.toFixed(
+                          0,
+                        )}kg
 
                       </h4>
 
                     </div>
 
-                    {/* REGISTROS */}
+                    <div>
 
-                    <div
-                      className="
-                        mt-8
-                        flex
-                        items-center
-                        justify-between
-                      "
-                    >
-
-                      <span
+                      <p
                         className="
-                          text-zinc-500
-                          font-medium
+                          text-xs
+                          uppercase
+                          tracking-widest
+                          text-zinc-400
+                          font-bold
                         "
                       >
 
-                        Registros
+                        Participação
 
-                      </span>
+                      </p>
 
-                      <div
+                      <h4
                         className="
-                          flex
-                          items-center
-                          gap-2
-                          text-emerald-700
+                          text-3xl
                           font-black
+                          text-cyan-600
+                          mt-2
                         "
                       >
-
-                        <TrendingUp
-                          size={18}
-                        />
 
                         {
-                          item.quantidade
-                        }
+                          item.percentual
+                        }%
 
-                      </div>
+                      </h4>
 
                     </div>
 
-                  </motion.div>
+                  </div>
 
-                );
+                  {/* VALOR */}
 
-              },
+                  <div className="mt-8">
+
+                    <p
+                      className="
+                        text-xs
+                        uppercase
+                        tracking-widest
+                        text-zinc-400
+                        font-bold
+                      "
+                    >
+
+                      Valor operacional
+
+                    </p>
+
+                    <h4
+                      className="
+                        text-4xl
+                        font-black
+                        text-[#111827]
+                        mt-2
+                      "
+                    >
+
+                      R$ {item.valor.toFixed(
+                        2,
+                      )}
+
+                    </h4>
+
+                  </div>
+
+                  {/* REGISTROS */}
+
+                  <div
+                    className="
+                      mt-8
+                      flex
+                      items-center
+                      justify-between
+                    "
+                  >
+
+                    <span
+                      className="
+                        text-zinc-500
+                        font-medium
+                      "
+                    >
+
+                      Registros
+
+                    </span>
+
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        text-emerald-700
+                        font-black
+                      "
+                    >
+
+                      <TrendingUp
+                        size={18}
+                      />
+
+                      {
+                        item.quantidade
+                      }
+
+                    </div>
+
+                  </div>
+
+                </motion.div>
+
+              ),
             )}
 
           </div>

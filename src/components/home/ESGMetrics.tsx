@@ -1,141 +1,47 @@
 "use client";
 
 import {
-  useEffect,
-  useState,
-} from "react";
+  motion,
+} from "framer-motion";
 
-import { motion } from "framer-motion";
+import Link from "next/link";
 
 import {
   Recycle,
   Cloud,
   Users,
-  Factory,
   Trees,
   Wallet,
   TrendingUp,
+  ArrowRight,
 } from "lucide-react";
 
-import { supabase } from "@/lib/supabase";
+import {
+  useESGMetrics,
+} from "@/hooks/useESGMetrics";
 
 export default function ESGMetrics() {
 
-  const [
+  const {
     loading,
-    setLoading,
-  ] = useState(true);
-
-  const [
     totalPeso,
-    setTotalPeso,
-  ] = useState(0);
-
-  const [
     totalValor,
-    setTotalValor,
-  ] = useState(0);
-
-  const [
-    metricas,
-    setMetricas,
-  ] = useState<any[]>([]);
-
-  useEffect(() => {
-
-    carregarDados();
-
-  }, []);
-
-  async function carregarDados() {
-
-    try {
-
-      setLoading(true);
-
-      /* =========================
-         MATERIAIS
-      ========================= */
-
-      const {
-        data: materiais,
-      } = await supabase
-        .from("materiais_registros")
-        .select(`
-          peso,
-          subtotal
-        `);
-
-      const peso =
-        materiais?.reduce(
-          (
-            acc,
-            item,
-          ) =>
-            acc +
-            Number(
-              item.peso || 0,
-            ),
-          0,
-        ) || 0;
-
-      const valor =
-        materiais?.reduce(
-          (
-            acc,
-            item,
-          ) =>
-            acc +
-            Number(
-              item.subtotal || 0,
-            ),
-          0,
-        ) || 0;
-
-      setTotalPeso(peso);
-
-      setTotalValor(valor);
-
-      /* =========================
-         DASHBOARD
-      ========================= */
-
-      const {
-        data: dashboard,
-      } = await supabase
-        .from("dashboard_metricas")
-        .select("*");
-
-      setMetricas(
-        dashboard || [],
-      );
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  }
+    co2,
+    arvores,
+    familiasImpactadas,
+  } = useESGMetrics();
 
   /* =========================
-     ESG CALCULATIONS
+     METAS
   ========================= */
 
-  const co2 =
-    totalPeso * 1.8;
+  const metaPeso = 2000;
 
-  const arvores =
-    totalPeso * 0.12;
+  const metaCo2 = 5000;
 
-  const metaPeso =
-    2000;
+  const metaArvores = 300;
 
-  const metaCo2 =
-    5000;
-
-  const metaArvores =
-    300;
+  const metaRenda = 10000;
 
   function percentual(
     atual: number,
@@ -152,36 +58,9 @@ export default function ESGMetrics() {
 
   }
 
-  function getMetricValue(
-    titulo: string,
-  ) {
-
-    const item =
-      metricas.find(
-        (metrica) =>
-          metrica.titulo ===
-          titulo,
-      );
-
-    return (
-      item?.valor || 0
-    );
-
-  }
-
-  const familias =
-    Number(
-      getMetricValue(
-        "Famílias Impactadas",
-      ),
-    );
-
-  const parceiros =
-    Number(
-      getMetricValue(
-        "Empresas Parceiras",
-      ),
-    );
+  /* =========================
+     METRICS
+  ========================= */
 
   const metrics = [
 
@@ -199,7 +78,7 @@ export default function ESGMetrics() {
         ),
 
       description:
-        "Materiais destinados corretamente através da coleta seletiva e logística reversa.",
+        "Total acumulado de resíduos recicláveis destinados corretamente.",
 
       icon: Recycle,
 
@@ -221,7 +100,7 @@ export default function ESGMetrics() {
         ),
 
       description:
-        "Estimativa de emissões reduzidas através da reciclagem e reaproveitamento.",
+        "Estimativa de emissões reduzidas através da reciclagem.",
 
       icon: Cloud,
 
@@ -234,43 +113,21 @@ export default function ESGMetrics() {
         "Famílias impactadas",
 
       value:
-        `${familias}`,
+        `${familiasImpactadas}`,
 
       progress:
         percentual(
-          familias,
+          familiasImpactadas,
           100,
         ),
 
       description:
-        "Catadores e famílias beneficiadas pelas operações sustentáveis da associação.",
+        "Famílias beneficiadas pelas atividades da associação.",
 
       icon: Users,
 
       gradient:
         "from-violet-500 to-fuchsia-500",
-    },
-
-    {
-      title:
-        "Parcerias ESG",
-
-      value:
-        `${parceiros}`,
-
-      progress:
-        percentual(
-          parceiros,
-          20,
-        ),
-
-      description:
-        "Instituições e empresas conectadas às ações ambientais da ACMRB.",
-
-      icon: Factory,
-
-      gradient:
-        "from-orange-500 to-yellow-400",
     },
 
     {
@@ -287,7 +144,7 @@ export default function ESGMetrics() {
         ),
 
       description:
-        "Estimativa equivalente de preservação ambiental gerada pela reciclagem.",
+        "Estimativa equivalente de preservação ambiental.",
 
       icon: Trees,
 
@@ -305,11 +162,11 @@ export default function ESGMetrics() {
       progress:
         percentual(
           totalValor,
-          10000,
+          metaRenda,
         ),
 
       description:
-        "Movimentação financeira gerada pelos materiais recicláveis recebidos.",
+        "Valor operacional movimentado pelos materiais recicláveis.",
 
       icon: Wallet,
 
@@ -332,13 +189,13 @@ export default function ESGMetrics() {
       "
     >
 
-      {/* BACKGROUND */}
+      {/* BG */}
 
       <div className="absolute inset-0">
 
         <div className="absolute top-0 left-0 w-125 h-125 bg-emerald-200/20 blur-3xl rounded-full" />
 
-        <div className="absolute bottom-0 right-0 w-112.5 h-112.5 bg-cyan-200/20 blur-3xl rounded-full" />
+        <div className="absolute bottom-0 right-0 w-md h-112 bg-cyan-200/20 blur-3xl rounded-full" />
 
       </div>
 
@@ -413,11 +270,9 @@ export default function ESGMetrics() {
             "
           >
 
-            Indicadores ESG monitorados
-            em tempo real para fortalecer
-            responsabilidade socioambiental,
-            rastreabilidade operacional
-            e transparência institucional.
+            Indicadores ambientais e operacionais
+            monitorados em tempo real através
+            do sistema ESG da ACMRB.
 
           </p>
 
@@ -542,7 +397,7 @@ export default function ESGMetrics() {
 
                   </div>
 
-                  {/* DESCRIPTION */}
+                  {/* DESC */}
 
                   <p
                     className="
@@ -640,7 +495,7 @@ export default function ESGMetrics() {
 
         </div>
 
-        {/* BOTTOM */}
+        {/* CTA */}
 
         <motion.div
           initial={{
@@ -699,7 +554,7 @@ export default function ESGMetrics() {
                   "
                 >
 
-                  🌱 Sustentabilidade
+                  🌱 Transparência Pública
 
                 </div>
 
@@ -712,9 +567,9 @@ export default function ESGMetrics() {
                   "
                 >
 
-                  Indicadores alinhados
-                  às práticas ESG
-                  e economia circular.
+                  Relatórios completos
+                  de impacto ambiental
+                  e operacional.
 
                 </h3>
 
@@ -730,18 +585,21 @@ export default function ESGMetrics() {
                   "
                 >
 
-                  Os indicadores ambientais
-                  e sociais da ACMRB fortalecem
-                  transparência institucional,
-                  inclusão social, rastreabilidade
-                  operacional e responsabilidade
-                  ambiental em Baturité e região.
+                  Consulte os dados completos
+                  de materiais recicláveis,
+                  peso total, indicadores ESG,
+                  rastreabilidade operacional
+                  e impacto ambiental da ACMRB.
 
                 </p>
 
-                <button
+                <Link
+                  href="/transparencia"
                   className="
                     mt-10
+                    inline-flex
+                    items-center
+                    gap-3
                     h-14
                     px-8
                     rounded-2xl
@@ -750,17 +608,16 @@ export default function ESGMetrics() {
                     transition-all
                     text-[#2E5E4E]
                     font-black
-                    flex
-                    items-center
-                    gap-3
                   "
                 >
 
                   <TrendingUp size={20} />
 
-                  Ver relatório ESG
+                  Ver relatório completo
 
-                </button>
+                  <ArrowRight size={18} />
+
+                </Link>
 
               </div>
 
