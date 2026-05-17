@@ -78,7 +78,7 @@ export default function DashboardMaterialsCard() {
  
         </div>
 
-      </div>
+      </div> 
 
     </div>
 

@@ -59,6 +59,7 @@ type DashboardMetricas = {
   agua_economizada: number;
 
   energia_economizada: number;
+
 };
 
 export default function DashboardSection() {
@@ -84,16 +85,14 @@ export default function DashboardSection() {
 
       setAtualizando(true);
 
-      const { data, error } =
-        await supabase
-          .from("dashboard_metricas")
-          .select("*")
-          .limit(1)
-          .maybeSingle();
-
-      console.log("DATA:", data);
-
-      console.log("ERROR:", error);
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("dashboard_metricas")
+        .select("*")
+        .limit(1)
+        .maybeSingle();
 
       if (error) {
 
@@ -120,8 +119,6 @@ export default function DashboardSection() {
     carregarDados();
 
   }, []);
-
-  /* LOADING */
 
   if (loading) {
 
@@ -168,8 +165,6 @@ export default function DashboardSection() {
     );
 
   }
-
-  /* EMPTY */
 
   if (!dados) {
 
@@ -236,8 +231,6 @@ export default function DashboardSection() {
         "
       >
 
-        {/* BG EFFECT */}
-
         <div
           className="
             absolute
@@ -259,8 +252,6 @@ export default function DashboardSection() {
             gap-8
           "
         >
-
-          {/* LEFT */}
 
           <div>
 
@@ -292,8 +283,7 @@ export default function DashboardSection() {
               "
             >
 
-              Dashboard
-              Ambiental ACMRB
+              Dashboard Ambiental ACMRB
 
             </h1>
 
@@ -309,16 +299,12 @@ export default function DashboardSection() {
 
               Gestão estratégica
               de indicadores ESG,
-              impacto ambiental,
-              logística reversa
-              e métricas da Política
-              Nacional de Resíduos Sólidos.
+              impacto ambiental
+              e logística reversa.
 
             </p>
 
           </div>
-
-          {/* RIGHT */}
 
           <div
             className="
@@ -396,23 +382,7 @@ export default function DashboardSection() {
 
       {/* DETAILS */}
 
-      <div
-        className="
-          grid
-          xl:grid-cols-2
-          gap-6
-        "
-      >
-
-        <DashboardImpactCard
-          dados={dados}
-        />
-
-        <DashboardMaterialsCard
-          dados={dados}
-        />
-
-      </div>
+      <DashboardMaterialsCard dados={dados} />
 
     </div>
 
