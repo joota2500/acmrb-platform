@@ -9,6 +9,7 @@ import {
   Leaf,
   CalendarDays,
   FileText,
+  Newspaper,
   Settings,
 } from "lucide-react";
 
@@ -17,6 +18,12 @@ const items = [
     icon: LayoutDashboard,
     label: "Dashboard",
   },
+
+  {
+    icon: Newspaper,
+    label: "Notícias",
+  },
+
   {
     icon: Users,
     label: "Associados",
@@ -71,7 +78,7 @@ export default function AdminSidebar({
   return (
     <aside
       className="
-        w-[300px]
+        w-75
         min-h-screen
         bg-white
         border-r

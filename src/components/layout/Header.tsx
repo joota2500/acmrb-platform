@@ -21,6 +21,7 @@ const links = [
     name: "Início",
     href: "#",
   },
+
   {
     name: "Quem Somos",
     href: "#quem-somos",
@@ -29,6 +30,10 @@ const links = [
     name: "Projetos",
     href: "#projetos",
   },
+  {
+    name: "Notícias",
+    href: "#noticias",
+  },  
   {
     name: "Parceiros",
     href: "#parceiros",

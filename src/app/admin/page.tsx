@@ -27,6 +27,8 @@ import ContatoSection from "@/components/admin/sections/ContatoSection";
 
 import ConfiguracoesSection from "@/components/admin/sections/ConfiguracoesSection";
 
+import NoticiasSection from "@/components/admin/sections/NoticiasSection";
+
 export default function AdminPage() {
 
   const {
@@ -229,6 +231,10 @@ export default function AdminPage() {
 
           {activeSection === "Associados" && (
             <AssociadosSection />
+          )}
+
+          {activeSection === "Notícias" && (
+            <NoticiasSection /> 
           )}
 
           {activeSection === "Denúncias" && (

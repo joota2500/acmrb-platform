@@ -417,7 +417,7 @@ export default function AssociadosSection() {
             p-6
             border
             border-black/5
-            min-w-[220px]
+            min-w-55
           "
         >
 
@@ -767,7 +767,7 @@ export default function AssociadosSection() {
           }
           className="
             md:col-span-2
-            min-h-[160px]
+            min-h-40
             rounded-2xl
             border
             border-zinc-200

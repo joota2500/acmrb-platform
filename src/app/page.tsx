@@ -12,6 +12,7 @@ import ContactSection from "../components/home/ContactSection";
 import ESGMetrics from "../components/home/ESGMetrics";
 import DenunciasSection from "@/components/home/DenunciasSection";
 
+
 export default function Home() {
   return (
     <main>
