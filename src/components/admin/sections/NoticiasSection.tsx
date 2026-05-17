@@ -11,6 +11,8 @@ type Noticia = {
 
   resumo: string;
 
+  conteudo: string;
+
   categoria: string;
 
   imagem_url: string;
@@ -38,6 +40,9 @@ export default function NoticiasSection() {
   const [categoria, setCategoria] =
     useState("");
 
+  const [conteudo, setConteudo] =
+    useState("");
+
   const [imagem, setImagem] =
     useState<File | null>(null);
 
@@ -47,11 +52,21 @@ export default function NoticiasSection() {
   const [destaque, setDestaque] =
     useState(false);
 
+  const [publicado, setPublicado] =
+    useState(false);
+
   const [loading, setLoading] =
     useState(false);
 
-  const [loadingNoticias, setLoadingNoticias] =
-    useState(true);
+  const [
+    editandoNoticiaId,
+    setEditandoNoticiaId,
+  ] = useState<string | null>(null);
+
+  const [
+    loadingNoticias,
+    setLoadingNoticias,
+  ] = useState(true);
 
   async function carregarNoticias() {
 
@@ -96,16 +111,39 @@ export default function NoticiasSection() {
 
   }
 
-  async function criarNoticia() {
+  function resetFormulario() {
+
+    setTitulo("");
+
+    setResumo("");
+
+    setCategoria("");
+
+    setConteudo("");
+
+    setImagem(null);
+
+    setPreviewImagem("");
+
+    setDestaque(false);
+
+    setPublicado(true);
+
+    setEditandoNoticiaId(null);
+
+  }
+
+  async function salvarNoticia() {
 
     if (
       !titulo ||
       !resumo ||
-      !categoria
+      !categoria ||
+      !conteudo
     ) {
 
       alert(
-        "Preencha os campos obrigatórios.",
+        "Preencha todos os campos obrigatórios.",
       );
 
       return;
@@ -119,7 +157,8 @@ export default function NoticiasSection() {
       const slug =
         gerarSlug(titulo);
 
-      let imagemPublica = "";
+      let imagemPublica =
+        previewImagem || "";
 
       if (imagem) {
 
@@ -156,25 +195,67 @@ export default function NoticiasSection() {
 
       }
 
-      const { error } =
-        await supabase
-          .from("noticias")
-          .insert({
+      let error = null;
 
-            titulo,
+      if (editandoNoticiaId) {
 
-            resumo,
+        const response =
+          await supabase
+            .from("noticias")
+            .update({
 
-            categoria,
+              titulo,
 
-            imagem_url:
-              imagemPublica,
+              resumo,
 
-            destaque,
+              categoria,
 
-            slug,
+              conteudo,
 
-          });
+              imagem_url:
+                imagemPublica,
+
+              destaque,
+
+              publicado,
+
+              slug,
+
+            })
+            .eq(
+              "id",
+              editandoNoticiaId,
+            );
+
+        error = response.error;
+
+      } else {
+
+        const response =
+          await supabase
+            .from("noticias")
+            .insert({
+
+              titulo,
+
+              resumo,
+
+              categoria,
+
+              conteudo,
+
+              imagem_url:
+                imagemPublica,
+
+              destaque,
+
+              slug,
+
+            });
+
+        error = response.error;
+
+      }
 
       if (error) {
 
@@ -184,28 +265,20 @@ export default function NoticiasSection() {
 
       }
 
-      setTitulo("");
-
-      setResumo("");
-
-      setCategoria("");
-
-      setImagem(null);
-
-      setPreviewImagem("");
-
-      setDestaque(false);
+      resetFormulario();
 
       await carregarNoticias();
 
       alert(
-        "Notícia publicada com sucesso.",
+        editandoNoticiaId
+          ? "Notícia atualizada com sucesso."
+          : "Notícia publicada com sucesso.",
       );
 
     } catch {
 
       alert(
-        "Erro inesperado ao criar notícia.",
+        "Erro inesperado ao salvar notícia.",
       );
 
     } finally {
@@ -245,6 +318,45 @@ export default function NoticiasSection() {
 
   }
 
+  function editarNoticia(
+    noticia: Noticia,
+  ) {
+
+    setEditandoNoticiaId(
+      noticia.id,
+    );
+
+    setTitulo(noticia.titulo);
+
+    setResumo(noticia.resumo);
+
+    setCategoria(
+      noticia.categoria,
+    );
+
+    setConteudo(
+      noticia.conteudo || "",
+    );
+
+    setPreviewImagem(
+      noticia.imagem_url || "",
+    );
+
+    setDestaque(
+      noticia.destaque,
+    );
+
+    setPublicado(
+      noticia.publicado,
+    );
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+
+  }
+
   useEffect(() => {
 
     carregarNoticias();
@@ -257,11 +369,25 @@ export default function NoticiasSection() {
 
       {/* HEADER */}
 
-      <div className="flex items-center justify-between flex-wrap gap-6">
+      <div
+        className="
+          flex
+          items-center
+          justify-between
+          flex-wrap
+          gap-6
+        "
+      >
 
         <div>
 
-          <h1 className="text-4xl font-black text-[#1F2937]">
+          <h1
+            className="
+              text-4xl
+              font-black
+              text-[#1F2937]
+            "
+          >
 
             Notícias
 
@@ -294,7 +420,14 @@ export default function NoticiasSection() {
 
           </p>
 
-          <h2 className="text-4xl font-black text-[#2E5E4E] mt-2">
+          <h2
+            className="
+              text-4xl
+              font-black
+              text-[#2E5E4E]
+              mt-2
+            "
+          >
 
             {noticias.length}
 
@@ -323,7 +456,13 @@ export default function NoticiasSection() {
 
         <div className="space-y-2">
 
-          <label className="text-sm font-semibold text-zinc-700">
+          <label
+            className="
+              text-sm
+              font-semibold
+              text-zinc-700
+            "
+          >
 
             Título *
 
@@ -334,7 +473,9 @@ export default function NoticiasSection() {
             placeholder="Digite o título"
             value={titulo}
             onChange={(e) =>
-              setTitulo(e.target.value)
+              setTitulo(
+                e.target.value,
+              )
             }
             className="
               w-full
@@ -354,7 +495,13 @@ export default function NoticiasSection() {
 
         <div className="space-y-2">
 
-          <label className="text-sm font-semibold text-zinc-700">
+          <label
+            className="
+              text-sm
+              font-semibold
+              text-zinc-700
+            "
+          >
 
             Categoria *
 
@@ -365,7 +512,9 @@ export default function NoticiasSection() {
             placeholder="Ex: Sustentabilidade"
             value={categoria}
             onChange={(e) =>
-              setCategoria(e.target.value)
+              setCategoria(
+                e.target.value,
+              )
             }
             className="
               w-full
@@ -385,7 +534,13 @@ export default function NoticiasSection() {
 
         <div className="md:col-span-2 space-y-2">
 
-          <label className="text-sm font-semibold text-zinc-700">
+          <label
+            className="
+              text-sm
+              font-semibold
+              text-zinc-700
+            "
+          >
 
             Resumo *
 
@@ -395,11 +550,13 @@ export default function NoticiasSection() {
             placeholder="Resumo da notícia"
             value={resumo}
             onChange={(e) =>
-              setResumo(e.target.value)
+              setResumo(
+                e.target.value,
+              )
             }
             className="
               w-full
-              min-h-40
+              min-h-35
               rounded-2xl
               border
               border-zinc-200
@@ -412,11 +569,57 @@ export default function NoticiasSection() {
 
         </div>
 
+        {/* CONTEUDO */}
+
+        <div className="md:col-span-2 space-y-2">
+
+          <label
+            className="
+              text-sm
+              font-semibold
+              text-zinc-700
+            "
+          >
+
+            Conteúdo completo *
+
+          </label>
+
+          <textarea
+            placeholder="Digite a notícia completa..."
+            value={conteudo}
+            onChange={(e) =>
+              setConteudo(
+                e.target.value,
+              )
+            }
+            className="
+              w-full
+              min-h-100
+              rounded-2xl
+              border
+              border-zinc-200
+              p-5
+              outline-none
+              resize-none
+              focus:border-[#2E5E4E]
+              leading-8
+            "
+          />
+
+        </div>
+
         {/* IMAGEM */}
 
         <div className="md:col-span-2 space-y-3">
 
-          <label className="text-sm font-semibold text-zinc-700">
+          <label
+            className="
+              text-sm
+              font-semibold
+              text-zinc-700
+            "
+          >
 
             Banner da notícia
 
@@ -507,7 +710,12 @@ export default function NoticiasSection() {
             className="w-5 h-5"
           />
 
-          <span className="font-medium text-zinc-700">
+          <span
+            className="
+              font-medium
+              text-zinc-700
+            "
+          >
 
             Destacar notícia
             na página inicial
@@ -516,29 +724,113 @@ export default function NoticiasSection() {
 
         </label>
 
-        {/* BOTAO */}
-
-        <button
-          onClick={criarNoticia}
-          disabled={loading}
+       {/* Publicado */}     
+       <label
           className="
             md:col-span-2
-            h-14
+            flex
+            items-center
+            gap-3
+            bg-zinc-50
+            border
+            border-zinc-200
             rounded-2xl
-            bg-[#2E5E4E]
-            hover:bg-[#21463A]
-            transition
-            text-white
-            font-bold
-            disabled:opacity-50
+            px-5
+            py-4
+            cursor-pointer
           "
         >
 
-          {loading
-            ? "Publicando..."
-            : "Publicar notícia"}
+          <input
+            type="checkbox"
+            checked={publicado}
+            onChange={(e) =>
+              setPublicado(
+                e.target.checked,
+              )
+            }
+            className="w-5 h-5"
+          />
 
-        </button>
+          <span
+            className="
+              font-medium
+              text-zinc-700
+            "
+          >
+
+            Publicar notícia
+            no portal público
+
+          </span>
+
+        </label>
+
+
+        {/* ACTIONS */}
+
+        <div
+          className="
+            md:col-span-2
+            flex
+            gap-4
+          "
+        >
+
+          <button
+            onClick={salvarNoticia}
+            disabled={loading}
+            className="
+              flex-1
+              h-14
+              rounded-2xl
+              bg-[#2E5E4E]
+              hover:bg-[#21463A]
+              transition
+              text-white
+              font-bold
+              disabled:opacity-50
+            "
+          >
+
+            {loading
+              ? (
+                editandoNoticiaId
+                  ? "Atualizando..."
+                  : "Publicando..."
+              )
+              : (
+                editandoNoticiaId
+                  ? "Atualizar notícia"
+                  : "Publicar notícia"
+              )}
+
+          </button>
+
+          {editandoNoticiaId && (
+
+            <button
+              onClick={
+                resetFormulario
+              }
+              className="
+                h-14
+                px-6
+                rounded-2xl
+                bg-zinc-200
+                hover:bg-zinc-300
+                transition
+                font-semibold
+              "
+            >
+
+              Cancelar
+
+            </button>
+
+          )}
+
+        </div>
 
       </div>
 
@@ -602,7 +894,14 @@ export default function NoticiasSection() {
 
               <div className="p-6">
 
-                <div className="flex items-center gap-3 flex-wrap">
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-3
+                    flex-wrap
+                  "
+                >
 
                   <span
                     className="
@@ -660,6 +959,7 @@ export default function NoticiasSection() {
                     text-zinc-600
                     leading-7
                     mt-4
+                    line-clamp-3
                   "
                 >
 
@@ -667,9 +967,22 @@ export default function NoticiasSection() {
 
                 </p>
 
-                <div className="mt-6 flex items-center justify-between gap-4">
+                <div
+                  className="
+                    mt-6
+                    flex
+                    items-center
+                    justify-between
+                    gap-4
+                  "
+                >
 
-                  <span className="text-sm text-zinc-400">
+                  <span
+                    className="
+                      text-sm
+                      text-zinc-400
+                    "
+                  >
 
                     {new Date(
                       item.created_at,
@@ -679,27 +992,53 @@ export default function NoticiasSection() {
 
                   </span>
 
-                  <button
-                    onClick={() =>
-                      excluirNoticia(
-                        item.id,
-                      )
-                    }
-                    className="
-                      h-11
-                      px-5
-                      rounded-2xl
-                      bg-red-500
-                      hover:bg-red-600
-                      transition
-                      text-white
-                      font-semibold
-                    "
-                  >
+                  <div className="flex gap-3">
 
-                    Excluir
+                    <button
+                      onClick={() =>
+                        editarNoticia(
+                          item,
+                        )
+                      }
+                      className="
+                        h-11
+                        px-5
+                        rounded-2xl
+                        bg-blue-500
+                        hover:bg-blue-600
+                        transition
+                        text-white
+                        font-semibold
+                      "
+                    >
 
-                  </button>
+                      Editar
+
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        excluirNoticia(
+                          item.id,
+                        )
+                      }
+                      className="
+                        h-11
+                        px-5
+                        rounded-2xl
+                        bg-red-500
+                        hover:bg-red-600
+                        transition
+                        text-white
+                        font-semibold
+                      "
+                    >
+
+                      Excluir
+
+                    </button>
+
+                  </div>
 
                 </div>
 
