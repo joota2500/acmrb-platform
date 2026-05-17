@@ -1,48 +1,346 @@
 "use client";
 
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import { motion } from "framer-motion";
 
-const metrics = [
-  {
-    title: "Resíduos reciclados",
-    value: "+1t",
-    progress: "20%",
-    description:
-      "Materiais destinados corretamente através da coleta seletiva.",
-  },
+import {
+  Recycle,
+  Cloud,
+  Users,
+  Factory,
+  Trees,
+  Wallet,
+  TrendingUp,
+} from "lucide-react";
 
-  {
-    title: "CO₂ evitado",
-    value: "10t",
-    progress: "50%",
-    description:
-      "Estimativa de redução de emissões ambientais.",
-  },
-
-  {
-    title: "Famílias impactadas",
-    value: "+45",
-    progress: "45%",
-    description:
-      "Catadores e famílias beneficiadas pelas ações da associação.",
-  },
-
-  {
-    title: "Parcerias ESG",
-    value: "+5",
-    progress: "5%",
-    description:
-      "Instituições e empresas apoiando ações sustentáveis.",
-  },
-];
+import { supabase } from "@/lib/supabase";
 
 export default function ESGMetrics() {
+
+  const [
+    loading,
+    setLoading,
+  ] = useState(true);
+
+  const [
+    totalPeso,
+    setTotalPeso,
+  ] = useState(0);
+
+  const [
+    totalValor,
+    setTotalValor,
+  ] = useState(0);
+
+  const [
+    metricas,
+    setMetricas,
+  ] = useState<any[]>([]);
+
+  useEffect(() => {
+
+    carregarDados();
+
+  }, []);
+
+  async function carregarDados() {
+
+    try {
+
+      setLoading(true);
+
+      /* =========================
+         MATERIAIS
+      ========================= */
+
+      const {
+        data: materiais,
+      } = await supabase
+        .from("materiais_registros")
+        .select(`
+          peso,
+          subtotal
+        `);
+
+      const peso =
+        materiais?.reduce(
+          (
+            acc,
+            item,
+          ) =>
+            acc +
+            Number(
+              item.peso || 0,
+            ),
+          0,
+        ) || 0;
+
+      const valor =
+        materiais?.reduce(
+          (
+            acc,
+            item,
+          ) =>
+            acc +
+            Number(
+              item.subtotal || 0,
+            ),
+          0,
+        ) || 0;
+
+      setTotalPeso(peso);
+
+      setTotalValor(valor);
+
+      /* =========================
+         DASHBOARD
+      ========================= */
+
+      const {
+        data: dashboard,
+      } = await supabase
+        .from("dashboard_metricas")
+        .select("*");
+
+      setMetricas(
+        dashboard || [],
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
+  /* =========================
+     ESG CALCULATIONS
+  ========================= */
+
+  const co2 =
+    totalPeso * 1.8;
+
+  const arvores =
+    totalPeso * 0.12;
+
+  const metaPeso =
+    2000;
+
+  const metaCo2 =
+    5000;
+
+  const metaArvores =
+    300;
+
+  function percentual(
+    atual: number,
+    meta: number,
+  ) {
+
+    const valor =
+      (atual / meta) * 100;
+
+    return `${Math.min(
+      valor,
+      100,
+    ).toFixed(0)}%`;
+
+  }
+
+  function getMetricValue(
+    titulo: string,
+  ) {
+
+    const item =
+      metricas.find(
+        (metrica) =>
+          metrica.titulo ===
+          titulo,
+      );
+
+    return (
+      item?.valor || 0
+    );
+
+  }
+
+  const familias =
+    Number(
+      getMetricValue(
+        "Famílias Impactadas",
+      ),
+    );
+
+  const parceiros =
+    Number(
+      getMetricValue(
+        "Empresas Parceiras",
+      ),
+    );
+
+  const metrics = [
+
+    {
+      title:
+        "Resíduos reciclados",
+
+      value:
+        `${totalPeso.toFixed(0)}kg`,
+
+      progress:
+        percentual(
+          totalPeso,
+          metaPeso,
+        ),
+
+      description:
+        "Materiais destinados corretamente através da coleta seletiva e logística reversa.",
+
+      icon: Recycle,
+
+      gradient:
+        "from-[#2E5E4E] to-[#5C9B80]",
+    },
+
+    {
+      title:
+        "CO₂ evitado",
+
+      value:
+        `${co2.toFixed(0)}kg`,
+
+      progress:
+        percentual(
+          co2,
+          metaCo2,
+        ),
+
+      description:
+        "Estimativa de emissões reduzidas através da reciclagem e reaproveitamento.",
+
+      icon: Cloud,
+
+      gradient:
+        "from-cyan-500 to-blue-500",
+    },
+
+    {
+      title:
+        "Famílias impactadas",
+
+      value:
+        `${familias}`,
+
+      progress:
+        percentual(
+          familias,
+          100,
+        ),
+
+      description:
+        "Catadores e famílias beneficiadas pelas operações sustentáveis da associação.",
+
+      icon: Users,
+
+      gradient:
+        "from-violet-500 to-fuchsia-500",
+    },
+
+    {
+      title:
+        "Parcerias ESG",
+
+      value:
+        `${parceiros}`,
+
+      progress:
+        percentual(
+          parceiros,
+          20,
+        ),
+
+      description:
+        "Instituições e empresas conectadas às ações ambientais da ACMRB.",
+
+      icon: Factory,
+
+      gradient:
+        "from-orange-500 to-yellow-400",
+    },
+
+    {
+      title:
+        "Árvores preservadas",
+
+      value:
+        `${arvores.toFixed(0)}`,
+
+      progress:
+        percentual(
+          arvores,
+          metaArvores,
+        ),
+
+      description:
+        "Estimativa equivalente de preservação ambiental gerada pela reciclagem.",
+
+      icon: Trees,
+
+      gradient:
+        "from-emerald-500 to-green-500",
+    },
+
+    {
+      title:
+        "Renda gerada",
+
+      value:
+        `R$ ${totalValor.toFixed(2)}`,
+
+      progress:
+        percentual(
+          totalValor,
+          10000,
+        ),
+
+      description:
+        "Movimentação financeira gerada pelos materiais recicláveis recebidos.",
+
+      icon: Wallet,
+
+      gradient:
+        "from-teal-500 to-cyan-400",
+    },
+
+  ];
+
   return (
-    <section className="section-spacing relative overflow-hidden">
+
+    <section
+      className="
+        py-32
+        relative
+        overflow-hidden
+        bg-linear-to-b
+        from-[#F5F7F4]
+        to-white
+      "
+    >
 
       {/* BACKGROUND */}
 
-      <div className="absolute inset-0 bg-linear-to-b from-emerald-50/40 to-white" />
+      <div className="absolute inset-0">
+
+        <div className="absolute top-0 left-0 w-125 h-125 bg-emerald-200/20 blur-3xl rounded-full" />
+
+        <div className="absolute bottom-0 right-0 w-112.5 h-112.5 bg-cyan-200/20 blur-3xl rounded-full" />
+
+      </div>
 
       <div className="container-custom relative z-10">
 
@@ -60,26 +358,66 @@ export default function ESGMetrics() {
           transition={{
             duration: 0.7,
           }}
-          viewport={{ once: true }}
-          className="max-w-4xl"
+          viewport={{
+            once: true,
+          }}
+          className="
+            max-w-5xl
+          "
         >
 
-          <div className="section-tag mb-6">
-            Dashboard ESG
+          <div
+            className="
+              inline-flex
+              items-center
+              gap-2
+              px-5
+              py-3
+              rounded-full
+              bg-[#E8F3EE]
+              text-[#2E5E4E]
+              font-black
+              text-sm
+              mb-8
+            "
+          >
+
+            📊 Dashboard ESG
+
           </div>
 
-          <h2 className="section-title">
+          <h2
+            className="
+              text-5xl
+              md:text-6xl
+              font-black
+              leading-tight
+              tracking-tighter
+              text-[#111827]
+            "
+          >
 
-            Transparência ambiental
-            e impacto sustentável.
+            Transparência ambiental,
+            impacto social e
+            métricas operacionais.
 
           </h2>
 
-          <p className="section-description mt-8">
+          <p
+            className="
+              text-zinc-600
+              text-xl
+              leading-9
+              mt-8
+              max-w-4xl
+            "
+          >
 
-            Indicadores ambientais, sociais e institucionais
-            monitorados para fortalecer transparência,
-            responsabilidade socioambiental e metas ESG.
+            Indicadores ESG monitorados
+            em tempo real para fortalecer
+            responsabilidade socioambiental,
+            rastreabilidade operacional
+            e transparência institucional.
 
           </p>
 
@@ -87,101 +425,218 @@ export default function ESGMetrics() {
 
         {/* GRID */}
 
-        <div className="grid lg:grid-cols-2 gap-8 mt-20">
+        <div
+          className="
+            grid
+            lg:grid-cols-2
+            gap-8
+            mt-24
+          "
+        >
 
-          {metrics.map((metric, index) => (
-            <motion.div
-              key={metric.title}
-              initial={{
-                opacity: 0,
-                y: 40,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.1,
-              }}
-              viewport={{ once: true }}
-              className="glass-card rounded-4xl p-8 md:p-10"
-            >
+          {metrics.map(
+            (
+              metric,
+              index,
+            ) => {
 
-              {/* TOP */}
+              const Icon =
+                metric.icon;
 
-              <div className="flex items-start justify-between gap-6">
+              return (
 
-                <div>
+                <motion.div
+                  key={metric.title}
+                  initial={{
+                    opacity: 0,
+                    y: 40,
+                  }}
+                  whileInView={{
+                    opacity: 1,
+                    y: 0,
+                  }}
+                  transition={{
+                    duration: 0.5,
+                    delay:
+                      index * 0.08,
+                  }}
+                  viewport={{
+                    once: true,
+                  }}
+                  className="
+                    bg-white/80
+                    backdrop-blur-xl
+                    border
+                    border-white/50
+                    shadow-xl
+                    rounded-4xl
+                    p-8
+                    md:p-10
+                  "
+                >
 
-                  <p className="text-sm font-medium text-zinc-500 uppercase tracking-wider">
+                  {/* TOP */}
 
-                    {metric.title}
+                  <div
+                    className="
+                      flex
+                      items-start
+                      justify-between
+                      gap-6
+                    "
+                  >
+
+                    <div>
+
+                      <p
+                        className="
+                          text-sm
+                          font-bold
+                          uppercase
+                          tracking-widest
+                          text-zinc-500
+                        "
+                      >
+
+                        {metric.title}
+
+                      </p>
+
+                      <h3
+                        className="
+                          text-5xl
+                          md:text-6xl
+                          font-black
+                          text-[#111827]
+                          tracking-tighter
+                          mt-4
+                          wrap-break-word
+                        "
+                      >
+
+                        {loading
+                          ? "--"
+                          : metric.value}
+
+                      </h3>
+
+                    </div>
+
+                    <div
+                      className={`
+                        w-16
+                        h-16
+                        rounded-3xl
+                        flex
+                        items-center
+                        justify-center
+                        text-white
+                        bg-linear-to-br
+                        ${metric.gradient}
+                      `}
+                    >
+
+                      <Icon size={30} />
+
+                    </div>
+
+                  </div>
+
+                  {/* DESCRIPTION */}
+
+                  <p
+                    className="
+                      text-zinc-600
+                      leading-8
+                      mt-8
+                    "
+                  >
+
+                    {metric.description}
 
                   </p>
 
-                  <h3 className="text-5xl md:text-6xl font-black text-zinc-900 tracking-tighter mt-4">
+                  {/* PROGRESS */}
 
-                    {metric.value}
+                  <div className="mt-10">
 
-                  </h3>
+                    <div
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        mb-4
+                      "
+                    >
 
-                </div>
+                      <span
+                        className="
+                          text-sm
+                          font-medium
+                          text-zinc-500
+                        "
+                      >
 
-                <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">
+                        Meta ESG
 
-                  ESG
+                      </span>
 
-                </div>
+                      <span
+                        className="
+                          text-sm
+                          font-black
+                          text-[#2E5E4E]
+                        "
+                      >
 
-              </div>
+                        {metric.progress}
 
-              {/* DESCRIPTION */}
+                      </span>
 
-              <p className="text-zinc-600 leading-8 mt-8">
+                    </div>
 
-                {metric.description}
+                    <div
+                      className="
+                        w-full
+                        h-3
+                        rounded-full
+                        bg-zinc-200
+                        overflow-hidden
+                      "
+                    >
 
-              </p>
+                      <motion.div
+                        initial={{
+                          width: 0,
+                        }}
+                        whileInView={{
+                          width:
+                            metric.progress,
+                        }}
+                        transition={{
+                          duration: 1,
+                        }}
+                        viewport={{
+                          once: true,
+                        }}
+                        className={`
+                          h-full
+                          rounded-full
+                          bg-linear-to-r
+                          ${metric.gradient}
+                        `}
+                      />
 
-              {/* PROGRESS */}
+                    </div>
 
-              <div className="mt-10">
+                  </div>
 
-                <div className="flex items-center justify-between mb-4">
+                </motion.div>
 
-                  <span className="text-sm font-medium text-zinc-500">
-                    Meta anual
-                  </span>
+              );
 
-                  <span className="text-sm font-bold text-emerald-700">
-                    {metric.progress}
-                  </span>
-
-                </div>
-
-                <div className="w-full h-3 rounded-full bg-zinc-200 overflow-hidden">
-
-                  <motion.div
-                    initial={{
-                      width: 0,
-                    }}
-                    whileInView={{
-                      width: metric.progress,
-                    }}
-                    transition={{
-                      duration: 1,
-                    }}
-                    viewport={{ once: true }}
-                    className="h-full rounded-full bg-linear-to-r from-emerald-600 to-teal-500"
-                  />
-
-                </div>
-
-              </div>
-
-            </motion.div>
-          ))}
+            },
+          )}
 
         </div>
 
@@ -199,24 +654,67 @@ export default function ESGMetrics() {
           transition={{
             duration: 0.7,
           }}
-          viewport={{ once: true }}
-          className="mt-20"
+          viewport={{
+            once: true,
+          }}
+          className="mt-24"
         >
 
-          <div className="glass-card rounded-4xl p-10 md:p-14">
+          <div
+            className="
+              rounded-4xl
+              bg-linear-to-br
+              from-[#2E5E4E]
+              to-[#5C9B80]
+              p-12
+              md:p-16
+              text-white
+              shadow-2xl
+            "
+          >
 
-            <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div
+              className="
+                grid
+                lg:grid-cols-2
+                gap-12
+                items-center
+              "
+            >
 
               <div>
 
-                <div className="section-tag mb-6">
-                  Sustentabilidade
+                <div
+                  className="
+                    inline-flex
+                    items-center
+                    gap-2
+                    px-5
+                    py-3
+                    rounded-full
+                    bg-white/20
+                    text-sm
+                    font-black
+                    mb-8
+                  "
+                >
+
+                  🌱 Sustentabilidade
+
                 </div>
 
-                <h3 className="text-4xl md:text-5xl font-black leading-tight tracking-[-0.04em] text-zinc-900">
+                <h3
+                  className="
+                    text-4xl
+                    md:text-5xl
+                    font-black
+                    leading-tight
+                  "
+                >
 
                   Indicadores alinhados
-                  às práticas ESG.
+                  às práticas ESG
+                  e economia circular.
 
                 </h3>
 
@@ -224,15 +722,41 @@ export default function ESGMetrics() {
 
               <div>
 
-                <p className="text-zinc-600 leading-8 text-lg">
+                <p
+                  className="
+                    text-white/85
+                    leading-9
+                    text-lg
+                  "
+                >
 
-                  Os indicadores ambientais e sociais da ACMRB
-                  fortalecem ações sustentáveis, inclusão social,
-                  transparência institucional e responsabilidade ambiental.
+                  Os indicadores ambientais
+                  e sociais da ACMRB fortalecem
+                  transparência institucional,
+                  inclusão social, rastreabilidade
+                  operacional e responsabilidade
+                  ambiental em Baturité e região.
 
                 </p>
 
-                <button className="primary-button mt-8">
+                <button
+                  className="
+                    mt-10
+                    h-14
+                    px-8
+                    rounded-2xl
+                    bg-white
+                    hover:bg-zinc-100
+                    transition-all
+                    text-[#2E5E4E]
+                    font-black
+                    flex
+                    items-center
+                    gap-3
+                  "
+                >
+
+                  <TrendingUp size={20} />
 
                   Ver relatório ESG
 
@@ -249,5 +773,7 @@ export default function ESGMetrics() {
       </div>
 
     </section>
+
   );
+
 }

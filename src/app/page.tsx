@@ -29,7 +29,7 @@ import EnvironmentalImpactSection from "@/components/home/EnvironmentalImpactSec
 
 import ESGHighlightsSection from "@/components/home/ESGHighlightsSection";
 
-export default function Home() {
+export default function Home() { 
 
   return (
 
