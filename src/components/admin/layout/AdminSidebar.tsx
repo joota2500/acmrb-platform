@@ -11,6 +11,7 @@ import {
   FileText,
   Newspaper,
   Settings,
+  ChevronRight,
 } from "lucide-react";
 
 const items = [
@@ -18,12 +19,10 @@ const items = [
     icon: LayoutDashboard,
     label: "Dashboard",
   },
-
   {
     icon: Newspaper,
     label: "Notícias",
   },
-
   {
     icon: Users,
     label: "Associados",
@@ -58,13 +57,11 @@ const items = [
   },
 ];
 
-
-
-
 type Props = {
   activeSection: string;
+
   setActiveSection: (
-    value: string
+    value: string,
   ) => void;
 };
 
@@ -73,31 +70,29 @@ export default function AdminSidebar({
   setActiveSection,
 }: Props) {
 
-  
-
   return (
+
     <aside
       className="
-        w-75
+        hidden
+        lg:flex
+        flex-col
+        w-80
         min-h-screen
         bg-white
         border-r
         border-black/5
-        p-6
-        hidden
-        lg:flex
-        flex-col
+        sticky
+        top-0
       "
     >
 
-      {/* LOGO */}
+      {/* HEADER */}
 
       <div
         className="
-          flex
-          items-center
-          gap-4
-          pb-8
+          px-7
+          py-8
           border-b
           border-black/5
         "
@@ -105,43 +100,61 @@ export default function AdminSidebar({
 
         <div
           className="
-            w-14
-            h-14
-            rounded-2xl
-            bg-linear-to-br
-            from-[#2E5E4E]
-            to-[#4F8A73]
             flex
             items-center
-            justify-center
-            text-white
-            font-black
-            text-xl
+            gap-4
           "
         >
-          ♻
-        </div>
 
-        <div>
-
-          <h2
+          <div
             className="
-              text-xl
-              font-black
-              text-[#1F2937]
+              w-15
+              h-15
+              rounded-3xl
+              bg-linear-to-br
+              from-[#2E5E4E]
+              to-[#4F8A73]
+              flex
+              items-center
+              justify-center
+              text-white
+              text-2xl
+              shadow-lg
             "
           >
-            ACMRB
-          </h2>
 
-          <p
-            className="
-              text-sm
-              text-zinc-500
-            "
-          >
-            Painel Administrativo
-          </p>
+            ♻
+
+          </div>
+
+          <div>
+
+            <h1
+              className="
+                text-2xl
+                font-black
+                text-[#1F2937]
+                leading-none
+              "
+            >
+
+              ACMRB
+
+            </h1>
+
+            <p
+              className="
+                text-sm
+                text-zinc-500
+                mt-2
+              "
+            >
+
+              Painel Administrativo
+
+            </p>
+
+          </div>
 
         </div>
 
@@ -151,59 +164,189 @@ export default function AdminSidebar({
 
       <div
         className="
-          flex
-          flex-col
-          gap-2
-          mt-8
+          flex-1
+          overflow-y-auto
+          px-5
+          py-6
         "
       >
 
-        {items.map((item) => {
+        <div
+          className="
+            flex
+            flex-col
+            gap-2
+          "
+        >
 
-          const Icon = item.icon;
+          {items.map((item) => {
 
-          return (
-            <button
-  key={item.label}
-  onClick={() =>
-    setActiveSection(item.label)
-  }
-  className={`
-    h-14
-    rounded-2xl
-    flex
-    items-center
-    gap-4
-    px-5
-    transition-all
-    font-medium
+            const Icon =
+              item.icon;
 
-    ${
-      activeSection === item.label
-        ? `
-          bg-[#2E5E4E]
-          text-white
-          shadow-lg
-        `
-        : `
-          text-[#374151]
-          hover:bg-[#F3F6F4]
-          hover:text-[#2E5E4E]
-        `
-    }
-  `}
->
+            const active =
+              activeSection ===
+              item.label;
 
-              <Icon size={22} />
+            return (
 
-              {item.label}
+              <button
+                key={item.label}
+                onClick={() =>
+                  setActiveSection(
+                    item.label,
+                  )
+                }
+                className={`
+                  group
+                  h-15
+                  rounded-2xl
+                  px-5
+                  flex
+                  items-center
+                  justify-between
+                  transition-all
+                  duration-300
 
-            </button>
-          );
-        })}
+                  ${
+                    active
+                      ? `
+                        bg-[#2E5E4E]
+                        text-white
+                        shadow-lg
+                        shadow-emerald-900/10
+                      `
+                      : `
+                        text-[#374151]
+                        hover:bg-[#F3F6F4]
+                        hover:text-[#2E5E4E]
+                      `
+                  }
+                `}
+              >
+
+                <div
+                  className="
+                    flex
+                    items-center
+                    gap-4
+                  "
+                >
+
+                  <Icon size={21} />
+
+                  <span
+                    className="
+                      font-semibold
+                      text-[15px]
+                    "
+                  >
+
+                    {item.label}
+
+                  </span>
+
+                </div>
+
+                <ChevronRight
+                  size={18}
+                  className={`
+                    transition-all
+
+                    ${
+                      active
+                        ? `
+                          opacity-100
+                          translate-x-0
+                        `
+                        : `
+                          opacity-0
+                          -translate-x-2
+                          group-hover:opacity-100
+                          group-hover:translate-x-0
+                        `
+                    }
+                  `}
+                />
+
+              </button>
+
+            );
+
+          })}
+
+        </div>
+
+      </div>
+
+      {/* FOOTER */}
+
+      <div
+        className="
+          p-5
+          border-t
+          border-black/5
+        "
+      >
+
+        <div
+          className="
+            rounded-3xl
+            bg-[#F7FAF8]
+            border
+            border-black/5
+            p-5
+          "
+        >
+
+          <p
+            className="
+              text-xs
+              uppercase
+              tracking-wider
+              text-zinc-400
+              font-bold
+            "
+          >
+
+            Sistema
+
+          </p>
+
+          <h3
+            className="
+              text-lg
+              font-black
+              text-[#1F2937]
+              mt-2
+            "
+          >
+
+            Plataforma ESG
+
+          </h3>
+
+          <p
+            className="
+              text-sm
+              text-zinc-500
+              leading-6
+              mt-2
+            "
+          >
+
+            Gestão institucional,
+            impacto ambiental
+            e transparência pública.
+
+          </p>
+
+        </div>
 
       </div>
 
     </aside>
+
   );
+
 }

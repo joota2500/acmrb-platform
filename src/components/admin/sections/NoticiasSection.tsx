@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-import {
-  Pencil,
-  Trash2,
-  Eye,
-  EyeOff,
-  Star,
-  Newspaper,
-} from "lucide-react";
-
 import { supabase } from "@/lib/supabase";
+
+import NoticiasForm from "../news/NoticiasForm";
+
+import NoticiasStats from "../news/NoticiasStats";
+
+import NoticiasList from "../news/NoticiasList";
 
 type Noticia = {
   id: string;
@@ -171,12 +168,17 @@ export default function NoticiasSection() {
       let imagemPublica =
         previewImagem || "";
 
-      // UPLOAD IMAGEM
+      /* UPLOAD */
 
       if (imagem) {
 
+        const extensao =
+          imagem.name
+            .split(".")
+            .pop();
+
         const nomeArquivo =
-          `${Date.now()}-${imagem.name}`;
+          `${Date.now()}.${extensao}`;
 
         const {
           error: uploadError,
@@ -185,6 +187,9 @@ export default function NoticiasSection() {
           .upload(
             `banners/${nomeArquivo}`,
             imagem,
+            {
+              upsert: true,
+            },
           );
 
         if (uploadError) {
@@ -210,7 +215,7 @@ export default function NoticiasSection() {
 
       let error = null;
 
-      // UPDATE
+      /* UPDATE */
 
       if (editandoNoticiaId) {
 
@@ -246,7 +251,7 @@ export default function NoticiasSection() {
 
       }
 
-      // CREATE
+      /* CREATE */
 
       else {
 
@@ -286,16 +291,15 @@ export default function NoticiasSection() {
 
       }
 
-      const mensagem =
+      alert(
         editandoNoticiaId
           ? "Notícia atualizada com sucesso."
-          : "Notícia publicada com sucesso.";
+          : "Notícia publicada com sucesso.",
+      );
 
       resetFormulario();
 
-      await carregarNoticias();
-
-      alert(mensagem);
+      carregarNoticias();
 
     } catch {
 
@@ -387,924 +391,84 @@ export default function NoticiasSection() {
 
   return (
 
-    <div className="space-y-10">
+    <div className="space-y-8">
 
-      {/* HEADER */}
+      {/* STATS */}
 
-      <div
-        className="
-          flex
-          items-center
-          justify-between
-          flex-wrap
-          gap-6
-        "
-      >
-
-        <div>
-
-          <div
-            className="
-              inline-flex
-              items-center
-              gap-3
-              px-5
-              py-3
-              rounded-2xl
-              bg-emerald-100
-              text-emerald-700
-              font-bold
-              mb-5
-            "
-          >
-
-            <Newspaper size={20} />
-
-            Portal Institucional
-
-          </div>
-
-          <h1
-            className="
-              text-5xl
-              font-black
-              text-[#1F2937]
-            "
-          >
-
-            Notícias
-
-          </h1>
-
-          <p className="text-zinc-500 mt-3">
-
-            Gerenciamento institucional
-            das notícias da ACMRB.
-
-          </p>
-
-        </div>
-
-        {/* STATS */}
-
-        <div
-          className="
-            grid
-            grid-cols-2
-            gap-4
-          "
-        >
-
-          <div
-            className="
-              bg-white
-              rounded-3xl
-              border
-              border-black/5
-              p-5
-              min-w-40
-            "
-          >
-
-            <p className="text-zinc-500 text-sm">
-
-              Total
-
-            </p>
-
-            <h2
-              className="
-                text-4xl
-                font-black
-                text-[#2E5E4E]
-                mt-2
-              "
-            >
-
-              {noticias.length}
-
-            </h2>
-
-          </div>
-
-          <div
-            className="
-              bg-white
-              rounded-3xl
-              border
-              border-black/5
-              p-5
-              min-w-40
-            "
-          >
-
-            <p className="text-zinc-500 text-sm">
-
-              Publicadas
-
-            </p>
-
-            <h2
-              className="
-                text-4xl
-                font-black
-                text-blue-600
-                mt-2
-              "
-            >
-
-              {
-                noticias.filter(
-                  (item) =>
-                    item.publicado,
-                ).length
-              }
-
-            </h2>
-
-          </div>
-
-        </div>
-
-      </div>
+      <NoticiasStats
+        total={noticias.length}
+        publicadas={
+          noticias.filter(
+            (item) =>
+              item.publicado,
+          ).length
+        }
+        destaques={
+          noticias.filter(
+            (item) =>
+              item.destaque,
+          ).length
+        }
+        visualizacoes={
+          noticias.reduce(
+            (acc, item) =>
+              acc +
+              (item.visualizacoes || 0),
+            0,
+          )
+        }
+      />
 
       {/* FORM */}
 
-      <div
-        className="
-          bg-white
-          rounded-4xl
-          border
-          border-black/5
-          p-7
-          grid
-          md:grid-cols-2
-          gap-5
-          shadow-sm
-        "
-      >
+      <NoticiasForm
+        titulo={titulo}
+        setTitulo={setTitulo}
 
-        {/* TITULO */}
+        resumo={resumo}
+        setResumo={setResumo}
 
-        <div className="space-y-2">
+        categoria={categoria}
+        setCategoria={setCategoria}
 
-          <label
-            className="
-              text-sm
-              font-bold
-              text-zinc-700
-            "
-          >
+        conteudo={conteudo}
+        setConteudo={setConteudo}
 
-            Título *
+        destaque={destaque}
+        setDestaque={setDestaque}
 
-          </label>
+        publicado={publicado}
+        setPublicado={setPublicado}
 
-          <input
-            type="text"
-            placeholder="Digite o título"
-            value={titulo}
-            onChange={(e) =>
-              setTitulo(
-                e.target.value,
-              )
-            }
-            className="
-              w-full
-              h-14
-              rounded-2xl
-              border
-              border-zinc-200
-              px-5
-              outline-none
-              focus:border-[#2E5E4E]
-            "
-          />
+        previewImagem={
+          previewImagem
+        }
 
-        </div>
+        setImagem={setImagem}
 
-        {/* CATEGORIA */}
+        setPreviewImagem={
+          setPreviewImagem
+        }
 
-        <div className="space-y-2">
+        onSubmit={salvarNoticia}
 
-          <label
-            className="
-              text-sm
-              font-bold
-              text-zinc-700
-            "
-          >
+        onCancel={resetFormulario}
 
-            Categoria *
+        loading={loading}
 
-          </label>
+        editing={
+          !!editandoNoticiaId
+        }
+      />
 
-          <input
-            type="text"
-            placeholder="Ex: Sustentabilidade"
-            value={categoria}
-            onChange={(e) =>
-              setCategoria(
-                e.target.value,
-              )
-            }
-            className="
-              w-full
-              h-14
-              rounded-2xl
-              border
-              border-zinc-200
-              px-5
-              outline-none
-              focus:border-[#2E5E4E]
-            "
-          />
+      {/* LIST */}
 
-        </div>
-
-        {/* RESUMO */}
-
-        <div className="md:col-span-2 space-y-2">
-
-          <label
-            className="
-              text-sm
-              font-bold
-              text-zinc-700
-            "
-          >
-
-            Resumo *
-
-          </label>
-
-          <textarea
-            placeholder="Resumo da notícia"
-            value={resumo}
-            onChange={(e) =>
-              setResumo(
-                e.target.value,
-              )
-            }
-            className="
-              w-full
-              min-h-36
-              rounded-2xl
-              border
-              border-zinc-200
-              p-5
-              outline-none
-              resize-none
-              focus:border-[#2E5E4E]
-            "
-          />
-
-        </div>
-
-        {/* CONTEUDO */}
-
-        <div className="md:col-span-2 space-y-2">
-
-          <label
-            className="
-              text-sm
-              font-bold
-              text-zinc-700
-            "
-          >
-
-            Conteúdo completo *
-
-          </label>
-
-          <textarea
-            placeholder="Digite a notícia completa..."
-            value={conteudo}
-            onChange={(e) =>
-              setConteudo(
-                e.target.value,
-              )
-            }
-            className="
-              w-full
-              min-h-105
-              rounded-2xl
-              border
-              border-zinc-200
-              p-5
-              outline-none
-              resize-none
-              focus:border-[#2E5E4E]
-              leading-8
-            "
-          />
-
-        </div>
-
-        {/* IMAGEM */}
-
-        <div className="md:col-span-2 space-y-3">
-
-          <label
-            className="
-              text-sm
-              font-bold
-              text-zinc-700
-            "
-          >
-
-            Banner da notícia
-
-          </label>
-
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-
-              const arquivo =
-                e.target.files?.[0];
-
-              if (!arquivo) return;
-
-              setImagem(arquivo);
-
-              setPreviewImagem(
-                URL.createObjectURL(
-                  arquivo,
-                ),
-              );
-
-            }}
-            className="
-              w-full
-              rounded-2xl
-              border
-              border-zinc-200
-              p-4
-              bg-white
-            "
-          />
-
-          {previewImagem && (
-
-            <div
-              className="
-                overflow-hidden
-                rounded-3xl
-                border
-                border-black/5
-              "
-            >
-
-              <img
-                src={previewImagem}
-                alt="Preview"
-                className="
-                  w-full
-                  h-80
-                  object-cover
-                "
-              />
-
-            </div>
-
-          )}
-
-        </div>
-
-        {/* SWITCHES */}
-
-        <div
-          className="
-            md:col-span-2
-            grid
-            md:grid-cols-2
-            gap-4
-          "
-        >
-
-          {/* DESTAQUE */}
-
-          <label
-            className="
-              flex
-              items-center
-              gap-4
-              bg-zinc-50
-              border
-              border-zinc-200
-              rounded-2xl
-              px-5
-              py-5
-              cursor-pointer
-            "
-          >
-
-            <input
-              type="checkbox"
-              checked={destaque}
-              onChange={(e) =>
-                setDestaque(
-                  e.target.checked,
-                )
-              }
-              className="w-5 h-5"
-            />
-
-            <div>
-
-              <p
-                className="
-                  font-bold
-                  text-zinc-800
-                "
-              >
-
-                Destacar notícia
-
-              </p>
-
-              <p
-                className="
-                  text-sm
-                  text-zinc-500
-                  mt-1
-                "
-              >
-
-                Mostrar na homepage
-
-              </p>
-
-            </div>
-
-          </label>
-
-          {/* PUBLICADO */}
-
-          <label
-            className="
-              flex
-              items-center
-              gap-4
-              bg-zinc-50
-              border
-              border-zinc-200
-              rounded-2xl
-              px-5
-              py-5
-              cursor-pointer
-            "
-          >
-
-            <input
-              type="checkbox"
-              checked={publicado}
-              onChange={(e) =>
-                setPublicado(
-                  e.target.checked,
-                )
-              }
-              className="w-5 h-5"
-            />
-
-            <div>
-
-              <p
-                className="
-                  font-bold
-                  text-zinc-800
-                "
-              >
-
-                Publicar notícia
-
-              </p>
-
-              <p
-                className="
-                  text-sm
-                  text-zinc-500
-                  mt-1
-                "
-              >
-
-                Tornar visível no portal
-
-              </p>
-
-            </div>
-
-          </label>
-
-        </div>
-
-        {/* ACTIONS */}
-
-        <div
-          className="
-            md:col-span-2
-            flex
-            gap-4
-          "
-        >
-
-          <button
-            onClick={salvarNoticia}
-            disabled={loading}
-            className="
-              flex-1
-              h-14
-              rounded-2xl
-              bg-[#2E5E4E]
-              hover:bg-[#21463A]
-              transition
-              text-white
-              font-bold
-              disabled:opacity-50
-            "
-          >
-
-            {loading
-              ? (
-                editandoNoticiaId
-                  ? "Atualizando..."
-                  : "Publicando..."
-              )
-              : (
-                editandoNoticiaId
-                  ? "Atualizar notícia"
-                  : "Publicar notícia"
-              )}
-
-          </button>
-
-          {editandoNoticiaId && (
-
-            <button
-              onClick={
-                resetFormulario
-              }
-              className="
-                h-14
-                px-7
-                rounded-2xl
-                bg-zinc-200
-                hover:bg-zinc-300
-                transition
-                font-bold
-              "
-            >
-
-              Cancelar
-
-            </button>
-
-          )}
-
-        </div>
-
-      </div>
-
-      {/* LOADING */}
-
-      {loadingNoticias && (
-
-        <div
-          className="
-            bg-white
-            rounded-3xl
-            border
-            border-black/5
-            p-10
-            text-center
-          "
-        >
-
-          <p className="text-zinc-500">
-
-            Carregando notícias...
-
-          </p>
-
-        </div>
-
-      )}
-
-      {/* LISTA */}
-
-      {!loadingNoticias && (
-
-        <div className="grid lg:grid-cols-2 gap-6">
-
-          {noticias.map((item) => (
-
-            <div
-              key={item.id}
-              className="
-                bg-white
-                rounded-4xl
-                border
-                border-black/5
-                overflow-hidden
-                hover:shadow-xl
-                transition-all
-              "
-            >
-
-              {/* IMAGE */}
-
-              <div
-                className="
-                  h-72
-                  bg-zinc-100
-                  overflow-hidden
-                "
-              >
-
-                {item.imagem_url ? (
-
-                  <img
-                    src={item.imagem_url}
-                    alt={item.titulo}
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                    "
-                  />
-
-                ) : (
-
-                  <div
-                    className="
-                      w-full
-                      h-full
-                      bg-linear-to-br
-                      from-emerald-200
-                      to-teal-100
-                    "
-                  />
-
-                )}
-
-              </div>
-
-              {/* CONTENT */}
-
-              <div className="p-7">
-
-                {/* TAGS */}
-
-                <div
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    flex-wrap
-                  "
-                >
-
-                  <span
-                    className="
-                      px-3
-                      py-1
-                      rounded-full
-                      bg-emerald-100
-                      text-emerald-700
-                      text-xs
-                      font-bold
-                    "
-                  >
-
-                    {item.categoria}
-
-                  </span>
-
-                  {item.destaque && (
-
-                    <span
-                      className="
-                        px-3
-                        py-1
-                        rounded-full
-                        bg-yellow-100
-                        text-yellow-700
-                        text-xs
-                        font-bold
-                        flex
-                        items-center
-                        gap-1
-                      "
-                    >
-
-                      <Star size={12} />
-
-                      Destaque
-
-                    </span>
-
-                  )}
-
-                  {item.publicado ? (
-
-                    <span
-                      className="
-                        px-3
-                        py-1
-                        rounded-full
-                        bg-blue-100
-                        text-blue-700
-                        text-xs
-                        font-bold
-                        flex
-                        items-center
-                        gap-1
-                      "
-                    >
-
-                      <Eye size={12} />
-
-                      Publicado
-
-                    </span>
-
-                  ) : (
-
-                    <span
-                      className="
-                        px-3
-                        py-1
-                        rounded-full
-                        bg-zinc-200
-                        text-zinc-700
-                        text-xs
-                        font-bold
-                        flex
-                        items-center
-                        gap-1
-                      "
-                    >
-
-                      <EyeOff size={12} />
-
-                      Oculto
-
-                    </span>
-
-                  )}
-
-                </div>
-
-                {/* TITULO */}
-
-                <h2
-                  className="
-                    text-2xl
-                    font-black
-                    text-[#1F2937]
-                    mt-5
-                    leading-tight
-                  "
-                >
-
-                  {item.titulo}
-
-                </h2>
-
-                {/* RESUMO */}
-
-                <p
-                  className="
-                    text-zinc-600
-                    leading-8
-                    mt-5
-                    line-clamp-3
-                  "
-                >
-
-                  {item.resumo}
-
-                </p>
-
-                {/* FOOTER */}
-
-                <div
-                  className="
-                    mt-8
-                    flex
-                    items-center
-                    justify-between
-                    gap-4
-                    flex-wrap
-                  "
-                >
-
-                  <div>
-
-                    <span
-                      className="
-                        text-sm
-                        text-zinc-400
-                      "
-                    >
-
-                      {new Date(
-                        item.created_at,
-                      ).toLocaleDateString(
-                        "pt-BR",
-                      )}
-
-                    </span>
-
-                    <p
-                      className="
-                        text-sm
-                        text-zinc-500
-                        mt-1
-                      "
-                    >
-
-                      {item.visualizacoes || 0}
-                      {" "}
-                      visualizações
-
-                    </p>
-
-                  </div>
-
-                  {/* ACTIONS */}
-
-                  <div className="flex gap-3">
-
-                    <button
-                      onClick={() =>
-                        editarNoticia(
-                          item,
-                        )
-                      }
-                      className="
-                        h-11
-                        px-5
-                        rounded-2xl
-                        bg-blue-500
-                        hover:bg-blue-600
-                        transition
-                        text-white
-                        font-bold
-                        flex
-                        items-center
-                        gap-2
-                      "
-                    >
-
-                      <Pencil size={16} />
-
-                      Editar
-
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        excluirNoticia(
-                          item.id,
-                        )
-                      }
-                      className="
-                        h-11
-                        px-5
-                        rounded-2xl
-                        bg-red-500
-                        hover:bg-red-600
-                        transition
-                        text-white
-                        font-bold
-                        flex
-                        items-center
-                        gap-2
-                      "
-                    >
-
-                      <Trash2 size={16} />
-
-                      Excluir
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      )}
+      <NoticiasList
+        noticias={noticias}
+        loading={loadingNoticias}
+        onEdit={editarNoticia}
+        onDelete={excluirNoticia}
+      />
 
     </div>
 

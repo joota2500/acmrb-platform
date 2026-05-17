@@ -11,6 +11,12 @@ import { useAuth } from "@/context/AuthContext";
 
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
 
+import AdminContainer from "@/components/admin/layout/AdminContainer";
+
+import AdminContent from "@/components/admin/layout/AdminContent";
+
+import AdminHeader from "@/components/admin/layout/AdminHeader";
+
 import DashboardSection from "@/components/admin/sections/DashboardSection";
 
 import AssociadosSection from "@/components/admin/sections/AssociadosSection";
@@ -67,7 +73,13 @@ export default function AdminPage() {
           bg-[#F5F7F4]
         "
       >
-        Carregando...
+
+        <p className="text-zinc-500">
+
+          Carregando painel...
+
+        </p>
+
       </div>
 
     );
@@ -76,13 +88,7 @@ export default function AdminPage() {
 
   return (
 
-    <div
-      className="
-        min-h-screen
-        bg-[#F5F7F4]
-        flex
-      "
-    >
+    <AdminContainer>
 
       {/* SIDEBAR */}
 
@@ -93,180 +99,169 @@ export default function AdminPage() {
 
       {/* CONTENT */}
 
-      <main
-        className="
-          flex-1
-          p-6
-          md:p-10
-        "
-      >
+      <AdminContent>
 
-        <div className="max-w-7xl mx-auto">
+        {/* TOPO */}
 
-          {/* HEADER */}
+        <div
+          className="
+            flex
+            flex-col
+            xl:flex-row
+            xl:items-center
+            xl:justify-between
+            gap-8
+            mb-10
+          "
+        >
 
-          <div
-            className="
-              flex
-              flex-col
-              lg:flex-row
-              lg:items-center
-              lg:justify-between
-              gap-6
-              mb-10
-            "
-          >
+          <div className="space-y-6">
 
-            <div>
+            <AdminHeader
+              title="Painel Administrativo"
+              description="
+                Plataforma operacional ESG da ACMRB
+                para gestão institucional, ambiental
+                e administrativa.
+              "
+            />
 
-              <h1
+            {user && (
+
+              <div
                 className="
-                  text-4xl
-                  font-black
-                  text-[#1F2937]
+                  inline-flex
+                  items-center
+                  gap-4
+                  bg-white
+                  border
+                  border-black/5
+                  rounded-3xl
+                  px-5
+                  py-4
+                  shadow-sm
                 "
               >
-                Painel Administrativo
-              </h1>
-
-              <p
-                className="
-                  text-zinc-600
-                  mt-2
-                "
-              >
-                Plataforma ESG ACMRB
-              </p>
-
-              {user && (
 
                 <div
                   className="
-                    mt-5
-                    inline-flex
+                    w-12
+                    h-12
+                    rounded-full
+                    bg-[#2E5E4E]
+                    text-white
+                    flex
                     items-center
-                    gap-3
-                    bg-white
-                    border
-                    border-black/5
-                    rounded-2xl
-                    px-4
-                    py-3
+                    justify-center
+                    font-black
+                    text-lg
                   "
                 >
 
-                  <div
-                    className="
-                      w-10
-                      h-10
-                      rounded-full
-                      bg-[#2E5E4E]
-                      text-white
-                      flex
-                      items-center
-                      justify-center
-                      font-bold
-                    "
-                  >
-
-                    {user.email
-                      ?.charAt(0)
-                      .toUpperCase()}
-
-                  </div>
-
-                  <div>
-
-                    <p
-                      className="
-                        text-sm
-                        text-zinc-500
-                      "
-                    >
-                      Administrador logado
-                    </p>
-
-                    <p
-                      className="
-                        font-semibold
-                        text-[#1F2937]
-                      "
-                    >
-                      {user.email}
-                    </p>
-
-                  </div>
+                  {user.email
+                    ?.charAt(0)
+                    .toUpperCase()}
 
                 </div>
 
-              )}
+                <div>
 
-            </div>
+                  <p
+                    className="
+                      text-sm
+                      text-zinc-500
+                    "
+                  >
 
-            {/* LOGOUT */}
+                    Administrador logado
 
-            <button
-              onClick={logout}
-              className="
-                h-14
-                px-6
-                rounded-2xl
-                bg-red-500
-                hover:bg-red-600
-                transition
-                text-white
-                font-semibold
-              "
-            >
-              Sair
-            </button>
+                  </p>
+
+                  <p
+                    className="
+                      font-bold
+                      text-[#1F2937]
+                    "
+                  >
+
+                    {user.email}
+
+                  </p>
+
+                </div>
+
+              </div>
+
+            )}
 
           </div>
 
-          {/* SECTIONS */}
+          {/* LOGOUT */}
 
-          {activeSection === "Dashboard" && (
-            <DashboardSection />
-          )}
+          <button
+            onClick={logout}
+            className="
+              h-14
+              px-8
+              rounded-2xl
+              bg-red-500
+              hover:bg-red-600
+              transition-all
+              text-white
+              font-bold
+              shadow-lg
+              hover:scale-[1.02]
+            "
+          >
 
-          {activeSection === "Associados" && (
-            <AssociadosSection />
-          )}
+            Sair do painel
 
-          {activeSection === "Notícias" && (
-            <NoticiasSection /> 
-          )}
-
-          {activeSection === "Denúncias" && (
-            <DenunciasSection />
-          )}
-
-          {activeSection === "Parceiros" && (
-            <ParceirosSection />
-          )}
-
-          {activeSection === "Projetos" && (
-            <ProjetosSection />
-          )}
-
-          {activeSection === "Indicadores ESG" && (
-            <ESGSection />
-          )}
-
-          {activeSection === "Contato" && (
-            <ContatoSection />
-          )}
-
-          {activeSection === "Configurações" && (
-            <ConfiguracoesSection />
-          )}
+          </button>
 
         </div>
 
-      </main>
+        {/* SECTIONS */}
 
-    </div>
+        {activeSection === "Dashboard" && (
+          <DashboardSection />
+        )}
+
+        {activeSection === "Associados" && (
+          <AssociadosSection />
+        )}
+
+        {activeSection === "Notícias" && (
+          <NoticiasSection />
+        )}
+
+        {activeSection === "Denúncias" && (
+          <DenunciasSection />
+        )}
+
+        {activeSection === "Parceiros" && (
+          <ParceirosSection />
+        )}
+
+        {activeSection === "Projetos" && (
+          <ProjetosSection />
+        )}
+
+        {activeSection === "Indicadores ESG" && (
+          <ESGSection />
+        )}
+
+        {activeSection === "Contato" && (
+          <ContatoSection />
+        )}
+
+        {activeSection === "Configurações" && (
+          <ConfiguracoesSection />
+        )}
+
+      </AdminContent>
+
+    </AdminContainer>
 
   );
 
-}
+} 

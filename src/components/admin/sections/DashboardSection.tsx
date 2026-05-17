@@ -58,7 +58,7 @@ export default function DashboardSection() {
 
         </div>
 
-      ))}
+      ))} 
 
     </div>
 
