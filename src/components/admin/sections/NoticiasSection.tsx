@@ -2,6 +2,15 @@
 
 import { useEffect, useState } from "react";
 
+import {
+  Pencil,
+  Trash2,
+  Eye,
+  EyeOff,
+  Star,
+  Newspaper,
+} from "lucide-react";
+
 import { supabase } from "@/lib/supabase";
 
 type Noticia = {
@@ -22,6 +31,8 @@ type Noticia = {
   publicado: boolean;
 
   slug?: string;
+
+  visualizacoes?: number;
 
   created_at: string;
 };
@@ -53,7 +64,7 @@ export default function NoticiasSection() {
     useState(false);
 
   const [publicado, setPublicado] =
-    useState(false);
+    useState(true);
 
   const [loading, setLoading] =
     useState(false);
@@ -160,6 +171,8 @@ export default function NoticiasSection() {
       let imagemPublica =
         previewImagem || "";
 
+      // UPLOAD IMAGEM
+
       if (imagem) {
 
         const nomeArquivo =
@@ -197,6 +210,8 @@ export default function NoticiasSection() {
 
       let error = null;
 
+      // UPDATE
+
       if (editandoNoticiaId) {
 
         const response =
@@ -229,7 +244,11 @@ export default function NoticiasSection() {
 
         error = response.error;
 
-      } else {
+      }
+
+      // CREATE
+
+      else {
 
         const response =
           await supabase
@@ -249,6 +268,8 @@ export default function NoticiasSection() {
 
               destaque,
 
+              publicado,
+
               slug,
 
             });
@@ -265,15 +286,16 @@ export default function NoticiasSection() {
 
       }
 
+      const mensagem =
+        editandoNoticiaId
+          ? "Notícia atualizada com sucesso."
+          : "Notícia publicada com sucesso.";
+
       resetFormulario();
 
       await carregarNoticias();
 
-      alert(
-        editandoNoticiaId
-          ? "Notícia atualizada com sucesso."
-          : "Notícia publicada com sucesso.",
-      );
+      alert(mensagem);
 
     } catch {
 
@@ -381,9 +403,30 @@ export default function NoticiasSection() {
 
         <div>
 
+          <div
+            className="
+              inline-flex
+              items-center
+              gap-3
+              px-5
+              py-3
+              rounded-2xl
+              bg-emerald-100
+              text-emerald-700
+              font-bold
+              mb-5
+            "
+          >
+
+            <Newspaper size={20} />
+
+            Portal Institucional
+
+          </div>
+
           <h1
             className="
-              text-4xl
+              text-5xl
               font-black
               text-[#1F2937]
             "
@@ -393,7 +436,7 @@ export default function NoticiasSection() {
 
           </h1>
 
-          <p className="text-zinc-500 mt-2">
+          <p className="text-zinc-500 mt-3">
 
             Gerenciamento institucional
             das notícias da ACMRB.
@@ -402,36 +445,84 @@ export default function NoticiasSection() {
 
         </div>
 
+        {/* STATS */}
+
         <div
           className="
-            bg-white
-            rounded-3xl
-            border
-            border-black/5
-            px-6
-            py-5
-            min-w-55
+            grid
+            grid-cols-2
+            gap-4
           "
         >
 
-          <p className="text-zinc-500 text-sm">
-
-            Total de notícias
-
-          </p>
-
-          <h2
+          <div
             className="
-              text-4xl
-              font-black
-              text-[#2E5E4E]
-              mt-2
+              bg-white
+              rounded-3xl
+              border
+              border-black/5
+              p-5
+              min-w-40
             "
           >
 
-            {noticias.length}
+            <p className="text-zinc-500 text-sm">
 
-          </h2>
+              Total
+
+            </p>
+
+            <h2
+              className="
+                text-4xl
+                font-black
+                text-[#2E5E4E]
+                mt-2
+              "
+            >
+
+              {noticias.length}
+
+            </h2>
+
+          </div>
+
+          <div
+            className="
+              bg-white
+              rounded-3xl
+              border
+              border-black/5
+              p-5
+              min-w-40
+            "
+          >
+
+            <p className="text-zinc-500 text-sm">
+
+              Publicadas
+
+            </p>
+
+            <h2
+              className="
+                text-4xl
+                font-black
+                text-blue-600
+                mt-2
+              "
+            >
+
+              {
+                noticias.filter(
+                  (item) =>
+                    item.publicado,
+                ).length
+              }
+
+            </h2>
+
+          </div>
 
         </div>
 
@@ -442,13 +533,14 @@ export default function NoticiasSection() {
       <div
         className="
           bg-white
-          rounded-3xl
+          rounded-4xl
           border
           border-black/5
-          p-6
+          p-7
           grid
           md:grid-cols-2
           gap-5
+          shadow-sm
         "
       >
 
@@ -459,7 +551,7 @@ export default function NoticiasSection() {
           <label
             className="
               text-sm
-              font-semibold
+              font-bold
               text-zinc-700
             "
           >
@@ -483,7 +575,7 @@ export default function NoticiasSection() {
               rounded-2xl
               border
               border-zinc-200
-              px-4
+              px-5
               outline-none
               focus:border-[#2E5E4E]
             "
@@ -498,7 +590,7 @@ export default function NoticiasSection() {
           <label
             className="
               text-sm
-              font-semibold
+              font-bold
               text-zinc-700
             "
           >
@@ -522,7 +614,7 @@ export default function NoticiasSection() {
               rounded-2xl
               border
               border-zinc-200
-              px-4
+              px-5
               outline-none
               focus:border-[#2E5E4E]
             "
@@ -537,7 +629,7 @@ export default function NoticiasSection() {
           <label
             className="
               text-sm
-              font-semibold
+              font-bold
               text-zinc-700
             "
           >
@@ -556,11 +648,11 @@ export default function NoticiasSection() {
             }
             className="
               w-full
-              min-h-35
+              min-h-36
               rounded-2xl
               border
               border-zinc-200
-              p-4
+              p-5
               outline-none
               resize-none
               focus:border-[#2E5E4E]
@@ -576,7 +668,7 @@ export default function NoticiasSection() {
           <label
             className="
               text-sm
-              font-semibold
+              font-bold
               text-zinc-700
             "
           >
@@ -595,7 +687,7 @@ export default function NoticiasSection() {
             }
             className="
               w-full
-              min-h-100
+              min-h-105
               rounded-2xl
               border
               border-zinc-200
@@ -616,7 +708,7 @@ export default function NoticiasSection() {
           <label
             className="
               text-sm
-              font-semibold
+              font-bold
               text-zinc-700
             "
           >
@@ -670,7 +762,7 @@ export default function NoticiasSection() {
                 alt="Preview"
                 className="
                   w-full
-                  h-72
+                  h-80
                   object-cover
                 "
               />
@@ -681,91 +773,132 @@ export default function NoticiasSection() {
 
         </div>
 
-        {/* CHECKBOX */}
+        {/* SWITCHES */}
 
-        <label
+        <div
           className="
             md:col-span-2
-            flex
-            items-center
-            gap-3
-            bg-zinc-50
-            border
-            border-zinc-200
-            rounded-2xl
-            px-5
-            py-4
-            cursor-pointer
+            grid
+            md:grid-cols-2
+            gap-4
           "
         >
 
-          <input
-            type="checkbox"
-            checked={destaque}
-            onChange={(e) =>
-              setDestaque(
-                e.target.checked,
-              )
-            }
-            className="w-5 h-5"
-          />
+          {/* DESTAQUE */}
 
-          <span
+          <label
             className="
-              font-medium
-              text-zinc-700
+              flex
+              items-center
+              gap-4
+              bg-zinc-50
+              border
+              border-zinc-200
+              rounded-2xl
+              px-5
+              py-5
+              cursor-pointer
             "
           >
 
-            Destacar notícia
-            na página inicial
+            <input
+              type="checkbox"
+              checked={destaque}
+              onChange={(e) =>
+                setDestaque(
+                  e.target.checked,
+                )
+              }
+              className="w-5 h-5"
+            />
 
-          </span>
+            <div>
 
-        </label>
+              <p
+                className="
+                  font-bold
+                  text-zinc-800
+                "
+              >
 
-       {/* Publicado */}     
-       <label
-          className="
-            md:col-span-2
-            flex
-            items-center
-            gap-3
-            bg-zinc-50
-            border
-            border-zinc-200
-            rounded-2xl
-            px-5
-            py-4
-            cursor-pointer
-          "
-        >
+                Destacar notícia
 
-          <input
-            type="checkbox"
-            checked={publicado}
-            onChange={(e) =>
-              setPublicado(
-                e.target.checked,
-              )
-            }
-            className="w-5 h-5"
-          />
+              </p>
 
-          <span
+              <p
+                className="
+                  text-sm
+                  text-zinc-500
+                  mt-1
+                "
+              >
+
+                Mostrar na homepage
+
+              </p>
+
+            </div>
+
+          </label>
+
+          {/* PUBLICADO */}
+
+          <label
             className="
-              font-medium
-              text-zinc-700
+              flex
+              items-center
+              gap-4
+              bg-zinc-50
+              border
+              border-zinc-200
+              rounded-2xl
+              px-5
+              py-5
+              cursor-pointer
             "
           >
 
-            Publicar notícia
-            no portal público
+            <input
+              type="checkbox"
+              checked={publicado}
+              onChange={(e) =>
+                setPublicado(
+                  e.target.checked,
+                )
+              }
+              className="w-5 h-5"
+            />
 
-          </span>
+            <div>
 
-        </label>
+              <p
+                className="
+                  font-bold
+                  text-zinc-800
+                "
+              >
 
+                Publicar notícia
+
+              </p>
+
+              <p
+                className="
+                  text-sm
+                  text-zinc-500
+                  mt-1
+                "
+              >
+
+                Tornar visível no portal
+
+              </p>
+
+            </div>
+
+          </label>
+
+        </div>
 
         {/* ACTIONS */}
 
@@ -815,12 +948,12 @@ export default function NoticiasSection() {
               }
               className="
                 h-14
-                px-6
+                px-7
                 rounded-2xl
                 bg-zinc-200
                 hover:bg-zinc-300
                 transition
-                font-semibold
+                font-bold
               "
             >
 
@@ -871,28 +1004,58 @@ export default function NoticiasSection() {
               key={item.id}
               className="
                 bg-white
-                rounded-3xl
+                rounded-4xl
                 border
                 border-black/5
                 overflow-hidden
+                hover:shadow-xl
+                transition-all
               "
             >
 
-              {item.imagem_url && (
+              {/* IMAGE */}
 
-                <img
-                  src={item.imagem_url}
-                  alt={item.titulo}
-                  className="
-                    w-full
-                    h-64
-                    object-cover
-                  "
-                />
+              <div
+                className="
+                  h-72
+                  bg-zinc-100
+                  overflow-hidden
+                "
+              >
 
-              )}
+                {item.imagem_url ? (
 
-              <div className="p-6">
+                  <img
+                    src={item.imagem_url}
+                    alt={item.titulo}
+                    className="
+                      w-full
+                      h-full
+                      object-cover
+                    "
+                  />
+
+                ) : (
+
+                  <div
+                    className="
+                      w-full
+                      h-full
+                      bg-linear-to-br
+                      from-emerald-200
+                      to-teal-100
+                    "
+                  />
+
+                )}
+
+              </div>
+
+              {/* CONTENT */}
+
+              <div className="p-7">
+
+                {/* TAGS */}
 
                 <div
                   className="
@@ -930,8 +1093,13 @@ export default function NoticiasSection() {
                         text-yellow-700
                         text-xs
                         font-bold
+                        flex
+                        items-center
+                        gap-1
                       "
                     >
+
+                      <Star size={12} />
 
                       Destaque
 
@@ -939,7 +1107,57 @@ export default function NoticiasSection() {
 
                   )}
 
+                  {item.publicado ? (
+
+                    <span
+                      className="
+                        px-3
+                        py-1
+                        rounded-full
+                        bg-blue-100
+                        text-blue-700
+                        text-xs
+                        font-bold
+                        flex
+                        items-center
+                        gap-1
+                      "
+                    >
+
+                      <Eye size={12} />
+
+                      Publicado
+
+                    </span>
+
+                  ) : (
+
+                    <span
+                      className="
+                        px-3
+                        py-1
+                        rounded-full
+                        bg-zinc-200
+                        text-zinc-700
+                        text-xs
+                        font-bold
+                        flex
+                        items-center
+                        gap-1
+                      "
+                    >
+
+                      <EyeOff size={12} />
+
+                      Oculto
+
+                    </span>
+
+                  )}
+
                 </div>
+
+                {/* TITULO */}
 
                 <h2
                   className="
@@ -947,6 +1165,7 @@ export default function NoticiasSection() {
                     font-black
                     text-[#1F2937]
                     mt-5
+                    leading-tight
                   "
                 >
 
@@ -954,11 +1173,13 @@ export default function NoticiasSection() {
 
                 </h2>
 
+                {/* RESUMO */}
+
                 <p
                   className="
                     text-zinc-600
-                    leading-7
-                    mt-4
+                    leading-8
+                    mt-5
                     line-clamp-3
                   "
                 >
@@ -967,30 +1188,53 @@ export default function NoticiasSection() {
 
                 </p>
 
+                {/* FOOTER */}
+
                 <div
                   className="
-                    mt-6
+                    mt-8
                     flex
                     items-center
                     justify-between
                     gap-4
+                    flex-wrap
                   "
                 >
 
-                  <span
-                    className="
-                      text-sm
-                      text-zinc-400
-                    "
-                  >
+                  <div>
 
-                    {new Date(
-                      item.created_at,
-                    ).toLocaleDateString(
-                      "pt-BR",
-                    )}
+                    <span
+                      className="
+                        text-sm
+                        text-zinc-400
+                      "
+                    >
 
-                  </span>
+                      {new Date(
+                        item.created_at,
+                      ).toLocaleDateString(
+                        "pt-BR",
+                      )}
+
+                    </span>
+
+                    <p
+                      className="
+                        text-sm
+                        text-zinc-500
+                        mt-1
+                      "
+                    >
+
+                      {item.visualizacoes || 0}
+                      {" "}
+                      visualizações
+
+                    </p>
+
+                  </div>
+
+                  {/* ACTIONS */}
 
                   <div className="flex gap-3">
 
@@ -1008,9 +1252,14 @@ export default function NoticiasSection() {
                         hover:bg-blue-600
                         transition
                         text-white
-                        font-semibold
+                        font-bold
+                        flex
+                        items-center
+                        gap-2
                       "
                     >
+
+                      <Pencil size={16} />
 
                       Editar
 
@@ -1030,9 +1279,14 @@ export default function NoticiasSection() {
                         hover:bg-red-600
                         transition
                         text-white
-                        font-semibold
+                        font-bold
+                        flex
+                        items-center
+                        gap-2
                       "
                     >
+
+                      <Trash2 size={16} />
 
                       Excluir
 

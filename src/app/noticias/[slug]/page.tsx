@@ -2,12 +2,18 @@
 
 import { useEffect, useState } from "react";
 
+import Link from "next/link";
+
 import { useParams } from "next/navigation";
+
+import { motion } from "framer-motion";
 
 import { supabase } from "@/lib/supabase";
 
 import {
+  ArrowLeft,
   CalendarDays,
+  Eye,
 } from "lucide-react";
 
 type Noticia = {
@@ -24,6 +30,8 @@ type Noticia = {
   imagem_url: string;
 
   slug: string;
+
+  visualizacoes?: number;
 
   created_at: string;
 };
@@ -52,6 +60,7 @@ export default function NoticiaPage() {
           .from("noticias")
           .select("*")
           .eq("slug", slug)
+          .eq("publicado", true)
           .single();
 
       if (error) {
@@ -64,6 +73,8 @@ export default function NoticiaPage() {
 
       setNoticia(data);
 
+      // VISUALIZAÇÕES
+
       await supabase
         .from("noticias")
         .update({
@@ -71,6 +82,10 @@ export default function NoticiaPage() {
             (data.visualizacoes || 0) + 1,
         })
         .eq("id", data.id);
+
+    } catch (err) {
+
+      console.log(err);
 
     } finally {
 
@@ -90,6 +105,8 @@ export default function NoticiaPage() {
 
   }, [slug]);
 
+  // LOADING
+
   if (loading) {
 
     return (
@@ -97,23 +114,48 @@ export default function NoticiaPage() {
       <main
         className="
           min-h-screen
+          bg-[#F7FAF8]
           flex
           items-center
           justify-center
         "
       >
 
-        <p className="text-zinc-500">
+        <div className="text-center">
 
-          Carregando notícia...
+          <div
+            className="
+              w-14
+              h-14
+              border-4
+              border-emerald-200
+              border-t-emerald-700
+              rounded-full
+              animate-spin
+              mx-auto
+            "
+          />
 
-        </p>
+          <p
+            className="
+              text-zinc-500
+              mt-6
+            "
+          >
+
+            Carregando notícia...
+
+          </p>
+
+        </div>
 
       </main>
 
     );
 
   }
+
+  // NOT FOUND
 
   if (!noticia) {
 
@@ -122,17 +164,74 @@ export default function NoticiaPage() {
       <main
         className="
           min-h-screen
+          bg-[#F7FAF8]
           flex
           items-center
           justify-center
+          px-6
         "
       >
 
-        <p className="text-zinc-500">
+        <div
+          className="
+            bg-white
+            rounded-4xl
+            border
+            border-black/5
+            p-14
+            text-center
+            max-w-2xl
+          "
+        >
 
-          Notícia não encontrada.
+          <h1
+            className="
+              text-4xl
+              font-black
+              text-zinc-900
+            "
+          >
 
-        </p>
+            Notícia não encontrada
+
+          </h1>
+
+          <p
+            className="
+              text-zinc-500
+              mt-5
+              leading-8
+            "
+          >
+
+            A publicação solicitada
+            não existe ou foi removida.
+
+          </p>
+
+          <Link
+            href="/noticias"
+            className="
+              inline-flex
+              items-center
+              gap-3
+              mt-10
+              px-6
+              py-4
+              rounded-2xl
+              bg-[#2E5E4E]
+              text-white
+              font-bold
+            "
+          >
+
+            <ArrowLeft size={18} />
+
+            Voltar para notícias
+
+          </Link>
+
+        </div>
 
       </main>
 
@@ -142,34 +241,89 @@ export default function NoticiaPage() {
 
   return (
 
-    <main className="min-h-screen bg-white">
+    <main
+      className="
+        min-h-screen
+        bg-[#F7FAF8]
+        overflow-hidden
+      "
+    >
+
+      {/* BACKGROUND */}
+
+      <div
+        className="
+          fixed
+          top-0
+          left-1/2
+          -translate-x-1/2
+          w-225
+          h-225
+          bg-emerald-400/10
+          blur-[160px]
+          rounded-full
+          pointer-events-none
+        "
+      />
 
       {/* HERO */}
 
-      <section className="relative h-125 overflow-hidden">
+      <section
+        className="
+          relative
+          min-h-[85vh]
+          overflow-hidden
+        "
+      >
 
-        <img
-          src={noticia.imagem_url}
-          alt={noticia.titulo}
-          className="
-            w-full
-            h-full
-            object-cover
-          "
-        />
+        {/* IMAGE */}
+
+        {noticia.imagem_url ? (
+
+          <img
+            src={noticia.imagem_url}
+            alt={noticia.titulo}
+            className="
+              absolute
+              inset-0
+              w-full
+              h-full
+              object-cover
+            "
+          />
+
+        ) : (
+
+          <div
+            className="
+              absolute
+              inset-0
+              bg-linear-to-br
+              from-emerald-300
+              via-teal-200
+              to-cyan-200
+            "
+          />
+
+        )}
+
+        {/* OVERLAY */}
 
         <div
           className="
             absolute
             inset-0
-            bg-black/50
+            bg-black/60
           "
         />
 
+        {/* CONTENT */}
+
         <div
           className="
-            absolute
-            inset-0
+            relative
+            z-10
+            min-h-[85vh]
             flex
             items-end
           "
@@ -178,66 +332,174 @@ export default function NoticiaPage() {
           <div
             className="
               container-custom
-              pb-20
-              text-white
+              pb-24
+              px-6
             "
           >
 
-            <span
+            {/* VOLTAR */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+            >
+
+              <Link
+                href="/noticias"
+                className="
+                  inline-flex
+                  items-center
+                  gap-3
+                  text-white/90
+                  hover:text-white
+                  transition-all
+                  mb-10
+                "
+              >
+
+                <ArrowLeft size={18} />
+
+                Voltar para notícias
+
+              </Link>
+
+            </motion.div>
+
+            {/* CATEGORIA */}
+
+            <motion.span
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.1,
+              }}
               className="
                 inline-flex
-                px-4
-                py-2
+                px-5
+                py-3
                 rounded-full
-                bg-white/20
-                backdrop-blur-md
+                bg-white/15
+                backdrop-blur-xl
+                text-white
                 text-sm
-                font-semibold
+                font-bold
+                border
+                border-white/10
               "
             >
 
               {noticia.categoria}
 
-            </span>
+            </motion.span>
 
-            <h1
+            {/* TITULO */}
+
+            <motion.h1
+              initial={{
+                opacity: 0,
+                y: 30,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.2,
+              }}
               className="
                 text-5xl
-                md:text-6xl
+                md:text-7xl
                 font-black
                 leading-tight
+                text-white
                 mt-8
-                max-w-5xl
+                max-w-6xl
               "
             >
 
               {noticia.titulo}
 
-            </h1>
+            </motion.h1>
 
-            <div
+            {/* INFO */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 20,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                delay: 0.3,
+              }}
               className="
                 flex
+                flex-wrap
                 items-center
-                gap-3
-                mt-8
+                gap-8
+                mt-10
                 text-white/80
               "
             >
 
-              <CalendarDays size={18} />
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-3
+                "
+              >
 
-              <span>
+                <CalendarDays size={18} />
 
-                {new Date(
-                  noticia.created_at,
-                ).toLocaleDateString(
-                  "pt-BR",
-                )}
+                <span>
 
-              </span>
+                  {new Date(
+                    noticia.created_at,
+                  ).toLocaleDateString(
+                    "pt-BR",
+                  )}
 
-            </div>
+                </span>
+
+              </div>
+
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-3
+                "
+              >
+
+                <Eye size={18} />
+
+                <span>
+
+                  {noticia.visualizacoes || 0}
+                  {" "}
+                  visualizações
+
+                </span>
+
+              </div>
+
+            </motion.div>
 
           </div>
 
@@ -247,50 +509,95 @@ export default function NoticiaPage() {
 
       {/* CONTENT */}
 
-      <section className="py-24 px-6">
+      <section className="py-28 px-6 relative z-10">
 
         <div
           className="
-            max-w-4xl
+            max-w-5xl
             mx-auto
           "
         >
 
-          <p
+          {/* RESUMO */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 30,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{ once: true }}
             className="
-              text-2xl
-              text-zinc-600
-              leading-relaxed
-              font-medium
-            "
-          >
-
-            {noticia.resumo}
-
-          </p>
-
-          <div
-            className="
-              mt-14
-              prose
-              prose-lg
-              max-w-none
+              bg-white/80
+              backdrop-blur-xl
+              border
+              border-black/5
+              rounded-4xl
+              p-10
+              shadow-[0_20px_80px_rgba(15,23,42,0.05)]
             "
           >
 
             <p
               className="
+                text-2xl
+                md:text-3xl
+                leading-relaxed
                 text-zinc-700
-                leading-9
+                font-medium
+              "
+            >
+
+              {noticia.resumo}
+
+            </p>
+
+          </motion.div>
+
+          {/* CONTEUDO */}
+
+          <motion.article
+            initial={{
+              opacity: 0,
+              y: 40,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{ once: true }}
+            transition={{
+              delay: 0.1,
+            }}
+            className="
+              mt-14
+              bg-white
+              rounded-4xl
+              border
+              border-black/5
+              p-10
+              md:p-14
+              shadow-[0_20px_80px_rgba(15,23,42,0.05)]
+            "
+          >
+
+            <div
+              className="
+                text-zinc-700
+                text-lg
+                leading-10
                 whitespace-pre-line
               "
             >
 
               {noticia.conteudo}
 
-            </p>
+            </div>
 
-          </div>
+          </motion.article>
 
         </div>
 

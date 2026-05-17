@@ -46,7 +46,16 @@ export default function NewsSection() {
       const { data, error } =
         await supabase
           .from("noticias")
-          .select("*")
+          .select(`
+            id,
+            titulo,
+            resumo,
+            categoria,
+            imagem_url,
+            slug,
+            destaque,
+            created_at
+          `)
           .eq("publicado", true)
           .order("destaque", {
             ascending: false,
@@ -86,13 +95,51 @@ export default function NewsSection() {
 
   return (
 
-    <section id="noticias" className="section-spacing relative overflow-hidden">
+    <section
+      id="noticias"
+      className="
+        section-spacing
+        relative
+        overflow-hidden
+      "
+    >
 
-      {/* BG */}
+      {/* BACKGROUND */}
 
-      <div className="absolute inset-0 bg-linear-to-b from-white to-emerald-50/40" />
+      <div
+        className="
+          absolute
+          inset-0
+          bg-linear-to-b
+          from-white
+          via-emerald-50/30
+          to-white
+        "
+      />
 
-      <div className="container-custom relative z-10">
+      {/* EFFECT */}
+
+      <div
+        className="
+          absolute
+          top-0
+          left-1/2
+          -translate-x-1/2
+          w-175
+          h-175
+          bg-emerald-400/10
+          blur-[140px]
+          rounded-full
+        "
+      />
+
+      <div
+        className="
+          container-custom
+          relative
+          z-10
+        "
+      >
 
         {/* HEADER */}
 
@@ -127,18 +174,31 @@ export default function NewsSection() {
 
             </div>
 
-            <h2 className="section-title">
+            <h2
+              className="
+                section-title
+                max-w-3xl
+              "
+            >
 
-              Transparência, ações ambientais
-              e impacto social.
+              Transparência,
+              impacto ambiental
+              e ações sociais.
 
             </h2>
 
-            <p className="section-description mt-8">
+            <p
+              className="
+                section-description
+                mt-8
+                max-w-2xl
+              "
+            >
 
-              Acompanhe notícias,
-              projetos, iniciativas ambientais,
-              ações sociais e parcerias
+              Acompanhe projetos,
+              iniciativas ambientais,
+              ações sociais, educação
+              ambiental e parcerias ESG
               desenvolvidas pela ACMRB.
 
             </p>
@@ -149,12 +209,22 @@ export default function NewsSection() {
 
           <a
             href="/noticias"
-            className="primary-button whitespace-nowrap"
+            className="
+              primary-button
+              whitespace-nowrap
+              group
+            "
           >
 
             Ver todas
 
-            <ArrowRight size={18} />
+            <ArrowRight
+              size={18}
+              className="
+                group-hover:translate-x-1
+                transition-all
+              "
+            />
 
           </a>
 
@@ -178,24 +248,29 @@ export default function NewsSection() {
               <div
                 key={item}
                 className="
-                  glass-card
                   rounded-4xl
                   overflow-hidden
+                  border
+                  border-black/5
+                  bg-white/70
+                  backdrop-blur-xl
                   animate-pulse
                 "
               >
 
-                <div className="h-60 bg-zinc-200" />
+                <div className="h-64 bg-zinc-200" />
 
-                <div className="p-8 space-y-4">
+                <div className="p-8 space-y-5">
 
-                  <div className="h-4 w-32 bg-zinc-200 rounded-full" />
+                  <div className="h-5 w-36 bg-zinc-200 rounded-full" />
 
                   <div className="h-8 w-full bg-zinc-200 rounded-2xl" />
 
                   <div className="h-4 w-full bg-zinc-200 rounded-full" />
 
                   <div className="h-4 w-2/3 bg-zinc-200 rounded-full" />
+
+                  <div className="h-4 w-28 bg-zinc-200 rounded-full mt-6" />
 
                 </div>
 
@@ -215,23 +290,38 @@ export default function NewsSection() {
           <div
             className="
               mt-20
-              glass-card
               rounded-4xl
+              border
+              border-black/5
+              bg-white/80
+              backdrop-blur-xl
               p-16
               text-center
             "
           >
 
-            <h3 className="text-3xl font-black text-zinc-900">
+            <h3
+              className="
+                text-3xl
+                font-black
+                text-zinc-900
+              "
+            >
 
               Nenhuma notícia publicada
 
             </h3>
 
-            <p className="text-zinc-500 mt-4">
+            <p
+              className="
+                text-zinc-500
+                mt-4
+                text-lg
+              "
+            >
 
-              As notícias aparecerão aqui
-              automaticamente.
+              As notícias institucionais
+              aparecerão aqui automaticamente.
 
             </p>
 
@@ -244,7 +334,14 @@ export default function NewsSection() {
         {!loading &&
           news.length > 0 && (
 
-          <div className="grid lg:grid-cols-3 gap-8 mt-20">
+          <div
+            className="
+              grid
+              lg:grid-cols-3
+              gap-8
+              mt-20
+            "
+          >
 
             {news.map((item, index) => (
 
@@ -264,13 +361,17 @@ export default function NewsSection() {
                 }}
                 viewport={{ once: true }}
                 className="
-                  glass-card
+                  group
                   rounded-4xl
                   overflow-hidden
-                  group
+                  border
+                  border-black/5
+                  bg-white/75
+                  backdrop-blur-xl
                   hover:-translate-y-2
+                  hover:shadow-[0_25px_80px_rgba(16,24,40,0.10)]
                   transition-all
-                  duration-300
+                  duration-500
                 "
               >
 
@@ -278,7 +379,7 @@ export default function NewsSection() {
 
                 <div
                   className="
-                    h-60
+                    h-64
                     relative
                     overflow-hidden
                     bg-zinc-100
@@ -308,34 +409,51 @@ export default function NewsSection() {
                         h-full
                         bg-linear-to-br
                         from-emerald-200
-                        to-teal-100
+                        via-teal-100
+                        to-cyan-100
                       "
                     />
 
                   )}
 
+                  {/* OVERLAY */}
+
                   <div
                     className="
                       absolute
                       inset-0
-                      bg-black/10
-                      group-hover:bg-black/0
-                      transition-all
+                      bg-linear-to-t
+                      from-black/30
+                      via-black/5
+                      to-transparent
                     "
                   />
 
-                  <div className="absolute top-6 left-6 flex gap-3">
+                  {/* TAGS */}
+
+                  <div
+                    className="
+                      absolute
+                      top-6
+                      left-6
+                      flex
+                      items-center
+                      gap-3
+                      flex-wrap
+                    "
+                  >
 
                     <span
                       className="
                         px-4
                         py-2
                         rounded-full
-                        bg-white/80
+                        bg-white/85
                         backdrop-blur-md
                         text-sm
                         font-semibold
                         text-emerald-700
+                        shadow-lg
                       "
                     >
 
@@ -353,7 +471,8 @@ export default function NewsSection() {
                           bg-yellow-400
                           text-yellow-950
                           text-sm
-                          font-bold
+                          font-black
+                          shadow-lg
                         "
                       >
 
@@ -402,7 +521,7 @@ export default function NewsSection() {
                   <h3
                     className="
                       text-2xl
-                      font-bold
+                      font-black
                       text-zinc-900
                       mt-5
                       leading-tight
@@ -438,16 +557,18 @@ export default function NewsSection() {
                       items-center
                       gap-2
                       text-emerald-700
-                      font-semibold
+                      font-bold
                       mt-8
-                      hover:gap-3
+                      hover:gap-4
                       transition-all
                     "
                   >
 
                     Ler mais
 
-                    <ArrowRight size={18} />
+                    <ArrowRight
+                      size={18}
+                    />
 
                   </a>
 
@@ -464,5 +585,7 @@ export default function NewsSection() {
       </div>
 
     </section>
+
   );
+
 }
