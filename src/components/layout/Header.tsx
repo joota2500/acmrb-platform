@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import Link from "next/link";
+
 import {
   motion,
   AnimatePresence,
@@ -11,18 +13,13 @@ import {
   Menu,
   X,
   ArrowRight,
+  User,
+  LogOut,
 } from "lucide-react";
 
 import AdminModal from "../admin/AdminModal";
 
 import { useSecretUnlock } from "../../hooks/useSecretUnlock";
-
-import Link from "next/link";
-
-import {
-  User,
-  LogOut,
-} from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -76,6 +73,11 @@ export default function Header() {
     handleSecretClick,
     closeAdmin,
   } = useSecretUnlock();
+
+  const {
+    user,
+    logout,
+  } = useAuth();
 
   useEffect(() => {
 
@@ -143,7 +145,7 @@ export default function Header() {
         <div
           className="
             container-custom
-            pt-4
+            pt-3
             md:pt-4
           "
         >
@@ -154,13 +156,13 @@ export default function Header() {
               flex
               items-center
               justify-between
-              rounded-3xl
+              rounded-4xl
               border
               transition-all
               duration-300
-              px-4
-              md:px-6
-              lg:px-8
+              px-5
+              md:px-7
+              lg:px-9
               ${
                 scrolled
                   ? `
@@ -172,7 +174,7 @@ export default function Header() {
                   `
                   : `
                     py-3
-                    bg-white/65
+                    bg-white/68
                     backdrop-blur-xl
                     border-white/20
                   `
@@ -199,7 +201,7 @@ export default function Header() {
                   h-10
                   md:w-11
                   md:h-11
-                  rounded-2xl
+                  rounded-[18px]
                   bg-linear-to-br
                   from-[#2E5E4E]
                   to-[#5F9B83]
@@ -207,10 +209,8 @@ export default function Header() {
                   items-center
                   justify-center
                   text-white
-                  
                   text-base
                   md:text-lg
-
                   font-black
                   shadow-[0_10px_30px_rgba(46,94,78,0.35)]
                 "
@@ -224,8 +224,8 @@ export default function Header() {
 
                 <h2
                   className="
-                    text-base
-                    md:text-xl
+                    text-[15px]
+                    md:text-lg
                     font-black
                     text-[#111827]
                     leading-none
@@ -318,32 +318,131 @@ export default function Header() {
               "
             >
 
-              {/* CTA */}
+              {/* USER LOGGED */}
 
-              <a
-                href="tel:+5585999999999"
-                className="
-                  hidden
-                  md:inline-flex
-                  items-center
-                  justify-center
-                  gap-2
-                  h-11
-                  px-5
-                  rounded-2xl
-                  bg-[#2E5E4E]
-                  hover:bg-[#24473B]
-                  text-white
-                  text-sm
-                  font-bold
-                  transition-all
-                  shadow-[0_10px_25px_rgba(46,94,78,0.20)]
-                "
-              >
+              {user ? (
 
-                Ligar Agora
+                <div
+                  className="
+                    hidden
+                    md:flex
+                    items-center
+                    gap-3
+                    pl-2
+                  "
+                >
 
-              </a>
+                  <div
+                    className="
+                      w-11
+                      h-11
+                      rounded-2xl
+                      bg-[#2E5E4E]
+                      flex
+                      items-center
+                      justify-center
+                      text-white
+                      font-black
+                      text-sm
+                      shadow-lg
+                    "
+                  >
+
+                    {user.email
+                      ?.charAt(0)
+                      .toUpperCase()}
+
+                  </div>
+
+                  <div
+                    className="
+                      flex
+                      flex-col
+                      leading-none
+                    "
+                  >
+
+                    <span
+                      className="
+                        text-sm
+                        font-bold
+                        text-zinc-800
+                      "
+                    >
+
+                      Visitante
+
+                    </span>
+
+                    <span
+                      className="
+                        text-xs
+                        text-zinc-500
+                        max-w-35
+                        truncate
+                      "
+                    >
+
+                      {user.email}
+
+                    </span>
+
+                  </div>
+
+                  <button
+                    onClick={logout}
+                    className="
+                      w-10
+                      h-10
+                      rounded-2xl
+                      border
+                      border-black/5
+                      bg-white
+                      flex
+                      items-center
+                      justify-center
+                      hover:bg-red-50
+                      hover:text-red-500
+                      transition-all
+                    "
+                  >
+
+                    <LogOut size={18} />
+
+                  </button>
+
+                </div>
+
+              ) : (
+
+                <Link
+                  href="/login"
+                  className="
+                    hidden
+                    md:inline-flex
+                    items-center
+                    justify-center
+                    gap-2
+                    h-11
+                    px-5
+                    rounded-2xl
+                    bg-[#2E5E4E]
+                    hover:bg-[#24473B]
+                    text-white
+                    text-sm
+                    font-bold
+                    transition-all
+                    shadow-[0_10px_25px_rgba(46,94,78,0.20)]
+                  "
+                >
+
+                  <User size={16} />
+
+                  Entrar
+
+                </Link>
+
+              )}
 
               {/* MOBILE BUTTON */}
 
@@ -441,68 +540,205 @@ export default function Header() {
               "
             >
 
-              {/* LINKS */}
+              {/* TOP */}
 
-              <div
-                className="
-                  flex
-                  flex-col
-                "
-              >
+              <div>
 
-                {links.map(
-                  (
-                    link,
-                    index,
-                  ) => (
+                {/* LOGIN MOBILE */}
 
-                    <motion.a
-                      key={link.name}
-                      href={link.href}
-                      initial={{
-                        opacity: 0,
-                        x: -30,
-                      }}
-                      animate={{
-                        opacity: 1,
-                        x: 0,
-                      }}
-                      transition={{
-                        delay:
-                          index * 0.06,
-                      }}
-                      onClick={() =>
-                        setMenuOpen(
-                          false,
-                        )
-                      }
+                {!user && (
+
+                  <Link
+                    href="/login"
+                    onClick={() =>
+                      setMenuOpen(false)
+                    }
+                    className="
+                      flex
+                      items-center
+                      justify-center
+                      gap-3
+                      mb-8
+                      h-14
+                      rounded-3xl
+                      bg-[#2E5E4E]
+                      text-white
+                      font-black
+                      shadow-lg
+                    "
+                  >
+
+                    <User size={18} />
+
+                    Entrar
+
+                  </Link>
+
+                )}
+
+                {/* USER MOBILE */}
+
+                {user && (
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      bg-white
+                      rounded-3xl
+                      p-4
+                      mb-8
+                      border
+                      border-black/5
+                    "
+                  >
+
+                    <div
                       className="
                         flex
                         items-center
-                        justify-between
-                        py-4
-                        border-b
-                        border-black/5
-                        text-[#111827]
-                        text-[1.35rem]
-                        font-black
-                        tracking-tight
+                        gap-3
                       "
                     >
 
-                      {link.name}
-
-                      <ArrowRight
-                        size={20}
+                      <div
                         className="
-                          text-zinc-400
+                          w-12
+                          h-12
+                          rounded-2xl
+                          bg-[#2E5E4E]
+                          flex
+                          items-center
+                          justify-center
+                          text-white
+                          font-black
                         "
-                      />
+                      >
 
-                    </motion.a>
+                        {user.email
+                          ?.charAt(0)
+                          .toUpperCase()}
 
-                  ),
+                      </div>
+
+                      <div>
+
+                        <p
+                          className="
+                            text-sm
+                            font-black
+                            text-zinc-800
+                          "
+                        >
+
+                          Visitante
+
+                        </p>
+
+                        <p
+                          className="
+                            text-xs
+                            text-zinc-500
+                            max-w-45
+                            truncate
+                          "
+                        >
+
+                          {user.email}
+
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <button
+                      onClick={logout}
+                      className="
+                        w-11
+                        h-11
+                        rounded-2xl
+                        bg-red-50
+                        text-red-500
+                        flex
+                        items-center
+                        justify-center
+                      "
+                    >
+
+                      <LogOut size={18} />
+
+                    </button>
+
+                  </div>
+
                 )}
+
+                {/* LINKS */}
+
+                <div
+                  className="
+                    flex
+                    flex-col
+                  "
+                >
+
+                  {links.map(
+                    (
+                      link,
+                      index,
+                    ) => (
+
+                      <motion.a
+                        key={link.name}
+                        href={link.href}
+                        initial={{
+                          opacity: 0,
+                          x: -30,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          x: 0,
+                        }}
+                        transition={{
+                          delay:
+                            index * 0.06,
+                        }}
+                        onClick={() =>
+                          setMenuOpen(
+                            false,
+                          )
+                        }
+                        className="
+                          flex
+                          items-center
+                          justify-between
+                          py-4
+                          border-b
+                          border-black/5
+                          text-[#111827]
+                          text-[1.2rem]
+                          font-black
+                          tracking-tight
+                        "
+                      >
+
+                        {link.name}
+
+                        <ArrowRight
+                          size={18}
+                          className="
+                            text-zinc-400
+                          "
+                        />
+
+                      </motion.a>
+
+                    ),
+                  )}
+
+                </div>
 
               </div>
 
@@ -511,15 +747,10 @@ export default function Header() {
               <div>
 
                 <a
-                  href="#contato"
-                  onClick={() =>
-                    setMenuOpen(
-                      false,
-                    )
-                  }
+                  href="tel:+5585999999999"
                   className="
                     w-full
-                    h-15
+                    h-14
                     rounded-3xl
                     bg-[#2E5E4E]
                     hover:bg-[#23473A]
