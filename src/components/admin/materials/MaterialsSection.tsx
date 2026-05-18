@@ -940,7 +940,7 @@ export default function MaterialsSection() {
                     </p>
 
                     <h3
-                      className="
+                      className=" 
                         text-lg
                         font-black
                         text-[#111827]

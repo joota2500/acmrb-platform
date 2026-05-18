@@ -53,7 +53,7 @@ export function useESGMetrics() {
   ] = useState(true);
 
   /* =========================
-     TOTAIS
+     TOTAIS AUTOMÁTICOS
   ========================= */
 
   const [
@@ -72,7 +72,7 @@ export function useESGMetrics() {
   ] = useState(0);
 
   /* =========================
-     ESG
+     ESG MANUAL
   ========================= */
 
   const [
@@ -83,6 +83,26 @@ export function useESGMetrics() {
   const [
     empresasParceiras,
     setEmpresasParceiras,
+  ] = useState(0);
+
+  const [
+    co2,
+    setCo2,
+  ] = useState(0);
+
+  const [
+    arvores,
+    setArvores,
+  ] = useState(0);
+
+  const [
+    energia,
+    setEnergia,
+  ] = useState(0);
+
+  const [
+    agua,
+    setAgua,
   ] = useState(0);
 
   /* =========================
@@ -170,7 +190,11 @@ export function useESGMetrics() {
         )
         .select(`
           familias_impactadas,
-          empresas_parceiras
+          empresas_parceiras,
+          co2_evitado,
+          arvores_preservadas,
+          energia_economizada,
+          agua_economizada
         `)
         .limit(1)
         .maybeSingle();
@@ -290,10 +314,6 @@ export function useESGMetrics() {
           {},
         );
 
-      /* =========================
-         LISTA TIPADA
-      ========================= */
-
       const lista:
         MaterialAgrupado[] =
           Object.values(
@@ -335,17 +355,41 @@ export function useESGMetrics() {
         materiais.length,
       );
 
+      /* ESG MANUAL */
+
       setFamiliasImpactadas(
         Number(
-          dashboard?.familias_impactadas ||
-            0,
+          dashboard?.familias_impactadas || 0,
         ),
       );
 
       setEmpresasParceiras(
         Number(
-          dashboard?.empresas_parceiras ||
-            0,
+          dashboard?.empresas_parceiras || 0,
+        ),
+      );
+
+      setCo2(
+        Number(
+          dashboard?.co2_evitado || 0,
+        ),
+      );
+
+      setArvores(
+        Number(
+          dashboard?.arvores_preservadas || 0,
+        ),
+      );
+
+      setEnergia(
+        Number(
+          dashboard?.energia_economizada || 0,
+        ),
+      );
+
+      setAgua(
+        Number(
+          dashboard?.agua_economizada || 0,
         ),
       );
 
@@ -364,31 +408,11 @@ export function useESGMetrics() {
 
   }
 
-  /* =========================
-     ESG CALCULATIONS
-  ========================= */
-
-  const co2 =
-    totalPeso * 1.8;
-
-  const arvores =
-    totalPeso * 0.12;
-
-  const energia =
-    totalPeso * 95;
-
-  const agua =
-    totalPeso * 26;
-
-  /* =========================
-     RETURN
-  ========================= */
-
   return {
 
     loading,
 
-    /* TOTAIS */
+    /* AUTOMÁTICOS */
 
     totalPeso,
 
@@ -396,7 +420,7 @@ export function useESGMetrics() {
 
     totalRegistros,
 
-    /* ESG */
+    /* ESG MANUAL */
 
     co2,
 
@@ -417,8 +441,6 @@ export function useESGMetrics() {
     materiaisAgrupados,
 
     topMateriais,
-
-    /* ACTIONS */
 
     atualizar:
       carregar,

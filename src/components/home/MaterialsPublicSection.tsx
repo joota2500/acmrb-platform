@@ -17,10 +17,7 @@ import {
   Scale,
   Wallet,
   TrendingUp,
-  Boxes,
   ArrowRight,
-  Leaf,
-  BarChart3,
 } from "lucide-react";
 
 import {
@@ -59,16 +56,6 @@ export default function MaterialsPublicSection() {
     setTotalValor,
   ] = useState(0);
 
-  const [
-    totalRegistros,
-    setTotalRegistros,
-  ] = useState(0);
-
-  const [
-    co2Evitado,
-    setCo2Evitado,
-  ] = useState(0);
-
   useEffect(() => {
 
     carregarDados();
@@ -101,9 +88,7 @@ export default function MaterialsPublicSection() {
         !data
       ) {
 
-        console.error(
-          error,
-        );
+        console.error(error);
 
         return;
 
@@ -118,8 +103,6 @@ export default function MaterialsPublicSection() {
       let pesoTotal = 0;
 
       let valorTotal = 0;
-
-      let registrosTotal = 0;
 
       data.forEach(
         (item: any) => {
@@ -143,8 +126,6 @@ export default function MaterialsPublicSection() {
           pesoTotal += peso;
 
           valorTotal += valor;
-
-          registrosTotal += 1;
 
           if (
             !resumo[nome]
@@ -195,9 +176,7 @@ export default function MaterialsPublicSection() {
                         (item.peso /
                           pesoTotal) *
                         100
-                      ).toFixed(
-                        1,
-                      ),
+                      ).toFixed(1),
                     )
                   : 0,
 
@@ -209,9 +188,7 @@ export default function MaterialsPublicSection() {
               a.peso,
           );
 
-      setMateriais(
-        lista,
-      );
+      setMateriais(lista);
 
       setTotalPeso(
         pesoTotal,
@@ -221,23 +198,9 @@ export default function MaterialsPublicSection() {
         valorTotal,
       );
 
-      setTotalRegistros(
-        registrosTotal,
-      );
-
-      /* =========================
-         ESG
-      ========================= */
-
-      setCo2Evitado(
-        pesoTotal * 1.8,
-      );
-
     } catch (err) {
 
-      console.error(
-        err,
-      );
+      console.error(err);
 
     } finally {
 
@@ -250,10 +213,7 @@ export default function MaterialsPublicSection() {
   const topMateriais =
     useMemo(
       () =>
-        materiais.slice(
-          0,
-          3,
-        ),
+        materiais.slice(0, 3),
       [materiais],
     );
 
@@ -268,7 +228,7 @@ export default function MaterialsPublicSection() {
       "
     >
 
-      {/* BACKGROUND */}
+      {/* BG */}
 
       <div className="absolute inset-0">
 
@@ -357,11 +317,11 @@ export default function MaterialsPublicSection() {
             "
           >
 
-            Plataforma pública com
-            indicadores operacionais,
-            rastreabilidade ambiental,
-            coleta seletiva e métricas ESG
-            geradas em tempo real.
+            Resumo operacional público
+            com dados de reciclagem,
+            logística reversa
+            e materiais processados
+            pela associação.
 
           </p>
 
@@ -372,8 +332,7 @@ export default function MaterialsPublicSection() {
         <div
           className="
             grid
-            sm:grid-cols-2
-            xl:grid-cols-4
+            md:grid-cols-2
             gap-8
             mt-24
           "
@@ -387,7 +346,7 @@ export default function MaterialsPublicSection() {
             }}
             className="
               rounded-4xl
-              p-8
+              p-10
               text-white
               shadow-2xl
               bg-linear-to-br
@@ -421,7 +380,7 @@ export default function MaterialsPublicSection() {
 
             <h3
               className="
-                text-5xl
+                text-6xl
                 font-black
                 mt-4
               "
@@ -429,9 +388,7 @@ export default function MaterialsPublicSection() {
 
               {loading
                 ? "--"
-                : `${totalPeso.toFixed(
-                    0,
-                  )}kg`}
+                : `${totalPeso.toFixed(0)}kg`}
 
             </h3>
 
@@ -445,7 +402,7 @@ export default function MaterialsPublicSection() {
             }}
             className="
               rounded-4xl
-              p-8
+              p-10
               text-white
               shadow-2xl
               bg-linear-to-br
@@ -479,344 +436,17 @@ export default function MaterialsPublicSection() {
 
             <h3
               className="
-                text-5xl
+                text-6xl
                 font-black
                 mt-4
-                wrap-break-word
               "
             >
 
               {loading
                 ? "--"
-                : `R$ ${totalValor.toFixed(
-                    2,
-                  )}`}
+                : `R$ ${totalValor.toFixed(2)}`}
 
             </h3>
-
-          </motion.div>
-
-          {/* TIPOS */}
-
-          <motion.div
-            whileHover={{
-              y: -5,
-            }}
-            className="
-              rounded-4xl
-              p-8
-              text-white
-              shadow-2xl
-              bg-linear-to-br
-              from-orange-500
-              to-yellow-400
-            "
-          >
-
-            <div
-              className="
-                w-18
-                h-18
-                rounded-3xl
-                bg-white/20
-                flex
-                items-center
-                justify-center
-                mb-8
-              "
-            >
-
-              <Recycle size={34} />
-
-            </div>
-
-            <p className="text-white/80">
-
-              Tipos de materiais
-
-            </p>
-
-            <h3
-              className="
-                text-5xl
-                font-black
-                mt-4
-              "
-            >
-
-              {materiais.length}
-
-            </h3>
-
-          </motion.div>
-
-          {/* REGISTROS */}
-
-          <motion.div
-            whileHover={{
-              y: -5,
-            }}
-            className="
-              rounded-4xl
-              p-8
-              text-white
-              shadow-2xl
-              bg-linear-to-br
-              from-violet-500
-              to-fuchsia-500
-            "
-          >
-
-            <div
-              className="
-                w-18
-                h-18
-                rounded-3xl
-                bg-white/20
-                flex
-                items-center
-                justify-center
-                mb-8
-              "
-            >
-
-              <Boxes size={34} />
-
-            </div>
-
-            <p className="text-white/80">
-
-              Registros operacionais
-
-            </p>
-
-            <h3
-              className="
-                text-5xl
-                font-black
-                mt-4
-              "
-            >
-
-              {totalRegistros}
-
-            </h3>
-
-          </motion.div>
-
-        </div>
-
-        {/* ESG QUICK */}
-
-        <div
-          className="
-            grid
-            lg:grid-cols-2
-            gap-8
-            mt-10
-          "
-        >
-
-          {/* CO2 */}
-
-          <motion.div
-            whileHover={{
-              y: -5,
-            }}
-            className="
-              rounded-4xl
-              p-10
-              bg-white/80
-              backdrop-blur-xl
-              border
-              border-white/50
-              shadow-xl
-            "
-          >
-
-            <div
-              className="
-                flex
-                items-center
-                gap-5
-              "
-            >
-
-              <div
-                className="
-                  w-18
-                  h-18
-                  rounded-3xl
-                  bg-emerald-100
-                  text-emerald-700
-                  flex
-                  items-center
-                  justify-center
-                "
-              >
-
-                <Leaf size={34} />
-
-              </div>
-
-              <div>
-
-                <p
-                  className="
-                    text-zinc-500
-                    font-medium
-                  "
-                >
-
-                  CO₂ evitado
-
-                </p>
-
-                <h3
-                  className="
-                    text-5xl
-                    font-black
-                    text-[#111827]
-                    mt-2
-                  "
-                >
-
-                  {loading
-                    ? "--"
-                    : `${co2Evitado.toFixed(
-                        0,
-                      )}kg`}
-
-                </h3>
-
-              </div>
-
-            </div>
-
-            <p
-              className="
-                text-zinc-600
-                leading-8
-                mt-8
-              "
-            >
-
-              Estimativa baseada
-              no volume total
-              de resíduos recicláveis
-              recuperados pela associação.
-
-            </p>
-
-          </motion.div>
-
-          {/* CTA */}
-
-          <motion.div
-            whileHover={{
-              y: -5,
-            }}
-            className="
-              rounded-4xl
-              p-10
-              text-white
-              shadow-2xl
-              bg-linear-to-br
-              from-[#111827]
-              to-[#1F2937]
-            "
-          >
-
-            <div
-              className="
-                flex
-                items-center
-                justify-between
-                gap-6
-              "
-            >
-
-              <div>
-
-                <p className="text-white/70">
-
-                  Transparência ESG
-
-                </p>
-
-                <h3
-                  className="
-                    text-4xl
-                    font-black
-                    mt-3
-                  "
-                >
-
-                  Relatório completo
-
-                </h3>
-
-              </div>
-
-              <div
-                className="
-                  w-18
-                  h-18
-                  rounded-3xl
-                  bg-white/10
-                  flex
-                  items-center
-                  justify-center
-                "
-              >
-
-                <BarChart3
-                  size={34}
-                />
-
-              </div>
-
-            </div>
-
-            <p
-              className="
-                text-white/75
-                leading-8
-                mt-8
-              "
-            >
-
-              Consulte indicadores ESG,
-              materiais recicláveis,
-              impacto ambiental,
-              registros operacionais
-              e métricas públicas detalhadas.
-
-            </p>
-
-            <Link
-              href="/transparencia"
-              className="
-                mt-10
-                inline-flex
-                items-center
-                gap-3
-                h-14
-                px-8
-                rounded-2xl
-                bg-white
-                hover:bg-zinc-100
-                transition-all
-                text-[#111827]
-                font-black
-              "
-            >
-
-              Acessar transparência
-
-              <ArrowRight size={20} />
-
-            </Link>
 
           </motion.div>
 
@@ -847,7 +477,7 @@ export default function MaterialsPublicSection() {
                 "
               >
 
-                Principais materiais
+                Materiais em destaque
 
               </h3>
 
@@ -858,9 +488,9 @@ export default function MaterialsPublicSection() {
                 "
               >
 
-                Materiais com maior
-                volume operacional
-                dentro da associação.
+                Ranking baseado
+                no maior volume
+                operacional reciclado.
 
               </p>
 
@@ -891,8 +521,6 @@ export default function MaterialsPublicSection() {
             </Link>
 
           </div>
-
-          {/* GRID */}
 
           <div
             className="
@@ -941,14 +569,11 @@ export default function MaterialsPublicSection() {
                   "
                 >
 
-                  {/* TOP */}
-
                   <div
                     className="
                       flex
                       items-center
                       justify-between
-                      gap-4
                     "
                   >
 
@@ -989,8 +614,6 @@ export default function MaterialsPublicSection() {
 
                   </div>
 
-                  {/* NOME */}
-
                   <h3
                     className="
                       text-3xl
@@ -1003,8 +626,6 @@ export default function MaterialsPublicSection() {
                     {item.nome}
 
                   </h3>
-
-                  {/* GRID */}
 
                   <div
                     className="
@@ -1040,9 +661,7 @@ export default function MaterialsPublicSection() {
                         "
                       >
 
-                        {item.peso.toFixed(
-                          0,
-                        )}kg
+                        {item.peso.toFixed(0)}kg
 
                       </h4>
 
@@ -1073,17 +692,13 @@ export default function MaterialsPublicSection() {
                         "
                       >
 
-                        {
-                          item.percentual
-                        }%
+                        {item.percentual}%
 
                       </h4>
 
                     </div>
 
                   </div>
-
-                  {/* VALOR */}
 
                   <div className="mt-8">
 
@@ -1110,15 +725,11 @@ export default function MaterialsPublicSection() {
                       "
                     >
 
-                      R$ {item.valor.toFixed(
-                        2,
-                      )}
+                      R$ {item.valor.toFixed(2)}
 
                     </h4>
 
                   </div>
-
-                  {/* REGISTROS */}
 
                   <div
                     className="
@@ -1154,9 +765,7 @@ export default function MaterialsPublicSection() {
                         size={18}
                       />
 
-                      {
-                        item.quantidade
-                      }
+                      {item.quantidade}
 
                     </div>
 

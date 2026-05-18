@@ -2,6 +2,7 @@
 
 import {
   useState,
+  useEffect,
 } from "react";
 
 import {
@@ -103,6 +104,47 @@ export default function AdminSidebar({
     setMobileOpen,
   ] = useState(false);
 
+  /* =========================
+     LOCK BODY SCROLL
+  ========================= */
+
+  useEffect(() => {
+
+    if (mobileOpen) {
+
+      document.body.style.overflow =
+        "hidden";
+
+    } else {
+
+      document.body.style.overflow =
+        "auto";
+
+    }
+
+    return () => {
+
+      document.body.style.overflow =
+        "auto";
+
+    };
+
+  }, [mobileOpen]);
+
+  function handleChangeSection(
+    section: string,
+  ) {
+
+    setActiveSection(
+      section,
+    );
+
+    setMobileOpen(
+      false,
+    );
+
+  }
+
   function renderMenu() {
 
     return (
@@ -128,20 +170,14 @@ export default function AdminSidebar({
 
             <button
               key={item.label}
-              onClick={() => {
-
-                setActiveSection(
+              onClick={() =>
+                handleChangeSection(
                   item.label,
-                );
-
-                setMobileOpen(
-                  false,
-                );
-
-              }}
+                )
+              }
               className={`
                 group
-                h-15
+                min-h-15
                 rounded-2xl
                 px-5
                 flex
@@ -149,13 +185,15 @@ export default function AdminSidebar({
                 justify-between
                 transition-all
                 duration-300
+                text-left
 
                 ${
                   active
                     ? `
                       bg-[#2E5E4E]
                       text-white
-                      shadow-lg
+                      shadow-xl
+                      shadow-emerald-900/10
                     `
                     : `
                       text-[#374151]
@@ -171,15 +209,22 @@ export default function AdminSidebar({
                   flex
                   items-center
                   gap-4
+                  min-w-0
                 "
               >
 
-                <Icon size={21} />
+                <Icon
+                  size={21}
+                  className="
+                    shrink-0
+                  "
+                />
 
                 <span
                   className="
                     font-semibold
                     text-[15px]
+                    truncate
                   "
                 >
 
@@ -192,6 +237,7 @@ export default function AdminSidebar({
               <ChevronRight
                 size={18}
                 className={`
+                  shrink-0
                   transition-all
 
                   ${
@@ -234,7 +280,8 @@ export default function AdminSidebar({
           sticky
           top-0
           z-50
-          bg-white
+          bg-white/95
+          backdrop-blur-xl
           border-b
           border-black/5
           px-5
@@ -250,6 +297,7 @@ export default function AdminSidebar({
             flex
             items-center
             gap-3
+            min-w-0
           "
         >
 
@@ -266,6 +314,7 @@ export default function AdminSidebar({
               justify-center
               text-white
               font-black
+              shrink-0
             "
           >
 
@@ -273,12 +322,13 @@ export default function AdminSidebar({
 
           </div>
 
-          <div>
+          <div className="min-w-0">
 
             <h2
               className="
                 font-black
                 text-[#1F2937]
+                truncate
               "
             >
 
@@ -290,10 +340,11 @@ export default function AdminSidebar({
               className="
                 text-xs
                 text-zinc-500
+                truncate
               "
             >
 
-              Painel ESG
+              Plataforma ESG
 
             </p>
 
@@ -312,9 +363,12 @@ export default function AdminSidebar({
             h-12
             rounded-2xl
             bg-[#F3F6F4]
+            hover:bg-[#E8EFEB]
+            transition
             flex
             items-center
             justify-center
+            shrink-0
           "
         >
 
@@ -326,7 +380,7 @@ export default function AdminSidebar({
 
       </div>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE SIDEBAR */}
 
       {mobileOpen && (
 
@@ -335,28 +389,129 @@ export default function AdminSidebar({
             lg:hidden
             fixed
             inset-0
-            z-40
+            z-50
             bg-black/40
             backdrop-blur-sm
           "
         >
 
+          {/* OVERLAY */}
+
           <div
+            onClick={() =>
+              setMobileOpen(
+                false,
+              )
+            }
             className="
               absolute
-              left-0
-              top-0
+              inset-0
+            "
+          />
+
+          {/* SIDEBAR */}
+
+          <aside
+            className="
+              relative
+              w-[85%]
+              max-w-85
               h-full
-              w-80
               bg-white
-              p-5
+              shadow-2xl
               overflow-y-auto
+              flex
+              flex-col
             "
           >
 
-            {renderMenu()}
+            {/* HEADER */}
 
-          </div>
+            <div
+              className="
+                p-6
+                border-b
+                border-black/5
+                flex
+                items-center
+                justify-between
+              "
+            >
+
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-4
+                "
+              >
+
+                <div
+                  className="
+                    w-14
+                    h-14
+                    rounded-3xl
+                    bg-linear-to-br
+                    from-[#2E5E4E]
+                    to-[#4F8A73]
+                    flex
+                    items-center
+                    justify-center
+                    text-white
+                    text-xl
+                    font-black
+                  "
+                >
+
+                  ♻
+
+                </div>
+
+                <div>
+
+                  <h2
+                    className="
+                      text-xl
+                      font-black
+                      text-[#111827]
+                    "
+                  >
+
+                    ACMRB
+
+                  </h2>
+
+                  <p
+                    className="
+                      text-sm
+                      text-zinc-500
+                    "
+                  >
+
+                    Painel Admin
+
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* MENU */}
+
+            <div
+              className="
+                flex-1
+                p-5
+              "
+            >
+
+              {renderMenu()}
+
+            </div>
+
+          </aside>
 
         </div>
 
@@ -411,6 +566,7 @@ export default function AdminSidebar({
                 justify-center
                 text-white
                 text-2xl
+                shadow-lg
               "
             >
 
@@ -462,6 +618,73 @@ export default function AdminSidebar({
         >
 
           {renderMenu()}
+
+        </div>
+
+        {/* FOOTER */}
+
+        <div
+          className="
+            p-5
+            border-t
+            border-black/5
+          "
+        >
+
+          <div
+            className="
+              rounded-3xl
+              bg-[#F7FAF8]
+              border
+              border-black/5
+              p-5
+            "
+          >
+
+            <p
+              className="
+                text-xs
+                uppercase
+                tracking-wider
+                text-zinc-400
+                font-bold
+              "
+            >
+
+              Sistema ESG
+
+            </p>
+
+            <h3
+              className="
+                text-lg
+                font-black
+                text-[#1F2937]
+                mt-2
+              "
+            >
+
+              Plataforma Operacional
+
+            </h3>
+
+            <p
+              className="
+                text-sm
+                text-zinc-500
+                leading-6
+                mt-2
+              "
+            >
+
+              Gestão ambiental,
+              indicadores ESG,
+              transparência pública
+              e logística reversa.
+
+            </p>
+
+          </div>
 
         </div>
 

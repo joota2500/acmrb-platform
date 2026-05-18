@@ -4,7 +4,6 @@ import {
   X,
   Save,
   RotateCcw,
-  Trash2,
 } from "lucide-react";
 
 import {
@@ -19,6 +18,8 @@ type Props = {
 
   onClose: () => void;
 
+  onUpdated?: () => void;
+
   metric: {
     id: string;
 
@@ -27,12 +28,15 @@ type Props = {
     title: string;
 
     rawValue: number;
+
+    editable?: boolean;
   } | null;
 };
 
 export default function DashboardMetricModal({
   open,
   onClose,
+  onUpdated,
   metric,
 }: Props) {
 
@@ -51,7 +55,9 @@ export default function DashboardMetricModal({
     if (metric) {
 
       setValue(
-        String(metric.rawValue),
+        String(
+          metric.rawValue || 0,
+        ),
       );
 
     }
@@ -66,27 +72,51 @@ export default function DashboardMetricModal({
 
       setLoading(true);
 
-      const { error } =
-        await supabase
-          .from(
-            "dashboard_metricas",
-          )
-          .update({
+      const numero =
+        Number(value);
 
-            [metric.field]:
-              Number(value),
+      if (
+        Number.isNaN(numero)
+      ) {
 
-          })
-          .eq(
-            "id",
-            metric.id,
-          );
+        alert(
+          "Valor inválido.",
+        );
+
+        return;
+
+      }
+
+      const {
+        error,
+      } = await supabase
+        .from(
+          "dashboard_metricas",
+        )
+        .update({
+
+          [metric.field]:
+            numero,
+
+        })
+        .eq(
+          "id",
+          metric.id,
+        );
 
       if (error) {
 
-        alert(error.message);
+        alert(
+          error.message,
+        );
 
         return;
+
+      }
+
+      if (onUpdated) {
+
+        await onUpdated();
 
       }
 
@@ -94,7 +124,15 @@ export default function DashboardMetricModal({
         "Indicador atualizado com sucesso.",
       );
 
-      window.location.reload();
+      onClose();
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        "Erro ao atualizar indicador.",
+      );
 
     } finally {
 
@@ -115,8 +153,13 @@ export default function DashboardMetricModal({
 
     if (!confirmar) return;
 
-    const { error } =
-      await supabase
+    try {
+
+      setLoading(true);
+
+      const {
+        error,
+      } = await supabase
         .from(
           "dashboard_metricas",
         )
@@ -130,57 +173,41 @@ export default function DashboardMetricModal({
           metric.id,
         );
 
-    if (error) {
+      if (error) {
 
-      alert(error.message);
-
-      return;
-
-    }
-
-    alert(
-      "Indicador resetado.",
-    );
-
-    window.location.reload();
-
-  }
-
-  async function excluirRegistro() {
-
-    if (!metric) return;
-
-    const confirmar =
-      confirm(
-        "Deseja excluir este registro inteiro?",
-      );
-
-    if (!confirmar) return;
-
-    const { error } =
-      await supabase
-        .from(
-          "dashboard_metricas",
-        )
-        .delete()
-        .eq(
-          "id",
-          metric.id,
+        alert(
+          error.message,
         );
 
-    if (error) {
+        return;
 
-      alert(error.message);
+      }
 
-      return;
+      if (onUpdated) {
+
+        await onUpdated();
+
+      }
+
+      alert(
+        "Indicador resetado.",
+      );
+
+      onClose();
+
+    } catch (error) {
+
+      console.log(error);
+
+      alert(
+        "Erro ao resetar indicador.",
+      );
+
+    } finally {
+
+      setLoading(false);
 
     }
-
-    alert(
-      "Registro excluído.",
-    );
-
-    window.location.reload();
 
   }
 
@@ -201,7 +228,7 @@ export default function DashboardMetricModal({
         justify-center
         bg-black/70
         backdrop-blur-md
-        p-6
+        p-4
       "
     >
 
@@ -226,6 +253,7 @@ export default function DashboardMetricModal({
             flex
             items-center
             justify-between
+            gap-6
           "
         >
 
@@ -245,7 +273,8 @@ export default function DashboardMetricModal({
 
             <h2
               className="
-                text-4xl
+                text-3xl
+                md:text-4xl
                 font-black
                 text-[#111827]
                 mt-2
@@ -261,6 +290,7 @@ export default function DashboardMetricModal({
           <button
             onClick={onClose}
             className="
+              shrink-0
               w-14
               h-14
               rounded-2xl
@@ -312,7 +342,8 @@ export default function DashboardMetricModal({
                 border-2
                 border-zinc-200
                 px-7
-                text-5xl
+                text-4xl
+                md:text-5xl
                 font-black
                 outline-none
                 focus:border-[#2E5E4E]
@@ -326,7 +357,7 @@ export default function DashboardMetricModal({
           <div
             className="
               grid
-              md:grid-cols-4
+              sm:grid-cols-2
               gap-4
               mt-10
             "
@@ -334,6 +365,7 @@ export default function DashboardMetricModal({
 
             <button
               onClick={resetar}
+              disabled={loading}
               className="
                 h-16
                 rounded-3xl
@@ -349,48 +381,11 @@ export default function DashboardMetricModal({
               "
             >
 
-              <RotateCcw size={20} />
+              <RotateCcw
+                size={20}
+              />
 
               Resetar
-
-            </button>
-
-            <button
-              onClick={excluirRegistro}
-              className="
-                h-16
-                rounded-3xl
-                bg-red-100
-                hover:bg-red-200
-                transition
-                text-red-700
-                font-black
-                flex
-                items-center
-                justify-center
-                gap-3
-              "
-            >
-
-              <Trash2 size={20} />
-
-              Excluir
-
-            </button>
-
-            <button
-              onClick={onClose}
-              className="
-                h-16
-                rounded-3xl
-                bg-zinc-200
-                hover:bg-zinc-300
-                transition
-                font-black
-              "
-            >
-
-              Cancelar
 
             </button>
 
