@@ -5,9 +5,6 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Recycle,
-  ShieldCheck,
-  TrendingUp,
-  Factory,
 } from "lucide-react";
 
 import { useESGMetrics } from "@/hooks/useESGMetrics";
@@ -28,38 +25,76 @@ export default function HeroSection() {
         relative
         overflow-hidden
         min-h-screen
-        flex
-        items-center
-        pt-36
-        md:pt-40
-        bg-[#F5F7F4]
+        bg-[#F4F8F5]
       "
     >
 
-      {/* BACKGROUND */}
+      {/* BACKGROUND IMAGE */}
 
-      <div className="absolute inset-0">
+      <div
+        className="
+          absolute
+          inset-0
+        "
+      >
 
-        <div className="absolute top-0 left-0 w-150 h-150 bg-emerald-200/20 blur-3xl rounded-full" />
+        <img
+          src="/images/hero-reciclagem.jpg"
+          alt="ACMRB Reciclagem"
+          className="
+            w-full
+            h-full
+            object-cover
+            object-center
+          "
+        />
 
-        <div className="absolute bottom-0 right-0 w-125 h-125 bg-cyan-200/20 blur-3xl rounded-full" />
-
-      </div>
-
-      {/* GRID */}
-
-      <div className="container-custom relative z-10">
+        {/* DARK OVERLAY */}
 
         <div
           className="
-            grid
-            lg:grid-cols-2
-            gap-20
-            items-center
+            absolute
+            inset-0
+            bg-black/45
+          "
+        />
+
+        {/* GREEN GRADIENT */}
+
+        <div
+          className="
+            absolute
+            inset-0
+            bg-linear-to-r
+            from-[#0F1720]/92
+            via-[#18392E]/78
+            to-transparent
+          "
+        />
+
+      </div>
+
+      {/* CONTENT */}
+
+      <div
+        className="
+          relative
+          z-10
+          container-custom
+          min-h-screen
+          flex
+          items-center
+          py-32
+          md:py-40
+        "
+      >
+
+        <div
+          className="
+            w-full
+            max-w-4xl
           "
         >
-
-          {/* LEFT */}
 
           <motion.div
             initial={{
@@ -75,7 +110,7 @@ export default function HeroSection() {
             }}
           >
 
-            {/* TAG */}
+            {/* BADGE */}
 
             <div
               className="
@@ -85,9 +120,13 @@ export default function HeroSection() {
                 px-5
                 py-3
                 rounded-full
-                bg-emerald-100
-                text-emerald-800
-                text-sm
+                bg-white/10
+                backdrop-blur-xl
+                border
+                border-white/10
+                text-white
+                text-xs
+                md:text-sm
                 font-black
                 mb-8
               "
@@ -101,34 +140,41 @@ export default function HeroSection() {
 
             <h1
               className="
-                text-[3rem]
+                text-[2.8rem]
+                sm:text-[4rem]
                 md:text-[5.5rem]
+                xl:text-[6.5rem]
                 leading-[0.92]
-                tracking-tighter
+                tracking-[-3px]
                 font-black
-                text-[#111827]
+                text-white
+                max-w-5xl
               "
             >
 
-              Gestão inteligente
+              Gestão moderna
               de resíduos com
-              <span className="text-[#2E5E4E]">
-                {" "}
-                impacto ambiental
+              <span className="text-[#7EE7B3]">
+
+                {" "}impacto social
+
               </span>
-              {" "}
-              e inclusão social.
+              {" "}e sustentabilidade.
 
             </h1>
 
-            {/* DESC */}
+            {/* DESCRIPTION */}
 
             <p
               className="
                 mt-8
-                text-xl
-                text-zinc-600
-                leading-9
+                text-sm
+                sm:text-base
+                md:text-lg
+                xl:text-xl
+                text-zinc-200
+                leading-7
+                md:leading-9
                 max-w-2xl
               "
             >
@@ -137,7 +183,7 @@ export default function HeroSection() {
               logística reversa e rastreabilidade
               ambiental de resíduos recicláveis,
               promovendo geração de renda,
-              sustentabilidade urbana e indicadores ESG
+              sustentabilidade urbana e métricas ESG
               para empresas, instituições e sociedade.
 
             </p>
@@ -149,19 +195,19 @@ export default function HeroSection() {
                 flex
                 flex-col
                 sm:flex-row
-                gap-5
-                mt-12
+                gap-4
+                mt-10
               "
             >
 
               <a
                 href="#quem-somos"
                 className="
-                  h-15
+                  h-14
                   px-8
                   rounded-2xl
                   bg-[#2E5E4E]
-                  hover:bg-[#23473A]
+                  hover:bg-[#21463A]
                   transition-all
                   text-white
                   font-black
@@ -169,7 +215,7 @@ export default function HeroSection() {
                   items-center
                   justify-center
                   gap-3
-                  shadow-xl
+                  shadow-2xl
                 "
               >
 
@@ -182,15 +228,16 @@ export default function HeroSection() {
               <a
                 href="/transparencia"
                 className="
-                  h-15
+                  h-14
                   px-8
                   rounded-2xl
                   border
-                  border-zinc-300
-                  bg-white/80
-                  hover:bg-white
+                  border-white/20
+                  bg-white/10
+                  backdrop-blur-xl
+                  hover:bg-white/15
                   transition-all
-                  text-zinc-700
+                  text-white
                   font-bold
                   flex
                   items-center
@@ -210,11 +257,13 @@ export default function HeroSection() {
               className="
                 grid
                 grid-cols-3
-                gap-8
-                mt-16
+                gap-4
+                md:gap-8
+                mt-14
                 pt-10
                 border-t
-                border-zinc-200
+                border-white/10
+                max-w-3xl
               "
             >
 
@@ -224,9 +273,10 @@ export default function HeroSection() {
 
                 <h3
                   className="
-                    text-4xl
+                    text-2xl
+                    md:text-4xl
                     font-black
-                    text-[#2E5E4E]
+                    text-[#7EE7B3]
                   "
                 >
 
@@ -238,9 +288,11 @@ export default function HeroSection() {
 
                 <p
                   className="
-                    text-sm
-                    text-zinc-500
+                    text-xs
+                    md:text-sm
+                    text-zinc-300
                     mt-2
+                    leading-5
                   "
                 >
 
@@ -250,15 +302,16 @@ export default function HeroSection() {
 
               </div>
 
-              {/* FAMÍLIAS */}
+              {/* FAMILIAS */}
 
               <div>
 
                 <h3
                   className="
-                    text-4xl
+                    text-2xl
+                    md:text-4xl
                     font-black
-                    text-[#2E5E4E]
+                    text-[#7EE7B3]
                   "
                 >
 
@@ -270,9 +323,11 @@ export default function HeroSection() {
 
                 <p
                   className="
-                    text-sm
-                    text-zinc-500
+                    text-xs
+                    md:text-sm
+                    text-zinc-300
                     mt-2
+                    leading-5
                   "
                 >
 
@@ -288,9 +343,10 @@ export default function HeroSection() {
 
                 <h3
                   className="
-                    text-4xl
+                    text-2xl
+                    md:text-4xl
                     font-black
-                    text-[#2E5E4E]
+                    text-[#7EE7B3]
                   "
                 >
 
@@ -302,9 +358,11 @@ export default function HeroSection() {
 
                 <p
                   className="
-                    text-sm
-                    text-zinc-500
+                    text-xs
+                    md:text-sm
+                    text-zinc-300
                     mt-2
+                    leading-5
                   "
                 >
 
@@ -318,256 +376,110 @@ export default function HeroSection() {
 
           </motion.div>
 
-          {/* RIGHT */}
+        </div>
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              scale: 0.95,
-            }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-            }}
-            transition={{
-              duration: 1,
-            }}
-            className="relative"
+      </div>
+
+      {/* FLOATING ESG CARD */}
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 40,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 1,
+        }}
+        className="
+          hidden
+          xl:flex
+          absolute
+          bottom-14
+          right-14
+          z-20
+        "
+      >
+
+        <div
+          className="
+            bg-white/10
+            backdrop-blur-2xl
+            border
+            border-white/10
+            shadow-2xl
+            rounded-4xl
+            p-7
+            max-w-sm
+          "
+        >
+
+          <div
+            className="
+              flex
+              items-start
+              gap-5
+            "
           >
 
             <div
               className="
-                bg-white/80
-                backdrop-blur-xl
-                border
-                border-white/50
-                shadow-2xl
-                rounded-4xl
-                p-8
+                w-16
+                h-16
+                rounded-3xl
+                bg-[#7EE7B3]/20
+                text-[#7EE7B3]
+                flex
+                items-center
+                justify-center
+                shrink-0
               "
             >
 
-              <div className="space-y-7">
-
-                {/* CARD */}
-
-                <div className="flex gap-5">
-
-                  <div
-                    className="
-                      w-16
-                      h-16
-                      rounded-3xl
-                      bg-emerald-100
-                      flex
-                      items-center
-                      justify-center
-                      text-emerald-700
-                    "
-                  >
-
-                    <Recycle size={30} />
-
-                  </div>
-
-                  <div>
-
-                    <h3
-                      className="
-                        text-xl
-                        font-black
-                        text-zinc-900
-                      "
-                    >
-
-                      Logística Reversa
-
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-600
-                        mt-2
-                        leading-7
-                      "
-                    >
-
-                      Gestão operacional e rastreabilidade
-                      de resíduos sólidos recicláveis.
-
-                    </p>
-
-                  </div>
-
-                </div>
-
-                {/* CARD */}
-
-                <div className="flex gap-5">
-
-                  <div
-                    className="
-                      w-16
-                      h-16
-                      rounded-3xl
-                      bg-cyan-100
-                      flex
-                      items-center
-                      justify-center
-                      text-cyan-700
-                    "
-                  >
-
-                    <TrendingUp size={30} />
-
-                  </div>
-
-                  <div>
-
-                    <h3
-                      className="
-                        text-xl
-                        font-black
-                        text-zinc-900
-                      "
-                    >
-
-                      Indicadores ESG
-
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-600
-                        mt-2
-                        leading-7
-                      "
-                    >
-
-                      Transparência pública com métricas
-                      ambientais e sociais em tempo real.
-
-                    </p>
-
-                  </div>
-
-                </div>
-
-                {/* CARD */}
-
-                <div className="flex gap-5">
-
-                  <div
-                    className="
-                      w-16
-                      h-16
-                      rounded-3xl
-                      bg-orange-100
-                      flex
-                      items-center
-                      justify-center
-                      text-orange-700
-                    "
-                  >
-
-                    <Factory size={30} />
-
-                  </div>
-
-                  <div>
-
-                    <h3
-                      className="
-                        text-xl
-                        font-black
-                        text-zinc-900
-                      "
-                    >
-
-                      Gestão Sustentável
-
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-600
-                        mt-2
-                        leading-7
-                      "
-                    >
-
-                      Indicadores públicos,
-                      rastreabilidade ambiental
-                      e controle operacional ESG.
-
-                    </p>
-
-                  </div>
-
-                </div>
-
-                {/* CARD */}
-
-                <div className="flex gap-5">
-
-                  <div
-                    className="
-                      w-16
-                      h-16
-                      rounded-3xl
-                      bg-emerald-100
-                      flex
-                      items-center
-                      justify-center
-                      text-emerald-700
-                    "
-                  >
-
-                    <ShieldCheck size={30} />
-
-                  </div>
-
-                  <div>
-
-                    <h3
-                      className="
-                        text-xl
-                        font-black
-                        text-zinc-900
-                      "
-                    >
-
-                      Impacto Ambiental
-
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-600
-                        mt-2
-                        leading-7
-                      "
-                    >
-
-                      Redução de resíduos,
-                      preservação ambiental
-                      e fortalecimento social.
-
-                    </p>
-
-                  </div>
-
-                </div>
-
-              </div>
+              <Recycle size={30} />
 
             </div>
 
-          </motion.div>
+            <div>
+
+              <h3
+                className="
+                  text-xl
+                  font-black
+                  text-white
+                "
+              >
+
+                Plataforma ESG
+
+              </h3>
+
+              <p
+                className="
+                  text-sm
+                  text-zinc-200
+                  leading-7
+                  mt-3
+                "
+              >
+
+                Indicadores ambientais,
+                transparência pública
+                e rastreabilidade
+                operacional em tempo real.
+
+              </p>
+
+            </div>
+
+          </div>
 
         </div>
 
-      </div>
+      </motion.div>
 
     </section>
 
