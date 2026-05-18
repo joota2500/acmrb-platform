@@ -10,6 +10,7 @@ import {
 import {
   Menu,
   X,
+  ArrowRight,
 } from "lucide-react";
 
 import AdminModal from "../admin/AdminModal";
@@ -26,22 +27,27 @@ const links = [
     name: "Quem Somos",
     href: "#quem-somos",
   },
+
   {
     name: "Projetos",
     href: "#projetos",
   },
+
   {
     name: "Notícias",
     href: "#noticias",
-  },  
+  },
+
   {
     name: "Parceiros",
     href: "#parceiros",
   },
+
   {
     name: "Denúncias",
     href: "#denuncias",
   },
+
   {
     name: "Contato",
     href: "#contato",
@@ -66,82 +72,100 @@ export default function Header() {
 
     const handleScroll = () => {
 
-      setScrolled(window.scrollY > 20);
+      setScrolled(
+        window.scrollY > 20,
+      );
 
     };
 
     window.addEventListener(
       "scroll",
-      handleScroll
+      handleScroll,
     );
 
     return () =>
       window.removeEventListener(
         "scroll",
-        handleScroll
+        handleScroll,
       );
 
   }, []);
+
+  useEffect(() => {
+
+    if (menuOpen) {
+
+      document.body.style.overflow =
+        "hidden";
+
+    } else {
+
+      document.body.style.overflow =
+        "auto";
+
+    }
+
+    return () => {
+
+      document.body.style.overflow =
+        "auto";
+
+    };
+
+  }, [menuOpen]);
 
   return (
     <>
       <motion.header
         initial={{ y: -80 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={`
+        transition={{
+          duration: 0.6,
+        }}
+        className="
           fixed
           top-0
           left-0
           w-full
           z-50
-          transition-all
-          duration-300
-          ${
-            scrolled
-              ? `
-                py-4
-              `
-              : `
-                py-6
-              `
-          }
-        `}
+        "
       >
 
         <div
           className="
-            max-w-7xl
-            mx-auto
-            px-6
-            md:px-10
+            container-custom
+            pt-4
+            md:pt-6
           "
         >
 
           <div
             className={`
+              relative
               flex
               items-center
               justify-between
-              rounded-3xl
+              rounded-[28px]
               border
-              backdrop-blur-2xl
               transition-all
               duration-300
-              px-6
+              px-4
+              md:px-6
               lg:px-8
               ${
                 scrolled
                   ? `
-                    bg-white/85
-                    border-black/5
-                    shadow-[0_10px_40px_rgba(15,23,42,0.06)]
-                    py-4
+                    py-3
+                    bg-white/88
+                    backdrop-blur-2xl
+                    border-white/40
+                    shadow-[0_15px_60px_rgba(15,23,42,0.08)]
                   `
                   : `
+                    py-4
                     bg-white/65
-                    border-black/5
-                    py-5
+                    backdrop-blur-xl
+                    border-white/20
                   `
               }
             `}
@@ -154,51 +178,68 @@ export default function Header() {
               className="
                 flex
                 items-center
-                gap-4
+                gap-3
+                md:gap-4
+                shrink-0
               "
             >
 
               <div
                 className="
-                  w-12
-                  h-12
+                  w-11
+                  h-11
+                  md:w-13
+                  md:h-13
                   rounded-2xl
                   bg-linear-to-br
                   from-[#2E5E4E]
-                  to-[#4F8A73]
+                  to-[#5F9B83]
                   flex
                   items-center
                   justify-center
                   text-white
+                  text-lg
+                  md:text-xl
                   font-black
-                  shadow-lg
+                  shadow-[0_10px_30px_rgba(46,94,78,0.35)]
                 "
               >
+
                 ♻
+
               </div>
 
-              <div>
+              <div className="text-left">
 
                 <h2
                   className="
-                    text-lg
+                    text-base
                     md:text-xl
                     font-black
-                    text-[#1F2937]
+                    text-[#111827]
                     leading-none
+                    tracking-tight
                   "
                 >
+
                   ACMRB
+
                 </h2>
 
                 <p
                   className="
-                    text-xs
-                    text-[#6B7280]
+                    hidden
+                    sm:block
+                    text-[11px]
+                    md:text-xs
+                    text-zinc-500
                     mt-1
+                    leading-none
                   "
                 >
-                  Associação Reciclaê - Baturité CE
+
+                  Associação Reciclaê • Baturité CE
+
                 </p>
 
               </div>
@@ -217,18 +258,22 @@ export default function Header() {
             >
 
               {links.map((link) => (
+
                 <a
                   key={link.name}
                   href={link.href}
                   className="
                     relative
-                    text-[#374151]
-                    font-medium
+                    text-[15px]
+                    font-semibold
+                    text-zinc-700
                     hover:text-[#2E5E4E]
-                    transition
+                    transition-all
+                    duration-300
                     group
                   "
                 >
+
                   {link.name}
 
                   <span
@@ -238,6 +283,7 @@ export default function Header() {
                       -bottom-2
                       w-0
                       h-0.5
+                      rounded-full
                       bg-[#2E5E4E]
                       transition-all
                       duration-300
@@ -246,6 +292,7 @@ export default function Header() {
                   />
 
                 </a>
+
               ))}
 
             </nav>
@@ -256,51 +303,64 @@ export default function Header() {
               className="
                 flex
                 items-center
-                gap-4
+                gap-3
               "
             >
 
               {/* CTA */}
 
-              <button
+              <a
+                href="#contato"
                 className="
                   hidden
-                  md:flex
+                  md:inline-flex
                   items-center
                   justify-center
+                  gap-2
+                  h-12
                   px-6
-                  py-3
                   rounded-2xl
                   bg-[#2E5E4E]
                   hover:bg-[#24473B]
                   text-white
-                  font-semibold
-                  transition
-                  shadow-lg
-                  shadow-[#2E5E4E]/10
+                  text-sm
+                  font-bold
+                  transition-all
+                  shadow-[0_10px_30px_rgba(46,94,78,0.25)]
+                  hover:scale-[1.02]
                 "
               >
+
                 Seja Parceiro
-              </button>
+
+                <ArrowRight
+                  size={16}
+                />
+
+              </a>
 
               {/* MOBILE BUTTON */}
 
               <button
                 onClick={() =>
-                  setMenuOpen(!menuOpen)
+                  setMenuOpen(
+                    !menuOpen,
+                  )
                 }
                 className="
                   lg:hidden
-                  w-12
-                  h-12
+                  w-11
+                  h-11
                   rounded-2xl
+                  bg-white/70
                   border
                   border-black/5
-                  bg-white/70
+                  backdrop-blur-xl
                   flex
                   items-center
                   justify-center
                   text-[#1F2937]
+                  shadow-sm
                 "
               >
 
@@ -325,18 +385,16 @@ export default function Header() {
       <AnimatePresence>
 
         {menuOpen && (
+
           <motion.div
             initial={{
               opacity: 0,
-              y: -20,
             }}
             animate={{
               opacity: 1,
-              y: 0,
             }}
             exit={{
               opacity: 0,
-              y: -20,
             }}
             transition={{
               duration: 0.25,
@@ -345,74 +403,168 @@ export default function Header() {
               fixed
               inset-0
               z-40
-              bg-[#F5F7F4]/95
-              backdrop-blur-2xl
-              pt-32
-              px-6
+              bg-[#F4F8F5]/96
+              backdrop-blur-3xl
             "
           >
 
-            <div
+            <motion.div
+              initial={{
+                y: -30,
+                opacity: 0,
+              }}
+              animate={{
+                y: 0,
+                opacity: 1,
+              }}
+              exit={{
+                y: -30,
+                opacity: 0,
+              }}
+              transition={{
+                duration: 0.35,
+              }}
               className="
+                h-full
                 flex
                 flex-col
-                gap-6
+                justify-between
+                px-6
+                pt-32
+                pb-10
               "
             >
 
-              {links.map((link, index) => (
-                <motion.a
-                  key={link.name}
-                  href={link.href}
-                  initial={{
-                    opacity: 0,
-                    x: -20,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                  }}
-                  transition={{
-                    delay: index * 0.08,
-                  }}
-                  onClick={() =>
-                    setMenuOpen(false)
-                  }
-                  className="
-                    text-3xl
-                    font-bold
-                    text-[#1F2937]
-                    border-b
-                    border-black/5
-                    pb-5
-                  "
-                >
-                  {link.name}
-                </motion.a>
-              ))}
+              {/* LINKS */}
 
-              <button
+              <div
                 className="
-                  mt-6
-                  h-16
-                  rounded-2xl
-                  bg-[#2E5E4E]
-                  text-white
-                  font-semibold
-                  text-lg
+                  flex
+                  flex-col
                 "
               >
-                Solicitar parceria
-              </button>
 
-            </div>
+                {links.map(
+                  (
+                    link,
+                    index,
+                  ) => (
+
+                    <motion.a
+                      key={link.name}
+                      href={link.href}
+                      initial={{
+                        opacity: 0,
+                        x: -30,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        x: 0,
+                      }}
+                      transition={{
+                        delay:
+                          index * 0.06,
+                      }}
+                      onClick={() =>
+                        setMenuOpen(
+                          false,
+                        )
+                      }
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        py-5
+                        border-b
+                        border-black/5
+                        text-[#111827]
+                        text-2xl
+                        font-black
+                        tracking-tight
+                      "
+                    >
+
+                      {link.name}
+
+                      <ArrowRight
+                        size={20}
+                        className="
+                          text-zinc-400
+                        "
+                      />
+
+                    </motion.a>
+
+                  ),
+                )}
+
+              </div>
+
+              {/* FOOTER */}
+
+              <div>
+
+                <a
+                  href="#contato"
+                  onClick={() =>
+                    setMenuOpen(
+                      false,
+                    )
+                  }
+                  className="
+                    w-full
+                    h-15
+                    rounded-3xl
+                    bg-[#2E5E4E]
+                    hover:bg-[#23473A]
+                    transition-all
+                    text-white
+                    font-black
+                    text-base
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                    shadow-[0_15px_40px_rgba(46,94,78,0.25)]
+                  "
+                >
+
+                  Solicitar parceria
+
+                  <ArrowRight
+                    size={18}
+                  />
+
+                </a>
+
+                <p
+                  className="
+                    text-center
+                    text-xs
+                    text-zinc-500
+                    mt-6
+                    leading-6
+                  "
+                >
+
+                  Plataforma ESG • ACMRB
+                  <br />
+                  Associação Reciclaê
+                  • Baturité CE
+
+                </p>
+
+              </div>
+
+            </motion.div>
 
           </motion.div>
+
         )}
 
       </AnimatePresence>
 
-      {/* ADMIN MODAL */}
+      {/* ADMIN */}
 
       <AdminModal
         open={unlocked}
@@ -421,4 +573,5 @@ export default function Header() {
 
     </>
   );
+
 }

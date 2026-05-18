@@ -14,6 +14,9 @@ import {
   ArrowLeft,
   CalendarDays,
   Eye,
+  Star,
+  MessageCircle,
+  Share2,
 } from "lucide-react";
 
 type Noticia = {
@@ -49,6 +52,9 @@ export default function NoticiaPage() {
   const [loading, setLoading] =
     useState(true);
 
+  const [rating, setRating] =
+    useState(4);
+
   async function carregarNoticia() {
 
     try {
@@ -72,8 +78,6 @@ export default function NoticiaPage() {
       }
 
       setNoticia(data);
-
-      // VISUALIZAÇÕES
 
       await supabase
         .from("noticias")
@@ -105,8 +109,6 @@ export default function NoticiaPage() {
 
   }, [slug]);
 
-  // LOADING
-
   if (loading) {
 
     return (
@@ -129,7 +131,7 @@ export default function NoticiaPage() {
               h-14
               border-4
               border-emerald-200
-              border-t-emerald-700
+              border-t-[#2E5E4E]
               rounded-full
               animate-spin
               mx-auto
@@ -138,10 +140,8 @@ export default function NoticiaPage() {
 
           <p
             className="
-              text-zinc-500
               mt-6
-              text-sm
-              md:text-base
+              text-zinc-500
             "
           >
 
@@ -156,8 +156,6 @@ export default function NoticiaPage() {
     );
 
   }
-
-  // NOT FOUND
 
   if (!noticia) {
 
@@ -180,21 +178,19 @@ export default function NoticiaPage() {
             rounded-4xl
             border
             border-black/5
-            p-8
+            p-10
             md:p-14
-            text-center
             max-w-2xl
-            shadow-[0_20px_80px_rgba(15,23,42,0.04)]
+            text-center
+            shadow-[0_20px_80px_rgba(15,23,42,0.06)]
           "
         >
 
           <h1
             className="
-              text-3xl
-              md:text-5xl
+              text-4xl
               font-black
               text-zinc-900
-              leading-tight
             "
           >
 
@@ -204,11 +200,9 @@ export default function NoticiaPage() {
 
           <p
             className="
-              text-zinc-500
               mt-5
-              leading-7
-              text-sm
-              md:text-base
+              text-zinc-500
+              leading-8
             "
           >
 
@@ -223,8 +217,8 @@ export default function NoticiaPage() {
               inline-flex
               items-center
               gap-3
-              mt-8
-              px-6
+              mt-10
+              px-7
               py-4
               rounded-2xl
               bg-[#2E5E4E]
@@ -270,7 +264,7 @@ export default function NoticiaPage() {
           w-225
           h-225
           bg-emerald-400/10
-          blur-[160px]
+          blur-[180px]
           rounded-full
           pointer-events-none
         "
@@ -281,8 +275,8 @@ export default function NoticiaPage() {
       <section
         className="
           relative
-          min-h-[72vh]
-          md:min-h-[82vh]
+          min-h-[75vh]
+          md:min-h-[90vh]
           overflow-hidden
         "
       >
@@ -300,6 +294,7 @@ export default function NoticiaPage() {
               w-full
               h-full
               object-cover
+              scale-105
             "
           />
 
@@ -324,7 +319,18 @@ export default function NoticiaPage() {
           className="
             absolute
             inset-0
-            bg-black/65
+            bg-black/70
+          "
+        />
+
+        <div
+          className="
+            absolute
+            inset-0
+            bg-linear-to-t
+            from-black
+            via-black/40
+            to-black/10
           "
         />
 
@@ -334,8 +340,8 @@ export default function NoticiaPage() {
           className="
             relative
             z-10
-            min-h-[72vh]
-            md:min-h-[82vh]
+            min-h-[75vh]
+            md:min-h-[90vh]
             flex
             items-end
           "
@@ -344,22 +350,22 @@ export default function NoticiaPage() {
           <div
             className="
               container-custom
-              pb-14
+              pb-16
               md:pb-24
             "
           >
 
-            {/* VOLTAR */}
+            {/* TOP ACTIONS */}
 
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                gap-4
+                flex-wrap
+                mb-8
+              "
             >
 
               <Link
@@ -368,58 +374,85 @@ export default function NoticiaPage() {
                   inline-flex
                   items-center
                   gap-3
-                  text-white/90
-                  hover:text-white
+                  px-5
+                  py-3
+                  rounded-2xl
+                  bg-white/10
+                  hover:bg-white/20
+                  backdrop-blur-xl
+                  border
+                  border-white/10
+                  text-white
                   transition-all
-                  mb-8
-                  text-sm
-                  md:text-base
                 "
               >
 
                 <ArrowLeft size={18} />
 
-                Voltar para notícias
+                Voltar
 
               </Link>
 
-            </motion.div>
+              <button
+                onClick={() => {
 
-            {/* CATEGORIA */}
+                  navigator.share?.({
+                    title: noticia.titulo,
+                    text: noticia.resumo,
+                    url: window.location.href,
+                  });
 
-            <motion.span
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.1,
-              }}
+                }}
+                className="
+                  inline-flex
+                  items-center
+                  gap-3
+                  px-5
+                  py-3
+                  rounded-2xl
+                  bg-white/10
+                  hover:bg-white/20
+                  backdrop-blur-xl
+                  border
+                  border-white/10
+                  text-white
+                  transition-all
+                "
+              >
+
+                <Share2 size={18} />
+
+                Compartilhar
+
+              </button>
+
+            </div>
+
+            {/* CATEGORY */}
+
+            <span
               className="
                 inline-flex
-                px-4
-                py-2
+                px-5
+                py-3
                 rounded-full
                 bg-white/15
                 backdrop-blur-xl
-                text-white
-                text-xs
-                md:text-sm
-                font-bold
                 border
                 border-white/10
+                text-white
+                text-sm
+                font-black
+                uppercase
+                tracking-wide
               "
             >
 
               {noticia.categoria}
 
-            </motion.span>
+            </span>
 
-            {/* TITULO */}
+            {/* TITLE */}
 
             <motion.h1
               initial={{
@@ -430,20 +463,17 @@ export default function NoticiaPage() {
                 opacity: 1,
                 y: 0,
               }}
-              transition={{
-                delay: 0.2,
-              }}
               className="
-                text-[2.3rem]
-                sm:text-[3rem]
-                md:text-[4.5rem]
-                xl:text-[5.5rem]
-                font-black
-                leading-none
-                tracking-[-0.03em]
-                text-white
-                mt-6
+                mt-8
                 max-w-6xl
+                text-[2.7rem]
+                sm:text-[3.5rem]
+                md:text-[5rem]
+                xl:text-[6rem]
+                leading-[0.92]
+                tracking-tighter
+                font-black
+                text-white
               "
             >
 
@@ -453,28 +483,14 @@ export default function NoticiaPage() {
 
             {/* INFO */}
 
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: 20,
-              }}
-              animate={{
-                opacity: 1,
-                y: 0,
-              }}
-              transition={{
-                delay: 0.3,
-              }}
+            <div
               className="
                 flex
                 flex-wrap
                 items-center
-                gap-5
-                md:gap-8
+                gap-6
                 mt-8
                 text-white/80
-                text-sm
-                md:text-base
               "
             >
 
@@ -520,7 +536,7 @@ export default function NoticiaPage() {
 
               </div>
 
-            </motion.div>
+            </div>
 
           </div>
 
@@ -532,11 +548,11 @@ export default function NoticiaPage() {
 
       <section
         className="
-          py-16
-          md:py-24
-          px-5
           relative
           z-10
+          px-5
+          py-16
+          md:py-24
         "
       >
 
@@ -549,23 +565,14 @@ export default function NoticiaPage() {
 
           {/* RESUMO */}
 
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: 30,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{ once: true }}
+          <div
             className="
               bg-white/80
               backdrop-blur-xl
               border
               border-black/5
               rounded-4xl
-              p-6
+              p-7
               md:p-10
               shadow-[0_20px_80px_rgba(15,23,42,0.05)]
             "
@@ -575,7 +582,7 @@ export default function NoticiaPage() {
               className="
                 text-[1.05rem]
                 md:text-[1.45rem]
-                leading-8
+                leading-9
                 md:leading-10
                 text-zinc-700
                 font-medium
@@ -587,32 +594,20 @@ export default function NoticiaPage() {
 
             </p>
 
-          </motion.div>
+          </div>
 
-          {/* CONTEUDO */}
+          {/* ARTICLE */}
 
-          <motion.article
-            initial={{
-              opacity: 0,
-              y: 40,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{ once: true }}
-            transition={{
-              delay: 0.1,
-            }}
+          <article
             className="
               mt-10
-              md:mt-14
               bg-white
               rounded-4xl
               border
               border-black/5
-              p-6
-              md:p-12
+              p-7
+              sm:p-10
+              md:p-14
               shadow-[0_20px_80px_rgba(15,23,42,0.05)]
             "
           >
@@ -621,12 +616,11 @@ export default function NoticiaPage() {
               className="
                 text-zinc-700
                 text-[1rem]
-                md:text-[1.1rem]
+                md:text-[1.08rem]
                 leading-8
                 md:leading-9
                 whitespace-pre-line
                 text-justify
-                wrap-break-word
               "
             >
 
@@ -634,7 +628,150 @@ export default function NoticiaPage() {
 
             </div>
 
-          </motion.article>
+          </article>
+
+          {/* SOCIAL */}
+
+          <div
+            className="
+              mt-10
+              bg-white/90
+              backdrop-blur-xl
+              border
+              border-black/5
+              rounded-4xl
+              p-7
+              md:p-10
+              shadow-[0_20px_80px_rgba(15,23,42,0.05)]
+            "
+          >
+
+            <div
+              className="
+                flex
+                flex-col
+                md:flex-row
+                md:items-center
+                md:justify-between
+                gap-8
+              "
+            >
+
+              <div>
+
+                <h3
+                  className="
+                    text-2xl
+                    font-black
+                    text-zinc-900
+                  "
+                >
+
+                  Avalie esta notícia
+
+                </h3>
+
+                <p
+                  className="
+                    text-zinc-500
+                    mt-2
+                    leading-7
+                  "
+                >
+
+                  Sua opinião ajuda
+                  a fortalecer a
+                  transparência da ACMRB.
+
+                </p>
+
+              </div>
+
+              {/* STARS */}
+
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-3
+                "
+              >
+
+                {[1, 2, 3, 4, 5].map((star) => (
+
+                  <button
+                    key={star}
+                    onClick={() =>
+                      setRating(star)
+                    }
+                    className="
+                      transition-all
+                      hover:scale-110
+                    "
+                  >
+
+                    <Star
+                      size={30}
+                      className={
+                        star <= rating
+                          ? "text-yellow-500 fill-yellow-500"
+                          : "text-zinc-300"
+                      }
+                    />
+
+                  </button>
+
+                ))}
+
+              </div>
+
+            </div>
+
+            {/* COMMENT */}
+
+            <div
+              className="
+                mt-8
+                pt-8
+                border-t
+                border-black/5
+              "
+            >
+
+              <button
+                onClick={() => {
+
+                  alert(
+                    "Área de comentários em desenvolvimento."
+                  );
+
+                }}
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  gap-3
+                  px-7
+                  py-4
+                  rounded-2xl
+                  bg-[#2E5E4E]
+                  hover:bg-[#23473A]
+                  transition-all
+                  text-white
+                  font-bold
+                  shadow-xl
+                "
+              >
+
+                <MessageCircle size={20} />
+
+                Comentar notícia
+
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
 

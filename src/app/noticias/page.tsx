@@ -2,13 +2,18 @@
 
 import { useEffect, useState } from "react";
 
+import Link from "next/link";
+
 import { motion } from "framer-motion";
 
 import { supabase } from "@/lib/supabase";
 
 import {
+  ArrowLeft,
   ArrowRight,
   CalendarDays,
+  Star,
+  MessageCircle,
 } from "lucide-react";
 
 type Noticia = {
@@ -146,10 +151,32 @@ export default function NoticiasPage() {
             transition={{
               duration: 0.7,
             }}
-            className="
-              max-w-4xl
-            "
+            className="max-w-4xl"
           >
+
+            {/* BACK BUTTON */}
+
+            <Link
+              href="/"
+              className="
+                inline-flex
+                items-center
+                gap-3
+                text-zinc-600
+                hover:text-[#2E5E4E]
+                transition-all
+                mb-8
+                text-sm
+                md:text-base
+                font-semibold
+              "
+            >
+
+              <ArrowLeft size={18} />
+
+              Voltar ao portal
+
+            </Link>
 
             <div
               className="
@@ -224,112 +251,6 @@ export default function NoticiasPage() {
 
         <div className="container-custom">
 
-          {/* LOADING */}
-
-          {loading && (
-
-            <div
-              className="
-                grid
-                md:grid-cols-2
-                xl:grid-cols-3
-                gap-6
-                md:gap-8
-              "
-            >
-
-              {[1, 2, 3, 4, 5, 6].map((item) => (
-
-                <div
-                  key={item}
-                  className="
-                    rounded-4xl
-                    overflow-hidden
-                    border
-                    border-black/5
-                    bg-white/80
-                    backdrop-blur-xl
-                    animate-pulse
-                  "
-                >
-
-                  <div className="h-64 md:h-72 bg-zinc-200" />
-
-                  <div className="p-6 md:p-8 space-y-5">
-
-                    <div className="h-5 w-32 bg-zinc-200 rounded-full" />
-
-                    <div className="h-8 w-full bg-zinc-200 rounded-2xl" />
-
-                    <div className="h-4 w-full bg-zinc-200 rounded-full" />
-
-                    <div className="h-4 w-2/3 bg-zinc-200 rounded-full" />
-
-                  </div>
-
-                </div>
-
-              ))}
-
-            </div>
-
-          )}
-
-          {/* EMPTY */}
-
-          {!loading &&
-            noticias.length === 0 && (
-
-            <div
-              className="
-                rounded-4xl
-                bg-white/80
-                backdrop-blur-xl
-                border
-                border-black/5
-                p-10
-                md:p-20
-                text-center
-              "
-            >
-
-              <h2
-                className="
-                  text-3xl
-                  md:text-5xl
-                  font-black
-                  text-zinc-900
-                  leading-tight
-                "
-              >
-
-                Nenhuma notícia encontrada
-
-              </h2>
-
-              <p
-                className="
-                  text-zinc-500
-                  mt-5
-                  text-sm
-                  md:text-lg
-                  leading-7
-                  max-w-2xl
-                  mx-auto
-                "
-              >
-
-                As publicações institucionais
-                aparecerão aqui automaticamente.
-
-              </p>
-
-            </div>
-
-          )}
-
-          {/* GRID */}
-
           {!loading &&
             noticias.length > 0 && (
 
@@ -345,250 +266,265 @@ export default function NoticiasPage() {
 
               {noticias.map((item, index) => (
 
-                <motion.article
+                <Link
                   key={item.id}
-                  initial={{
-                    opacity: 0,
-                    y: 40,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.08,
-                  }}
-                  viewport={{ once: true }}
-                  className="
-                    group
-                    rounded-4xl
-                    overflow-hidden
-                    border
-                    border-black/5
-                    bg-white/80
-                    backdrop-blur-xl
-                    hover:-translate-y-2
-                    hover:shadow-[0_25px_80px_rgba(16,24,40,0.08)]
-                    transition-all
-                    duration-500
-                  "
+                  href={`/noticias/${item.slug}`}
+                  className="block"
                 >
 
-                  {/* IMAGE */}
-
-                  <div
+                  <motion.article
+                    initial={{
+                      opacity: 0,
+                      y: 40,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.08,
+                    }}
+                    viewport={{ once: true }}
                     className="
-                      h-60
-                      md:h-72
+                      group
+                      h-full
+                      rounded-4xl
                       overflow-hidden
-                      relative
-                      bg-zinc-100
+                      border
+                      border-black/5
+                      bg-white/80
+                      backdrop-blur-xl
+                      hover:-translate-y-2
+                      hover:border-emerald-200
+                      hover:shadow-[0_25px_80px_rgba(16,24,40,0.08)]
+                      transition-all
+                      duration-500
+                      cursor-pointer
                     "
                   >
 
-                    {item.imagem_url ? (
-
-                      <img
-                        src={item.imagem_url}
-                        alt={item.titulo}
-                        className="
-                          w-full
-                          h-full
-                          object-cover
-                          group-hover:scale-105
-                          transition-all
-                          duration-700
-                        "
-                      />
-
-                    ) : (
-
-                      <div
-                        className="
-                          w-full
-                          h-full
-                          bg-linear-to-br
-                          from-emerald-200
-                          via-teal-100
-                          to-cyan-100
-                        "
-                      />
-
-                    )}
-
-                    {/* OVERLAY */}
+                    {/* IMAGE */}
 
                     <div
                       className="
-                        absolute
-                        inset-0
-                        bg-linear-to-t
-                        from-black/35
-                        via-black/5
-                        to-transparent
-                      "
-                    />
-
-                    {/* TAGS */}
-
-                    <div
-                      className="
-                        absolute
-                        top-5
-                        left-5
-                        flex
-                        gap-2
-                        flex-wrap
+                        h-60
+                        md:h-72
+                        overflow-hidden
+                        relative
+                        bg-zinc-100
                       "
                     >
 
-                      <span
-                        className="
-                          px-3
-                          py-2
-                          rounded-full
-                          bg-white/90
-                          backdrop-blur-md
-                          text-[0.72rem]
-                          md:text-xs
-                          font-bold
-                          text-emerald-700
-                          shadow-lg
-                        "
-                      >
+                      {item.imagem_url ? (
 
-                        {item.categoria}
-
-                      </span>
-
-                      {item.destaque && (
-
-                        <span
+                        <img
+                          src={item.imagem_url}
+                          alt={item.titulo}
                           className="
-                            px-3
-                            py-2
-                            rounded-full
-                            bg-yellow-400
-                            text-yellow-950
-                            text-[0.72rem]
-                            md:text-xs
-                            font-black
-                            shadow-lg
+                            w-full
+                            h-full
+                            object-cover
+                            group-hover:scale-105
+                            transition-all
+                            duration-700
                           "
-                        >
+                        />
 
-                          Destaque
+                      ) : (
 
-                        </span>
+                        <div
+                          className="
+                            w-full
+                            h-full
+                            bg-linear-to-br
+                            from-emerald-200
+                            via-teal-100
+                            to-cyan-100
+                          "
+                        />
 
                       )}
 
+                      <div
+                        className="
+                          absolute
+                          inset-0
+                          bg-linear-to-t
+                          from-black/35
+                          via-black/5
+                          to-transparent
+                        "
+                      />
+
                     </div>
 
-                  </div>
-
-                  {/* CONTENT */}
-
-                  <div
-                    className="
-                      p-6
-                      md:p-8
-                    "
-                  >
-
-                    {/* DATE */}
+                    {/* CONTENT */}
 
                     <div
                       className="
-                        flex
-                        items-center
-                        gap-2
-                        text-zinc-500
-                        text-xs
-                        md:text-sm
+                        p-6
+                        md:p-8
                       "
                     >
 
-                      <CalendarDays size={15} />
+                      <div
+                        className="
+                          flex
+                          items-center
+                          gap-2
+                          text-zinc-500
+                          text-xs
+                          md:text-sm
+                        "
+                      >
 
-                      <span>
+                        <CalendarDays size={15} />
 
-                        {new Date(
-                          item.created_at,
-                        ).toLocaleDateString(
-                          "pt-BR",
-                        )}
+                        <span>
 
-                      </span>
+                          {new Date(
+                            item.created_at,
+                          ).toLocaleDateString(
+                            "pt-BR",
+                          )}
+
+                        </span>
+
+                      </div>
+
+                      <h2
+                        className="
+                          text-[1.35rem]
+                          md:text-[1.65rem]
+                          font-black
+                          text-zinc-900
+                          mt-4
+                          leading-[1.2]
+                          line-clamp-2
+                          group-hover:text-[#2E5E4E]
+                          transition-all
+                        "
+                      >
+
+                        {item.titulo}
+
+                      </h2>
+
+                      <p
+                        className="
+                          text-zinc-600
+                          text-sm
+                          md:text-[0.98rem]
+                          leading-7
+                          mt-4
+                          text-justify
+                          line-clamp-4
+                        "
+                      >
+
+                        {item.resumo}
+
+                      </p>
+
+                      <div
+                        className="
+                          flex
+                          items-center
+                          justify-between
+                          mt-8
+                          pt-6
+                          border-t
+                          border-black/5
+                        "
+                      >
+
+                        {/* ACTION */}
+
+                        <div
+                          className="
+                            inline-flex
+                            items-center
+                            gap-2
+                            text-emerald-700
+                            text-sm
+                            md:text-base
+                            font-bold
+                            group-hover:gap-4
+                            transition-all
+                          "
+                        >
+
+                          Ler notícia
+
+                          <ArrowRight size={18} />
+
+                        </div>
+
+                        {/* SOCIAL */}
+
+                        <div
+                          className="
+                            flex
+                            items-center
+                            gap-4
+                          "
+                        >
+
+                          {/* STARS */}
+
+                          <div
+                            className="
+                              flex
+                              items-center
+                              gap-1
+                              text-yellow-500
+                            "
+                          >
+
+                            <Star size={16} fill="currentColor" />
+                            <Star size={16} fill="currentColor" />
+                            <Star size={16} fill="currentColor" />
+                            <Star size={16} fill="currentColor" />
+                            <Star size={16} />
+
+                          </div>
+
+                          {/* COMMENT */}
+
+                          <button
+                            onClick={(e) => {
+
+                              e.preventDefault();
+
+                              alert(
+                                "Área de comentários em desenvolvimento. Faça login para participar futuramente."
+                              );
+
+                            }}
+                            className="
+                              flex
+                              items-center
+                              gap-2
+                              text-zinc-500
+                              hover:text-emerald-700
+                              transition-all
+                            "
+                          >
+
+                            <MessageCircle size={18} />
+
+                          </button>
+
+                        </div>
+
+                      </div>
 
                     </div>
 
-                    {/* TITLE */}
+                  </motion.article>
 
-                    <h2
-                      className="
-                        text-[1.35rem]
-                        md:text-[1.65rem]
-                        font-black
-                        text-zinc-900
-                        mt-4
-                        leading-[1.2]
-                        line-clamp-2
-                      "
-                    >
-
-                      {item.titulo}
-
-                    </h2>
-
-                    {/* RESUMO */}
-
-                    <p
-                      className="
-                        text-zinc-600
-                        text-sm
-                        md:text-[0.98rem]
-                        leading-7
-                        mt-4
-                        text-justify
-                        line-clamp-4
-                      "
-                    >
-
-                      {item.resumo}
-
-                    </p>
-
-                    {/* LINK */}
-
-                    <a
-                      href={`/noticias/${item.slug}`}
-                      className="
-                        inline-flex
-                        items-center
-                        gap-2
-                        text-emerald-700
-                        text-sm
-                        md:text-base
-                        font-bold
-                        mt-7
-                        hover:gap-4
-                        transition-all
-                      "
-                    >
-
-                      Ler notícia
-
-                      <ArrowRight
-                        size={18}
-                      />
-
-                    </a>
-
-                  </div>
-
-                </motion.article>
+                </Link>
 
               ))}
 
