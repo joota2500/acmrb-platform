@@ -14,11 +14,20 @@ import {
 
 import { supabase } from "@/lib/supabase";
 
-type UserRole =
-  | "deus_admin"
-  | "admin"
-  | "visitante"
-  | null;
+interface Perfil {
+
+  tipo:
+    | "admin"
+    | "visitante"
+    | null;
+
+  role?: string;
+
+  nome?: string;
+
+  avatar_url?: string;
+
+}
 
 interface AuthContextType {
 
@@ -26,13 +35,11 @@ interface AuthContextType {
 
   session: Session | null;
 
+  perfil: Perfil | null;
+
   loading: boolean;
 
-  role: UserRole;
-
   logout: () => Promise<void>;
-
-  refreshUser: () => Promise<void>;
 
 }
 
@@ -53,77 +60,115 @@ export function AuthProvider({
   const [session, setSession] =
     useState<Session | null>(null);
 
+  const [perfil, setPerfil] =
+    useState<Perfil | null>(null);
+
   const [loading, setLoading] =
     useState(true);
 
-  const [role, setRole] =
-    useState<UserRole>(null);
+  async function loadPerfil(
+    currentUser: User | null,
+  ) {
 
-  async function loadUserData() {
+    if (!currentUser) {
 
-    try {
+      setPerfil(null);
 
-      setLoading(true);
-
-      const {
-        data: { session },
-      } =
-        await supabase.auth.getSession();
-
-      setSession(session);
-
-      setUser(session?.user ?? null);
-
-      if (!session?.user) {
-
-        setRole(null);
-
-        return;
-
-      }
-
-      // VERIFICA ADMIN
-
-      const { data: admin } =
-        await supabase
-          .from("admins")
-          .select("role")
-          .eq(
-            "auth_user_id",
-            session.user.id,
-          )
-          .single();
-
-      if (admin?.role) {
-
-        setRole(admin.role);
-
-        return;
-
-      }
-
-      // VISITANTE PADRÃO
-
-      setRole("visitante");
-
-    } catch (error) {
-
-      console.log(
-        "Erro auth:",
-        error,
-      );
-
-    } finally {
-
-      setLoading(false);
+      return;
 
     }
+
+    const email =
+      currentUser.email;
+
+    // ADMIN
+
+    const {
+      data: admin,
+    } = await supabase
+      .from("admins")
+      .select("*")
+      .eq("email", email)
+      .eq("ativo", true)
+      .maybeSingle();
+
+    if (admin) {
+
+      setPerfil({
+        tipo: "admin",
+        role: admin.role,
+        nome: admin.nome,
+        avatar_url:
+          admin.avatar_url,
+      });
+
+      return;
+
+    }
+
+    // VISITANTE
+
+    const {
+      data: visitante,
+    } = await supabase
+      .from("visitantes")
+      .select("*")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (visitante) {
+
+      setPerfil({
+        tipo: "visitante",
+        role:
+          visitante.role,
+        nome:
+          visitante.nome,
+        avatar_url:
+          visitante.avatar_url,
+      });
+
+      return;
+
+    }
+
+    setPerfil(null);
 
   }
 
   useEffect(() => {
 
-    loadUserData();
+    async function initialize() {
+
+      setLoading(true);
+
+      const {
+        data,
+      } =
+        await supabase.auth.getSession();
+
+      const currentSession =
+        data.session;
+
+      const currentUser =
+        currentSession?.user ??
+        null;
+
+      setSession(
+        currentSession,
+      );
+
+      setUser(currentUser);
+
+      await loadPerfil(
+        currentUser,
+      );
+
+      setLoading(false);
+
+    }
+
+    initialize();
 
     const {
       data: listener,
@@ -134,13 +179,19 @@ export function AuthProvider({
           session,
         ) => {
 
+          const currentUser =
+            session?.user ??
+            null;
+
           setSession(session);
 
-          setUser(
-            session?.user ?? null,
+          setUser(currentUser);
+
+          await loadPerfil(
+            currentUser,
           );
 
-          await loadUserData();
+          setLoading(false);
 
         },
       );
@@ -157,17 +208,8 @@ export function AuthProvider({
 
     await supabase.auth.signOut();
 
-    setUser(null);
-
-    setSession(null);
-
-    setRole(null);
-
-  }
-
-  async function refreshUser() {
-
-    await loadUserData();
+    window.location.href =
+      "/";
 
   }
 
@@ -177,10 +219,9 @@ export function AuthProvider({
       value={{
         user,
         session,
+        perfil,
         loading,
-        role,
         logout,
-        refreshUser,
       }}
     >
 

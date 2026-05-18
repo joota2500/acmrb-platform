@@ -76,7 +76,9 @@ export default function Header() {
 
   const {
     user,
+    perfil,
     logout,
+    loading,
   } = useAuth();
 
   useEffect(() => {
@@ -318,132 +320,250 @@ export default function Header() {
               "
             >
 
-              {/* USER LOGGED */}
+              {/* USER / AUTH */}
 
-              {user ? (
+              {!loading && (
 
-                <div
-                  className="
-                    hidden
-                    md:flex
-                    items-center
-                    gap-3
-                    pl-2
-                  "
-                >
+                <>
+                
+                  {user && perfil ? (
 
-                  <div
-                    className="
-                      w-11
-                      h-11
-                      rounded-2xl
-                      bg-[#2E5E4E]
-                      flex
-                      items-center
-                      justify-center
-                      text-white
-                      font-black
-                      text-sm
-                      shadow-lg
-                    "
-                  >
-
-                    {user.email
-                      ?.charAt(0)
-                      .toUpperCase()}
-
-                  </div>
-
-                  <div
-                    className="
-                      flex
-                      flex-col
-                      leading-none
-                    "
-                  >
-
-                    <span
+                    <div
                       className="
+                        hidden
+                        md:flex
+                        items-center
+                        gap-3
+                      "
+                    >
+
+                      {/* AVATAR */}
+
+                      <div
+                        className="
+                          relative
+                          shrink-0
+                        "
+                      >
+
+                        {perfil.avatar_url ? (
+
+                          <img
+                            src={
+                              perfil.avatar_url
+                            }
+                            alt={perfil.nome}
+                            className="
+                              w-11
+                              h-11
+                              rounded-2xl
+                              object-cover
+                              border
+                              border-black/5
+                              shadow-lg
+                            "
+                          />
+
+                        ) : (
+
+                          <div
+                            className="
+                              w-11
+                              h-11
+                              rounded-2xl
+                              bg-[#2E5E4E]
+                              flex
+                              items-center
+                              justify-center
+                              text-white
+                              font-black
+                              text-sm
+                              shadow-lg
+                            "
+                          >
+
+                            {perfil.nome
+                              ?.charAt(0)
+                              .toUpperCase()}
+
+                          </div>
+
+                        )}
+
+                        {/* STATUS */}
+
+                        <div
+                          className={`
+                            absolute
+                            -bottom-1
+                            -right-1
+                            px-2
+                            py-1
+                            rounded-full
+                            text-[10px]
+                            font-black
+                            border
+                            shadow-sm
+                            ${
+                              perfil.tipo ===
+                              "admin"
+                                ? `
+                                  bg-emerald-100
+                                  text-emerald-700
+                                  border-emerald-200
+                                `
+                                : `
+                                  bg-zinc-100
+                                  text-zinc-600
+                                  border-zinc-200
+                                `
+                            }
+                          `}
+                        >
+
+                          {perfil.tipo ===
+                          "admin"
+                            ? "ADMIN"
+                            : "USER"}
+
+                        </div>
+
+                      </div>
+
+                      {/* INFO */}
+
+                      <div
+                        className="
+                          flex
+                          flex-col
+                          leading-none
+                          min-w-0
+                        "
+                      >
+
+                        <span
+                          className="
+                            text-sm
+                            font-black
+                            text-zinc-800
+                            truncate
+                            max-w-40
+                          "
+                        >
+
+                          {perfil.nome}
+
+                        </span>
+
+                        <span
+                          className="
+                            text-xs
+                            text-zinc-500
+                            truncate
+                            max-w-44
+                          "
+                        >
+
+                          {perfil.role}
+
+                        </span>
+
+                      </div>
+
+                      {/* ADMIN BUTTON */}
+
+                      {perfil.tipo ===
+                        "admin" && (
+
+                        <Link
+                          href="/admin"
+                          className="
+                            h-11
+                            px-4
+                            rounded-2xl
+                            bg-[#2E5E4E]
+                            hover:bg-[#23473A]
+                            text-white
+                            text-sm
+                            font-black
+                            flex
+                            items-center
+                            justify-center
+                            transition-all
+                            shadow-lg
+                          "
+                        >
+
+                          Painel
+
+                        </Link>
+
+                      )}
+
+                      {/* LOGOUT */}
+
+                      <button
+                        onClick={logout}
+                        className="
+                          w-11
+                          h-11
+                          rounded-2xl
+                          border
+                          border-black/5
+                          bg-white
+                          flex
+                          items-center
+                          justify-center
+                          hover:bg-red-50
+                          hover:text-red-500
+                          transition-all
+                        "
+                      >
+
+                        <LogOut size={18} />
+
+                      </button>
+
+                    </div>
+
+                  ) : (
+
+                    <Link
+                      href="/login"
+                      className="
+                        hidden
+                        md:inline-flex
+                        items-center
+                        justify-center
+                        gap-2
+                        h-11
+                        px-5
+                        rounded-2xl
+                        bg-[#2E5E4E]
+                        hover:bg-[#24473B]
+                        text-white
                         text-sm
                         font-bold
-                        text-zinc-800
+                        transition-all
+                        shadow-[0_10px_25px_rgba(46,94,78,0.20)]
                       "
                     >
 
-                      Visitante
+                      <User size={16} />
 
-                    </span>
+                      Entrar
 
-                    <span
-                      className="
-                        text-xs
-                        text-zinc-500
-                        max-w-35
-                        truncate
-                      "
-                    >
+                    </Link>
 
-                      {user.email}
+                  )}
 
-                    </span>
-
-                  </div>
-
-                  <button
-                    onClick={logout}
-                    className="
-                      w-10
-                      h-10
-                      rounded-2xl
-                      border
-                      border-black/5
-                      bg-white
-                      flex
-                      items-center
-                      justify-center
-                      hover:bg-red-50
-                      hover:text-red-500
-                      transition-all
-                    "
-                  >
-
-                    <LogOut size={18} />
-
-                  </button>
-
-                </div>
-
-              ) : (
-
-                <Link
-                  href="/login"
-                  className="
-                    hidden
-                    md:inline-flex
-                    items-center
-                    justify-center
-                    gap-2
-                    h-11
-                    px-5
-                    rounded-2xl
-                    bg-[#2E5E4E]
-                    hover:bg-[#24473B]
-                    text-white
-                    text-sm
-                    font-bold
-                    transition-all
-                    shadow-[0_10px_25px_rgba(46,94,78,0.20)]
-                  "
-                >
-
-                  <User size={16} />
-
-                  Entrar
-
-                </Link>
+                </>
 
               )}
 
+              
+              
+              
               {/* MOBILE BUTTON */}
 
               <button
@@ -578,12 +698,12 @@ export default function Header() {
 
                 {/* USER MOBILE */}
 
-                {user && (
+                {user && perfil && (
 
                   <div
                     className="
                       flex
-                      items-center
+                      items-center 
                       justify-between
                       bg-white
                       rounded-3xl
@@ -599,40 +719,69 @@ export default function Header() {
                         flex
                         items-center
                         gap-3
+                        min-w-0
                       "
                     >
 
+                      {/* AVATAR */}
+
+                      {perfil.avatar_url ? (
+
+                        <img
+                          src={
+                            perfil.avatar_url
+                          }
+                          alt={perfil.nome}
+                          className="
+                            w-12
+                            h-12
+                            rounded-2xl
+                            object-cover
+                          "
+                        />
+
+                      ) : (
+
+                        <div
+                          className="
+                            w-12
+                            h-12
+                            rounded-2xl
+                            bg-[#2E5E4E]
+                            flex
+                            items-center
+                            justify-center
+                            text-white
+                            font-black
+                          "
+                        >
+
+                          {perfil.nome
+                            ?.charAt(0)
+                            .toUpperCase()}
+
+                        </div>
+
+                      )}
+
+                      {/* INFO */}
+
                       <div
                         className="
-                          w-12
-                          h-12
-                          rounded-2xl
-                          bg-[#2E5E4E]
-                          flex
-                          items-center
-                          justify-center
-                          text-white
-                          font-black
+                          min-w-0
                         "
                       >
-
-                        {user.email
-                          ?.charAt(0)
-                          .toUpperCase()}
-
-                      </div>
-
-                      <div>
 
                         <p
                           className="
                             text-sm
                             font-black
                             text-zinc-800
+                            truncate
                           "
                         >
 
-                          Visitante
+                          {perfil.nome}
 
                         </p>
 
@@ -640,12 +789,11 @@ export default function Header() {
                           className="
                             text-xs
                             text-zinc-500
-                            max-w-45
                             truncate
                           "
                         >
 
-                          {user.email}
+                          {perfil.role}
 
                         </p>
 
@@ -653,23 +801,60 @@ export default function Header() {
 
                     </div>
 
-                    <button
-                      onClick={logout}
+                    {/* ACTIONS */}
+
+                    <div
                       className="
-                        w-11
-                        h-11
-                        rounded-2xl
-                        bg-red-50
-                        text-red-500
                         flex
                         items-center
-                        justify-center
+                        gap-2
                       "
                     >
 
-                      <LogOut size={18} />
+                      {perfil.tipo ===
+                        "admin" && (
 
-                    </button>
+                        <Link
+                          href="/admin"
+                          className="
+                            h-11
+                            px-4
+                            rounded-2xl
+                            bg-[#2E5E4E]
+                            text-white
+                            text-sm
+                            font-black
+                            flex
+                            items-center
+                            justify-center
+                          "
+                        >
+
+                          Painel
+
+                        </Link>
+
+                      )}
+
+                      <button
+                        onClick={logout}
+                        className="
+                          w-11
+                          h-11
+                          rounded-2xl
+                          bg-red-50
+                          text-red-500
+                          flex
+                          items-center
+                          justify-center
+                        "
+                      >
+
+                        <LogOut size={18} />
+
+                      </button>
+
+                    </div>
 
                   </div>
 

@@ -1,20 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 export function useSecretUnlock() {
 
-  const [clicks, setClicks] = useState(0);
+  const [clicks, setClicks] =
+    useState(0);
 
-  const [unlocked, setUnlocked] = useState(false);
+  const [unlocked, setUnlocked] =
+    useState(false);
+
+  const timeoutRef =
+    useRef<NodeJS.Timeout | null>(
+      null,
+    );
+
+  // RESET AUTO
+
+  useEffect(() => {
+
+    if (clicks === 0) return;
+
+    if (timeoutRef.current) {
+
+      clearTimeout(
+        timeoutRef.current,
+      );
+
+    }
+
+    timeoutRef.current =
+      setTimeout(() => {
+
+        setClicks(0);
+
+      }, 2500);
+
+    return () => {
+
+      if (timeoutRef.current) {
+
+        clearTimeout(
+          timeoutRef.current,
+        );
+
+      }
+
+    };
+
+  }, [clicks]);
+
+  // CLICK
 
   function handleSecretClick() {
 
-    const next = clicks + 1;
+    if (unlocked) return;
 
-    setClicks(next);
+    const nextClicks =
+      clicks + 1;
 
-    if (next >= 5) {
+    setClicks(nextClicks);
+
+    // 5 CLICKS
+
+    if (nextClicks >= 5) {
 
       setUnlocked(true);
 
@@ -24,15 +77,26 @@ export function useSecretUnlock() {
 
   }
 
+  // CLOSE
+
   function closeAdmin() {
 
     setUnlocked(false);
 
+    setClicks(0);
+
   }
 
   return {
+
     unlocked,
-    handleSecretClick,
-    closeAdmin,
+
+    clicks,
+
+    handleSecretClick, 
+
+    closeAdmin, 
+
   };
+
 }

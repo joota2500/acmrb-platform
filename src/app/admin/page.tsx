@@ -7,7 +7,9 @@ import {
   useState,
 } from "react";
 
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
+
+import { supabase } from "@/lib/supabase";
 
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
 
@@ -66,32 +68,72 @@ export default function AdminPage() {
     "Dashboard",
   );
 
+  const [
+    checkingAdmin,
+    setCheckingAdmin,
+  ] = useState(true);
+
   /* =========================
-     AUTH
+     ADMIN CHECK
   ========================= */
 
   useEffect(() => {
 
-    if (
-      !loading &&
-      !user
-    ) {
+    async function validateAdmin() {
 
-      router.push("/");
+      if (loading) return;
+
+      if (!user) {
+
+        router.push("/login");
+
+        return;
+
+      }
+
+      const {
+        data: admin,
+        error,
+      } = await supabase
+        .from("admins")
+        .select("*")
+        .eq(
+          "email",
+          user.email,
+        )
+        .maybeSingle();
+
+      if (error || !admin) {
+
+        await logout();
+
+        router.push("/login");
+
+        return;
+
+      }
+
+      setCheckingAdmin(false);
 
     }
+
+    validateAdmin();
 
   }, [
     user,
     loading,
     router,
+    logout,
   ]);
 
   /* =========================
      LOADING
   ========================= */
 
-  if (loading) {
+  if (
+    loading ||
+    checkingAdmin
+  ) {
 
     return (
 
@@ -150,7 +192,7 @@ export default function AdminPage() {
             "
           >
 
-            Carregando painel
+            Validando administrador
 
           </h2>
 
@@ -163,9 +205,8 @@ export default function AdminPage() {
             "
           >
 
-            Aguarde enquanto
-            os dados administrativos
-            são carregados.
+            Verificando permissões
+            administrativas.
 
           </p>
 
@@ -178,24 +219,12 @@ export default function AdminPage() {
   }
 
   /* =========================
-     NO USER
-  ========================= */
-
-  if (!user) {
-
-    return null;
-
-  }
-
-  /* =========================
      PAGE
   ========================= */
 
   return (
 
     <AdminContainer>
-
-      {/* SIDEBAR */}
 
       <AdminSidebar
         activeSection={
@@ -206,11 +235,7 @@ export default function AdminPage() {
         }
       />
 
-      {/* CONTENT */}
-
       <AdminContent>
-
-        {/* HEADER */}
 
         <div
           className="
@@ -262,8 +287,6 @@ export default function AdminPage() {
               "
             >
 
-              {/* AVATAR */}
-
               <div
                 className="
                   shrink-0
@@ -283,13 +306,11 @@ export default function AdminPage() {
                 "
               >
 
-                {user.email
+                {user?.email
                   ?.charAt(0)
                   .toUpperCase()}
 
               </div>
-
-              {/* INFO */}
 
               <div
                 className="
@@ -307,7 +328,7 @@ export default function AdminPage() {
                   "
                 >
 
-                  Administrador logado
+                  Administrador Deus
 
                 </p>
 
@@ -322,7 +343,7 @@ export default function AdminPage() {
                   "
                 >
 
-                  {user.email}
+                  {user?.email}
 
                 </p>
 
@@ -346,7 +367,13 @@ export default function AdminPage() {
           >
 
             <button
-              onClick={logout}
+              onClick={async () => {
+
+                await logout();
+
+                router.push("/");
+
+              }}
               className="
                 w-full
                 sm:w-auto
