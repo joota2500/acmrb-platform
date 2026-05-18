@@ -9,7 +9,10 @@ import {
 
 import { useAuth } from "@/contexts/AuthContext";
 
-import { supabase } from "@/lib/supabase";
+import {
+  isAdmin,
+  isDeusAdmin,
+} from "@/lib/permissions";
 
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
 
@@ -52,14 +55,15 @@ import {
 
 export default function AdminPage() {
 
+  const router =
+    useRouter();
+
   const {
     user,
+    perfil,
     loading,
     logout,
   } = useAuth();
-
-  const router =
-    useRouter();
 
   const [
     activeSection,
@@ -68,71 +72,45 @@ export default function AdminPage() {
     "Dashboard",
   );
 
-  const [
-    checkingAdmin,
-    setCheckingAdmin,
-  ] = useState(true);
-
-  /* =========================
-     ADMIN CHECK
-  ========================= */
-
   useEffect(() => {
 
-    async function validateAdmin() {
+    if (loading) return;
 
-      if (loading) return;
+    // NÃO LOGADO
 
-      if (!user) {
+    if (!user) {
 
-        router.push("/login");
+      router.push("/");
 
-        return;
-
-      }
-
-      const {
-        data: admin,
-        error,
-      } = await supabase
-        .from("admins")
-        .select("*")
-        .eq(
-          "email",
-          user.email,
-        )
-        .maybeSingle();
-
-      if (error || !admin) {
-
-        await logout();
-
-        router.push("/login");
-
-        return;
-
-      }
-
-      setCheckingAdmin(false);
+      return;
 
     }
 
-    validateAdmin();
+    // NÃO É ADMIN
+
+    if (
+      perfil?.tipo !== "admin" ||
+      !isAdmin(perfil.role)
+    ) {
+
+      router.push("/");
+
+      return;
+
+    }
 
   }, [
     user,
+    perfil,
     loading,
     router,
-    logout,
   ]);
 
-  /* =========================
-     LOADING
-  ========================= */
+  /* LOADING */
 
   if (
     loading ||
-    checkingAdmin
+    !perfil
   ) {
 
     return (
@@ -192,7 +170,7 @@ export default function AdminPage() {
             "
           >
 
-            Validando administrador
+            Carregando painel
 
           </h2>
 
@@ -205,8 +183,7 @@ export default function AdminPage() {
             "
           >
 
-            Verificando permissões
-            administrativas.
+            Validando permissões administrativas.
 
           </p>
 
@@ -218,9 +195,10 @@ export default function AdminPage() {
 
   }
 
-  /* =========================
-     PAGE
-  ========================= */
+  const isDeus =
+    isDeusAdmin(
+      perfil.role,
+    );
 
   return (
 
@@ -262,9 +240,8 @@ export default function AdminPage() {
               title="Painel Administrativo"
               description="
                 Plataforma ESG-operacional
-                da ACMRB para gestão
-                institucional, ambiental
-                e administrativa.
+                da ACMRB para gestão institucional,
+                ambiental e administrativa.
               "
             />
 
@@ -306,7 +283,7 @@ export default function AdminPage() {
                 "
               >
 
-                {user?.email
+                {perfil.nome
                   ?.charAt(0)
                   .toUpperCase()}
 
@@ -328,7 +305,9 @@ export default function AdminPage() {
                   "
                 >
 
-                  Administrador Deus
+                  {isDeus
+                    ? "Administrador Deus"
+                    : "Administrador"}
 
                 </p>
 
@@ -340,6 +319,19 @@ export default function AdminPage() {
                     truncate
                     text-sm
                     md:text-base
+                  "
+                >
+
+                  {perfil.nome}
+
+                </p>
+
+                <p
+                  className="
+                    text-xs
+                    text-zinc-500
+                    mt-1
+                    truncate
                   "
                 >
 
@@ -367,13 +359,7 @@ export default function AdminPage() {
           >
 
             <button
-              onClick={async () => {
-
-                await logout();
-
-                router.push("/");
-
-              }}
+              onClick={logout}
               className="
                 w-full
                 sm:w-auto
@@ -406,7 +392,7 @@ export default function AdminPage() {
 
         </div>
 
-        {/* SECTION CONTENT */}
+        {/* CONTENT */}
 
         <div
           className="
@@ -470,7 +456,7 @@ export default function AdminPage() {
       </AdminContent>
 
     </AdminContainer>
-
+ 
   );
 
 }

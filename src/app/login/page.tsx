@@ -8,8 +8,6 @@ import Image from "next/image";
 
 import { motion } from "framer-motion";
 
-import { useAuth } from "@/contexts/AuthContext";
-
 import {
   Mail,
   Lock,
@@ -55,130 +53,184 @@ export default function LoginPage() {
   const [avatarPreview, setAvatarPreview] =
     useState("");
 
-  // LOGIN
+  // LOGIN VISITANTE
 
   async function handleLogin() {
 
-  try {
+    try {
 
-    setLoading(true);
+      setLoading(true);
 
-    const { error } =
-      await supabase.auth.signInWithPassword({
-        email,
-        password: senha,
-      });
+      const cleanEmail =
+        email.trim().toLowerCase();
 
-    if (error) {
+      const {
+        data: authData,
+        error: authError,
+      } =
+        await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password: senha,
+        });
 
-      alert(error.message);
+      if (authError) {
 
-      return;
+        console.log(authError);
 
-    }
+        alert(
+          "Email ou senha inválidos.",
+        );
 
-    // BUSCA VISITANTE
+        return;
 
-    const {
-      data: visitante,
-    } = await supabase
-      .from("visitantes")
-      .select("*")
-      .eq("email", email)
-      .maybeSingle();
+      }
 
-    // NÃO É VISITANTE
+      if (!authData.user) {
 
-    if (!visitante) {
+        alert(
+          "Conta não encontrada.",
+        );
 
-      await supabase.auth.signOut();
+        return;
+
+      }
+
+      // BUSCA VISITANTE
+
+      const {
+        data: visitante,
+        error: visitanteError,
+      } = await supabase
+        .from("visitantes")
+        .select("*")
+        .eq(
+          "auth_user_id",
+          authData.user.id,
+        )
+        .maybeSingle();
+
+      if (
+        visitanteError ||
+        !visitante
+      ) {
+
+        console.log(
+          visitanteError,
+        );
+
+        await supabase.auth.signOut();
+
+        alert(
+          "Conta de visitante não encontrada.",
+        );
+
+        return;
+
+      }
+
+      // CONTA DESATIVADA
+
+      if (
+        visitante.ativo === false
+      ) {
+
+        await supabase.auth.signOut();
+
+        alert(
+          "Sua conta foi desativada.",
+        );
+
+        return;
+
+      }
 
       alert(
-        "Use o acesso administrativo secreto.",
+        `Bem-vindo ${visitante.nome}!`,
       );
 
-      return;
+      window.location.href = "/";
 
-    }
+    } catch (err) {
 
-    // DESATIVADO
-
-    if (
-      visitante.ativo === false
-    ) {
-
-      await supabase.auth.signOut();
+      console.log(err);
 
       alert(
-        "Sua conta foi desativada.",
+        "Erro interno ao entrar.",
       );
 
-      return;
+    } finally {
+
+      setLoading(false);
 
     }
-
-    window.location.href = "/";
-
-  } catch (err) {
-
-    console.log(err);
-
-    alert("Erro ao entrar.");
-
-  } finally {
-
-    setLoading(false);
 
   }
 
-}
   // UPLOAD AVATAR
 
   async function uploadAvatar(
     userId: string,
   ) {
 
-    if (!avatarFile) return "";
+    try {
 
-    const fileExt =
-      avatarFile.name.split(".").pop();
+      if (!avatarFile)
+        return "";
 
-    const fileName =
-      `${userId}.${fileExt}`;
+      const fileExt =
+        avatarFile.name
+          .split(".")
+          .pop();
 
-    const filePath =
-      `avatars/${fileName}`;
+      const fileName =
+        `${userId}.${fileExt}`;
 
-    const { error } =
-      await supabase.storage
-        .from("visitantes")
-        .upload(
-          filePath,
-          avatarFile,
-          {
-            upsert: true,
-          },
+      const filePath =
+        `avatars/${fileName}`;
+
+      const { error } =
+        await supabase.storage
+          .from("visitantes")
+          .upload(
+            filePath,
+            avatarFile,
+            {
+              upsert: true,
+            },
+          );
+
+      if (error) {
+
+        console.log(
+          "UPLOAD ERROR:",
+          error,
         );
 
-    if (error) {
+        return "";
 
-      console.log(error);
+      }
+
+      const {
+        data: publicUrl,
+      } = supabase.storage
+        .from("visitantes")
+        .getPublicUrl(
+          filePath,
+        );
+
+      return publicUrl.publicUrl;
+
+    } catch (err) {
+
+      console.log(err);
 
       return "";
 
     }
 
-    const {
-      data: publicUrl,
-    } = supabase.storage
-      .from("visitantes")
-      .getPublicUrl(filePath);
-
-    return publicUrl.publicUrl;
-
   }
 
-  // CADASTRO
+  // CADASTRO VISITANTE
 
   async function handleCadastro() {
 
@@ -186,36 +238,63 @@ export default function LoginPage() {
 
       setLoading(true);
 
+      const cleanEmail =
+        email.trim().toLowerCase();
+
+      const cleanNome =
+        nome.trim();
+
+      const cleanCidade =
+        cidade.trim();
+
+      const cleanTelefone =
+        telefone.trim();
+
+      // VALIDAÇÃO
+
       if (
-        !nome ||
-        !telefone ||
-        !cidade ||
-        !email ||
+        !cleanNome ||
+        !cleanTelefone ||
+        !cleanCidade ||
+        !cleanEmail ||
         !senha
       ) {
 
         alert(
-          "Preencha todos os campos."
+          "Preencha todos os campos.",
         );
 
         return;
 
       }
 
-      // VERIFICA ADMIN ANTES
-
-      const {
-        data: adminExiste,
-      } = await supabase
-        .from("admins")
-        .select("id")
-        .eq("email", email)
-        .maybeSingle();
-
-      if (adminExiste) {
+      if (senha.length < 6) {
 
         alert(
-          "Este email pertence a um administrador."
+          "A senha precisa ter pelo menos 6 caracteres.",
+        );
+
+        return;
+
+      }
+
+      // VERIFICA VISITANTE EXISTENTE
+
+      const {
+        data: visitanteExiste,
+      } = await supabase
+        .from("visitantes")
+        .select("id")
+        .eq(
+          "email",
+          cleanEmail,
+        )
+        .maybeSingle();
+
+      if (visitanteExiste) {
+
+        alert(
+          "Este email já possui cadastro.",
         );
 
         return;
@@ -227,34 +306,53 @@ export default function LoginPage() {
       const {
         data,
         error,
-      } = await supabase.auth.signUp({
-        email,
-        password: senha,
-        options: {
-          data: {
-            nome_completo:
-              nome.trim(),
+      } =
+        await supabase.auth.signUp({
+          email: cleanEmail,
+          password: senha,
+          options: {
+            data: {
+              nome_completo:
+                cleanNome,
+            },
           },
-        },
-      });
+        });
 
       if (error) {
 
+        console.log(error);
+
         if (
-          error.message.includes(
-            "rate limit",
-          )
+          error.message
+            .toLowerCase()
+            .includes("already")
         ) {
 
           alert(
-            "Muitas tentativas. Aguarde alguns minutos."
+            "Este email já está registrado.",
           );
 
           return;
 
         }
 
-        alert(error.message);
+        if (
+          error.message
+            .toLowerCase()
+            .includes("rate")
+        ) {
+
+          alert(
+            "Muitas tentativas. Aguarde alguns minutos.",
+          );
+
+          return;
+
+        }
+
+        alert(
+          "Erro ao criar conta.",
+        );
 
         return;
 
@@ -263,7 +361,7 @@ export default function LoginPage() {
       if (!data.user) {
 
         alert(
-          "Erro ao criar usuário."
+          "Erro ao criar usuário.",
         );
 
         return;
@@ -272,46 +370,82 @@ export default function LoginPage() {
 
       // UPLOAD AVATAR
 
-      const avatarUrl =
-        await uploadAvatar(
-          data.user.id,
-        );
+      let avatarUrl = "";
 
-      // CRIA VISITANTE
+      try {
+
+        avatarUrl =
+          await uploadAvatar(
+            data.user.id,
+          );
+
+      } catch (err) {
+
+        console.log(err);
+
+      }
+
+      // CRIA PERFIL VISITANTE
 
       const {
         error: visitanteError,
       } = await supabase
         .from("visitantes")
-        .insert({
-          auth_user_id:
-            data.user.id,
+        .upsert(
+          {
+            auth_user_id:
+              data.user.id,
 
-          nome:
-            nome.trim(),
+            nome:
+              cleanNome,
 
-          email,
+            email:
+              cleanEmail,
 
-          telefone,
+            telefone:
+              cleanTelefone,
 
-          cidade,
+            cidade:
+              cleanCidade,
 
-          avatar_url:
-            avatarUrl,
+            avatar_url:
+              avatarUrl,
 
-          ativo: true,
+            ativo: true,
 
-          role: "visitante",
-        });
+            role: "visitante",
+          },
+          {
+            onConflict:
+              "auth_user_id",
+          },
+        );
 
       if (visitanteError) {
 
         console.log(
+          "VISITANTE ERROR:",
           visitanteError,
         );
 
+        await supabase.auth.signOut();
+
+        if (
+          visitanteError.message.includes(
+            "visitantes_email_key",
+          )
+        ) {
+
+          alert(
+            "Este email já está cadastrado.",
+          );
+
+          return;
+
+        }
+
         alert(
-          "Erro ao criar perfil."
+          "Erro ao criar perfil do visitante.",
         );
 
         return;
@@ -319,7 +453,7 @@ export default function LoginPage() {
       }
 
       alert(
-        "Conta criada com sucesso."
+        "Conta criada com sucesso!",
       );
 
       window.location.href = "/";
@@ -328,7 +462,9 @@ export default function LoginPage() {
 
       console.log(err);
 
-      alert("Erro no cadastro.");
+      alert(
+        "Erro interno no cadastro.",
+      );
 
     } finally {
 
@@ -346,9 +482,19 @@ export default function LoginPage() {
 
       setLoading(true);
 
+      if (!email) {
+
+        alert(
+          "Digite seu email.",
+        );
+
+        return;
+
+      }
+
       const { error } =
         await supabase.auth.resetPasswordForEmail(
-          email,
+          email.trim(),
           {
             redirectTo:
               "http://localhost:3000/reset-password",
@@ -357,14 +503,18 @@ export default function LoginPage() {
 
       if (error) {
 
-        alert(error.message);
+        console.log(error);
+
+        alert(
+          "Erro ao enviar email.",
+        );
 
         return;
 
       }
 
       alert(
-        "Link enviado para seu email."
+        "Link de recuperação enviado.",
       );
 
       setIsReset(false);
@@ -374,7 +524,7 @@ export default function LoginPage() {
       console.log(err);
 
       alert(
-        "Erro ao enviar email."
+        "Erro interno.",
       );
 
     } finally {
@@ -387,9 +537,11 @@ export default function LoginPage() {
 
   async function handleSubmit() {
 
+    if (loading) return;
+
     if (isReset) {
 
-      handleResetSenha();
+      await handleResetSenha();
 
       return;
 
@@ -397,13 +549,13 @@ export default function LoginPage() {
 
     if (isCadastro) {
 
-      handleCadastro();
+      await handleCadastro();
 
       return;
 
     }
 
-    handleLogin();
+    await handleLogin();
 
   }
 
@@ -554,8 +706,6 @@ export default function LoginPage() {
 
         <div className="mt-10 space-y-5">
 
-          {/* AVATAR */}
-
           {isCadastro && !isReset && (
 
             <div className="flex justify-center">
@@ -659,83 +809,55 @@ export default function LoginPage() {
 
           )}
 
-          {/* NOME */}
-
           {isCadastro && !isReset && (
 
-            <Input
-              label="Nome completo"
-              icon={
-                <User size={18} />
-              }
-              value={nome}
-              onChange={setNome}
-              type="text"
-            />
+            <>
+              <Input
+                label="Nome completo"
+                icon={<User size={18} />}
+                value={nome}
+                onChange={setNome}
+                type="text"
+              />
+
+              <Input
+                label="Telefone"
+                icon={<Phone size={18} />}
+                value={telefone}
+                onChange={setTelefone}
+                type="text"
+              />
+
+              <Input
+                label="Cidade"
+                icon={<MapPin size={18} />}
+                value={cidade}
+                onChange={setCidade}
+                type="text"
+              />
+            </>
 
           )}
-
-          {/* TELEFONE */}
-
-          {isCadastro && !isReset && (
-
-            <Input
-              label="Telefone"
-              icon={
-                <Phone size={18} />
-              }
-              value={telefone}
-              onChange={setTelefone}
-              type="text"
-            />
-
-          )}
-
-          {/* CIDADE */}
-
-          {isCadastro && !isReset && (
-
-            <Input
-              label="Cidade"
-              icon={
-                <MapPin size={18} />
-              }
-              value={cidade}
-              onChange={setCidade}
-              type="text"
-            />
-
-          )}
-
-          {/* EMAIL */}
 
           <Input
             label="Email"
-            icon={
-              <Mail size={18} />
-            }
+            icon={<Mail size={18} />}
             value={email}
             onChange={setEmail}
             type="email"
           />
 
-          {/* SENHA */}
-
           {!isReset && (
 
             <Input
               label="Senha"
-              icon={
-                <Lock size={18} />
-              }
+              icon={<Lock size={18} />}
               value={senha}
               onChange={setSenha}
               type="password"
             />
 
           )}
-
-          {/* BUTTON */}
 
           <button
             onClick={handleSubmit}
@@ -746,6 +868,7 @@ export default function LoginPage() {
               rounded-2xl
               bg-[#2E5E4E]
               hover:bg-[#23473A]
+              disabled:opacity-70
               text-white
               font-black
               flex

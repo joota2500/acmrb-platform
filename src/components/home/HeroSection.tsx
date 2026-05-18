@@ -132,7 +132,7 @@ export default function HeroSection() {
               "
             >
 
-              ♻ Plataforma ESG • ACMRB • Baturité CE
+              ♻ Plataforma Dos Catadores De Materiais Reciclaveis • Baturité CE
 
             </div>
 
