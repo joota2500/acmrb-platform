@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   ArrowLeft,
@@ -12,14 +12,8 @@ import {
   Wallet,
   Leaf,
   BarChart3,
-  ShieldCheck,
-  Building2,
-  TrendingUp,
   FileBarChart2,
-  Globe2,
   Sparkles,
-  CheckCircle2,
-  BadgeCheck,
   Activity,
   Factory,
   Landmark,
@@ -28,9 +22,23 @@ import {
   Truck,
   Cpu,
   Waves,
+  Database,
+  Gauge,
+  Archive,
+  CircleDollarSign,
+  ShieldCheck,
+  Building2,
+  Globe2,
+  CheckCircle2,
+  Newspaper,
+  Clock3,
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
+
+/* =========================
+   TYPES
+========================= */
 
 type Indicadores = {
 
@@ -82,6 +90,36 @@ type Material = {
 
   peso_total: number;
 
+  registros: number;
+
+  ultimo_registro?: string;
+
+};
+
+type TotaisSistema = {
+
+  total_registros: number;
+
+  total_materiais: number;
+
+  total_associados: number;
+
+  total_noticias: number;
+
+};
+
+type Noticia = {
+
+  id: string;
+
+  titulo: string;
+
+  categoria: string;
+
+  publicado_em: string;
+
+  views: number;
+
 };
 
 export default function RelatorioPage() {
@@ -95,92 +133,356 @@ export default function RelatorioPage() {
   const [materiais, setMateriais] =
     useState<Material[]>([]);
 
+  const [totais, setTotais] =
+    useState<TotaisSistema>({
+      total_registros: 0,
+      total_materiais: 0,
+      total_associados: 0,
+      total_noticias: 0,
+    });
+
+  const [noticias, setNoticias] =
+    useState<Noticia[]>([]);
+
+  /* =========================
+     CARREGAR DADOS
+  ========================= */
+
   async function carregarDados() {
 
-    setLoading(true);
+    try {
 
-    /* =========================
-       DASHBOARD MÉTRICAS
-    ========================= */
+      setLoading(true);
 
-    const {
-      data: metricas,
-    } = await supabase
-      .from("dashboard_metricas")
-      .select("*")
-      .single();
+      /* =========================
+         DASHBOARD MÉTRICAS
+      ========================= */
 
-    if (metricas) {
-
-      setDados(metricas);
-
-    }
-
-    /* =========================
-       MATERIAIS
-    ========================= */
-
-    const {
-      data: materiaisData,
-    } = await supabase
-      .from("materiais_registros")
-      .select(`
-        peso,
-        material_id,
-        materiais_tipos (
-          id,
-          nome
+      const {
+        data: metricas,
+      } = await supabase
+        .from("dashboard_metricas")
+        .select("*")
+        .order(
+          "updated_at",
+          {
+            ascending: false,
+          },
         )
-      `);
+        .limit(1)
+        .single();
 
-    if (materiaisData) {
+      if (metricas) {
 
-      const agrupados: Record<
-        string,
-        Material
-      > = {};
+        setDados({
 
-      materiaisData.forEach(
-        (item: any) => {
+          residuos_reciclados:
+            Number(
+              metricas.residuos_reciclados || 0,
+            ),
 
-          const nome =
-            item.materiais_tipos?.nome ||
-            "Material";
+          co2_evitado:
+            Number(
+              metricas.co2_evitado || 0,
+            ),
 
-          const id =
-            item.materiais_tipos?.id;
+          familias_impactadas:
+            Number(
+              metricas.familias_impactadas || 0,
+            ),
 
-          if (!agrupados[id]) {
+          catadores_ativos:
+            Number(
+              metricas.catadores_ativos || 0,
+            ),
 
-            agrupados[id] = {
+          renda_gerada:
+            Number(
+              metricas.renda_gerada || 0,
+            ),
 
-              id,
+          empresas_parceiras:
+            Number(
+              metricas.empresas_parceiras || 0,
+            ),
 
-              nome,
+          coletas_realizadas:
+            Number(
+              metricas.coletas_realizadas || 0,
+            ),
 
-              peso_total: 0,
+          bairros_atendidos:
+            Number(
+              metricas.bairros_atendidos || 0,
+            ),
 
-            };
+          residuos_desviados_aterro:
+            Number(
+              metricas.residuos_desviados_aterro || 0,
+            ),
 
-          }
+          educacao_ambiental_acoes:
+            Number(
+              metricas.educacao_ambiental_acoes || 0,
+            ),
 
-          agrupados[id]
-            .peso_total += Number(
-            item.peso || 0,
+          pessoas_impactadas:
+            Number(
+              metricas.pessoas_impactadas || 0,
+            ),
+
+          toneladas_papelao:
+            Number(
+              metricas.toneladas_papelao || 0,
+            ),
+
+          toneladas_plastico:
+            Number(
+              metricas.toneladas_plastico || 0,
+            ),
+
+          toneladas_vidro:
+            Number(
+              metricas.toneladas_vidro || 0,
+            ),
+
+          toneladas_metal:
+            Number(
+              metricas.toneladas_metal || 0,
+            ),
+
+          toneladas_eletronicos:
+            Number(
+              metricas.toneladas_eletronicos || 0,
+            ),
+
+          arvores_preservadas:
+            Number(
+              metricas.arvores_preservadas || 0,
+            ),
+
+          agua_economizada:
+            Number(
+              metricas.agua_economizada || 0,
+            ),
+
+          energia_economizada:
+            Number(
+              metricas.energia_economizada || 0,
+            ),
+
+        });
+
+      }
+
+      /* =========================
+         MATERIAIS
+      ========================= */
+
+      const {
+        data: materiaisData,
+        count: totalRegistros,
+      } = await supabase
+        .from("materiais_registros")
+        .select(`
+          id,
+          peso,
+          created_at,
+          material_id,
+          materiais_tipos (
+            id,
+            nome
+          )
+        `, {
+          count: "exact",
+        });
+
+      if (materiaisData) {
+
+        const agrupados:
+          Record<
+            string,
+            Material
+          > = {};
+
+        materiaisData.forEach(
+          (item: any) => {
+
+            const nome =
+              item
+                ?.materiais_tipos
+                ?.nome ||
+              "Material";
+
+            const id =
+              item
+                ?.materiais_tipos
+                ?.id ||
+              item.material_id;
+
+            if (
+              !agrupados[id]
+            ) {
+
+              agrupados[id] = {
+
+                id,
+
+                nome,
+
+                peso_total: 0,
+
+                registros: 0,
+
+                ultimo_registro:
+                  item.created_at,
+
+              };
+
+            }
+
+            agrupados[id]
+              .peso_total +=
+              Number(
+                item.peso || 0,
+              );
+
+            agrupados[id]
+              .registros += 1;
+
+          },
+        );
+
+        const materiaisOrdenados =
+          Object.values(
+            agrupados,
+          ).sort(
+            (
+              a,
+              b,
+            ) =>
+              b.peso_total -
+              a.peso_total,
           );
 
-        },
+        setMateriais(
+          materiaisOrdenados,
+        );
+
+        setTotais(
+          (
+            prev,
+          ) => ({
+
+            ...prev,
+
+            total_registros:
+              totalRegistros || 0,
+
+            total_materiais:
+              materiaisOrdenados.length,
+
+          }),
+        );
+
+      }
+
+      /* =========================
+         ASSOCIADOS
+      ========================= */
+
+      const {
+        count:
+          totalAssociados,
+      } = await supabase
+        .from(
+          "associados",
+        )
+        .select(
+          "*",
+          {
+            count:
+              "exact",
+            head: true,
+          },
+        )
+        .eq(
+          "ativo",
+          true,
+        );
+
+      /* =========================
+         NOTÍCIAS
+      ========================= */
+
+      const {
+        data: noticiasData,
+        count:
+          totalNoticias,
+      } = await supabase
+        .from("noticias")
+        .select(`
+          id,
+          titulo,
+          categoria,
+          publicado_em,
+          views
+        `, {
+          count:
+            "exact",
+        })
+        .eq(
+          "publicado",
+          true,
+        )
+        .order(
+          "publicado_em",
+          {
+            ascending:
+              false,
+          },
+        )
+        .limit(4);
+
+      if (
+        noticiasData
+      ) {
+
+        setNoticias(
+          noticiasData,
+        );
+
+      }
+
+      setTotais(
+        (
+          prev,
+        ) => ({
+
+          ...prev,
+
+          total_associados:
+            totalAssociados || 0,
+
+          total_noticias:
+            totalNoticias || 0,
+
+        }),
       );
 
-      setMateriais(
-        Object.values(
-          agrupados,
-        ),
+    } catch (error) {
+
+      console.log(
+        error,
+      );
+
+    } finally {
+
+      setLoading(
+        false,
       );
 
     }
-
-    setLoading(false);
 
   }
 
@@ -191,6 +493,27 @@ export default function RelatorioPage() {
   }, []);
 
   /* =========================
+     TOTAL REAL
+  ========================= */
+
+  const totalMateriais =
+    useMemo(() => {
+
+      return materiais.reduce(
+        (
+          total,
+          item,
+        ) =>
+          total +
+          item.peso_total,
+        0,
+      );
+
+    }, [
+      materiais,
+    ]);
+
+  /* =========================
      FORMATADORES
   ========================= */
 
@@ -198,15 +521,21 @@ export default function RelatorioPage() {
     value: number = 0,
   ) {
 
-    if (value >= 1000) {
+    if (
+      value >= 1000
+    ) {
 
       return `${(
         value / 1000
-      ).toFixed(1)}t`;
+      ).toFixed(
+        1,
+      )}t`;
 
     }
 
-    return `${value.toFixed(0)}kg`;
+    return `${value.toFixed(
+      0,
+    )}kg`;
 
   }
 
@@ -217,10 +546,24 @@ export default function RelatorioPage() {
     return value.toLocaleString(
       "pt-BR",
       {
-        style: "currency",
-        currency: "BRL",
+        style:
+          "currency",
+
+        currency:
+          "BRL",
+
         maximumFractionDigits: 0,
       },
+    );
+
+  }
+
+  function formatNumero(
+    value: number = 0,
+  ) {
+
+    return value.toLocaleString(
+      "pt-BR",
     );
 
   }
@@ -252,8 +595,8 @@ export default function RelatorioPage() {
               absolute
               -top-40
               -left-40
-              w-[500px]
-              h-[500px]
+              w-125
+              h-125
               rounded-full
               bg-emerald-200/30
               blur-3xl
@@ -265,8 +608,8 @@ export default function RelatorioPage() {
               absolute
               bottom-0
               right-0
-              w-[450px]
-              h-[450px]
+              w-112.5
+              h-112.5
               rounded-full
               bg-cyan-200/20
               blur-3xl
@@ -369,7 +712,7 @@ export default function RelatorioPage() {
                     text-4xl
                     md:text-6xl
                     font-black
-                    leading-[1]
+                    leading-none
                     tracking-[-0.04em]
                     text-[#111827]
                   "
@@ -541,6 +884,66 @@ export default function RelatorioPage() {
 
                     </div>
 
+                    <div
+                      className="
+                        rounded-3xl
+                        bg-white/10
+                        border
+                        border-white/10
+                        p-5
+                      "
+                    >
+
+                      <Database size={28} />
+
+                      <h3
+                        className="
+                          mt-4
+                          text-4xl
+                          font-black
+                        "
+                      >
+
+                        {totais.total_registros}
+
+                      </h3>
+
+                      <p className="text-zinc-300 mt-2">
+                        Registros operacionais
+                      </p>
+
+                    </div>
+
+                    <div
+                      className="
+                        rounded-3xl
+                        bg-white/10
+                        border
+                        border-white/10
+                        p-5
+                      "
+                    >
+
+                      <Building2 size={28} />
+
+                      <h3
+                        className="
+                          mt-4
+                          text-4xl
+                          font-black
+                        "
+                      >
+
+                        {totais.total_associados}
+
+                      </h3>
+
+                      <p className="text-zinc-300 mt-2">
+                        Associados ativos
+                      </p>
+
+                    </div>
+
                   </div>
 
                 </div>
@@ -579,9 +982,10 @@ export default function RelatorioPage() {
           {[
             {
               icon: Recycle,
-              value: formatPeso(
-                dados.residuos_reciclados,
-              ),
+              value:
+                formatPeso(
+                  totalMateriais,
+                ),
               title:
                 "Resíduos reciclados",
               color:
@@ -590,9 +994,10 @@ export default function RelatorioPage() {
 
             {
               icon: Leaf,
-              value: formatPeso(
-                dados.co2_evitado,
-              ),
+              value:
+                formatPeso(
+                  dados.co2_evitado,
+                ),
               title:
                 "CO₂ evitado",
               color:
@@ -621,9 +1026,10 @@ export default function RelatorioPage() {
 
             {
               icon: Wallet,
-              value: formatMoney(
-                dados.renda_gerada,
-              ),
+              value:
+                formatMoney(
+                  dados.renda_gerada,
+                ),
               title:
                 "Renda gerada",
               color:
@@ -692,7 +1098,7 @@ export default function RelatorioPage() {
 
       </section>
 
-      {/* MÉTRICAS OPERACIONAIS */}
+      {/* MÉTRICAS */}
 
       <section
         className="
@@ -716,54 +1122,41 @@ export default function RelatorioPage() {
           "
         >
 
-          <div
-            className="
-              flex
-              flex-col
-              xl:flex-row
-              xl:items-end
-              xl:justify-between
-              gap-8
-            "
-          >
+          <div>
 
-            <div>
+            <div
+              className="
+                inline-flex
+                items-center
+                gap-3
+                px-5
+                py-3
+                rounded-full
+                bg-[#E8F3EE]
+                text-[#2E5E4E]
+                font-black
+                text-sm
+              "
+            >
 
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-3
-                  px-5
-                  py-3
-                  rounded-full
-                  bg-[#E8F3EE]
-                  text-[#2E5E4E]
-                  font-black
-                  text-sm
-                "
-              >
-
-                📊 Métricas operacionais
-
-              </div>
-
-              <h2
-                className="
-                  mt-8
-                  text-4xl
-                  md:text-5xl
-                  font-black
-                  text-[#111827]
-                "
-              >
-
-                Dados institucionais
-                e ambientais integrados.
-
-              </h2>
+              📊 Métricas operacionais
 
             </div>
+
+            <h2
+              className="
+                mt-8
+                text-4xl
+                md:text-5xl
+                font-black
+                text-[#111827]
+              "
+            >
+
+              Dados institucionais
+              e ambientais integrados.
+
+            </h2>
 
           </div>
 
@@ -785,11 +1178,15 @@ export default function RelatorioPage() {
               />
 
               <h3 className="mt-5 text-5xl font-black text-[#111827]">
+
                 {dados.empresas_parceiras}
+
               </h3>
 
               <p className="mt-3 text-zinc-500 leading-7">
+
                 Empresas parceiras vinculadas.
+
               </p>
 
             </div>
@@ -802,11 +1199,15 @@ export default function RelatorioPage() {
               />
 
               <h3 className="mt-5 text-5xl font-black text-[#111827]">
+
                 {dados.bairros_atendidos}
+
               </h3>
 
               <p className="mt-3 text-zinc-500 leading-7">
+
                 Bairros atendidos pela coleta.
+
               </p>
 
             </div>
@@ -819,11 +1220,15 @@ export default function RelatorioPage() {
               />
 
               <h3 className="mt-5 text-5xl font-black text-[#111827]">
+
                 {dados.educacao_ambiental_acoes}
+
               </h3>
 
               <p className="mt-3 text-zinc-500 leading-7">
+
                 Ações de educação ambiental.
+
               </p>
 
             </div>
@@ -836,11 +1241,188 @@ export default function RelatorioPage() {
               />
 
               <h3 className="mt-5 text-5xl font-black text-[#111827]">
+
                 {dados.pessoas_impactadas}
+
               </h3>
 
               <p className="mt-3 text-zinc-500 leading-7">
+
                 Pessoas impactadas pelas ações.
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ESG AVANÇADO */}
+
+      <section
+        className="
+          max-w-7xl
+          mx-auto
+          px-4
+          md:px-5
+          pb-24
+        "
+      >
+
+        <div
+          className="
+            bg-white
+            rounded-[42px]
+            border
+            border-black/5
+            shadow-xl
+            p-8
+            md:p-14
+          "
+        >
+
+          <div>
+
+            <div
+              className="
+                inline-flex
+                items-center
+                gap-3
+                px-5
+                py-3
+                rounded-full
+                bg-[#E8F3EE]
+                text-[#2E5E4E]
+                font-black
+                text-sm
+              "
+            >
+
+              <Gauge size={18} />
+
+              Indicadores ESG avançados
+
+            </div>
+
+            <h2
+              className="
+                mt-8
+                text-4xl
+                md:text-5xl
+                font-black
+                text-[#111827]
+              "
+            >
+
+              Impacto ambiental,
+              economia circular
+              e sustentabilidade.
+
+            </h2>
+
+          </div>
+
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              xl:grid-cols-4
+              gap-6
+              mt-14
+            "
+          >
+
+            <div className="bg-[#F5F7F4] rounded-3xl p-6">
+
+              <Archive
+                size={34}
+                className="text-[#2E5E4E]"
+              />
+
+              <h3 className="mt-5 text-5xl font-black text-[#111827]">
+
+                {formatPeso(
+                  dados.residuos_desviados_aterro,
+                )}
+
+              </h3>
+
+              <p className="mt-3 text-zinc-500 leading-7">
+
+                Resíduos desviados do aterro.
+
+              </p>
+
+            </div>
+
+            <div className="bg-[#F5F7F4] rounded-3xl p-6">
+
+              <Waves
+                size={34}
+                className="text-[#2E5E4E]"
+              />
+
+              <h3 className="mt-5 text-5xl font-black text-[#111827]">
+
+                {formatNumero(
+                  dados.agua_economizada,
+                )}L
+
+              </h3>
+
+              <p className="mt-3 text-zinc-500 leading-7">
+
+                Água economizada.
+
+              </p>
+
+            </div>
+
+            <div className="bg-[#F5F7F4] rounded-3xl p-6">
+
+              <Cpu
+                size={34}
+                className="text-[#2E5E4E]"
+              />
+
+              <h3 className="mt-5 text-5xl font-black text-[#111827]">
+
+                {formatNumero(
+                  dados.energia_economizada,
+                )}
+
+              </h3>
+
+              <p className="mt-3 text-zinc-500 leading-7">
+
+                Energia economizada.
+
+              </p>
+
+            </div>
+
+            <div className="bg-[#F5F7F4] rounded-3xl p-6">
+
+              <CircleDollarSign
+                size={34}
+                className="text-[#2E5E4E]"
+              />
+
+              <h3 className="mt-5 text-4xl font-black text-[#111827]">
+
+                {formatMoney(
+                  dados.renda_gerada,
+                )}
+
+              </h3>
+
+              <p className="mt-3 text-zinc-500 leading-7">
+
+                Movimentação econômica da reciclagem.
+
               </p>
 
             </div>
@@ -880,8 +1462,8 @@ export default function RelatorioPage() {
               absolute
               top-0
               right-0
-              w-[400px]
-              h-[400px]
+              w-100
+              h-100
               bg-emerald-500/10
               rounded-full
               blur-3xl
@@ -983,12 +1565,268 @@ export default function RelatorioPage() {
 
                     </p>
 
+                    <div
+                      className="
+                        mt-5
+                        pt-5
+                        border-t
+                        border-white/10
+                      "
+                    >
+
+                      <div className="flex items-center justify-between">
+
+                        <div>
+
+                          <p className="text-zinc-400 text-sm">
+
+                            Registros
+
+                          </p>
+
+                          <h4 className="font-black text-2xl mt-1">
+
+                            {item.registros}
+
+                          </h4>
+
+                        </div>
+
+                        <div>
+
+                          <p className="text-zinc-400 text-sm">
+
+                            Último
+
+                          </p>
+
+                          <h4 className="font-black text-sm mt-1">
+
+                            {item.ultimo_registro
+                              ? new Date(
+                                  item.ultimo_registro,
+                                ).toLocaleDateString(
+                                  "pt-BR",
+                                )
+                              : "--"}
+
+                          </h4>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
                   </div>
 
                 ),
               )}
 
             </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* NOTÍCIAS */}
+
+      <section
+        className="
+          max-w-7xl
+          mx-auto
+          px-4
+          md:px-5
+          pb-24
+        "
+      >
+
+        <div
+          className="
+            bg-white
+            rounded-[42px]
+            border
+            border-black/5
+            shadow-xl
+            p-8
+            md:p-14
+          "
+        >
+
+          <div
+            className="
+              flex
+              items-center
+              justify-between
+              gap-6
+              flex-wrap
+            "
+          >
+
+            <div>
+
+              <div
+                className="
+                  inline-flex
+                  items-center
+                  gap-3
+                  px-5
+                  py-3
+                  rounded-full
+                  bg-[#E8F3EE]
+                  text-[#2E5E4E]
+                  font-black
+                  text-sm
+                "
+              >
+
+                <Newspaper size={18} />
+
+                Notícias institucionais
+
+              </div>
+
+              <h2
+                className="
+                  mt-8
+                  text-4xl
+                  md:text-5xl
+                  font-black
+                  text-[#111827]
+                "
+              >
+
+                Últimas atualizações públicas.
+
+              </h2>
+
+            </div>
+
+            <div
+              className="
+                bg-[#F5F7F4]
+                rounded-3xl
+                px-6
+                py-5
+              "
+            >
+
+              <p className="text-zinc-500 text-sm">
+                Total de notícias
+              </p>
+
+              <h3 className="text-4xl font-black text-[#111827] mt-2">
+
+                {totais.total_noticias}
+
+              </h3>
+
+            </div>
+
+          </div>
+
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              gap-6
+              mt-14
+            "
+          >
+
+            {noticias.map(
+              (
+                item,
+              ) => (
+
+                <div
+                  key={item.id}
+                  className="
+                    rounded-3xl
+                    border
+                    border-black/5
+                    bg-[#F5F7F4]
+                    p-6
+                  "
+                >
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      gap-4
+                      flex-wrap
+                    "
+                  >
+
+                    <span
+                      className="
+                        px-4
+                        py-2
+                        rounded-full
+                        bg-[#DDF5EC]
+                        text-[#2E5E4E]
+                        text-xs
+                        font-black
+                      "
+                    >
+
+                      {item.categoria}
+
+                    </span>
+
+                    <div className="flex items-center gap-2 text-zinc-500 text-sm">
+
+                      <Clock3 size={15} />
+
+                      {new Date(
+                        item.publicado_em,
+                      ).toLocaleDateString(
+                        "pt-BR",
+                      )}
+
+                    </div>
+
+                  </div>
+
+                  <h3
+                    className="
+                      mt-6
+                      text-2xl
+                      font-black
+                      text-[#111827]
+                      leading-tight
+                    "
+                  >
+
+                    {item.titulo}
+
+                  </h3>
+
+                  <div
+                    className="
+                      mt-6
+                      flex
+                      items-center
+                      justify-between
+                    "
+                  >
+
+                    <p className="text-zinc-500">
+
+                      {item.views} visualizações
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+              ),
+            )}
 
           </div>
 

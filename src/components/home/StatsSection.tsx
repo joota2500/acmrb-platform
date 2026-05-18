@@ -41,8 +41,8 @@ export default function StatsSection() {
             absolute
             -top-32
             -left-32
-            w-[500px]
-            h-[500px]
+            w-125
+            h-125
             rounded-full
             bg-emerald-200/20
             blur-3xl
@@ -54,8 +54,8 @@ export default function StatsSection() {
             absolute
             bottom-0
             right-0
-            w-[450px]
-            h-[450px]
+            w-112.5
+            h-112.5
             rounded-full
             bg-cyan-200/20
             blur-3xl
@@ -127,7 +127,7 @@ export default function StatsSection() {
               sm:text-5xl
               md:text-6xl
               font-black
-              leading-[1]
+              leading-none
               tracking-[-0.04em]
               text-[#111827]
             "
