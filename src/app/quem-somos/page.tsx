@@ -19,6 +19,10 @@ import {
   Building2,
   Leaf,
   Award,
+  BadgeCheck,
+  Sparkles,
+  Clock3,
+  ChevronRight,
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
@@ -38,6 +42,7 @@ type Associado = {
   linkedin?: string;
   ativo?: boolean;
   destaque?: boolean;
+  slug?: string;
 };
 
 export default function QuemSomosPage() {
@@ -48,31 +53,48 @@ export default function QuemSomosPage() {
   const [totalAssociados, setTotalAssociados] =
     useState(0);
 
+  const [loading, setLoading] =
+    useState(true);
+
   async function carregarAssociados() {
 
-    const { data } =
-      await supabase
-        .from("associados")
-        .select("*")
-        .eq("ativo", true)
-        .order("destaque", {
-          ascending: false,
-        })
-        .limit(4);
+    try {
 
-    setAssociados(
-      (data as Associado[]) || [],
-    );
+      setLoading(true);
 
-    const { count } =
-      await supabase
-        .from("associados")
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
+      const { data } =
+        await supabase
+          .from("associados")
+          .select("*")
+          .eq("ativo", true)
+          .order("destaque", {
+            ascending: false,
+          })
+          .limit(4);
 
-    setTotalAssociados(count || 0);
+      setAssociados(
+        (data as Associado[]) || [],
+      );
+
+      const { count } =
+        await supabase
+          .from("associados")
+          .select("*", {
+            count: "exact",
+            head: true,
+          });
+
+      setTotalAssociados(count || 0);
+
+    } catch (error) {
+
+      console.error(error);
+
+    } finally {
+
+      setLoading(false);
+
+    }
 
   }
 
@@ -91,8 +113,10 @@ export default function QuemSomosPage() {
       <section
         className="
           relative
-          pt-28
-          pb-24
+          pt-24
+          md:pt-28
+          pb-20
+          md:pb-24
         "
       >
 
@@ -109,10 +133,25 @@ export default function QuemSomosPage() {
 
         <div
           className="
+            absolute
+            top-0
+            right-0
+            w-125
+            h-125
+            bg-[#DDF5EC]
+            blur-3xl
+            opacity-40
+            rounded-full
+          "
+        />
+
+        <div
+          className="
             relative
             max-w-7xl
             mx-auto
-            px-5
+            px-4
+            md:px-5
           "
         >
 
@@ -131,8 +170,9 @@ export default function QuemSomosPage() {
               border
               border-black/5
               shadow-sm
-              hover:shadow-md
-              transition
+              hover:shadow-lg
+              hover:-translate-y-0.5
+              transition-all
               text-[#111827]
               font-semibold
             "
@@ -169,7 +209,8 @@ export default function QuemSomosPage() {
 
               <div
                 className="
-                  p-8
+                  p-6
+                  sm:p-8
                   md:p-14
                   xl:p-16
                 "
@@ -186,7 +227,8 @@ export default function QuemSomosPage() {
                     bg-[#DDF5EC]
                     text-[#2E5E4E]
                     font-bold
-                    text-sm
+                    text-xs
+                    md:text-sm
                   "
                 >
 
@@ -199,7 +241,8 @@ export default function QuemSomosPage() {
                 <h1
                   className="
                     mt-8
-                    text-5xl
+                    text-4xl
+                    sm:text-5xl
                     md:text-6xl
                     font-black
                     leading-[1.05]
@@ -214,10 +257,13 @@ export default function QuemSomosPage() {
                 <p
                   className="
                     mt-8
-                    text-lg
-                    md:text-xl
-                    leading-9
+                    text-base
+                    md:text-lg
+                    xl:text-xl
+                    leading-8
+                    md:leading-9
                     text-zinc-600
+                    text-justify
                   "
                 >
                   A Associação dos Catadores de
@@ -232,9 +278,12 @@ export default function QuemSomosPage() {
                 <p
                   className="
                     mt-6
-                    text-lg
-                    leading-9
+                    text-base
+                    md:text-lg
+                    leading-8
+                    md:leading-9
                     text-zinc-600
+                    text-justify
                   "
                 >
                   Hoje a ACMRB representa uma nova
@@ -244,6 +293,97 @@ export default function QuemSomosPage() {
                   inclusão social e valorização do
                   trabalho ambiental.
                 </p>
+
+                {/* BADGES */}
+
+                <div
+                  className="
+                    flex
+                    flex-wrap
+                    gap-3
+                    mt-8
+                  "
+                >
+
+                  <div
+                    className="
+                      h-12
+                      px-5
+                      rounded-2xl
+                      bg-[#F5F7F4]
+                      border
+                      border-black/5
+                      flex
+                      items-center
+                      gap-3
+                      text-sm
+                      font-semibold
+                      text-[#111827]
+                    "
+                  >
+
+                    <ShieldCheck
+                      size={18}
+                      className="text-[#2E5E4E]"
+                    />
+
+                    Projeto ESG
+
+                  </div>
+
+                  <div
+                    className="
+                      h-12
+                      px-5
+                      rounded-2xl
+                      bg-[#F5F7F4]
+                      border
+                      border-black/5
+                      flex
+                      items-center
+                      gap-3
+                      text-sm
+                      font-semibold
+                      text-[#111827]
+                    "
+                  >
+
+                    <Sparkles
+                      size={18}
+                      className="text-[#2E5E4E]"
+                    />
+
+                    Inclusão social
+
+                  </div>
+
+                  <div
+                    className="
+                      h-12
+                      px-5
+                      rounded-2xl
+                      bg-[#F5F7F4]
+                      border
+                      border-black/5
+                      flex
+                      items-center
+                      gap-3
+                      text-sm
+                      font-semibold
+                      text-[#111827]
+                    "
+                  >
+
+                    <Leaf
+                      size={18}
+                      className="text-[#2E5E4E]"
+                    />
+
+                    Sustentabilidade
+
+                  </div>
+
+                </div>
 
                 {/* STATS */}
 
@@ -262,6 +402,8 @@ export default function QuemSomosPage() {
                       bg-[#F5F7F4]
                       rounded-3xl
                       p-5
+                      border
+                      border-black/5
                     "
                   >
 
@@ -273,7 +415,8 @@ export default function QuemSomosPage() {
                     <h3
                       className="
                         mt-4
-                        text-3xl
+                        text-2xl
+                        md:text-3xl
                         font-black
                         text-[#111827]
                       "
@@ -281,7 +424,14 @@ export default function QuemSomosPage() {
                       {totalAssociados}+
                     </h3>
 
-                    <p className="text-zinc-500 mt-1 text-sm">
+                    <p
+                      className="
+                        text-zinc-500
+                        mt-1
+                        text-xs
+                        md:text-sm
+                      "
+                    >
                       Associados
                     </p>
 
@@ -292,6 +442,8 @@ export default function QuemSomosPage() {
                       bg-[#F5F7F4]
                       rounded-3xl
                       p-5
+                      border
+                      border-black/5
                     "
                   >
 
@@ -303,7 +455,8 @@ export default function QuemSomosPage() {
                     <h3
                       className="
                         mt-4
-                        text-3xl
+                        text-2xl
+                        md:text-3xl
                         font-black
                         text-[#111827]
                       "
@@ -311,7 +464,14 @@ export default function QuemSomosPage() {
                       30+
                     </h3>
 
-                    <p className="text-zinc-500 mt-1 text-sm">
+                    <p
+                      className="
+                        text-zinc-500
+                        mt-1
+                        text-xs
+                        md:text-sm
+                      "
+                    >
                       Famílias impactadas
                     </p>
 
@@ -322,6 +482,8 @@ export default function QuemSomosPage() {
                       bg-[#F5F7F4]
                       rounded-3xl
                       p-5
+                      border
+                      border-black/5
                     "
                   >
 
@@ -333,7 +495,8 @@ export default function QuemSomosPage() {
                     <h3
                       className="
                         mt-4
-                        text-3xl
+                        text-2xl
+                        md:text-3xl
                         font-black
                         text-[#111827]
                       "
@@ -341,7 +504,14 @@ export default function QuemSomosPage() {
                       ESG
                     </h3>
 
-                    <p className="text-zinc-500 mt-1 text-sm">
+                    <p
+                      className="
+                        text-zinc-500
+                        mt-1
+                        text-xs
+                        md:text-sm
+                      "
+                    >
                       Sustentabilidade
                     </p>
 
@@ -352,6 +522,8 @@ export default function QuemSomosPage() {
                       bg-[#F5F7F4]
                       rounded-3xl
                       p-5
+                      border
+                      border-black/5
                     "
                   >
 
@@ -363,7 +535,8 @@ export default function QuemSomosPage() {
                     <h3
                       className="
                         mt-4
-                        text-3xl
+                        text-2xl
+                        md:text-3xl
                         font-black
                         text-[#111827]
                       "
@@ -371,7 +544,14 @@ export default function QuemSomosPage() {
                       2025
                     </h3>
 
-                    <p className="text-zinc-500 mt-1 text-sm">
+                    <p
+                      className="
+                        text-zinc-500
+                        mt-1
+                        text-xs
+                        md:text-sm
+                      "
+                    >
                       Fundação
                     </p>
 
@@ -398,12 +578,14 @@ export default function QuemSomosPage() {
                       rounded-2xl
                       bg-[#2E5E4E]
                       hover:bg-[#21463A]
-                      transition
+                      transition-all
                       text-white
                       font-bold
                       inline-flex
                       items-center
                       gap-3
+                      shadow-lg
+                      shadow-[#2E5E4E]/20
                     "
                   >
 
@@ -437,12 +619,19 @@ export default function QuemSomosPage() {
 
               {/* IMAGEM */}
 
-              <div className="relative min-h-175">
+              <div
+                className="
+                  relative
+                  min-h-105
+                  xl:min-h-full
+                "
+              >
 
                 <Image
                   src="/images/acmrb-hero.jpg"
                   alt="ACMRB"
                   fill
+                  priority
                   className="object-cover"
                 />
 
@@ -460,22 +649,26 @@ export default function QuemSomosPage() {
                 <div
                   className="
                     absolute
-                    bottom-10
-                    left-10
-                    right-10
+                    bottom-6
+                    md:bottom-10
+                    left-6
+                    md:left-10
+                    right-6
                     bg-white/10
                     backdrop-blur-md
                     border
                     border-white/20
                     rounded-3xl
-                    p-6
+                    p-5
+                    md:p-6
                     text-white
                   "
                 >
 
                   <p
                     className="
-                      text-2xl
+                      text-lg
+                      md:text-2xl
                       font-black
                       leading-tight
                     "
@@ -504,7 +697,8 @@ export default function QuemSomosPage() {
         className="
           max-w-7xl
           mx-auto
-          px-5
+          px-4
+          md:px-5
           pb-24
         "
       >
@@ -523,7 +717,8 @@ export default function QuemSomosPage() {
           <h2
             className="
               mt-4
-              text-5xl
+              text-3xl
+              md:text-5xl
               font-black
               text-[#111827]
             "
@@ -550,6 +745,9 @@ export default function QuemSomosPage() {
               overflow-hidden
               border
               border-black/5
+              shadow-sm
+              hover:shadow-xl
+              transition
             "
           >
 
@@ -566,8 +764,26 @@ export default function QuemSomosPage() {
 
             <div className="p-8">
 
+              <div
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  text-[#2E5E4E]
+                  font-semibold
+                  text-sm
+                "
+              >
+
+                <Clock3 size={16} />
+
+                História
+
+              </div>
+
               <h3
                 className="
+                  mt-4
                   text-3xl
                   font-black
                   text-[#111827]
@@ -581,7 +797,9 @@ export default function QuemSomosPage() {
                   mt-5
                   text-zinc-600
                   leading-8
-                  text-lg
+                  text-base
+                  md:text-lg
+                  text-justify
                 "
               >
                 Muitos trabalhadores passavam
@@ -604,6 +822,7 @@ export default function QuemSomosPage() {
               text-white
               rounded-[36px]
               p-10
+              shadow-2xl
             "
           >
 
@@ -623,8 +842,10 @@ export default function QuemSomosPage() {
               className="
                 mt-6
                 leading-9
-                text-lg
+                text-base
+                md:text-lg
                 opacity-90
+                text-justify
               "
             >
               Com apoio institucional da
@@ -635,6 +856,47 @@ export default function QuemSomosPage() {
               valorização humana e fortalecimento
               ambiental.
             </p>
+
+            <div
+              className="
+                mt-8
+                flex
+                flex-wrap
+                gap-3
+              "
+            >
+
+              <div
+                className="
+                  px-4
+                  py-2
+                  rounded-full
+                  bg-white/10
+                  border
+                  border-white/10
+                  text-sm
+                  font-semibold
+                "
+              >
+                Inclusão social
+              </div>
+
+              <div
+                className="
+                  px-4
+                  py-2
+                  rounded-full
+                  bg-white/10
+                  border
+                  border-white/10
+                  text-sm
+                  font-semibold
+                "
+              >
+                Logística reversa
+              </div>
+
+            </div>
 
           </div>
 
@@ -647,6 +909,9 @@ export default function QuemSomosPage() {
               overflow-hidden
               border
               border-black/5
+              shadow-sm
+              hover:shadow-xl
+              transition
             "
           >
 
@@ -663,8 +928,26 @@ export default function QuemSomosPage() {
 
             <div className="p-8">
 
+              <div
+                className="
+                  inline-flex
+                  items-center
+                  gap-2
+                  text-[#2E5E4E]
+                  font-semibold
+                  text-sm
+                "
+              >
+
+                <Award size={16} />
+
+                Futuro
+
+              </div>
+
               <h3
                 className="
+                  mt-4
                   text-3xl
                   font-black
                   text-[#111827]
@@ -678,7 +961,9 @@ export default function QuemSomosPage() {
                   mt-5
                   text-zinc-600
                   leading-8
-                  text-lg
+                  text-base
+                  md:text-lg
+                  text-justify
                 "
               >
                 A associação continua buscando
@@ -703,7 +988,8 @@ export default function QuemSomosPage() {
         className="
           max-w-7xl
           mx-auto
-          px-5
+          px-4
+          md:px-5
           pb-24
         "
       >
@@ -712,9 +998,9 @@ export default function QuemSomosPage() {
           className="
             flex
             flex-col
-            md:flex-row
-            md:items-end
-            md:justify-between
+            lg:flex-row
+            lg:items-end
+            lg:justify-between
             gap-6
             mb-12
           "
@@ -734,7 +1020,8 @@ export default function QuemSomosPage() {
             <h2
               className="
                 mt-4
-                text-5xl
+                text-3xl
+                md:text-5xl
                 font-black
                 text-[#111827]
               "
@@ -742,6 +1029,23 @@ export default function QuemSomosPage() {
               Pessoas que fazem a diferença todos
               os dias.
             </h2>
+
+            <p
+              className="
+                mt-5
+                max-w-3xl
+                text-zinc-600
+                leading-8
+                text-base
+                md:text-lg
+                text-justify
+              "
+            >
+              Conheça alguns dos associados que
+              contribuem diariamente para o
+              fortalecimento ambiental, social e
+              operacional da ACMRB.
+            </p>
 
           </div>
 
@@ -759,213 +1063,644 @@ export default function QuemSomosPage() {
               inline-flex
               items-center
               gap-3
+              shadow-lg
             "
           >
 
-            Ver todos
+            Ver todos os associados
 
-            <ArrowRight size={18} />
+            <ChevronRight size={18} />
 
           </Link>
 
         </div>
 
-        <div
-          className="
-            grid
-            md:grid-cols-2
-            xl:grid-cols-4
-            gap-6
-          "
-        >
+        {loading ? (
 
-          {associados.map((item) => (
+          <div
+            className="
+              bg-white
+              rounded-[36px]
+              p-16
+              text-center
+              border
+              border-black/5
+            "
+          >
+            Carregando associados...
+          </div>
 
-            <div
-              key={item.id}
-              className="
-                bg-white
-                rounded-[36px]
-                overflow-hidden
-                border
-                border-black/5
-                shadow-sm
-                hover:-translate-y-1
-                hover:shadow-xl
-                transition
-              "
-            >
+        ) : (
 
-              <div className="relative h-80">
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              xl:grid-cols-4
+              gap-6
+            "
+          >
 
-                <img
-                  src={item.foto_url}
-                  alt={item.nome}
-                  className="
-                    w-full
-                    h-full
-                    object-cover
-                  "
-                />
+            {associados.map((item) => (
 
-              </div>
+              <Link
+                key={item.id}
+                href={`/associados/${item.slug}`}
+                className="
+                  bg-white
+                  rounded-[36px]
+                  overflow-hidden
+                  border
+                  border-black/5
+                  shadow-sm
+                  hover:-translate-y-1
+                  hover:shadow-2xl
+                  transition-all
+                  group
+                "
+              >
 
-              <div className="p-6">
+                <div className="relative h-80">
 
-                <h3
-                  className="
-                    text-2xl
-                    font-black
-                    text-[#111827]
-                  "
-                >
-                  {item.nome}
-                </h3>
-
-                <p
-                  className="
-                    mt-2
-                    text-[#2E5E4E]
-                    font-semibold
-                  "
-                >
-                  {item.cargo}
-                </p>
-
-                <p
-                  className="
-                    mt-1
-                    text-sm
-                    text-zinc-500
-                  "
-                >
-                  {item.tipo_associado}
-                </p>
-
-                {item.bio && (
-
-                  <p
+                  <img
+                    src={item.foto_url}
+                    alt={item.nome}
                     className="
-                      mt-5
-                      text-zinc-600
-                      leading-7
-                      line-clamp-4
+                      w-full
+                      h-full
+                      object-cover
+                      group-hover:scale-105
+                      transition
+                      duration-500
                     "
-                  >
-                    {item.bio}
-                  </p>
+                  />
 
-                )}
+                  {item.destaque && (
 
-                <div
-                  className="
-                    mt-6
-                    space-y-2
-                    text-sm
-                    text-zinc-500
-                  "
-                >
+                    <div
+                      className="
+                        absolute
+                        top-4
+                        right-4
+                        px-4
+                        py-2
+                        rounded-full
+                        bg-yellow-400
+                        text-black
+                        text-xs
+                        font-bold
+                        shadow-lg
+                      "
+                    >
+                      Destaque
+                    </div>
 
-                  {item.telefone && (
-                    <p>
-                      📞 {item.telefone}
-                    </p>
-                  )}
-
-                  {item.email && (
-                    <p>
-                      ✉️ {item.email}
-                    </p>
                   )}
 
                 </div>
 
-              </div>
+                <div className="p-6">
 
-            </div>
+                  <h3
+                    className="
+                      text-2xl
+                      font-black
+                      text-[#111827]
+                    "
+                  >
+                    {item.nome}
+                  </h3>
 
-          ))}
+                  <p
+                    className="
+                      mt-2
+                      text-[#2E5E4E]
+                      font-semibold
+                    "
+                  >
+                    {item.cargo}
+                  </p>
 
-        </div>
+                  <p
+                    className="
+                      mt-1
+                      text-sm
+                      text-zinc-500
+                    "
+                  >
+                    {item.tipo_associado}
+                  </p>
+
+                  <div
+                    className="
+                      mt-6
+                      inline-flex
+                      items-center
+                      gap-2
+                      text-[#2E5E4E]
+                      font-bold
+                    "
+                  >
+
+                    Ver perfil completo
+
+                    <ArrowRight size={16} />
+
+                  </div>
+
+                </div>
+
+              </Link>
+
+            ))}
+
+          </div>
+
+        )}
 
       </section>
 
-      {/* PARCERIAS */}
+      {/* IMPACTO ESG */}
 
       <section
         className="
           max-w-7xl
           mx-auto
-          px-5
+          px-4
+          md:px-5
           pb-24
         "
       >
 
         <div
           className="
-            bg-[#111827]
+            bg-white
             rounded-[42px]
-            p-10
-            md:p-16
-            text-white
+            border
+            border-black/5
+            overflow-hidden
+            shadow-sm
           "
         >
 
-          <Award size={48} />
-
-          <h2
+          <div
             className="
-              mt-8
-              text-5xl
-              font-black
-              leading-tight
+              p-8
+              md:p-14
             "
           >
-            A ACMRB continua buscando apoio,
-            parcerias e novas oportunidades.
-          </h2>
 
-          <p
-            className="
-              mt-8
-              text-xl
-              leading-9
-              text-zinc-300
-              max-w-4xl
-            "
-          >
-            Empresas, instituições, projetos ESG,
-            universidades e parceiros ambientais
-            podem contribuir diretamente para o
-            fortalecimento da associação,
-            melhoria da estrutura operacional,
-            capacitação dos trabalhadores e
-            ampliação do impacto ambiental
-            positivo em Baturité.
-          </p>
-
-          <div className="mt-10">
-
-            <Link
-              href="/parcerias"
+            <div
               className="
-                h-14
-                px-8
-                rounded-2xl
-                bg-white
-                text-[#111827]
-                font-bold
-                inline-flex
-                items-center
-                gap-3
+                flex
+                flex-col
+                xl:flex-row
+                xl:items-end
+                xl:justify-between
+                gap-8
               "
             >
 
-              Tornar-se parceiro
+              <div>
 
-              <ArrowRight size={18} />
+                <span
+                  className="
+                    text-[#2E5E4E]
+                    font-bold
+                  "
+                >
+                  Impacto ESG
+                </span>
 
-            </Link>
+                <h2
+                  className="
+                    mt-4
+                    text-3xl
+                    md:text-5xl
+                    font-black
+                    text-[#111827]
+                  "
+                >
+                  Resultados ambientais e sociais.
+                </h2>
+
+              </div>
+
+              <p
+                className="
+                  max-w-2xl
+                  text-zinc-600
+                  leading-8
+                  text-base
+                  md:text-lg
+                  text-justify
+                "
+              >
+                A ACMRB atua diretamente na
+                valorização humana, reciclagem,
+                logística reversa, educação
+                ambiental e redução de impactos
+                ambientais no município de
+                Baturité.
+              </p>
+
+            </div>
+
+            <div
+              className="
+                grid
+                md:grid-cols-2
+                xl:grid-cols-4
+                gap-6
+                mt-14
+              "
+            >
+
+              <div
+                className="
+                  rounded-4xl
+                  bg-[#F5F7F4]
+                  p-8
+                  border
+                  border-black/5
+                "
+              >
+
+                <Recycle
+                  size={42}
+                  className="text-[#2E5E4E]"
+                />
+
+                <h3
+                  className="
+                    mt-6
+                    text-5xl
+                    font-black
+                    text-[#111827]
+                  "
+                >
+                  +12T
+                </h3>
+
+                <p
+                  className="
+                    mt-3
+                    text-zinc-600
+                    leading-7
+                  "
+                >
+                  Materiais recicláveis
+                  destinados corretamente.
+                </p>
+
+              </div>
+
+              <div
+                className="
+                  rounded-4xl
+                  bg-[#F5F7F4]
+                  p-8
+                  border
+                  border-black/5
+                "
+              >
+
+                <Users
+                  size={42}
+                  className="text-[#2E5E4E]"
+                />
+
+                <h3
+                  className="
+                    mt-6
+                    text-5xl
+                    font-black
+                    text-[#111827]
+                  "
+                >
+                  30+
+                </h3>
+
+                <p
+                  className="
+                    mt-3
+                    text-zinc-600
+                    leading-7
+                  "
+                >
+                  Famílias impactadas
+                  diretamente pela associação.
+                </p>
+
+              </div>
+
+              <div
+                className="
+                  rounded-4xl
+                  bg-[#F5F7F4]
+                  p-8
+                  border
+                  border-black/5
+                "
+              >
+
+                <Leaf
+                  size={42}
+                  className="text-[#2E5E4E]"
+                />
+
+                <h3
+                  className="
+                    mt-6
+                    text-5xl
+                    font-black
+                    text-[#111827]
+                  "
+                >
+                  ESG
+                </h3>
+
+                <p
+                  className="
+                    mt-3
+                    text-zinc-600
+                    leading-7
+                  "
+                >
+                  Sustentabilidade, inclusão
+                  social e responsabilidade
+                  ambiental.
+                </p>
+
+              </div>
+
+              <div
+                className="
+                  rounded-4xl
+                  bg-[#F5F7F4]
+                  p-8
+                  border
+                  border-black/5
+                "
+              >
+
+                <Award
+                  size={42}
+                  className="text-[#2E5E4E]"
+                />
+
+                <h3
+                  className="
+                    mt-6
+                    text-5xl
+                    font-black
+                    text-[#111827]
+                  "
+                >
+                  2026
+                </h3>
+
+                <p
+                  className="
+                    mt-3
+                    text-zinc-600
+                    leading-7
+                  "
+                >
+                  Expansão institucional,
+                  parcerias e novos projetos.
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* AÇÕES FUTURAS */}
+
+      <section
+        className="
+          max-w-7xl
+          mx-auto
+          px-4
+          md:px-5
+          pb-24
+        "
+      >
+
+        <div
+          className="
+            flex
+            flex-col
+            lg:flex-row
+            gap-8
+          "
+        >
+
+          <div
+            className="
+              flex-1
+              bg-[#111827]
+              rounded-[42px]
+              p-8
+              md:p-14
+              text-white
+              relative
+              overflow-hidden
+            "
+          >
+
+            <div
+              className="
+                absolute
+                top-0
+                right-0
+                w-80
+                h-80
+                bg-white/5
+                rounded-full
+                blur-3xl
+              "
+            />
+
+            <div className="relative">
+
+              <span
+                className="
+                  inline-flex
+                  items-center
+                  gap-3
+                  px-5
+                  py-3
+                  rounded-full
+                  bg-white/10
+                  border
+                  border-white/10
+                  text-sm
+                  font-bold
+                "
+              >
+
+                <Sparkles size={18} />
+
+                Próximos passos
+
+              </span>
+
+              <h2
+                className="
+                  mt-8
+                  text-3xl
+                  md:text-5xl
+                  font-black
+                  leading-tight
+                "
+              >
+                Expansão institucional e novas
+                ações ambientais.
+              </h2>
+
+              <p
+                className="
+                  mt-8
+                  text-zinc-300
+                  leading-8
+                  text-base
+                  md:text-lg
+                  text-justify
+                  max-w-3xl
+                "
+              >
+                A ACMRB busca ampliar sua atuação
+                com educação ambiental, coleta
+                seletiva, novas parcerias ESG,
+                capacitações técnicas,
+                profissionalização operacional e
+                fortalecimento da economia
+                circular em Baturité.
+              </p>
+
+              <div
+                className="
+                  grid
+                  md:grid-cols-2
+                  gap-4
+                  mt-10
+                "
+              >
+
+                <div
+                  className="
+                    rounded-3xl
+                    bg-white/5
+                    border
+                    border-white/10
+                    p-5
+                  "
+                >
+
+                  <BadgeCheck
+                    size={24}
+                  />
+
+                  <h3
+                    className="
+                      mt-4
+                      text-xl
+                      font-black
+                    "
+                  >
+                    Educação ambiental
+                  </h3>
+
+                </div>
+
+                <div
+                  className="
+                    rounded-3xl
+                    bg-white/5
+                    border
+                    border-white/10
+                    p-5
+                  "
+                >
+
+                  <ShieldCheck
+                    size={24}
+                  />
+
+                  <h3
+                    className="
+                      mt-4
+                      text-xl
+                      font-black
+                    "
+                  >
+                    Projetos ESG
+                  </h3>
+
+                </div>
+
+                <div
+                  className="
+                    rounded-3xl
+                    bg-white/5
+                    border
+                    border-white/10
+                    p-5
+                  "
+                >
+
+                  <Recycle
+                    size={24}
+                  />
+
+                  <h3
+                    className="
+                      mt-4
+                      text-xl
+                      font-black
+                    "
+                  >
+                    Coleta seletiva
+                  </h3>
+
+                </div>
+
+                <div
+                  className="
+                    rounded-3xl
+                    bg-white/5
+                    border
+                    border-white/10
+                    p-5
+                  "
+                >
+
+                  <Building2
+                    size={24}
+                  />
+
+                  <h3
+                    className="
+                      mt-4
+                      text-xl
+                      font-black
+                    "
+                  >
+                    Novas parcerias
+                  </h3>
+
+                </div>
+
+              </div>
+
+            </div>
 
           </div>
 
@@ -979,7 +1714,8 @@ export default function QuemSomosPage() {
         className="
           max-w-7xl
           mx-auto
-          px-5
+          px-4
+          md:px-5
           pb-24
         "
       >
@@ -991,24 +1727,33 @@ export default function QuemSomosPage() {
             overflow-hidden
             border
             border-black/5
+            shadow-sm
           "
         >
 
           <div className="p-8 md:p-14">
 
-            <span
+            <div
               className="
+                flex
+                items-center
+                gap-3
                 text-[#2E5E4E]
                 font-bold
               "
             >
+
+              <PlayCircle size={22} />
+
               Vídeo institucional
-            </span>
+
+            </div>
 
             <h2
               className="
-                mt-4
-                text-5xl
+                mt-5
+                text-3xl
+                md:text-5xl
                 font-black
                 text-[#111827]
               "
@@ -1035,133 +1780,126 @@ export default function QuemSomosPage() {
 
       {/* INSTAGRAM */}
 
-<section
-  className="
-    max-w-7xl
-    mx-auto
-    px-5
-    pb-24
-  "
->
-
-  <div
-    className="
-      flex
-      flex-col
-      md:flex-row
-      md:items-end
-      md:justify-between
-      gap-6
-      mb-12
-    "
-  >
-
-    <div>
-
-      <span
+      <section
         className="
-          text-[#2E5E4E]
-          font-bold
+          max-w-7xl
+          mx-auto
+          px-4
+          md:px-5
+          pb-24
         "
       >
-        Instagram
-      </span>
 
-      <h2
-        className="
-          mt-4
-          text-4xl
-          font-black
-          text-[#111827]
-        "
-      >
-        Acompanhe nossas ações ambientais.
-      </h2>
+        <div
+          className="
+            flex
+            flex-col
+            lg:flex-row
+            lg:items-end
+            lg:justify-between
+            gap-6
+            mb-12
+          "
+        >
 
-      <p
-        className="
-          mt-4
-          text-zinc-600
-          text-lg
-          leading-8
-          max-w-2xl
-        "
-      >
-        Projetos, ações ambientais,
-        educação ecológica, coleta seletiva
-        e a transformação social construída
-        diariamente pelos associados da ACMRB.
-      </p>
+          <div>
 
-    </div>
+            <span
+              className="
+                text-[#2E5E4E]
+                font-bold
+              "
+            >
+              Instagram
+            </span>
 
-    <a
-      href="https://instagram.com"
-      target="_blank"
-      className="
-        h-14
-        px-8
-        rounded-2xl
-        bg-[#111827]
-        hover:bg-black
-        transition
-        text-white
-        font-bold
-        inline-flex
-        items-center
-        gap-3
-      "
-    >
+            <h2
+              className="
+                mt-4
+                text-3xl
+                md:text-5xl
+                font-black
+                text-[#111827]
+              "
+            >
+              Acompanhe nossas ações ambientais.
+            </h2>
 
-      <Globe size={20} />
+          </div>
 
-      Ver Instagram
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            className="
+              h-14
+              px-8
+              rounded-2xl
+              bg-[#111827]
+              hover:bg-black
+              transition
+              text-white
+              font-bold
+              inline-flex
+              items-center
+              gap-3
+            "
+          >
 
-    </a>
+            <Globe size={20} />
 
-  </div>
+            Ver Instagram
 
-  <div
-    className="
-      grid
-      md:grid-cols-3
-      gap-6
-    "
-  >
+          </a>
 
-    <iframe
-      src="https://www.instagram.com/p/DYcEwegMSmg/embed"
-      className="
-        w-full
-        min-h-150
-        rounded-3xl
-        bg-white
-      "
-    />
+        </div>
 
-    <iframe
-      src="https://www.instagram.com/reel/DX4O5DgtuE3/embed"
-      className="
-        w-full
-        min-h-150
-        rounded-3xl
-        bg-white
-      "
-    />
+        <div
+          className="
+            grid
+            md:grid-cols-3
+            gap-6
+          "
+        >
 
-    <iframe
-      src="https://www.instagram.com/p/DW90q-MF38J/embed"
-      className="
-        w-full
-        min-h-150
-        rounded-3xl
-        bg-white
-      "
-    />
+          <iframe
+            src="https://www.instagram.com/p/DYcEwegMSmg/embed"
+            className="
+              w-full
+              min-h-162.5
+              rounded-3xl
+              bg-white
+              border
+              border-black/5
+            "
+          />
 
-  </div>
+          <iframe
+            src="https://www.instagram.com/reel/DX4O5DgtuE3/embed"
+            className="
+              w-full
+              min-h-162.5
+              rounded-3xl
+              bg-white
+              border
+              border-black/5
+            "
+          />
 
-</section>
+          <iframe
+            src="https://www.instagram.com/p/DW90q-MF38J/embed"
+            className="
+              w-full
+              min-h-162.5
+              rounded-3xl
+              bg-white
+              border
+              border-black/5
+            "
+          />
+
+        </div>
+
+      </section>
 
       {/* FOOTER */}
 
@@ -1171,14 +1909,31 @@ export default function QuemSomosPage() {
           text-white
           pt-20
           pb-10
+          relative
+          overflow-hidden
         "
       >
 
         <div
           className="
+            absolute
+            top-0
+            right-0
+            w-125
+            h-125
+            bg-[#2E5E4E]/20
+            blur-3xl
+            rounded-full
+          "
+        />
+
+        <div
+          className="
+            relative
             max-w-7xl
             mx-auto
-            px-5
+            px-4
+            md:px-5
           "
         >
 
@@ -1198,7 +1953,7 @@ export default function QuemSomosPage() {
 
               <h3
                 className="
-                  text-3xl
+                  text-4xl
                   font-black
                 "
               >
@@ -1210,10 +1965,12 @@ export default function QuemSomosPage() {
                   mt-5
                   text-zinc-400
                   leading-8
+                  text-justify
                 "
               >
                 Associação dos Catadores de
-                Materiais Recicláveis de Baturité.
+                Materiais Recicláveis de
+                Baturité.
               </p>
 
             </div>
@@ -1308,12 +2065,13 @@ export default function QuemSomosPage() {
                   mt-5
                   text-zinc-400
                   leading-8
+                  text-justify
                 "
               >
-                Projeto institucional voltado para
-                inclusão social, reciclagem,
-                impacto ambiental e fortalecimento
-                comunitário.
+                Plataforma institucional focada
+                em reciclagem, inclusão social,
+                logística reversa e impacto
+                ambiental positivo.
               </p>
 
             </div>
@@ -1348,7 +2106,6 @@ export default function QuemSomosPage() {
         </div>
 
       </footer>
-
     </main>
 
   );
