@@ -140,6 +140,8 @@ export default function NoticiaPage() {
             className="
               text-zinc-500
               mt-6
+              text-sm
+              md:text-base
             "
           >
 
@@ -178,17 +180,21 @@ export default function NoticiaPage() {
             rounded-4xl
             border
             border-black/5
-            p-14
+            p-8
+            md:p-14
             text-center
             max-w-2xl
+            shadow-[0_20px_80px_rgba(15,23,42,0.04)]
           "
         >
 
           <h1
             className="
-              text-4xl
+              text-3xl
+              md:text-5xl
               font-black
               text-zinc-900
+              leading-tight
             "
           >
 
@@ -200,7 +206,9 @@ export default function NoticiaPage() {
             className="
               text-zinc-500
               mt-5
-              leading-8
+              leading-7
+              text-sm
+              md:text-base
             "
           >
 
@@ -215,11 +223,13 @@ export default function NoticiaPage() {
               inline-flex
               items-center
               gap-3
-              mt-10
+              mt-8
               px-6
               py-4
               rounded-2xl
               bg-[#2E5E4E]
+              hover:bg-[#23473A]
+              transition-all
               text-white
               font-bold
             "
@@ -271,7 +281,8 @@ export default function NoticiaPage() {
       <section
         className="
           relative
-          min-h-[85vh]
+          min-h-[72vh]
+          md:min-h-[82vh]
           overflow-hidden
         "
       >
@@ -313,7 +324,7 @@ export default function NoticiaPage() {
           className="
             absolute
             inset-0
-            bg-black/60
+            bg-black/65
           "
         />
 
@@ -323,7 +334,8 @@ export default function NoticiaPage() {
           className="
             relative
             z-10
-            min-h-[85vh]
+            min-h-[72vh]
+            md:min-h-[82vh]
             flex
             items-end
           "
@@ -332,8 +344,8 @@ export default function NoticiaPage() {
           <div
             className="
               container-custom
-              pb-24
-              px-6
+              pb-14
+              md:pb-24
             "
           >
 
@@ -359,7 +371,9 @@ export default function NoticiaPage() {
                   text-white/90
                   hover:text-white
                   transition-all
-                  mb-10
+                  mb-8
+                  text-sm
+                  md:text-base
                 "
               >
 
@@ -387,13 +401,14 @@ export default function NoticiaPage() {
               }}
               className="
                 inline-flex
-                px-5
-                py-3
+                px-4
+                py-2
                 rounded-full
                 bg-white/15
                 backdrop-blur-xl
                 text-white
-                text-sm
+                text-xs
+                md:text-sm
                 font-bold
                 border
                 border-white/10
@@ -419,12 +434,15 @@ export default function NoticiaPage() {
                 delay: 0.2,
               }}
               className="
-                text-5xl
-                md:text-7xl
+                text-[2.3rem]
+                sm:text-[3rem]
+                md:text-[4.5rem]
+                xl:text-[5.5rem]
                 font-black
-                leading-tight
+                leading-none
+                tracking-[-0.03em]
                 text-white
-                mt-8
+                mt-6
                 max-w-6xl
               "
             >
@@ -451,9 +469,12 @@ export default function NoticiaPage() {
                 flex
                 flex-wrap
                 items-center
-                gap-8
-                mt-10
+                gap-5
+                md:gap-8
+                mt-8
                 text-white/80
+                text-sm
+                md:text-base
               "
             >
 
@@ -509,11 +530,19 @@ export default function NoticiaPage() {
 
       {/* CONTENT */}
 
-      <section className="py-28 px-6 relative z-10">
+      <section
+        className="
+          py-16
+          md:py-24
+          px-5
+          relative
+          z-10
+        "
+      >
 
         <div
           className="
-            max-w-5xl
+            max-w-4xl
             mx-auto
           "
         >
@@ -536,18 +565,21 @@ export default function NoticiaPage() {
               border
               border-black/5
               rounded-4xl
-              p-10
+              p-6
+              md:p-10
               shadow-[0_20px_80px_rgba(15,23,42,0.05)]
             "
           >
 
             <p
               className="
-                text-2xl
-                md:text-3xl
-                leading-relaxed
+                text-[1.05rem]
+                md:text-[1.45rem]
+                leading-8
+                md:leading-10
                 text-zinc-700
                 font-medium
+                text-justify
               "
             >
 
@@ -573,13 +605,14 @@ export default function NoticiaPage() {
               delay: 0.1,
             }}
             className="
-              mt-14
+              mt-10
+              md:mt-14
               bg-white
               rounded-4xl
               border
               border-black/5
-              p-10
-              md:p-14
+              p-6
+              md:p-12
               shadow-[0_20px_80px_rgba(15,23,42,0.05)]
             "
           >
@@ -587,9 +620,13 @@ export default function NoticiaPage() {
             <div
               className="
                 text-zinc-700
-                text-lg
-                leading-10
+                text-[1rem]
+                md:text-[1.1rem]
+                leading-8
+                md:leading-9
                 whitespace-pre-line
+                text-justify
+                wrap-break-word
               "
             >
 

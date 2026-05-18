@@ -115,7 +115,7 @@ export default function NoticiasCard({
           className="
             absolute
             inset-0
-            bg-linear-to-t
+            bg-linear-to-t 
             from-black/50
             to-transparent
           "

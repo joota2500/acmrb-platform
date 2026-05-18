@@ -156,6 +156,6 @@ export default function NoticiasStats({
 
     </div>
 
-  );
+  ); 
 
 }

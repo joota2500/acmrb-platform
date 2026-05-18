@@ -12,6 +12,7 @@ import {
 import { supabase } from "@/lib/supabase";
 
 type Noticia = {
+
   id: string;
 
   titulo: string;
@@ -27,6 +28,7 @@ type Noticia = {
   destaque: boolean;
 
   created_at: string;
+
 };
 
 export default function NewsSection() {
@@ -104,7 +106,7 @@ export default function NewsSection() {
       "
     >
 
-      {/* BACKGROUND */}
+      {/* BG */}
 
       <div
         className="
@@ -116,8 +118,6 @@ export default function NewsSection() {
           to-white
         "
       />
-
-      {/* EFFECT */}
 
       <div
         className="
@@ -155,20 +155,22 @@ export default function NewsSection() {
           transition={{
             duration: 0.7,
           }}
-          viewport={{ once: true }}
+          viewport={{
+            once: true,
+          }}
           className="
             flex
             flex-col
             lg:flex-row
             lg:items-end
             lg:justify-between
-            gap-10
+            gap-8
           "
         >
 
-          <div className="max-w-4xl">
+          <div className="max-w-3xl">
 
-            <div className="section-tag mb-6">
+            <div className="section-tag mb-5">
 
               Notícias e Atualizações
 
@@ -189,23 +191,26 @@ export default function NewsSection() {
 
             <p
               className="
-                section-description
-                mt-8
+                mt-6
+                text-[0.97rem]
+                md:text-[1.05rem]
+                text-zinc-600
+                leading-8
+                text-justify
                 max-w-2xl
               "
             >
 
               Acompanhe projetos,
               iniciativas ambientais,
-              ações sociais, educação
-              ambiental e parcerias ESG
+              ações sociais,
+              educação ambiental
+              e parcerias ESG
               desenvolvidas pela ACMRB.
 
             </p>
 
           </div>
-
-          {/* BUTTON */}
 
           <a
             href="/noticias"
@@ -230,105 +235,6 @@ export default function NewsSection() {
 
         </motion.div>
 
-        {/* LOADING */}
-
-        {loading && (
-
-          <div
-            className="
-              grid
-              lg:grid-cols-3
-              gap-8
-              mt-20
-            "
-          >
-
-            {[1, 2, 3].map((item) => (
-
-              <div
-                key={item}
-                className="
-                  rounded-4xl
-                  overflow-hidden
-                  border
-                  border-black/5
-                  bg-white/70
-                  backdrop-blur-xl
-                  animate-pulse
-                "
-              >
-
-                <div className="h-64 bg-zinc-200" />
-
-                <div className="p-8 space-y-5">
-
-                  <div className="h-5 w-36 bg-zinc-200 rounded-full" />
-
-                  <div className="h-8 w-full bg-zinc-200 rounded-2xl" />
-
-                  <div className="h-4 w-full bg-zinc-200 rounded-full" />
-
-                  <div className="h-4 w-2/3 bg-zinc-200 rounded-full" />
-
-                  <div className="h-4 w-28 bg-zinc-200 rounded-full mt-6" />
-
-                </div>
-
-              </div>
-
-            ))}
-
-          </div>
-
-        )}
-
-        {/* EMPTY */}
-
-        {!loading &&
-          news.length === 0 && (
-
-          <div
-            className="
-              mt-20
-              rounded-4xl
-              border
-              border-black/5
-              bg-white/80
-              backdrop-blur-xl
-              p-16
-              text-center
-            "
-          >
-
-            <h3
-              className="
-                text-3xl
-                font-black
-                text-zinc-900
-              "
-            >
-
-              Nenhuma notícia publicada
-
-            </h3>
-
-            <p
-              className="
-                text-zinc-500
-                mt-4
-                text-lg
-              "
-            >
-
-              As notícias institucionais
-              aparecerão aqui automaticamente.
-
-            </p>
-
-          </div>
-
-        )}
-
         {/* GRID */}
 
         {!loading &&
@@ -337,9 +243,11 @@ export default function NewsSection() {
           <div
             className="
               grid
-              lg:grid-cols-3
-              gap-8
-              mt-20
+              md:grid-cols-2
+              xl:grid-cols-3
+              gap-6
+              xl:gap-8
+              mt-14
             "
           >
 
@@ -359,17 +267,19 @@ export default function NewsSection() {
                   duration: 0.5,
                   delay: index * 0.1,
                 }}
-                viewport={{ once: true }}
+                viewport={{
+                  once: true,
+                }}
                 className="
                   group
                   rounded-4xl
                   overflow-hidden
                   border
                   border-black/5
-                  bg-white/75
+                  bg-white/80
                   backdrop-blur-xl
                   hover:-translate-y-2
-                  hover:shadow-[0_25px_80px_rgba(16,24,40,0.10)]
+                  hover:shadow-[0_25px_80px_rgba(16,24,40,0.08)]
                   transition-all
                   duration-500
                 "
@@ -379,10 +289,11 @@ export default function NewsSection() {
 
                 <div
                   className="
-                    h-64
                     relative
                     overflow-hidden
                     bg-zinc-100
+                    h-56
+                    md:h-60
                   "
                 >
 
@@ -416,44 +327,40 @@ export default function NewsSection() {
 
                   )}
 
-                  {/* OVERLAY */}
-
                   <div
                     className="
                       absolute
                       inset-0
                       bg-linear-to-t
-                      from-black/30
+                      from-black/35
                       via-black/5
                       to-transparent
                     "
                   />
 
-                  {/* TAGS */}
+                  {/* TAG */}
 
                   <div
                     className="
                       absolute
-                      top-6
-                      left-6
+                      top-5
+                      left-5
                       flex
-                      items-center
-                      gap-3
+                      gap-2
                       flex-wrap
                     "
                   >
 
                     <span
                       className="
-                        px-4
-                        py-2
+                        px-3
+                        py-1.5
                         rounded-full
-                        bg-white/85
+                        bg-white/90
                         backdrop-blur-md
-                        text-sm
-                        font-semibold
+                        text-[12px]
+                        font-bold
                         text-emerald-700
-                        shadow-lg
                       "
                     >
 
@@ -465,14 +372,13 @@ export default function NewsSection() {
 
                       <span
                         className="
-                          px-4
-                          py-2
+                          px-3
+                          py-1.5
                           rounded-full
                           bg-yellow-400
                           text-yellow-950
-                          text-sm
+                          text-[12px]
                           font-black
-                          shadow-lg
                         "
                       >
 
@@ -488,7 +394,12 @@ export default function NewsSection() {
 
                 {/* CONTENT */}
 
-                <div className="p-8">
+                <div
+                  className="
+                    p-6
+                    md:p-7
+                  "
+                >
 
                   {/* DATE */}
 
@@ -502,7 +413,7 @@ export default function NewsSection() {
                     "
                   >
 
-                    <CalendarDays size={16} />
+                    <CalendarDays size={15} />
 
                     <span>
 
@@ -520,11 +431,13 @@ export default function NewsSection() {
 
                   <h3
                     className="
-                      text-2xl
+                      text-[1.35rem]
+                      md:text-[1.55rem]
                       font-black
                       text-zinc-900
-                      mt-5
-                      leading-tight
+                      mt-4
+                      leading-[1.2]
+                      tracking-[-0.02em]
                       line-clamp-2
                     "
                   >
@@ -537,10 +450,13 @@ export default function NewsSection() {
 
                   <p
                     className="
+                      text-[0.96rem]
+                      md:text-[1rem]
                       text-zinc-600
                       leading-8
-                      mt-5
-                      line-clamp-3
+                      mt-4
+                      text-justify
+                      line-clamp-4
                     "
                   >
 
@@ -558,8 +474,8 @@ export default function NewsSection() {
                       gap-2
                       text-emerald-700
                       font-bold
-                      mt-8
-                      hover:gap-4
+                      mt-7
+                      hover:gap-3
                       transition-all
                     "
                   >
@@ -567,7 +483,7 @@ export default function NewsSection() {
                     Ler mais
 
                     <ArrowRight
-                      size={18}
+                      size={17}
                     />
 
                   </a>

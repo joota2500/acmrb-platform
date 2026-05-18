@@ -123,9 +123,11 @@ export default function NoticiasPage() {
 
       <section
         className="
-          pt-40
-          pb-24
-          px-6
+          pt-32
+          md:pt-40
+          pb-16
+          md:pb-24
+          px-5
           relative
         "
       >
@@ -144,10 +146,17 @@ export default function NoticiasPage() {
             transition={{
               duration: 0.7,
             }}
-            className="max-w-4xl"
+            className="
+              max-w-4xl
+            "
           >
 
-            <div className="section-tag mb-6">
+            <div
+              className="
+                section-tag
+                mb-5
+              "
+            >
 
               Portal de Notícias
 
@@ -155,8 +164,14 @@ export default function NoticiasPage() {
 
             <h1
               className="
-                section-title
-                max-w-4xl
+                text-[2.5rem]
+                sm:text-[3.2rem]
+                md:text-[4.5rem]
+                leading-none
+                tracking-[-0.04em]
+                font-black
+                text-zinc-900
+                max-w-5xl
               "
             >
 
@@ -168,9 +183,15 @@ export default function NoticiasPage() {
 
             <p
               className="
-                section-description
-                mt-8
+                mt-6
                 max-w-2xl
+                text-sm
+                sm:text-base
+                md:text-lg
+                leading-7
+                md:leading-8
+                text-zinc-600
+                text-justify
               "
             >
 
@@ -191,7 +212,15 @@ export default function NoticiasPage() {
 
       {/* GRID */}
 
-      <section className="pb-32 px-6 relative z-10">
+      <section
+        className="
+          pb-20
+          md:pb-32
+          px-5
+          relative
+          z-10
+        "
+      >
 
         <div className="container-custom">
 
@@ -204,7 +233,8 @@ export default function NoticiasPage() {
                 grid
                 md:grid-cols-2
                 xl:grid-cols-3
-                gap-8
+                gap-6
+                md:gap-8
               "
             >
 
@@ -223,9 +253,9 @@ export default function NoticiasPage() {
                   "
                 >
 
-                  <div className="h-72 bg-zinc-200" />
+                  <div className="h-64 md:h-72 bg-zinc-200" />
 
-                  <div className="p-8 space-y-5">
+                  <div className="p-6 md:p-8 space-y-5">
 
                     <div className="h-5 w-32 bg-zinc-200 rounded-full" />
 
@@ -257,16 +287,19 @@ export default function NoticiasPage() {
                 backdrop-blur-xl
                 border
                 border-black/5
-                p-20
+                p-10
+                md:p-20
                 text-center
               "
             >
 
               <h2
                 className="
-                  text-4xl
+                  text-3xl
+                  md:text-5xl
                   font-black
                   text-zinc-900
+                  leading-tight
                 "
               >
 
@@ -278,7 +311,11 @@ export default function NoticiasPage() {
                 className="
                   text-zinc-500
                   mt-5
-                  text-lg
+                  text-sm
+                  md:text-lg
+                  leading-7
+                  max-w-2xl
+                  mx-auto
                 "
               >
 
@@ -301,7 +338,8 @@ export default function NoticiasPage() {
                 grid
                 md:grid-cols-2
                 xl:grid-cols-3
-                gap-8
+                gap-6
+                md:gap-8
               "
             >
 
@@ -328,10 +366,10 @@ export default function NoticiasPage() {
                     overflow-hidden
                     border
                     border-black/5
-                    bg-white/75
+                    bg-white/80
                     backdrop-blur-xl
                     hover:-translate-y-2
-                    hover:shadow-[0_25px_80px_rgba(16,24,40,0.10)]
+                    hover:shadow-[0_25px_80px_rgba(16,24,40,0.08)]
                     transition-all
                     duration-500
                   "
@@ -341,7 +379,8 @@ export default function NoticiasPage() {
 
                   <div
                     className="
-                      h-72
+                      h-60
+                      md:h-72
                       overflow-hidden
                       relative
                       bg-zinc-100
@@ -385,7 +424,7 @@ export default function NoticiasPage() {
                         absolute
                         inset-0
                         bg-linear-to-t
-                        from-black/30
+                        from-black/35
                         via-black/5
                         to-transparent
                       "
@@ -396,23 +435,24 @@ export default function NoticiasPage() {
                     <div
                       className="
                         absolute
-                        top-6
-                        left-6
+                        top-5
+                        left-5
                         flex
-                        gap-3
+                        gap-2
                         flex-wrap
                       "
                     >
 
                       <span
                         className="
-                          px-4
+                          px-3
                           py-2
                           rounded-full
-                          bg-white/85
+                          bg-white/90
                           backdrop-blur-md
-                          text-sm
-                          font-semibold
+                          text-[0.72rem]
+                          md:text-xs
+                          font-bold
                           text-emerald-700
                           shadow-lg
                         "
@@ -426,12 +466,13 @@ export default function NoticiasPage() {
 
                         <span
                           className="
-                            px-4
+                            px-3
                             py-2
                             rounded-full
                             bg-yellow-400
                             text-yellow-950
-                            text-sm
+                            text-[0.72rem]
+                            md:text-xs
                             font-black
                             shadow-lg
                           "
@@ -449,7 +490,12 @@ export default function NoticiasPage() {
 
                   {/* CONTENT */}
 
-                  <div className="p-8">
+                  <div
+                    className="
+                      p-6
+                      md:p-8
+                    "
+                  >
 
                     {/* DATE */}
 
@@ -459,11 +505,12 @@ export default function NoticiasPage() {
                         items-center
                         gap-2
                         text-zinc-500
-                        text-sm
+                        text-xs
+                        md:text-sm
                       "
                     >
 
-                      <CalendarDays size={16} />
+                      <CalendarDays size={15} />
 
                       <span>
 
@@ -481,11 +528,12 @@ export default function NoticiasPage() {
 
                     <h2
                       className="
-                        text-2xl
+                        text-[1.35rem]
+                        md:text-[1.65rem]
                         font-black
                         text-zinc-900
-                        mt-5
-                        leading-tight
+                        mt-4
+                        leading-[1.2]
                         line-clamp-2
                       "
                     >
@@ -499,9 +547,12 @@ export default function NoticiasPage() {
                     <p
                       className="
                         text-zinc-600
-                        leading-8
-                        mt-5
-                        line-clamp-3
+                        text-sm
+                        md:text-[0.98rem]
+                        leading-7
+                        mt-4
+                        text-justify
+                        line-clamp-4
                       "
                     >
 
@@ -518,8 +569,10 @@ export default function NoticiasPage() {
                         items-center
                         gap-2
                         text-emerald-700
+                        text-sm
+                        md:text-base
                         font-bold
-                        mt-8
+                        mt-7
                         hover:gap-4
                         transition-all
                       "

@@ -1,10 +1,13 @@
 @import "tailwindcss";
 
 :root {
+
   --background: #f7faf8;
+
   --foreground: #18181b;
 
   --primary: #0f766e;
+
   --primary-light: #14b8a6;
 
   --secondary: #166534;
@@ -14,6 +17,15 @@
   --card: rgba(255,255,255,0.75);
 
   --border: rgba(255,255,255,0.4);
+
+}
+
+/* =========================
+   BASE
+========================= */
+
+* {
+  box-sizing: border-box;
 }
 
 html {
@@ -21,9 +33,18 @@ html {
 }
 
 body {
+
   background:
-    radial-gradient(circle at top left, rgba(20,184,166,0.08), transparent 25%),
-    radial-gradient(circle at bottom right, rgba(34,197,94,0.08), transparent 25%),
+    radial-gradient(
+      circle at top left,
+      rgba(20,184,166,0.08),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(34,197,94,0.08),
+      transparent 25%
+    ),
     var(--background);
 
   color: var(--foreground);
@@ -34,45 +55,73 @@ body {
     sans-serif;
 
   overflow-x: hidden;
+
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+
+  -moz-osx-font-smoothing: grayscale;
+
 }
 
-/* CONTAINER */
+/* =========================
+   CONTAINER
+========================= */
 
 .container-custom {
+
   width: 100%;
+
   max-width: 1280px;
 
   margin: 0 auto;
 
   padding-left: 1.25rem;
+
   padding-right: 1.25rem;
+
 }
 
-/* ESPAÇAMENTO */
+/* =========================
+   ESPAÇAMENTO
+========================= */
 
 .section-spacing {
+
   padding-top: 5rem;
+
   padding-bottom: 5rem;
+
 }
 
 @media (min-width: 768px) {
+
   .section-spacing {
+
     padding-top: 7rem;
+
     padding-bottom: 7rem;
+
   }
+
 }
 
-/* TITLES */
+/* =========================
+   TITLES
+========================= */
 
 .section-tag {
+
   display: inline-flex;
+
   align-items: center;
 
   padding: 0.55rem 1rem;
 
   border-radius: 999px;
 
-  background: rgba(16,185,129,0.12);
+  background:
+    rgba(16,185,129,0.12);
 
   color: #047857;
 
@@ -83,10 +132,16 @@ body {
   letter-spacing: 0.04em;
 
   text-transform: uppercase;
+
 }
 
 .section-title {
-  font-size: clamp(2rem, 4vw, 4rem);
+
+  font-size: clamp(
+    2rem,
+    4vw,
+    4rem
+  );
 
   line-height: 1.05;
 
@@ -95,9 +150,11 @@ body {
   letter-spacing: -0.04em;
 
   color: #18181b;
+
 }
 
 .section-description {
+
   max-width: 760px;
 
   color: #52525b;
@@ -105,49 +162,131 @@ body {
   line-height: 1.9;
 
   font-size: 1rem;
+
 }
 
-@media (min-width: 768px) {
-  .section-description {
-    font-size: 1.1rem;
-  }
+/* =========================
+   TYPOGRAPHY HELPERS
+========================= */
+
+/* NÃO afeta hero */
+
+.text-body {
+
+  line-height: 1.9;
+
+  text-align: justify;
+
+  color: #52525b;
+
 }
 
-/* GLASS */
+/* descrição padrão */
+
+.text-readable {
+
+  font-size: 1rem;
+
+  line-height: 1.9;
+
+}
+
+/* títulos menores */
+
+.title-readable {
+
+  line-height: 1.08;
+
+  letter-spacing: -0.03em;
+
+}
+
+/* textos secundários */
+
+.text-muted-custom {
+
+  color: #71717a;
+
+}
+
+/* cards */
+
+.card-description {
+
+  line-height: 1.8;
+
+  color: #5b5b66;
+
+}
+
+/* =========================
+   GLASS
+========================= */
 
 .glass-card {
+
   background: var(--card);
 
   backdrop-filter: blur(18px);
+
   -webkit-backdrop-filter: blur(18px);
 
   border: 1px solid var(--border);
 
   box-shadow:
-    0 10px 40px rgba(0,0,0,0.04),
-    inset 0 1px 0 rgba(255,255,255,0.6);
+    0 10px 40px rgba(
+      0,
+      0,
+      0,
+      0.04
+    ),
+    inset 0 1px 0 rgba(
+      255,
+      255,
+      255,
+      0.6
+    );
 
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease,
     border 0.3s ease;
+
 }
 
 .glass-card:hover {
+
   transform: translateY(-6px);
 
   box-shadow:
-    0 20px 50px rgba(0,0,0,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.8);
+    0 20px 50px rgba(
+      0,
+      0,
+      0,
+      0.08
+    ),
+    inset 0 1px 0 rgba(
+      255,
+      255,
+      255,
+      0.8
+    );
 
-  border-color: rgba(16,185,129,0.3);
+  border-color:
+    rgba(16,185,129,0.3);
+
 }
 
-/* BUTTONS */
+/* =========================
+   BUTTONS
+========================= */
 
 .primary-button {
+
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
 
   gap: 0.5rem;
@@ -168,18 +307,29 @@ body {
   font-weight: 600;
 
   transition: all 0.3s ease;
+
 }
 
 .primary-button:hover {
+
   transform: translateY(-2px);
 
   box-shadow:
-    0 15px 35px rgba(20,184,166,0.25);
+    0 15px 35px rgba(
+      20,
+      184,
+      166,
+      0.25
+    );
+
 }
 
-/* GRID */
+/* =========================
+   GRID
+========================= */
 
 .auto-grid {
+
   display: grid;
 
   grid-template-columns:
@@ -189,21 +339,101 @@ body {
     );
 
   gap: 2rem;
+
 }
 
-/* MOBILE */
+/* =========================
+   IMAGES
+========================= */
 
-@media (max-width: 640px) {
+img {
+
+  max-width: 100%;
+
+  display: block;
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+
+  .container-custom {
+
+    padding-left: 1rem;
+
+    padding-right: 1rem;
+
+  }
+
   .section-title {
-    font-size: 2rem;
+
+    font-size: 2.2rem;
+
+    line-height: 1.08;
+
   }
 
   .section-description {
-    font-size: 0.95rem;
-    line-height: 1.7;
+
+    font-size: 0.96rem;
+
+    line-height: 1.8;
+
+  }
+
+  .text-body {
+
+    font-size: 0.96rem;
+
+    line-height: 1.85;
+
+  }
+
+  .text-readable {
+
+    font-size: 0.96rem;
+
+    line-height: 1.85;
+
   }
 
   .glass-card {
+
     border-radius: 1.5rem;
+
   }
+
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
+
+  .section-title {
+
+    font-size: 1.95rem;
+
+  }
+
+  .section-description {
+
+    font-size: 0.93rem;
+
+    line-height: 1.75;
+
+  }
+
+  .text-body {
+
+    font-size: 0.93rem;
+
+    line-height: 1.75;
+
+  }
+
 }

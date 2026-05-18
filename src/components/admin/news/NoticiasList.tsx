@@ -27,7 +27,7 @@ type Noticia = {
 };
 
 type Props = {
-  noticias: Noticia[];
+  noticias: Noticia[]; 
 
   loading: boolean;
 
