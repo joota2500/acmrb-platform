@@ -7,193 +7,45 @@ import {
 import Link from "next/link";
 
 import {
-  Recycle,
-  Trees,
-  Users,
-  Wallet,
-  Cloud,
+  ShieldCheck,
   ArrowRight,
+  FileText,
+  Leaf,
+  BarChart3,
+  Globe2,
 } from "lucide-react";
 
-import {
-  useESGMetrics,
-} from "@/hooks/useESGMetrics";
-
 export default function StatsSection() {
-
-  const {
-
-    loading,
-
-    totalPeso,
-
-    totalValor,
-
-    co2,
-
-    arvores,
-
-    familiasImpactadas,
-
-  } = useESGMetrics();
-
-  /* =========================
-     FORMATTERS
-  ========================= */
-
-  function formatPeso(
-    value: number,
-  ) {
-
-    if (value >= 1000) {
-
-      return `${(
-        value / 1000
-      ).toFixed(1)}t`;
-
-    }
-
-    return `${value.toFixed(0)}kg`;
-
-  }
-
-  function formatMoney(
-    value: number,
-  ) {
-
-    return value.toLocaleString(
-      "pt-BR",
-      {
-        style: "currency",
-        currency: "BRL",
-        maximumFractionDigits: 0,
-      },
-    );
-
-  }
-
-  /* =========================
-     STATS
-  ========================= */
-
-  const stats = [
-
-    {
-      icon: Recycle,
-
-      value:
-        formatPeso(
-          totalPeso,
-        ),
-
-      title:
-        "Resíduos coletados",
-
-      description:
-        "Total consolidado de materiais recicláveis recuperados pela ACMRB.",
-
-      color:
-        "from-[#2E5E4E] to-[#5C9B80]",
-    },
-
-    {
-      icon: Cloud,
-
-      value:
-        formatPeso(
-          co2,
-        ),
-
-      title:
-        "CO₂ evitado",
-
-      description:
-        "Estimativa ambiental de emissões reduzidas através da reciclagem.",
-
-      color:
-        "from-cyan-500 to-blue-500",
-    },
-
-    {
-      icon: Trees,
-
-      value:
-        `${arvores.toFixed(0)}`,
-
-      title:
-        "Árvores preservadas",
-
-      description:
-        "Impacto ambiental equivalente gerado pelas ações de reciclagem.",
-
-      color:
-        "from-emerald-500 to-green-500",
-    },
-
-    {
-      icon: Users,
-
-      value:
-        `${familiasImpactadas}+`,
-
-      title:
-        "Famílias impactadas",
-
-      description:
-        "Famílias beneficiadas direta e indiretamente pelas operações da associação.",
-
-      color:
-        "from-violet-500 to-fuchsia-500",
-    },
-
-    {
-      icon: Wallet,
-
-      value:
-        formatMoney(
-          totalValor,
-        ),
-
-      title:
-        "Renda gerada",
-
-      description:
-        "Movimentação econômica proveniente da logística reversa e reciclagem.",
-
-      color:
-        "from-teal-500 to-cyan-400",
-    },
-
-  ];
 
   return (
 
     <section
       className="
-        py-24
-        md:py-32
         relative
         overflow-hidden
+        py-24
+        md:py-32
         bg-linear-to-b
         from-[#F5F7F4]
-        to-white
+        via-white
+        to-[#F5F7F4]
       "
     >
 
       {/* BACKGROUND */}
 
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 overflow-hidden">
 
         <div
           className="
             absolute
-            top-0
-            left-0
-            w-96
-            h-96
+            -top-32
+            -left-32
+            w-[500px]
+            h-[500px]
+            rounded-full
             bg-emerald-200/20
             blur-3xl
-            rounded-full
           "
         />
 
@@ -202,11 +54,11 @@ export default function StatsSection() {
             absolute
             bottom-0
             right-0
-            w-96
-            h-96
+            w-[450px]
+            h-[450px]
+            rounded-full
             bg-cyan-200/20
             blur-3xl
-            rounded-full
           "
         />
 
@@ -220,7 +72,7 @@ export default function StatsSection() {
         "
       >
 
-        {/* HEADER */}
+        {/* HERO */}
 
         <motion.div
           initial={{
@@ -239,7 +91,7 @@ export default function StatsSection() {
           }}
           className="
             text-center
-            max-w-5xl
+            max-w-6xl
             mx-auto
           "
         >
@@ -248,222 +100,291 @@ export default function StatsSection() {
             className="
               inline-flex
               items-center
-              gap-2
+              gap-3
               px-5
               py-3
               rounded-full
               bg-[#E8F3EE]
+              border
+              border-[#CFE7DA]
               text-[#2E5E4E]
               font-black
               text-xs
               sm:text-sm
-              mb-8
             "
           >
 
-            📊 Indicadores ESG
+            <ShieldCheck size={18} />
+
+            Transparência • ESG • Impacto Ambiental
 
           </div>
 
           <h2
             className="
+              mt-8
               text-4xl
               sm:text-5xl
               md:text-6xl
               font-black
-              text-[#111827]
-              leading-none
+              leading-[1]
               tracking-[-0.04em]
+              text-[#111827]
             "
           >
 
-            Transparência,
-            impacto ambiental
-            e responsabilidade social
+            Transparência pública
+            e responsabilidade
+            socioambiental.
 
           </h2>
 
           <p
             className="
+              mt-8
+              max-w-4xl
+              mx-auto
               text-zinc-600
               text-base
               sm:text-lg
               md:text-xl
               leading-8
-              mt-8
-              max-w-4xl
-              mx-auto
+              md:leading-9
+              text-justify
             "
           >
 
-            Dados públicos derivados
-            das operações de reciclagem,
-            logística reversa e impacto
-            socioambiental da ACMRB.
+            A ACMRB disponibiliza uma central
+            institucional de transparência ESG
+            voltada para indicadores ambientais,
+            impacto social, dados operacionais,
+            relatórios institucionais e métricas
+            públicas relacionadas às ações de
+            reciclagem e sustentabilidade
+            desenvolvidas em Baturité.
 
           </p>
 
         </motion.div>
 
-        {/* GRID */}
+        {/* MINI FEATURES */}
 
-        <div
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.6,
+            delay: 0.1,
+          }}
+          viewport={{
+            once: true,
+          }}
           className="
+            mt-16
             grid
             sm:grid-cols-2
-            xl:grid-cols-5
-            gap-6
-            md:gap-8
-            mt-20
+            xl:grid-cols-4
+            gap-5
           "
         >
 
-          {stats.map(
-            (
-              item,
-              index,
-            ) => {
+          <div
+            className="
+              bg-white/80
+              backdrop-blur-xl
+              border
+              border-black/5
+              rounded-3xl
+              p-6
+              flex
+              items-start
+              gap-4
+              hover:shadow-xl
+              transition-all
+            "
+          >
 
-              const Icon =
-                item.icon;
+            <BarChart3
+              size={28}
+              className="text-[#2E5E4E]"
+            />
 
-              return (
+            <div>
 
-                <motion.div
-                  key={item.title}
-                  initial={{
-                    opacity: 0,
-                    y: 40,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.6,
-                    delay:
-                      index * 0.08,
-                  }}
-                  viewport={{
-                    once: true,
-                  }}
-                  className={`
-                    relative
-                    overflow-hidden
-                    rounded-4xl
-                    p-6
-                    md:p-8
-                    text-white
-                    shadow-2xl
-                    bg-linear-to-br
-                    ${item.color}
-                  `}
-                >
+              <h3
+                className="
+                  font-black
+                  text-[#111827]
+                "
+              >
+                Indicadores ESG
+              </h3>
 
-                  {/* GLOW */}
+              <p
+                className="
+                  text-sm
+                  text-zinc-500
+                  mt-1
+                  leading-6
+                "
+              >
+                Dados ambientais integrados ao sistema.
+              </p>
 
-                  <div
-                    className="
-                      absolute
-                      -top-10
-                      -right-10
-                      w-40
-                      h-40
-                      bg-white/10
-                      rounded-full
-                      blur-3xl
-                    "
-                  />
+            </div>
 
-                  {/* ICON */}
+          </div>
 
-                  <div
-                    className="
-                      relative
-                      z-10
-                      w-16
-                      h-16
-                      md:w-18
-                      md:h-18
-                      rounded-3xl
-                      bg-white/20
-                      backdrop-blur-md
-                      flex
-                      items-center
-                      justify-center
-                      mb-8
-                    "
-                  >
+          <div
+            className="
+              bg-white/80
+              backdrop-blur-xl
+              border
+              border-black/5
+              rounded-3xl
+              p-6
+              flex
+              items-start
+              gap-4
+              hover:shadow-xl
+              transition-all
+            "
+          >
 
-                    <Icon size={30} />
+            <Leaf
+              size={28}
+              className="text-[#2E5E4E]"
+            />
 
-                  </div>
+            <div>
 
-                  {/* VALUE */}
+              <h3
+                className="
+                  font-black
+                  text-[#111827]
+                "
+              >
+                Sustentabilidade
+              </h3>
 
-                  <h3
-                    className="
-                      relative
-                      z-10
-                      text-4xl
-                      md:text-5xl
-                      font-black
-                      wrap-break-word
-                      leading-none
-                    "
-                  >
+              <p
+                className="
+                  text-sm
+                  text-zinc-500
+                  mt-1
+                  leading-6
+                "
+              >
+                Ações ambientais e economia circular.
+              </p>
 
-                    {loading
-                      ? "--"
-                      : item.value}
+            </div>
 
-                  </h3>
+          </div>
 
-                  {/* TITLE */}
+          <div
+            className="
+              bg-white/80
+              backdrop-blur-xl
+              border
+              border-black/5
+              rounded-3xl
+              p-6
+              flex
+              items-start
+              gap-4
+              hover:shadow-xl
+              transition-all
+            "
+          >
 
-                  <h4
-                    className="
-                      relative
-                      z-10
-                      text-xl
-                      md:text-2xl
-                      font-black
-                      mt-5
-                    "
-                  >
+            <Globe2
+              size={28}
+              className="text-[#2E5E4E]"
+            />
 
-                    {item.title}
+            <div>
 
-                  </h4>
+              <h3
+                className="
+                  font-black
+                  text-[#111827]
+                "
+              >
+                Transparência pública
+              </h3>
 
-                  {/* DESCRIPTION */}
+              <p
+                className="
+                  text-sm
+                  text-zinc-500
+                  mt-1
+                  leading-6
+                "
+              >
+                Informações acessíveis e atualizadas.
+              </p>
 
-                  <p
-                    className="
-                      relative
-                      z-10
-                      text-white/80
-                      leading-7
-                      mt-4
-                      text-sm
-                      md:text-base
-                    "
-                  >
+            </div>
 
-                    {item.description}
+          </div>
 
-                  </p>
+          <div
+            className="
+              bg-white/80
+              backdrop-blur-xl
+              border
+              border-black/5
+              rounded-3xl
+              p-6
+              flex
+              items-start
+              gap-4
+              hover:shadow-xl
+              transition-all
+            "
+          >
 
-                </motion.div>
+            <FileText
+              size={28}
+              className="text-[#2E5E4E]"
+            />
 
-              );
+            <div>
 
-            },
-          )}
+              <h3
+                className="
+                  font-black
+                  text-[#111827]
+                "
+              >
+                Relatórios institucionais
+              </h3>
 
-        </div>
+              <p
+                className="
+                  text-sm
+                  text-zinc-500
+                  mt-1
+                  leading-6
+                "
+              >
+                Central ESG detalhada da associação.
+              </p>
 
-        {/* CTA */}
+            </div>
+
+          </div>
+
+        </motion.div>
+
+        {/* CTA CENTRAL */}
 
         <motion.div
           initial={{
@@ -482,47 +403,180 @@ export default function StatsSection() {
           }}
           className="
             mt-20
-            text-center
           "
         >
 
-          <Link
-            href="/transparencia"
+          <div
             className="
-              inline-flex
-              items-center
-              justify-center
-              gap-3
-              h-14
-              px-8
-              rounded-2xl
-              bg-[#2E5E4E]
-              hover:bg-[#23473A]
-              transition-all
+              relative
+              overflow-hidden
+              bg-linear-to-r
+              from-[#111827]
+              via-[#172033]
+              to-[#2E5E4E]
+              rounded-[42px]
+              p-8
+              md:p-14
               text-white
-              font-black
-              shadow-xl
-              hover:scale-[1.02]
+              shadow-2xl
             "
           >
 
-            Ver relatório completo
+            {/* BG */}
 
-            <ArrowRight size={20} />
+            <div
+              className="
+                absolute
+                top-0
+                right-0
+                w-80
+                h-80
+                rounded-full
+                bg-emerald-400/10
+                blur-3xl
+              "
+            />
 
-          </Link>
+            <div
+              className="
+                relative
+                z-10
+                flex
+                flex-col
+                xl:flex-row
+                xl:items-center
+                xl:justify-between
+                gap-10
+              "
+            >
 
-          <p
-            className="
-              text-zinc-400
-              text-sm
-              mt-5
-            "
-          >
+              <div className="max-w-4xl">
 
-            Página detalhada em desenvolvimento.
+                <div
+                  className="
+                    inline-flex
+                    items-center
+                    gap-2
+                    px-4
+                    py-2
+                    rounded-full
+                    bg-white/10
+                    border
+                    border-white/10
+                    text-sm
+                    font-bold
+                  "
+                >
 
-          </p>
+                  📊 Central ESG Institucional
+
+                </div>
+
+                <h3
+                  className="
+                    mt-6
+                    text-3xl
+                    md:text-5xl
+                    font-black
+                    leading-tight
+                  "
+                >
+
+                  Consulte os relatórios
+                  completos da ACMRB.
+
+                </h3>
+
+                <p
+                  className="
+                    mt-6
+                    text-zinc-300
+                    text-base
+                    md:text-lg
+                    leading-8
+                    text-justify
+                  "
+                >
+
+                  Acesse a central completa de
+                  transparência para visualizar
+                  métricas ambientais, impacto
+                  social, indicadores ESG,
+                  operações de reciclagem,
+                  resultados institucionais,
+                  relatórios públicos e futuras
+                  iniciativas sustentáveis da ACMRB.
+
+                </p>
+
+              </div>
+
+              {/* BUTTONS */}
+
+              <div
+                className="
+                  flex
+                  flex-col
+                  sm:flex-row
+                  gap-4
+                  shrink-0
+                "
+              >
+
+                <Link
+                  href="/transparencia"
+                  className="
+                    inline-flex
+                    items-center
+                    justify-center
+                    gap-3
+                    h-14
+                    px-8
+                    rounded-2xl
+                    bg-white
+                    hover:bg-zinc-100
+                    transition-all
+                    text-[#111827]
+                    font-black
+                    shadow-xl
+                  "
+                >
+
+                  Ver transparência
+
+                  <ArrowRight size={20} />
+
+                </Link>
+
+                <Link
+                  href="/projetos"
+                  className="
+                    inline-flex
+                    items-center
+                    justify-center
+                    gap-3
+                    h-14
+                    px-8
+                    rounded-2xl
+                    bg-white/10
+                    border
+                    border-white/10
+                    hover:bg-white/15
+                    transition-all
+                    text-white
+                    font-black
+                  "
+                >
+
+                  Projetos ambientais
+
+                </Link>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </motion.div>
 
