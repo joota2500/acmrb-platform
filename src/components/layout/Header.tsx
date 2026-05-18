@@ -17,6 +17,15 @@ import AdminModal from "../admin/AdminModal";
 
 import { useSecretUnlock } from "../../hooks/useSecretUnlock";
 
+import Link from "next/link";
+
+import {
+  User,
+  LogOut,
+} from "lucide-react";
+
+import { useAuth } from "@/contexts/AuthContext";
+
 const links = [
   {
     name: "Início",
@@ -39,7 +48,7 @@ const links = [
   },
 
   {
-    name: "Parceiros",
+    name: "Parcerias",
     href: "#parceiros",
   },
 
@@ -135,7 +144,7 @@ export default function Header() {
           className="
             container-custom
             pt-4
-            md:pt-6
+            md:pt-4
           "
         >
 
@@ -145,7 +154,7 @@ export default function Header() {
               flex
               items-center
               justify-between
-              rounded-[28px]
+              rounded-3xl
               border
               transition-all
               duration-300
@@ -155,14 +164,14 @@ export default function Header() {
               ${
                 scrolled
                   ? `
-                    py-3
+                    py-2.5
                     bg-white/88
                     backdrop-blur-2xl
                     border-white/40
                     shadow-[0_15px_60px_rgba(15,23,42,0.08)]
                   `
                   : `
-                    py-4
+                    py-3
                     bg-white/65
                     backdrop-blur-xl
                     border-white/20
@@ -186,10 +195,10 @@ export default function Header() {
 
               <div
                 className="
-                  w-11
-                  h-11
-                  md:w-13
-                  md:h-13
+                  w-10
+                  h-10
+                  md:w-11
+                  md:h-11
                   rounded-2xl
                   bg-linear-to-br
                   from-[#2E5E4E]
@@ -198,8 +207,10 @@ export default function Header() {
                   items-center
                   justify-center
                   text-white
-                  text-lg
-                  md:text-xl
+                  
+                  text-base
+                  md:text-lg
+
                   font-black
                   shadow-[0_10px_30px_rgba(46,94,78,0.35)]
                 "
@@ -253,7 +264,7 @@ export default function Header() {
                 hidden
                 lg:flex
                 items-center
-                gap-8
+                gap-6
               "
             >
 
@@ -264,7 +275,7 @@ export default function Header() {
                   href={link.href}
                   className="
                     relative
-                    text-[15px]
+                    text-[14px]
                     font-semibold
                     text-zinc-700
                     hover:text-[#2E5E4E]
@@ -310,15 +321,15 @@ export default function Header() {
               {/* CTA */}
 
               <a
-                href="#contato"
+                href="tel:+5585999999999"
                 className="
                   hidden
                   md:inline-flex
                   items-center
                   justify-center
                   gap-2
-                  h-12
-                  px-6
+                  h-11
+                  px-5
                   rounded-2xl
                   bg-[#2E5E4E]
                   hover:bg-[#24473B]
@@ -326,16 +337,11 @@ export default function Header() {
                   text-sm
                   font-bold
                   transition-all
-                  shadow-[0_10px_30px_rgba(46,94,78,0.25)]
-                  hover:scale-[1.02]
+                  shadow-[0_10px_25px_rgba(46,94,78,0.20)]
                 "
               >
 
-                Seja Parceiro
-
-                <ArrowRight
-                  size={16}
-                />
+                Ligar Agora
 
               </a>
 
@@ -430,7 +436,7 @@ export default function Header() {
                 flex-col
                 justify-between
                 px-6
-                pt-32
+                pt-24
                 pb-10
               "
             >
@@ -474,11 +480,11 @@ export default function Header() {
                         flex
                         items-center
                         justify-between
-                        py-5
+                        py-4
                         border-b
                         border-black/5
                         text-[#111827]
-                        text-2xl
+                        text-[1.35rem]
                         font-black
                         tracking-tight
                       "
@@ -529,7 +535,7 @@ export default function Header() {
                   "
                 >
 
-                  Solicitar parceria
+                  Ligar Agora
 
                   <ArrowRight
                     size={18}
