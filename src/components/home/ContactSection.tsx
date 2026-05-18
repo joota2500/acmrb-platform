@@ -288,7 +288,7 @@ export default function ContactSection() {
                   {/* WHATSAPP */}
 
                   <a
-                    href="https://wa.me/5585981214864"
+                    href="https://wa.me/5585989214864"
                     target="_blank"
                     className="primary-button"
                   >
