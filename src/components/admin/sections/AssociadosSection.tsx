@@ -1,39 +1,38 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import { supabase } from "@/lib/supabase";
 
 type Associado = {
-
   id: string;
-
   nome: string;
-
   cargo: string;
-
   tipo_associado: string;
-
   foto_url?: string;
-
   bio?: string;
-
   telefone?: string;
-
   email?: string;
-
   endereco?: string;
-
   instagram?: string;
-
   facebook?: string;
-
   linkedin?: string;
-
   ativo?: boolean;
-
   destaque?: boolean;
+};
 
+const initialForm = {
+  nome: "",
+  cargo: "",
+  tipo_associado: "",
+  bio: "",
+  telefone: "",
+  email: "",
+  endereco: "",
+  instagram: "",
+  facebook: "",
+  linkedin: "",
+  ativo: true,
+  destaque: false,
 };
 
 export default function AssociadosSection() {
@@ -57,33 +56,7 @@ export default function AssociadosSection() {
     useState<File | null>(null);
 
   const [formData, setFormData] =
-    useState({
-
-      nome: "",
-
-      cargo: "",
-
-      tipo_associado: "",
-
-      bio: "",
-
-      telefone: "",
-
-      email: "",
-
-      endereco: "",
-
-      instagram: "",
-
-      facebook: "",
-
-      linkedin: "",
-
-      ativo: true,
-
-      destaque: false,
-
-    });
+    useState(initialForm);
 
   async function carregarAssociados() {
 
@@ -91,15 +64,16 @@ export default function AssociadosSection() {
 
       setLoadingData(true);
 
-      const {
-        data,
-        error,
-      } = await supabase
-        .from("associados")
-        .select("*")
-        .order("created_at", {
-          ascending: false,
-        });
+      const { data, error } =
+        await supabase
+          .from("associados")
+          .select("*")
+          .order("destaque", {
+            ascending: false,
+          })
+          .order("created_at", {
+            ascending: false,
+          });
 
       if (error) {
 
@@ -109,12 +83,14 @@ export default function AssociadosSection() {
 
       }
 
-      setAssociados(data || []);
+      setAssociados(
+        (data as Associado[]) || [],
+      );
 
     } catch {
 
       alert(
-        "Erro ao carregar associados."
+        "Erro ao carregar associados.",
       );
 
     } finally {
@@ -135,18 +111,19 @@ export default function AssociadosSection() {
         .pop();
 
     const nomeArquivo =
-      `${Date.now()}.${extensao}`;
+      `${Date.now()}-${Math.random()
+        .toString(36)
+        .substring(2)}.${extensao}`;
 
     const caminho =
-      `associados/${nomeArquivo}`;
+      nomeArquivo;
 
     const { error } =
       await supabase.storage
-        .from("acmrb")
-        .upload(
-          caminho,
-          fotoFile,
-        );
+        .from("associados")
+        .upload(caminho, fotoFile, {
+          upsert: true,
+        });
 
     if (error) {
 
@@ -158,7 +135,7 @@ export default function AssociadosSection() {
 
     const { data } =
       supabase.storage
-        .from("acmrb")
+        .from("associados")
         .getPublicUrl(caminho);
 
     return data.publicUrl;
@@ -174,7 +151,7 @@ export default function AssociadosSection() {
     ) {
 
       alert(
-        "Nome, cargo e tipo são obrigatórios."
+        "Nome, cargo e tipo são obrigatórios.",
       );
 
       return;
@@ -184,25 +161,22 @@ export default function AssociadosSection() {
     try {
 
       setLoadingSave(true);
+        let fotoUrl = null;
 
-      let fotoUrl = null;
+        if (fotoFile) {
 
-      if (fotoFile) {
+          fotoUrl =
+            await uploadFoto();
 
-        fotoUrl =
-          await uploadFoto();
+        } else if (editingId) {
 
-      }
+          fotoUrl = fotoPreview;
+
+        }
 
       const payload = {
-
         ...formData,
-
-        foto_url:
-          fotoUrl ||
-          fotoPreview ||
-          null,
-
+        foto_url: fotoUrl,
       };
 
       let error = null;
@@ -213,10 +187,7 @@ export default function AssociadosSection() {
           await supabase
             .from("associados")
             .update(payload)
-            .eq(
-              "id",
-              editingId,
-            );
+            .eq("id", editingId);
 
         error = response.error;
 
@@ -246,14 +217,12 @@ export default function AssociadosSection() {
       alert(
         editingId
           ? "Associado atualizado."
-          : "Associado criado."
+          : "Associado criado.",
       );
 
     } catch {
 
-      alert(
-        "Erro inesperado."
-      );
+      alert("Erro inesperado.");
 
     } finally {
 
@@ -269,7 +238,7 @@ export default function AssociadosSection() {
 
     const confirmar =
       confirm(
-        "Deseja excluir este associado?"
+        "Deseja excluir este associado?",
       );
 
     if (!confirmar) return;
@@ -305,7 +274,6 @@ export default function AssociadosSection() {
     );
 
     setFormData({
-
       nome:
         associado.nome || "",
 
@@ -341,7 +309,6 @@ export default function AssociadosSection() {
 
       destaque:
         associado.destaque ?? false,
-
     });
 
   }
@@ -354,33 +321,7 @@ export default function AssociadosSection() {
 
     setFotoPreview("");
 
-    setFormData({
-
-      nome: "",
-
-      cargo: "",
-
-      tipo_associado: "",
-
-      bio: "",
-
-      telefone: "",
-
-      email: "",
-
-      endereco: "",
-
-      instagram: "",
-
-      facebook: "",
-
-      linkedin: "",
-
-      ativo: true,
-
-      destaque: false,
-
-    });
+    setFormData(initialForm);
 
   }
 
@@ -396,11 +337,26 @@ export default function AssociadosSection() {
 
       {/* HEADER */}
 
-      <div className="flex items-center justify-between">
+      <div
+        className="
+          flex
+          flex-col
+          md:flex-row
+          md:items-center
+          md:justify-between
+          gap-6
+        "
+      >
 
         <div>
 
-          <h1 className="text-4xl font-black text-[#1F2937]">
+          <h1
+            className="
+              text-4xl
+              font-black
+              text-[#1F2937]
+            "
+          >
             Associados
           </h1>
 
@@ -412,24 +368,25 @@ export default function AssociadosSection() {
 
         <div
           className="
-            bg-white
+            bg-linear-to-br
+            from-[#2E5E4E]
+            to-[#21463A]
             rounded-3xl
             p-6
-            border
-            border-black/5
-            min-w-55
+            text-white
+            min-w-60
+            shadow-xl
           "
         >
 
-          <p className="text-zinc-500">
+          <p className="opacity-80">
             Total de associados
           </p>
 
           <h2
             className="
-              text-4xl
+              text-5xl
               font-black
-              text-[#2E5E4E]
               mt-2
             "
           >
@@ -445,9 +402,10 @@ export default function AssociadosSection() {
       <div
         className="
           bg-white
-          rounded-3xl
+          rounded-4xl
           border
           border-black/5
+          shadow-sm
           p-8
           grid
           md:grid-cols-2
@@ -464,7 +422,7 @@ export default function AssociadosSection() {
             border-dashed
             border-zinc-300
             rounded-3xl
-            p-8
+            p-10
             flex
             flex-col
             items-center
@@ -483,17 +441,14 @@ export default function AssociadosSection() {
             onChange={(e) => {
 
               const file =
-                e.target
-                  .files?.[0];
+                e.target.files?.[0];
 
               if (!file) return;
 
               setFotoFile(file);
 
               setFotoPreview(
-                URL.createObjectURL(
-                  file,
-                ),
+                URL.createObjectURL(file),
               );
 
             }}
@@ -505,13 +460,13 @@ export default function AssociadosSection() {
               src={fotoPreview}
               alt="Preview"
               className="
-                w-40
-                h-40
+                w-44
+                h-44
                 rounded-full
                 object-cover
                 border-4
                 border-white
-                shadow-lg
+                shadow-xl
               "
             />
 
@@ -540,7 +495,7 @@ export default function AssociadosSection() {
 
         </label>
 
-        {/* NOME */}
+        {/* CAMPOS */}
 
         <input
           type="text"
@@ -549,21 +504,11 @@ export default function AssociadosSection() {
           onChange={(e) =>
             setFormData({
               ...formData,
-              nome:
-                e.target.value,
+              nome: e.target.value,
             })
           }
-          className="
-            h-14
-            rounded-2xl
-            border
-            border-zinc-200
-            px-4
-            outline-none
-          "
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
         />
-
-        {/* CARGO */}
 
         <input
           type="text"
@@ -572,21 +517,11 @@ export default function AssociadosSection() {
           onChange={(e) =>
             setFormData({
               ...formData,
-              cargo:
-                e.target.value,
+              cargo: e.target.value,
             })
           }
-          className="
-            h-14
-            rounded-2xl
-            border
-            border-zinc-200
-            px-4
-            outline-none
-          "
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
         />
-
-        {/* TIPO */}
 
         <select
           value={
@@ -599,14 +534,7 @@ export default function AssociadosSection() {
                 e.target.value,
             })
           }
-          className="
-            h-14
-            rounded-2xl
-            border
-            border-zinc-200
-            px-4
-            outline-none
-          "
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
         >
 
           <option value="">
@@ -635,8 +563,6 @@ export default function AssociadosSection() {
 
         </select>
 
-        {/* EMAIL */}
-
         <input
           type="email"
           placeholder="Email"
@@ -644,107 +570,76 @@ export default function AssociadosSection() {
           onChange={(e) =>
             setFormData({
               ...formData,
-              email:
-                e.target.value,
+              email: e.target.value,
             })
           }
-          className="
-            h-14
-            rounded-2xl
-            border
-            border-zinc-200
-            px-4
-          "
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
         />
-
-        {/* TELEFONE */}
 
         <input
           type="text"
           placeholder="Telefone"
-          value={
-            formData.telefone
-          }
+          value={formData.telefone}
           onChange={(e) =>
             setFormData({
               ...formData,
-              telefone:
-                e.target.value,
+              telefone: e.target.value,
             })
           }
-          className="
-            h-14
-            rounded-2xl
-            border
-            border-zinc-200
-            px-4
-          "
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
         />
-
-        {/* ENDEREÇO */}
 
         <input
           type="text"
           placeholder="Endereço"
-          value={
-            formData.endereco
-          }
+          value={formData.endereco}
           onChange={(e) =>
             setFormData({
               ...formData,
-              endereco:
-                e.target.value,
+              endereco: e.target.value,
             })
           }
-          className="
-            h-14
-            rounded-2xl
-            border
-            border-zinc-200
-            px-4
-          "
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
         />
-
-        {/* INSTAGRAM */}
 
         <input
           type="text"
           placeholder="Instagram"
-          value={
-            formData.instagram
-          }
+          value={formData.instagram}
           onChange={(e) =>
             setFormData({
               ...formData,
-              instagram:
-                e.target.value,
+              instagram: e.target.value,
             })
           }
-          className="
-            h-14
-            rounded-2xl
-            border
-            border-zinc-200
-            px-4
-          "
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
         />
-
-        {/* FACEBOOK */}
 
         <input
           type="text"
           placeholder="Facebook"
-          value={
-            formData.facebook
-          }
+          value={formData.facebook}
           onChange={(e) =>
             setFormData({
               ...formData,
-              facebook:
-                e.target.value,
+              facebook: e.target.value,
+            })
+          }
+          className="h-14 rounded-2xl border border-zinc-200 px-4"
+        />
+
+        <input
+          type="text"
+          placeholder="LinkedIn"
+          value={formData.linkedin}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              linkedin: e.target.value,
             })
           }
           className="
+            md:col-span-2
             h-14
             rounded-2xl
             border
@@ -752,8 +647,6 @@ export default function AssociadosSection() {
             px-4
           "
         />
-
-        {/* BIO */}
 
         <textarea
           placeholder="Biografia"
@@ -761,8 +654,7 @@ export default function AssociadosSection() {
           onChange={(e) =>
             setFormData({
               ...formData,
-              bio:
-                e.target.value,
+              bio: e.target.value,
             })
           }
           className="
@@ -772,7 +664,6 @@ export default function AssociadosSection() {
             border
             border-zinc-200
             p-4
-            outline-none
           "
         />
 
@@ -783,7 +674,7 @@ export default function AssociadosSection() {
             md:col-span-2
             flex
             flex-wrap
-            gap-6
+            gap-8
           "
         >
 
@@ -791,9 +682,7 @@ export default function AssociadosSection() {
 
             <input
               type="checkbox"
-              checked={
-                formData.ativo
-              }
+              checked={formData.ativo}
               onChange={(e) =>
                 setFormData({
                   ...formData,
@@ -844,12 +733,8 @@ export default function AssociadosSection() {
         >
 
           <button
-            onClick={
-              salvarAssociado
-            }
-            disabled={
-              loadingSave
-            }
+            onClick={salvarAssociado}
+            disabled={loadingSave}
             className="
               flex-1
               h-14
@@ -873,9 +758,7 @@ export default function AssociadosSection() {
           {editingId && (
 
             <button
-              onClick={
-                resetForm
-              }
+              onClick={resetForm}
               className="
                 h-14
                 px-8
@@ -907,9 +790,7 @@ export default function AssociadosSection() {
             text-center
           "
         >
-
           Carregando associados...
-
         </div>
 
       )}
@@ -934,25 +815,27 @@ export default function AssociadosSection() {
               key={item.id}
               className="
                 bg-white
-                rounded-3xl
+                rounded-4xl
                 overflow-hidden
                 border
                 border-black/5
                 shadow-sm
+                hover:shadow-xl
+                transition
               "
             >
 
-              <div className="h-72 bg-zinc-100">
+              <div className="relative h-80 bg-zinc-100">
 
                 {item.foto_url ? (
 
                   <img
-                    src={
-                      item.foto_url
-                    }
-                    alt={
-                      item.nome
-                    }
+                    src={item.foto_url || "/placeholder.png"}
+                    alt={item.nome}
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "/placeholder.png";
+                    }}
                     className="
                       w-full
                       h-full
@@ -977,6 +860,27 @@ export default function AssociadosSection() {
 
                 )}
 
+                {item.destaque && (
+
+                  <div
+                    className="
+                      absolute
+                      top-4
+                      right-4
+                      bg-yellow-400
+                      text-black
+                      text-xs
+                      font-bold
+                      px-3
+                      py-1
+                      rounded-full
+                    "
+                  >
+                    Destaque
+                  </div>
+
+                )}
+
               </div>
 
               <div className="p-6">
@@ -984,69 +888,65 @@ export default function AssociadosSection() {
                 <div
                   className="
                     flex
-                    items-center
+                    items-start
                     justify-between
+                    gap-4
                   "
                 >
 
-                  <h2
-                    className="
-                      text-2xl
-                      font-bold
-                    "
+                  <div>
+
+                    <h2
+                      className="
+                        text-2xl
+                        font-black
+                        text-[#1F2937]
+                      "
+                    >
+                      {item.nome}
+                    </h2>
+
+                    <p className="mt-2 text-zinc-500">
+                      {item.cargo}
+                    </p>
+
+                    <p
+                      className="
+                        text-sm
+                        text-[#2E5E4E]
+                        font-semibold
+                        mt-1
+                      "
+                    >
+                      {
+                        item.tipo_associado
+                      }
+                    </p>
+
+                  </div>
+
+                  <span
+                    className={`
+                      text-xs
+                      px-3
+                      py-1
+                      rounded-full
+                      font-semibold
+                      ${
+                        item.ativo
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-red-100 text-red-700"
+                      }
+                    `}
                   >
-                    {item.nome}
-                  </h2>
 
-                  {item.ativo ? (
+                    {item.ativo
+                      ? "Ativo"
+                      : "Inativo"}
 
-                    <span
-                      className="
-                        text-xs
-                        bg-emerald-100
-                        text-emerald-700
-                        px-3
-                        py-1
-                        rounded-full
-                      "
-                    >
-                      Ativo
-                    </span>
-
-                  ) : (
-
-                    <span
-                      className="
-                        text-xs
-                        bg-red-100
-                        text-red-700
-                        px-3
-                        py-1
-                        rounded-full
-                      "
-                    >
-                      Inativo
-                    </span>
-
-                  )}
+                  </span>
 
                 </div>
-
-                <p className="mt-3 text-zinc-500">
-                  {item.cargo}
-                </p>
-
-                <p
-                  className="
-                    mt-1
-                    text-sm
-                    text-zinc-400
-                  "
-                >
-                  {
-                    item.tipo_associado
-                  }
-                </p>
 
                 {item.bio && (
 
@@ -1055,12 +955,42 @@ export default function AssociadosSection() {
                       mt-5
                       text-zinc-600
                       leading-7
+                      line-clamp-4
                     "
                   >
                     {item.bio}
                   </p>
 
                 )}
+
+                <div
+                  className="
+                    mt-6
+                    space-y-2
+                    text-sm
+                    text-zinc-500
+                  "
+                >
+
+                  {item.telefone && (
+                    <p>
+                      📞 {item.telefone}
+                    </p>
+                  )}
+
+                  {item.email && (
+                    <p>
+                      ✉️ {item.email}
+                    </p>
+                  )}
+
+                  {item.endereco && (
+                    <p>
+                      📍 {item.endereco}
+                    </p>
+                  )}
+
+                </div>
 
                 <div
                   className="
