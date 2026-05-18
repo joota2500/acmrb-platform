@@ -72,48 +72,92 @@ export default function MaterialEditModal({
 
   async function salvar() {
 
-    try {
+  if (!material?.id) {
 
-      setLoading(true);
+    alert("Material inválido.");
 
-      const { error } =
-        await supabase
-          .from(
-            "materiais_tipos",
-          )
-          .update({
+    return;
 
-            nome,
+  }
 
-            cor,
+  try {
 
-            descricao,
+    setLoading(true);
 
-          })
-          .eq(
-            "id",
-            material.id,
-          );
+    console.log("EDITANDO:", {
+      id: material.id,
+      nome,
+      cor,
+      descricao,
+    });
 
-      if (error) {
+    const { data, error } =
+      await supabase
+        .from(
+          "materiais_tipos",
+        )
+        .update({
 
-        alert(error.message);
+          nome: nome.trim(),
 
-        return;
+          cor: cor.trim(),
 
-      }
+          descricao:
+            descricao.trim(),
 
-      onSuccess();
+        })
+        .eq(
+          "id",
+          material.id,
+        )
+        .select();
 
-      onClose();
+    console.log(
+      "RESULTADO UPDATE:",
+      data,
+    );
 
-    } finally {
+    console.log(
+      "ERRO UPDATE:",
+      error,
+    );
 
-      setLoading(false);
+    if (error) {
+
+      alert(
+        `Erro: ${error.message}`,
+      );
+
+      return;
 
     }
 
+    alert(
+      "Material atualizado com sucesso.",
+    );
+
+    onSuccess();
+
+    onClose();
+
+  } catch (err) {
+
+    console.log(
+      "ERRO GERAL:",
+      err,
+    );
+
+    alert(
+      "Erro inesperado ao atualizar.",
+    );
+
+  } finally {
+
+    setLoading(false);
+
   }
+
+}
 
   async function excluir() {
 
@@ -173,8 +217,8 @@ export default function MaterialEditModal({
       <div
         className="
           w-full
-          max-w-2xl
-          bg-white
+          max-w-2xl 
+          bg-white 
           rounded-4xl
           overflow-hidden
         "

@@ -5,13 +5,10 @@ import {
   Trash2,
   Package,
   CalendarDays,
-  Weight,
   DollarSign,
-  Archive,
   MapPin,
-  Boxes,
-  MoreHorizontal,
   X,
+  Save,
 } from "lucide-react";
 
 import {
@@ -21,6 +18,7 @@ import {
 import { supabase } from "@/lib/supabase";
 
 type Registro = {
+
   id: string;
 
   peso: number;
@@ -42,21 +40,28 @@ type Registro = {
   created_at: string;
 
   materiais_tipos: {
+
     nome: string;
 
     cor?: string;
+
   };
+
 };
 
 type Props = {
+
   registros: Registro[];
 
   onReload: () => void;
+
 };
 
 export default function MaterialsTable({
+
   registros,
   onReload,
+
 }: Props) {
 
   const [
@@ -305,23 +310,6 @@ export default function MaterialsTable({
 
         </h2>
 
-        <p
-          className="
-            text-zinc-500
-            mt-4
-            leading-7
-            max-w-xl
-            mx-auto
-          "
-        >
-
-          Os materiais cadastrados
-          aparecerão aqui para
-          controle operacional
-          e rastreabilidade.
-
-        </p>
-
       </div>
 
     );
@@ -403,401 +391,9 @@ export default function MaterialsTable({
 
       </div>
 
-      {/* MOBILE */}
-
-      <div
-        className="
-          lg:hidden
-          p-4
-          space-y-4
-        "
-      >
-
-        {registros.map(
-          (item) => {
-
-            const subtotal =
-              Number(
-                item.peso || 0,
-              ) *
-              Number(
-                item.valor_kg || 0,
-              );
-
-            const editing =
-              editandoId ===
-              item.id;
-
-            return (
-
-              <div
-                key={item.id}
-                className="
-                  border
-                  border-zinc-100
-                  rounded-3xl
-                  p-5
-                "
-              >
-
-                {/* TOP */}
-
-                <div
-                  className="
-                    flex
-                    items-start
-                    justify-between
-                    gap-4
-                  "
-                >
-
-                  <div
-                    className="
-                      flex
-                      items-center
-                      gap-4
-                    "
-                  >
-
-                    <div
-                      className="
-                        w-14
-                        h-14
-                        rounded-2xl
-                        bg-[#E8F3EE]
-                        text-[#2E5E4E]
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
-
-                      <Package
-                        size={22}
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <h3
-                        className="
-                          font-black
-                          text-[#111827]
-                          text-lg
-                        "
-                      >
-
-                        {
-                          item
-                            .materiais_tipos
-                            ?.nome
-                        }
-
-                      </h3>
-
-                      <p
-                        className="
-                          text-sm
-                          text-zinc-500
-                          mt-1
-                        "
-                      >
-
-                        {
-                          item.unidade
-                        }
-
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      iniciarEdicao(
-                        item,
-                      )
-                    }
-                    className="
-                      w-11
-                      h-11
-                      rounded-2xl
-                      bg-zinc-100
-                      flex
-                      items-center
-                      justify-center
-                    "
-                  >
-
-                    <MoreHorizontal
-                      size={18}
-                    />
-
-                  </button>
-
-                </div>
-
-                {/* CONTENT */}
-
-                <div
-                  className="
-                    mt-6
-                    grid
-                    grid-cols-2
-                    gap-4
-                  "
-                >
-
-                  <div>
-
-                    <p
-                      className="
-                        text-xs
-                        font-bold
-                        text-zinc-400
-                        uppercase
-                      "
-                    >
-
-                      Peso
-
-                    </p>
-
-                    {editing ? (
-
-                      <input
-                        type="number"
-                        value={peso}
-                        onChange={(
-                          e,
-                        ) =>
-                          setPeso(
-                            e.target
-                              .value,
-                          )
-                        }
-                        className="
-                          w-full
-                          h-12
-                          rounded-2xl
-                          border
-                          border-zinc-200
-                          px-4
-                          mt-2
-                        "
-                      />
-
-                    ) : (
-
-                      <h4
-                        className="
-                          text-2xl
-                          font-black
-                          text-[#111827]
-                          mt-2
-                        "
-                      >
-
-                        {item.peso}
-                        {" "}
-                        {
-                          item.unidade
-                        }
-
-                      </h4>
-
-                    )}
-
-                  </div>
-
-                  <div>
-
-                    <p
-                      className="
-                        text-xs
-                        font-bold
-                        text-zinc-400
-                        uppercase
-                      "
-                    >
-
-                      Subtotal
-
-                    </p>
-
-                    <h4
-                      className="
-                        text-2xl
-                        font-black
-                        text-[#2E5E4E]
-                        mt-2
-                      "
-                    >
-
-                      R$
-                      {" "}
-                      {subtotal.toFixed(
-                        2,
-                      )}
-
-                    </h4>
-
-                  </div>
-
-                </div>
-
-                {/* EXTRA */}
-
-                <div
-                  className="
-                    mt-5
-                    space-y-3
-                  "
-                >
-
-                  <div
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      text-sm
-                      text-zinc-600
-                    "
-                  >
-
-                    <MapPin
-                      size={16}
-                    />
-
-                    {item.origem ||
-                      "Sem origem"}
-
-                  </div>
-
-                  <div
-                    className="
-                      flex
-                      items-center
-                      gap-3
-                      text-sm
-                      text-zinc-600
-                    "
-                  >
-
-                    <CalendarDays
-                      size={16}
-                    />
-
-                    {new Date(
-                      item.created_at,
-                    ).toLocaleDateString(
-                      "pt-BR",
-                    )}
-
-                  </div>
-
-                </div>
-
-                {/* ACTIONS */}
-
-                {editing && (
-
-                  <div
-                    className="
-                      flex
-                      gap-3
-                      mt-6
-                    "
-                  >
-
-                    <button
-                      onClick={() =>
-                        salvarEdicao(
-                          item.id,
-                        )
-                      }
-                      disabled={loading}
-                      className="
-                        flex-1
-                        h-12
-                        rounded-2xl
-                        bg-[#2E5E4E]
-                        text-white
-                        font-black
-                      "
-                    >
-
-                      Salvar
-
-                    </button>
-
-                    <button
-                      onClick={
-                        cancelarEdicao
-                      }
-                      className="
-                        w-12
-                        h-12
-                        rounded-2xl
-                        bg-zinc-200
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
-
-                      <X size={18} />
-
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        excluirRegistro(
-                          item.id,
-                        )
-                      }
-                      className="
-                        w-12
-                        h-12
-                        rounded-2xl
-                        bg-red-100
-                        text-red-600
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
-
-                      <Trash2
-                        size={18}
-                      />
-
-                    </button>
-
-                  </div>
-
-                )}
-
-              </div>
-
-            );
-
-          },
-        )}
-
-      </div>
-
       {/* DESKTOP */}
 
-      <div
-        className="
-          hidden
-          lg:block
-          overflow-x-auto
-        "
-      >
+      <div className="overflow-x-auto">
 
         <table className="w-full">
 
@@ -819,6 +415,10 @@ export default function MaterialsTable({
 
               <th className="text-left p-5 text-sm font-black text-zinc-600">
                 Subtotal
+              </th>
+
+              <th className="text-left p-5 text-sm font-black text-zinc-600">
+                Origem
               </th>
 
               <th className="text-left p-5 text-sm font-black text-zinc-600">
@@ -848,236 +448,493 @@ export default function MaterialsTable({
 
                 return (
 
-                  <tr
-                    key={item.id}
-                    className="
-                      border-t
-                      border-zinc-100
-                    "
-                  >
+                  <>
+                    {/* LINHA */}
 
-                    <td className="p-5">
+                    <tr
+                      key={item.id}
+                      className="
+                        border-t
+                        border-zinc-100
+                      "
+                    >
 
-                      <div
-                        className="
-                          flex
-                          items-center
-                          gap-4
-                        "
-                      >
+                      {/* MATERIAL */}
+
+                      <td className="p-5">
 
                         <div
                           className="
-                            w-12
-                            h-12
+                            flex
+                            items-center
+                            gap-4
+                          "
+                        >
+
+                          <div
+                            className="
+                              w-12
+                              h-12
+                              rounded-2xl
+                              bg-[#E8F3EE]
+                              text-[#2E5E4E]
+                              flex
+                              items-center
+                              justify-center
+                            "
+                          >
+
+                            <Package
+                              size={20}
+                            />
+
+                          </div>
+
+                          <div>
+
+                            <h3
+                              className="
+                                font-black
+                                text-[#111827]
+                              "
+                            >
+
+                              {
+                                item
+                                  .materiais_tipos
+                                  ?.nome
+                              }
+
+                            </h3>
+
+                            <p
+                              className="
+                                text-sm
+                                text-zinc-500
+                                mt-1
+                              "
+                            >
+
+                              {
+                                item.unidade
+                              }
+
+                            </p>
+
+                          </div>
+
+                        </div>
+
+                      </td>
+
+                      {/* PESO */}
+
+                      <td className="p-5">
+
+                        <strong
+                          className="
+                            text-lg
+                            text-[#111827]
+                          "
+                        >
+
+                          {item.peso}
+                          {" "}
+                          {
+                            item.unidade
+                          }
+
+                        </strong>
+
+                      </td>
+
+                      {/* VALOR */}
+
+                      <td className="p-5">
+
+                        <div
+                          className="
+                            flex
+                            items-center
+                            gap-2
+                            font-bold
+                          "
+                        >
+
+                          <DollarSign
+                            size={16}
+                          />
+
+                          {Number(
+                            item.valor_kg ||
+                              0,
+                          ).toFixed(2)}
+
+                        </div>
+
+                      </td>
+
+                      {/* SUBTOTAL */}
+
+                      <td className="p-5">
+
+                        <div
+                          className="
+                            inline-flex
+                            items-center
+                            px-4
+                            py-2
                             rounded-2xl
-                            bg-[#E8F3EE]
+                            bg-[#F2FBF6]
                             text-[#2E5E4E]
-                            flex
-                            items-center
-                            justify-center
+                            font-black
                           "
                         >
 
-                          <Package
-                            size={20}
-                          />
+                          R$
+                          {" "}
+                          {subtotal.toFixed(
+                            2,
+                          )}
 
                         </div>
 
-                        <div>
+                      </td>
 
-                          <h3
-                            className="
-                              font-black
-                              text-[#111827]
-                            "
-                          >
+                      {/* ORIGEM */}
 
-                            {
-                              item
-                                .materiais_tipos
-                                ?.nome
-                            }
+                      <td className="p-5">
 
-                          </h3>
+                        <div
+                          className="
+                            flex
+                            items-center
+                            gap-2
+                            text-zinc-600
+                          "
+                        >
 
-                          <p
-                            className="
-                              text-sm
-                              text-zinc-500
-                              mt-1
-                            "
-                          >
+                          <MapPin
+                            size={16}
+                          />
 
-                            {
-                              item.unidade
-                            }
-
-                          </p>
+                          {item.origem ||
+                            "Sem origem"}
 
                         </div>
 
-                      </div>
+                      </td>
 
-                    </td>
+                      {/* DATA */}
 
-                    <td className="p-5">
+                      <td className="p-5">
 
-                      <strong
-                        className="
-                          text-lg
-                          text-[#111827]
-                        "
-                      >
-
-                        {item.peso}
-                        {" "}
-                        {
-                          item.unidade
-                        }
-
-                      </strong>
-
-                    </td>
-
-                    <td className="p-5">
-
-                      <div
-                        className="
-                          flex
-                          items-center
-                          gap-2
-                          font-bold
-                        "
-                      >
-
-                        <DollarSign
-                          size={16}
-                        />
-
-                        {Number(
-                          item.valor_kg ||
-                            0,
-                        ).toFixed(2)}
-
-                      </div>
-
-                    </td>
-
-                    <td className="p-5">
-
-                      <div
-                        className="
-                          inline-flex
-                          items-center
-                          px-4
-                          py-2
-                          rounded-2xl
-                          bg-[#F2FBF6]
-                          text-[#2E5E4E]
-                          font-black
-                        "
-                      >
-
-                        R$
-                        {" "}
-                        {subtotal.toFixed(
-                          2,
-                        )}
-
-                      </div>
-
-                    </td>
-
-                    <td className="p-5">
-
-                      <div
-                        className="
-                          flex
-                          items-center
-                          gap-2
-                          text-zinc-500
-                        "
-                      >
-
-                        <CalendarDays
-                          size={16}
-                        />
-
-                        {new Date(
-                          item.created_at,
-                        ).toLocaleDateString(
-                          "pt-BR",
-                        )}
-
-                      </div>
-
-                    </td>
-
-                    <td className="p-5">
-
-                      <div
-                        className="
-                          flex
-                          justify-end
-                          gap-3
-                        "
-                      >
-
-                        <button
-                          onClick={() =>
-                            iniciarEdicao(
-                              item,
-                            )
-                          }
+                        <div
                           className="
-                            w-11
-                            h-11
-                            rounded-2xl
-                            bg-blue-100
-                            text-blue-600
                             flex
                             items-center
-                            justify-center
+                            gap-2
+                            text-zinc-500
                           "
                         >
 
-                          <Pencil
-                            size={18}
+                          <CalendarDays
+                            size={16}
                           />
 
-                        </button>
+                          {new Date(
+                            item.created_at,
+                          ).toLocaleDateString(
+                            "pt-BR",
+                          )}
 
-                        <button
-                          onClick={() =>
-                            excluirRegistro(
-                              item.id,
-                            )
-                          }
+                        </div>
+
+                      </td>
+
+                      {/* ACTIONS */}
+
+                      <td className="p-5">
+
+                        <div
                           className="
-                            w-11
-                            h-11
-                            rounded-2xl
-                            bg-red-100
-                            text-red-600
                             flex
-                            items-center
-                            justify-center
+                            justify-end
+                            gap-3
                           "
                         >
 
-                          <Trash2
-                            size={18}
+                          <button
+                            onClick={() =>
+                              iniciarEdicao(
+                                item,
+                              )
+                            }
+                            className="
+                              w-11
+                              h-11
+                              rounded-2xl
+                              bg-blue-100
+                              text-blue-600
+                              flex
+                              items-center
+                              justify-center
+                            "
+                          >
+
+                            <Pencil
+                              size={18}
+                            />
+
+                          </button>
+
+                          <button
+                            onClick={() =>
+                              excluirRegistro(
+                                item.id,
+                              )
+                            }
+                            className="
+                              w-11
+                              h-11
+                              rounded-2xl
+                              bg-red-100
+                              text-red-600
+                              flex
+                              items-center
+                              justify-center
+                            "
+                          >
+
+                            <Trash2
+                              size={18}
+                            />
+
+                          </button>
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+
+                    {/* EDIÇÃO */}
+
+                    {editandoId ===
+                      item.id && (
+
+                      <tr
+                        className="
+                          bg-[#F8FAF9]
+                          border-t
+                          border-zinc-100
+                        "
+                      >
+
+                        <td
+                          colSpan={7}
+                          className="p-6"
+                        >
+
+                          <div
+                            className="
+                              grid
+                              grid-cols-2
+                              gap-5
+                            "
+                          >
+
+                            <input
+                              type="number"
+                              value={peso}
+                              onChange={(
+                                e,
+                              ) =>
+                                setPeso(
+                                  e.target
+                                    .value,
+                                )
+                              }
+                              placeholder="Peso"
+                              className="
+                                h-14
+                                rounded-2xl
+                                border
+                                border-zinc-200
+                                px-5
+                                bg-white
+                              "
+                            />
+
+                            <input
+                              type="number"
+                              value={valorKg}
+                              onChange={(
+                                e,
+                              ) =>
+                                setValorKg(
+                                  e.target
+                                    .value,
+                                )
+                              }
+                              placeholder="Valor/KG"
+                              className="
+                                h-14
+                                rounded-2xl
+                                border
+                                border-zinc-200
+                                px-5
+                                bg-white
+                              "
+                            />
+
+                            <input
+                              type="text"
+                              value={origem}
+                              onChange={(
+                                e,
+                              ) =>
+                                setOrigem(
+                                  e.target
+                                    .value,
+                                )
+                              }
+                              placeholder="Origem"
+                              className="
+                                h-14
+                                rounded-2xl
+                                border
+                                border-zinc-200
+                                px-5
+                                bg-white
+                              "
+                            />
+
+                            <input
+                              type="text"
+                              value={
+                                armazenamento
+                              }
+                              onChange={(
+                                e,
+                              ) =>
+                                setArmazenamento(
+                                  e.target
+                                    .value,
+                                )
+                              }
+                              placeholder="Armazenamento"
+                              className="
+                                h-14
+                                rounded-2xl
+                                border
+                                border-zinc-200
+                                px-5
+                                bg-white
+                              "
+                            />
+
+                          </div>
+
+                          <textarea
+                            value={
+                              observacao
+                            }
+                            onChange={(
+                              e,
+                            ) =>
+                              setObservacao(
+                                e.target
+                                  .value,
+                              )
+                            }
+                            placeholder="Observação"
+                            className="
+                              w-full
+                              min-h-32
+                              rounded-2xl
+                              border
+                              border-zinc-200
+                              p-5
+                              bg-white
+                              mt-5
+                            "
                           />
 
-                        </button>
+                          <div
+                            className="
+                              flex
+                              justify-end
+                              gap-4
+                              mt-5
+                            "
+                          >
 
-                      </div>
+                            <button
+                              onClick={
+                                cancelarEdicao
+                              }
+                              className="
+                                h-14
+                                px-6
+                                rounded-2xl
+                                bg-zinc-200
+                                font-black
+                                flex
+                                items-center
+                                gap-2
+                              "
+                            >
 
-                    </td>
+                              <X
+                                size={18}
+                              />
 
-                  </tr>
+                              Cancelar
+
+                            </button>
+
+                            <button
+                              onClick={() =>
+                                salvarEdicao(
+                                  item.id,
+                                )
+                              }
+                              disabled={
+                                loading
+                              }
+                              className="
+                                h-14
+                                px-8
+                                rounded-2xl
+                                bg-[#2E5E4E]
+                                text-white
+                                font-black
+                                flex
+                                items-center
+                                gap-2
+                              "
+                            >
+
+                              <Save
+                                size={18}
+                              />
+
+                              {loading
+                                ? "Salvando..."
+                                : "Salvar"}
+
+                            </button>
+
+                          </div>
+
+                        </td>
+
+                      </tr>
+
+                    )}
+
+                  </>
 
                 );
 

@@ -943,7 +943,7 @@ export default function MaterialsSection() {
                       className=" 
                         text-lg
                         font-black
-                        text-[#111827]
+                        text-[#111827]  
                         mt-1
                         wrap-break-word
                       "
