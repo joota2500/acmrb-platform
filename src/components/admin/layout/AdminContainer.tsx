@@ -1,9 +1,13 @@
 type Props = {
+
   children: React.ReactNode;
+
 };
 
 export default function AdminContainer({
+
   children,
+
 }: Props) {
 
   return (
@@ -13,6 +17,9 @@ export default function AdminContainer({
         min-h-screen
         bg-[#F5F7F4]
         flex
+        flex-col
+        lg:flex-row
+        overflow-x-hidden
       "
     >
 

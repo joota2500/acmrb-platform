@@ -1,6 +1,10 @@
 "use client";
 
 import {
+  useState,
+} from "react";
+
+import {
   LayoutDashboard,
   Users,
   ShieldAlert,
@@ -13,9 +17,12 @@ import {
   Settings,
   ChevronRight,
   PackageSearch,
+  Menu,
+  X,
 } from "lucide-react";
 
 const items = [
+
   {
     icon: LayoutDashboard,
     label: "Dashboard",
@@ -70,46 +77,171 @@ const items = [
     icon: Settings,
     label: "Configurações",
   },
+
 ];
 
 type Props = {
+
   activeSection: string;
 
   setActiveSection: (
     value: string,
   ) => void;
+
 };
 
 export default function AdminSidebar({
+
   activeSection,
+
   setActiveSection,
+
 }: Props) {
 
-  return (
+  const [
+    mobileOpen,
+    setMobileOpen,
+  ] = useState(false);
 
-    <aside
-      className="
-        hidden
-        lg:flex
-        flex-col
-        w-80
-        min-h-screen
-        bg-white
-        border-r
-        border-black/5
-        sticky
-        top-0
-      "
-    >
+  function renderMenu() {
 
-      {/* HEADER */}
+    return (
 
       <div
         className="
-          px-7
-          py-8
+          flex
+          flex-col
+          gap-2
+        "
+      >
+
+        {items.map((item) => {
+
+          const Icon =
+            item.icon;
+
+          const active =
+            activeSection ===
+            item.label;
+
+          return (
+
+            <button
+              key={item.label}
+              onClick={() => {
+
+                setActiveSection(
+                  item.label,
+                );
+
+                setMobileOpen(
+                  false,
+                );
+
+              }}
+              className={`
+                group
+                h-15
+                rounded-2xl
+                px-5
+                flex
+                items-center
+                justify-between
+                transition-all
+                duration-300
+
+                ${
+                  active
+                    ? `
+                      bg-[#2E5E4E]
+                      text-white
+                      shadow-lg
+                    `
+                    : `
+                      text-[#374151]
+                      hover:bg-[#F3F6F4]
+                      hover:text-[#2E5E4E]
+                    `
+                }
+              `}
+            >
+
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-4
+                "
+              >
+
+                <Icon size={21} />
+
+                <span
+                  className="
+                    font-semibold
+                    text-[15px]
+                  "
+                >
+
+                  {item.label}
+
+                </span>
+
+              </div>
+
+              <ChevronRight
+                size={18}
+                className={`
+                  transition-all
+
+                  ${
+                    active
+                      ? `
+                        opacity-100
+                        translate-x-0
+                      `
+                      : `
+                        opacity-0
+                        -translate-x-2
+                        group-hover:opacity-100
+                        group-hover:translate-x-0
+                      `
+                  }
+                `}
+              />
+
+            </button>
+
+          );
+
+        })}
+
+      </div>
+
+    );
+
+  }
+
+  return (
+
+    <>
+
+      {/* MOBILE TOPBAR */}
+
+      <div
+        className="
+          lg:hidden
+          sticky
+          top-0
+          z-50
+          bg-white
           border-b
           border-black/5
+          px-5
+          py-4
+          flex
+          items-center
+          justify-between
         "
       >
 
@@ -117,15 +249,15 @@ export default function AdminSidebar({
           className="
             flex
             items-center
-            gap-4
+            gap-3
           "
         >
 
           <div
             className="
-              w-15
-              h-15
-              rounded-3xl
+              w-11
+              h-11
+              rounded-2xl
               bg-linear-to-br
               from-[#2E5E4E]
               to-[#4F8A73]
@@ -133,8 +265,7 @@ export default function AdminSidebar({
               items-center
               justify-center
               text-white
-              text-2xl
-              shadow-lg
+              font-black
             "
           >
 
@@ -144,28 +275,25 @@ export default function AdminSidebar({
 
           <div>
 
-            <h1
+            <h2
               className="
-                text-2xl
                 font-black
                 text-[#1F2937]
-                leading-none
               "
             >
 
               ACMRB
 
-            </h1>
+            </h2>
 
             <p
               className="
-                text-sm
+                text-xs
                 text-zinc-500
-                mt-2
               "
             >
 
-              Painel Administrativo
+              Painel ESG
 
             </p>
 
@@ -173,194 +301,173 @@ export default function AdminSidebar({
 
         </div>
 
-      </div>
-
-      {/* MENU */}
-
-      <div
-        className="
-          flex-1
-          overflow-y-auto
-          px-5
-          py-6
-        "
-      >
-
-        <div
+        <button
+          onClick={() =>
+            setMobileOpen(
+              !mobileOpen,
+            )
+          }
           className="
+            w-12
+            h-12
+            rounded-2xl
+            bg-[#F3F6F4]
             flex
-            flex-col
-            gap-2
+            items-center
+            justify-center
           "
         >
 
-          {items.map((item) => {
+          {mobileOpen
+            ? <X size={22} />
+            : <Menu size={22} />}
 
-            const Icon =
-              item.icon;
+        </button>
 
-            const active =
-              activeSection ===
-              item.label;
+      </div>
 
-            return (
+      {/* MOBILE MENU */}
 
-              <button
-                key={item.label}
-                onClick={() =>
-                  setActiveSection(
-                    item.label,
-                  )
-                }
-                className={`
-                  group
-                  h-15
-                  rounded-2xl
-                  px-5
-                  flex
-                  items-center
-                  justify-between
-                  transition-all
-                  duration-300
+      {mobileOpen && (
 
-                  ${
-                    active
-                      ? `
-                        bg-[#2E5E4E]
-                        text-white
-                        shadow-lg
-                        shadow-emerald-900/10
-                      `
-                      : `
-                        text-[#374151]
-                        hover:bg-[#F3F6F4]
-                        hover:text-[#2E5E4E]
-                      `
-                  }
-                `}
+        <div
+          className="
+            lg:hidden
+            fixed
+            inset-0
+            z-40
+            bg-black/40
+            backdrop-blur-sm
+          "
+        >
+
+          <div
+            className="
+              absolute
+              left-0
+              top-0
+              h-full
+              w-80
+              bg-white
+              p-5
+              overflow-y-auto
+            "
+          >
+
+            {renderMenu()}
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* DESKTOP SIDEBAR */}
+
+      <aside
+        className="
+          hidden
+          lg:flex
+          flex-col
+          w-80
+          min-h-screen
+          bg-white
+          border-r
+          border-black/5
+          sticky
+          top-0
+        "
+      >
+
+        {/* HEADER */}
+
+        <div
+          className="
+            px-7
+            py-8
+            border-b
+            border-black/5
+          "
+        >
+
+          <div
+            className="
+              flex
+              items-center
+              gap-4
+            "
+          >
+
+            <div
+              className="
+                w-15
+                h-15
+                rounded-3xl
+                bg-linear-to-br
+                from-[#2E5E4E]
+                to-[#4F8A73]
+                flex
+                items-center
+                justify-center
+                text-white
+                text-2xl
+              "
+            >
+
+              ♻
+
+            </div>
+
+            <div>
+
+              <h1
+                className="
+                  text-2xl
+                  font-black
+                  text-[#1F2937]
+                "
               >
 
-                <div
-                  className="
-                    flex
-                    items-center
-                    gap-4
-                  "
-                >
+                ACMRB
 
-                  <Icon size={21} />
+              </h1>
 
-                  <span
-                    className="
-                      font-semibold
-                      text-[15px]
-                    "
-                  >
+              <p
+                className="
+                  text-sm
+                  text-zinc-500
+                  mt-1
+                "
+              >
 
-                    {item.label}
+                Painel Administrativo
 
-                  </span>
+              </p>
 
-                </div>
+            </div>
 
-                <ChevronRight
-                  size={18}
-                  className={`
-                    transition-all
-
-                    ${
-                      active
-                        ? `
-                          opacity-100
-                          translate-x-0
-                        `
-                        : `
-                          opacity-0
-                          -translate-x-2
-                          group-hover:opacity-100
-                          group-hover:translate-x-0
-                        `
-                    }
-                  `}
-                />
-
-              </button>
-
-            );
-
-          })}
+          </div>
 
         </div>
 
-      </div>
-
-      {/* FOOTER */}
-
-      <div
-        className="
-          p-5
-          border-t
-          border-black/5
-        "
-      >
+        {/* MENU */}
 
         <div
           className="
-            rounded-3xl
-            bg-[#F7FAF8]
-            border
-            border-black/5
-            p-5
+            flex-1
+            overflow-y-auto
+            px-5
+            py-6
           "
         >
 
-          <p
-            className="
-              text-xs
-              uppercase
-              tracking-wider
-              text-zinc-400
-              font-bold
-            "
-          >
-
-            Sistema
-
-          </p>
-
-          <h3
-            className="
-              text-lg
-              font-black
-              text-[#1F2937]
-              mt-2
-            "
-          >
-
-            Plataforma ESG
-
-          </h3>
-
-          <p
-            className="
-              text-sm
-              text-zinc-500
-              leading-6
-              mt-2
-            "
-          >
-
-            Gestão institucional,
-            impacto ambiental
-            e transparência pública.
-
-          </p>
+          {renderMenu()}
 
         </div>
 
-      </div>
+      </aside>
 
-    </aside>
+    </>
 
   );
 

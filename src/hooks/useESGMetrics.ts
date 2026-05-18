@@ -7,12 +7,54 @@ import {
 
 import { supabase } from "@/lib/supabase";
 
+/* =========================
+   TYPES
+========================= */
+
+type MaterialTipo = {
+
+  nome?: string;
+
+  cor?: string;
+
+};
+
+type MaterialRegistro = {
+
+  peso: number | string;
+
+  subtotal: number | string;
+
+  materiais_tipos?: MaterialTipo | null;
+
+};
+
+type MaterialAgrupado = {
+
+  nome: string;
+
+  peso: number;
+
+  valor: number;
+
+  quantidade: number;
+
+};
+
+/* =========================
+   HOOK
+========================= */
+
 export function useESGMetrics() {
 
   const [
     loading,
     setLoading,
   ] = useState(true);
+
+  /* =========================
+     TOTAIS
+  ========================= */
 
   const [
     totalPeso,
@@ -29,20 +71,48 @@ export function useESGMetrics() {
     setTotalRegistros,
   ] = useState(0);
 
-  const [
-    materiais,
-    setMateriais,
-  ] = useState<any[]>([]);
-
-  const [
-    materiaisAgrupados,
-    setMateriaisAgrupados,
-  ] = useState<any[]>([]);
+  /* =========================
+     ESG
+  ========================= */
 
   const [
     familiasImpactadas,
     setFamiliasImpactadas,
   ] = useState(0);
+
+  const [
+    empresasParceiras,
+    setEmpresasParceiras,
+  ] = useState(0);
+
+  /* =========================
+     MATERIAIS
+  ========================= */
+
+  const [
+    materiais,
+    setMateriais,
+  ] = useState<
+    MaterialRegistro[]
+  >([]);
+
+  const [
+    materiaisAgrupados,
+    setMateriaisAgrupados,
+  ] = useState<
+    MaterialAgrupado[]
+  >([]);
+
+  const [
+    topMateriais,
+    setTopMateriais,
+  ] = useState<
+    MaterialAgrupado[]
+  >([]);
+
+  /* =========================
+     LOAD
+  ========================= */
 
   useEffect(() => {
 
@@ -62,75 +132,97 @@ export function useESGMetrics() {
 
       const {
         data: materiaisData,
+        error: materiaisError,
       } = await supabase
         .from(
           "materiais_registros",
         )
         .select(`
-          *,
+          peso,
+          subtotal,
           materiais_tipos (
             nome,
             cor
           )
         `);
 
+      if (materiaisError) {
+
+        console.log(
+          "ERRO MATERIAIS:",
+          materiaisError,
+        );
+
+        return;
+
+      }
+
       /* =========================
-         ASSOCIADOS
+         DASHBOARD
       ========================= */
 
       const {
-        count,
+        data: dashboard,
+        error: dashboardError,
       } = await supabase
-        .from("associados")
-        .select("*", {
-          count: "exact",
-          head: true,
-        });
+        .from(
+          "dashboard_metricas",
+        )
+        .select(`
+          familias_impactadas,
+          empresas_parceiras
+        `)
+        .limit(1)
+        .maybeSingle();
 
-      const materiais =
-        materiaisData || [];
+      if (dashboardError) {
 
-      /* =========================
-         PESO TOTAL
-      ========================= */
-
-      const peso =
-        materiais.reduce(
-          (
-            acc,
-            item,
-          ) =>
-            acc +
-            Number(
-              item.peso || 0,
-            ),
-          0,
+        console.log(
+          "ERRO DASHBOARD:",
+          dashboardError,
         );
 
+      }
+
+      const materiais =
+        (
+          materiaisData || []
+        ) as MaterialRegistro[];
+
       /* =========================
-         VALOR TOTAL
+         TOTAIS
       ========================= */
 
-      const valor =
+      const pesoTotal =
         materiais.reduce(
           (
             acc,
             item,
           ) => {
 
-            const peso =
+            return (
+              acc +
               Number(
                 item.peso || 0,
-              );
+              )
+            );
 
-            const valorKg =
-              Number(
-                item.valor_kg || 0,
-              );
+          },
+          0,
+        );
+
+      const valorTotal =
+        materiais.reduce(
+          (
+            acc,
+            item,
+          ) => {
 
             return (
               acc +
-              peso * valorKg
+              Number(
+                item.subtotal || 0,
+              )
             );
 
           },
@@ -142,7 +234,12 @@ export function useESGMetrics() {
       ========================= */
 
       const agrupados =
-        materiais.reduce(
+        materiais.reduce<
+          Record<
+            string,
+            MaterialAgrupado
+          >
+        >(
           (
             acc,
             item,
@@ -154,7 +251,9 @@ export function useESGMetrics() {
                 ?.nome ||
               "Sem nome";
 
-            if (!acc[nome]) {
+            if (
+              !acc[nome]
+            ) {
 
               acc[nome] = {
 
@@ -170,21 +269,15 @@ export function useESGMetrics() {
 
             }
 
-            const peso =
+            acc[nome].peso +=
               Number(
                 item.peso || 0,
               );
 
-            const valorKg =
-              Number(
-                item.valor_kg || 0,
-              );
-
-            acc[nome].peso +=
-              peso;
-
             acc[nome].valor +=
-              peso * valorKg;
+              Number(
+                item.subtotal || 0,
+              );
 
             acc[
               nome
@@ -193,32 +286,74 @@ export function useESGMetrics() {
             return acc;
 
           },
-          {} as Record<
-            string,
-            any
-          >,
+
+          {},
         );
 
-      setTotalPeso(peso);
+      /* =========================
+         LISTA TIPADA
+      ========================= */
 
-      setTotalValor(valor);
+      const lista:
+        MaterialAgrupado[] =
+          Object.values(
+            agrupados,
+          ).sort(
+            (
+              a,
+              b,
+            ) =>
+              b.peso -
+              a.peso,
+          );
 
-      setTotalRegistros(
-        materiais.length,
-      );
+      /* =========================
+         STATES
+      ========================= */
 
       setMateriais(
         materiais,
       );
 
       setMateriaisAgrupados(
-        Object.values(
-          agrupados,
-        ),
+        lista,
+      );
+
+      setTopMateriais(
+        lista.slice(0, 3),
+      );
+
+      setTotalPeso(
+        pesoTotal,
+      );
+
+      setTotalValor(
+        valorTotal,
+      );
+
+      setTotalRegistros(
+        materiais.length,
       );
 
       setFamiliasImpactadas(
-        count || 0,
+        Number(
+          dashboard?.familias_impactadas ||
+            0,
+        ),
+      );
+
+      setEmpresasParceiras(
+        Number(
+          dashboard?.empresas_parceiras ||
+            0,
+        ),
+      );
+
+    } catch (error) {
+
+      console.log(
+        "ERRO GERAL:",
+        error,
       );
 
     } finally {
@@ -230,7 +365,7 @@ export function useESGMetrics() {
   }
 
   /* =========================
-     ESG
+     ESG CALCULATIONS
   ========================= */
 
   const co2 =
@@ -242,9 +377,18 @@ export function useESGMetrics() {
   const energia =
     totalPeso * 95;
 
+  const agua =
+    totalPeso * 26;
+
+  /* =========================
+     RETURN
+  ========================= */
+
   return {
 
     loading,
+
+    /* TOTAIS */
 
     totalPeso,
 
@@ -252,17 +396,32 @@ export function useESGMetrics() {
 
     totalRegistros,
 
-    materiais,
-
-    materiaisAgrupados,
-
-    familiasImpactadas,
+    /* ESG */
 
     co2,
 
     arvores,
 
     energia,
+
+    agua,
+
+    familiasImpactadas,
+
+    empresasParceiras,
+
+    /* MATERIAIS */
+
+    materiais,
+
+    materiaisAgrupados,
+
+    topMateriais,
+
+    /* ACTIONS */
+
+    atualizar:
+      carregar,
 
   };
 

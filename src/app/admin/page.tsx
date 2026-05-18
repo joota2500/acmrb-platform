@@ -10,21 +10,38 @@ import {
 import { useAuth } from "@/context/AuthContext";
 
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
+
 import AdminContainer from "@/components/admin/layout/AdminContainer";
+
 import AdminContent from "@/components/admin/layout/AdminContent";
+
 import AdminHeader from "@/components/admin/layout/AdminHeader";
 
+/* SECTIONS */
+
 import DashboardSection from "@/components/admin/sections/DashboardSection";
+
 import AssociadosSection from "@/components/admin/sections/AssociadosSection";
+
 import DenunciasSection from "@/components/admin/sections/DenunciasSection";
+
 import ParceirosSection from "@/components/admin/sections/ParceirosSection";
+
 import ProjetosSection from "@/components/admin/sections/ProjetosSection";
+
 import ESGSection from "@/components/admin/sections/ESGSection";
+
 import ContatoSection from "@/components/admin/sections/ContatoSection";
+
 import ConfiguracoesSection from "@/components/admin/sections/ConfiguracoesSection";
+
 import NoticiasSection from "@/components/admin/sections/NoticiasSection";
 
+/* MATERIALS */
+
 import MaterialsSection from "@/components/admin/materials/MaterialsSection";
+
+/* ICONS */
 
 import {
   LogOut,
@@ -39,12 +56,19 @@ export default function AdminPage() {
     logout,
   } = useAuth();
 
-  const router = useRouter();
+  const router =
+    useRouter();
 
   const [
     activeSection,
     setActiveSection,
-  ] = useState("Dashboard");
+  ] = useState(
+    "Dashboard",
+  );
+
+  /* =========================
+     AUTH
+  ========================= */
 
   useEffect(() => {
 
@@ -62,6 +86,10 @@ export default function AdminPage() {
     loading,
     router,
   ]);
+
+  /* =========================
+     LOADING
+  ========================= */
 
   if (loading) {
 
@@ -88,6 +116,8 @@ export default function AdminPage() {
             py-7
             shadow-sm
             text-center
+            max-w-md
+            w-full
           "
         >
 
@@ -106,7 +136,9 @@ export default function AdminPage() {
             "
           >
 
-            <ShieldCheck size={24} />
+            <ShieldCheck
+              size={24}
+            />
 
           </div>
 
@@ -127,6 +159,7 @@ export default function AdminPage() {
               text-zinc-500
               mt-3
               text-sm
+              leading-7
             "
           >
 
@@ -144,6 +177,20 @@ export default function AdminPage() {
 
   }
 
+  /* =========================
+     NO USER
+  ========================= */
+
+  if (!user) {
+
+    return null;
+
+  }
+
+  /* =========================
+     PAGE
+  ========================= */
+
   return (
 
     <AdminContainer>
@@ -151,23 +198,27 @@ export default function AdminPage() {
       {/* SIDEBAR */}
 
       <AdminSidebar
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
+        activeSection={
+          activeSection
+        }
+        setActiveSection={
+          setActiveSection
+        }
       />
 
       {/* CONTENT */}
 
       <AdminContent>
 
-        {/* TOPO */}
+        {/* HEADER */}
 
         <div
           className="
             flex
             flex-col
-            2xl:flex-row
-            2xl:items-center
-            2xl:justify-between
+            xl:flex-row
+            xl:items-start
+            xl:justify-between
             gap-8
             mb-10
           "
@@ -175,7 +226,12 @@ export default function AdminPage() {
 
           {/* LEFT */}
 
-          <div className="space-y-6">
+          <div
+            className="
+              flex-1
+              min-w-0
+            "
+          >
 
             <AdminHeader
               title="Painel Administrativo"
@@ -189,86 +245,90 @@ export default function AdminPage() {
 
             {/* USER CARD */}
 
-            {user && (
+            <div
+              className="
+                mt-6
+                bg-white
+                border
+                border-black/5
+                rounded-4xl
+                px-5
+                py-5
+                shadow-sm
+                flex
+                items-center
+                gap-4
+                overflow-hidden
+              "
+            >
+
+              {/* AVATAR */}
 
               <div
                 className="
-                  bg-white
-                  border
-                  border-black/5
-                  rounded-4xl
-                  px-5
-                  py-5
-                  shadow-sm
+                  shrink-0
+                  w-14
+                  h-14
+                  rounded-3xl
+                  bg-linear-to-br
+                  from-[#2E5E4E]
+                  to-[#5C9B80]
+                  text-white
                   flex
                   items-center
-                  gap-4
-                  max-w-full
-                  overflow-hidden
+                  justify-center
+                  font-black
+                  text-lg
+                  shadow-lg
                 "
               >
 
-                <div
-                  className="
-                    shrink-0
-                    w-14
-                    h-14
-                    rounded-3xl
-                    bg-linear-to-br
-                    from-[#2E5E4E]
-                    to-[#5C9B80]
-                    text-white
-                    flex
-                    items-center
-                    justify-center
-                    font-black
-                    text-lg
-                    shadow-lg
-                  "
-                >
-
-                  {user.email
-                    ?.charAt(0)
-                    .toUpperCase()}
-
-                </div>
-
-                <div className="min-w-0">
-
-                  <p
-                    className="
-                      text-xs
-                      uppercase
-                      tracking-wider
-                      text-zinc-400
-                      font-black
-                    "
-                  >
-
-                    Administrador logado
-
-                  </p>
-
-                  <p
-                    className="
-                      font-black
-                      text-[#111827]
-                      mt-1
-                      truncate
-                      text-sm
-                      md:text-base
-                    "
-                  >
-
-                    {user.email}
-
-                  </p>
-
-                </div>
+                {user.email
+                  ?.charAt(0)
+                  .toUpperCase()}
 
               </div>
 
-            )}
+              {/* INFO */}
+
+              <div
+                className="
+                  min-w-0
+                "
+              >
+
+                <p
+                  className="
+                    text-xs
+                    uppercase
+                    tracking-wider
+                    text-zinc-400
+                    font-black
+                  "
+                >
+
+                  Administrador logado
+
+                </p>
+
+                <p
+                  className="
+                    font-black
+                    text-[#111827]
+                    mt-1
+                    truncate
+                    text-sm
+                    md:text-base
+                  "
+                >
+
+                  {user.email}
+
+                </p>
+
+              </div>
+
+            </div>
 
           </div>
 
@@ -280,16 +340,18 @@ export default function AdminPage() {
               items-center
               gap-4
               flex-wrap
+              w-full
+              xl:w-auto
             "
           >
 
             <button
               onClick={logout}
               className="
-                h-12
-                md:h-14
-                px-6
-                md:px-8
+                w-full
+                sm:w-auto
+                h-14
+                px-8
                 rounded-2xl
                 bg-red-500
                 hover:bg-red-600
@@ -305,7 +367,9 @@ export default function AdminPage() {
               "
             >
 
-              <LogOut size={18} />
+              <LogOut
+                size={18}
+              />
 
               Sair do painel
 
@@ -315,9 +379,14 @@ export default function AdminPage() {
 
         </div>
 
-        {/* SECTIONS */}
+        {/* SECTION CONTENT */}
 
-        <div className="pb-10">
+        <div
+          className="
+            pb-10
+            min-w-0
+          "
+        >
 
           {activeSection ===
             "Dashboard" && (

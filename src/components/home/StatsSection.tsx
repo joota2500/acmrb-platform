@@ -22,13 +22,59 @@ import {
 export default function StatsSection() {
 
   const {
+
     loading,
+
     totalPeso,
+
     totalValor,
+
     co2,
+
     arvores,
+
     familiasImpactadas,
+
   } = useESGMetrics();
+
+  /* =========================
+     FORMATTERS
+  ========================= */
+
+  function formatPeso(
+    value: number,
+  ) {
+
+    if (value >= 1000) {
+
+      return `${(
+        value / 1000
+      ).toFixed(1)}t`;
+
+    }
+
+    return `${value.toFixed(0)}kg`;
+
+  }
+
+  function formatMoney(
+    value: number,
+  ) {
+
+    return value.toLocaleString(
+      "pt-BR",
+      {
+        style: "currency",
+        currency: "BRL",
+        maximumFractionDigits: 0,
+      },
+    );
+
+  }
+
+  /* =========================
+     STATS
+  ========================= */
 
   const stats = [
 
@@ -36,13 +82,15 @@ export default function StatsSection() {
       icon: Recycle,
 
       value:
-        `${totalPeso.toFixed(0)}kg`,
+        formatPeso(
+          totalPeso,
+        ),
 
       title:
-        "Resíduos reciclados",
+        "Resíduos coletados",
 
       description:
-        "Total acumulado de materiais recicláveis recuperados pela ACMRB.",
+        "Total consolidado de materiais recicláveis recuperados pela ACMRB.",
 
       color:
         "from-[#2E5E4E] to-[#5C9B80]",
@@ -52,13 +100,15 @@ export default function StatsSection() {
       icon: Cloud,
 
       value:
-        `${co2.toFixed(0)}kg`,
+        formatPeso(
+          co2,
+        ),
 
       title:
         "CO₂ evitado",
 
       description:
-        "Estimativa de emissões reduzidas através da reciclagem.",
+        "Estimativa ambiental de emissões reduzidas através da reciclagem.",
 
       color:
         "from-cyan-500 to-blue-500",
@@ -74,7 +124,7 @@ export default function StatsSection() {
         "Árvores preservadas",
 
       description:
-        "Estimativa equivalente de preservação ambiental.",
+        "Impacto ambiental equivalente gerado pelas ações de reciclagem.",
 
       color:
         "from-emerald-500 to-green-500",
@@ -84,13 +134,13 @@ export default function StatsSection() {
       icon: Users,
 
       value:
-        `${familiasImpactadas}`,
+        `${familiasImpactadas}+`,
 
       title:
         "Famílias impactadas",
 
       description:
-        "Famílias beneficiadas diretamente pelas atividades da associação.",
+        "Famílias beneficiadas direta e indiretamente pelas operações da associação.",
 
       color:
         "from-violet-500 to-fuchsia-500",
@@ -100,13 +150,15 @@ export default function StatsSection() {
       icon: Wallet,
 
       value:
-        `R$ ${totalValor.toFixed(2)}`,
+        formatMoney(
+          totalValor,
+        ),
 
       title:
         "Renda gerada",
 
       description:
-        "Movimentação financeira gerada pelos materiais recicláveis.",
+        "Movimentação econômica proveniente da logística reversa e reciclagem.",
 
       color:
         "from-teal-500 to-cyan-400",
@@ -118,7 +170,8 @@ export default function StatsSection() {
 
     <section
       className="
-        py-32
+        py-24
+        md:py-32
         relative
         overflow-hidden
         bg-linear-to-b
@@ -127,17 +180,45 @@ export default function StatsSection() {
       "
     >
 
-      {/* BG */}
+      {/* BACKGROUND */}
 
       <div className="absolute inset-0">
 
-        <div className="absolute top-0 left-0 w-125 h-125 bg-emerald-200/20 blur-3xl rounded-full" />
+        <div
+          className="
+            absolute
+            top-0
+            left-0
+            w-96
+            h-96
+            bg-emerald-200/20
+            blur-3xl
+            rounded-full
+          "
+        />
 
-        <div className="absolute bottom-0 right-0 w-md h-112 bg-cyan-200/20 blur-3xl rounded-full" />
+        <div
+          className="
+            absolute
+            bottom-0
+            right-0
+            w-96
+            h-96
+            bg-cyan-200/20
+            blur-3xl
+            rounded-full
+          "
+        />
 
       </div>
 
-      <div className="container-custom relative z-10">
+      <div
+        className="
+          container-custom
+          relative
+          z-10
+        "
+      >
 
         {/* HEADER */}
 
@@ -174,7 +255,8 @@ export default function StatsSection() {
               bg-[#E8F3EE]
               text-[#2E5E4E]
               font-black
-              text-sm
+              text-xs
+              sm:text-sm
               mb-8
             "
           >
@@ -185,36 +267,39 @@ export default function StatsSection() {
 
           <h2
             className="
-              text-5xl
+              text-4xl
+              sm:text-5xl
               md:text-6xl
               font-black
               text-[#111827]
-              leading-tight
-              tracking-tighter
+              leading-none
+              tracking-[-0.04em]
             "
           >
 
             Transparência,
             impacto ambiental
-            e responsabilidade social.
+            e responsabilidade social
 
           </h2>
 
           <p
             className="
               text-zinc-600
-              text-xl
-              leading-9
+              text-base
+              sm:text-lg
+              md:text-xl
+              leading-8
               mt-8
               max-w-4xl
               mx-auto
             "
           >
 
-            Indicadores ambientais e operacionais
-            gerados automaticamente a partir
-            das atividades de reciclagem
-            e logística reversa da ACMRB.
+            Dados públicos derivados
+            das operações de reciclagem,
+            logística reversa e impacto
+            socioambiental da ACMRB.
 
           </p>
 
@@ -227,8 +312,9 @@ export default function StatsSection() {
             grid
             sm:grid-cols-2
             xl:grid-cols-5
-            gap-8
-            mt-24
+            gap-6
+            md:gap-8
+            mt-20
           "
         >
 
@@ -262,8 +348,11 @@ export default function StatsSection() {
                     once: true,
                   }}
                   className={`
+                    relative
+                    overflow-hidden
                     rounded-4xl
-                    p-8
+                    p-6
+                    md:p-8
                     text-white
                     shadow-2xl
                     bg-linear-to-br
@@ -271,12 +360,31 @@ export default function StatsSection() {
                   `}
                 >
 
+                  {/* GLOW */}
+
+                  <div
+                    className="
+                      absolute
+                      -top-10
+                      -right-10
+                      w-40
+                      h-40
+                      bg-white/10
+                      rounded-full
+                      blur-3xl
+                    "
+                  />
+
                   {/* ICON */}
 
                   <div
                     className="
-                      w-18
-                      h-18
+                      relative
+                      z-10
+                      w-16
+                      h-16
+                      md:w-18
+                      md:h-18
                       rounded-3xl
                       bg-white/20
                       backdrop-blur-md
@@ -287,7 +395,7 @@ export default function StatsSection() {
                     "
                   >
 
-                    <Icon size={34} />
+                    <Icon size={30} />
 
                   </div>
 
@@ -295,9 +403,13 @@ export default function StatsSection() {
 
                   <h3
                     className="
-                      text-5xl
+                      relative
+                      z-10
+                      text-4xl
+                      md:text-5xl
                       font-black
                       wrap-break-word
+                      leading-none
                     "
                   >
 
@@ -311,9 +423,12 @@ export default function StatsSection() {
 
                   <h4
                     className="
-                      text-2xl
+                      relative
+                      z-10
+                      text-xl
+                      md:text-2xl
                       font-black
-                      mt-6
+                      mt-5
                     "
                   >
 
@@ -321,13 +436,17 @@ export default function StatsSection() {
 
                   </h4>
 
-                  {/* DESC */}
+                  {/* DESCRIPTION */}
 
                   <p
                     className="
+                      relative
+                      z-10
                       text-white/80
-                      leading-8
-                      mt-5
+                      leading-7
+                      mt-4
+                      text-sm
+                      md:text-base
                     "
                   >
 
@@ -362,7 +481,7 @@ export default function StatsSection() {
             once: true,
           }}
           className="
-            mt-24
+            mt-20
             text-center
           "
         >
@@ -372,8 +491,9 @@ export default function StatsSection() {
             className="
               inline-flex
               items-center
+              justify-center
               gap-3
-              h-15
+              h-14
               px-8
               rounded-2xl
               bg-[#2E5E4E]
@@ -382,6 +502,7 @@ export default function StatsSection() {
               text-white
               font-black
               shadow-xl
+              hover:scale-[1.02]
             "
           >
 
@@ -390,6 +511,18 @@ export default function StatsSection() {
             <ArrowRight size={20} />
 
           </Link>
+
+          <p
+            className="
+              text-zinc-400
+              text-sm
+              mt-5
+            "
+          >
+
+            Página detalhada em desenvolvimento.
+
+          </p>
 
         </motion.div>
 

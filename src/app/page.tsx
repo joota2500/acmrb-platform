@@ -1,4 +1,5 @@
 import Header from "../components/layout/Header";
+
 import Footer from "../components/layout/Footer";
 
 import HeroSection from "../components/home/HeroSection";
@@ -21,15 +22,9 @@ import ContactSection from "../components/home/ContactSection";
 
 import InstitutionalSection from "../components/home/InstitutionalSection";
 
-/* NOVAS SECTIONS */
-
 import MaterialsPublicSection from "@/components/home/MaterialsPublicSection";
 
-import EnvironmentalImpactSection from "@/components/home/EnvironmentalImpactSection";
-
-import ESGHighlightsSection from "@/components/home/ESGHighlightsSection";
-
-export default function Home() { 
+export default function Home() {
 
   return (
 
@@ -40,63 +35,86 @@ export default function Home() {
       "
     >
 
-      {/* HEADER */}
+      {/* =========================
+          HEADER
+      ========================= */}
 
       <Header />
 
-      {/* HERO */}
+      {/* =========================
+          HERO
+      ========================= */}
 
       <HeroSection />
 
-      {/* STATS */}
 
-      <StatsSection />
+      {/* =========================
+          QUEM SOMOS
+      ========================= */}
 
-      {/* ABOUT */}
 
       <AboutSection />
 
-      {/* ESG */}
+       {/* =========================
+          RESUMO ESG
+          (dados rápidos)
+      ========================= */}
+
+      <StatsSection />
+
+      {/* =========================
+          DASHBOARD ESG
+          (impactos resumidos)
+      ========================= */}
 
       <ESGMetrics />
 
-      {/* IMPACTOS */}
-
-      <EnvironmentalImpactSection />
-
-      {/* MATERIAIS */}
+      {/* =========================
+          PRINCIPAIS MATERIAIS
+          (somente top 3)
+      ========================= */}
 
       <MaterialsPublicSection />
 
-      {/* LOGÍSTICA */}
+      {/* =========================
+          LOGÍSTICA REVERSA
+      ========================= */}
 
       <ReverseLogisticsSection />
 
-      {/* ESG HIGHLIGHTS */}
-
-      <ESGHighlightsSection />
-
-      {/* NOTÍCIAS */}
-
-      <NewsSection />
-
-      {/* DENÚNCIAS */}
-
-      <DenunciasSection />
-
-      {/* PARCEIROS */}
-
-      <PartnersSection />
-
-      {/* CONTATO */}
-
-      <ContactSection />
-
-      {/* INSTITUCIONAL */}
+      {/* =========================
+          ESG + TRANSPARÊNCIA
+      ========================= */}
 
       <InstitutionalSection />
 
-      {/* FOOTER */}
+      {/* =========================
+          NOTÍCIAS
+      ========================= */}
+
+      <NewsSection />
+
+      {/* =========================
+          DENÚNCIAS
+      ========================= */}
+
+      <DenunciasSection />
+
+      {/* =========================
+          PARCEIROS
+      ========================= */}
+
+      <PartnersSection />
+
+      {/* =========================
+          CONTATO
+      ========================= */}
+
+      <ContactSection />
+
+      {/* =========================
+          FOOTER
+      ========================= */}
 
       <Footer />
 
