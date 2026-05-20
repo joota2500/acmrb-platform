@@ -7,6 +7,11 @@ import {
   Star,
   Save,
   X,
+  Pin,
+  Search,
+  User,
+  FileText,
+  Clock3,
 } from "lucide-react";
 
 type Props = {
@@ -63,6 +68,46 @@ type Props = {
   loading: boolean;
 
   editing: boolean;
+
+  /*
+  NOVAS PROPS
+  */
+
+  fixada: boolean;
+
+  setFixada: (
+    value: boolean,
+  ) => void;
+
+  seoTitle: string;
+
+  setSeoTitle: (
+    value: string,
+  ) => void;
+
+  seoDescription: string;
+
+  setSeoDescription: (
+    value: string,
+  ) => void;
+
+  seoKeywords: string;
+
+  setSeoKeywords: (
+    value: string,
+  ) => void;
+
+  autorNome: string;
+
+  setAutorNome: (
+    value: string,
+  ) => void;
+
+  bannerAlt: string;
+
+  setBannerAlt: (
+    value: string,
+  ) => void;
 };
 
 export default function NoticiasForm({
@@ -94,7 +139,44 @@ export default function NoticiasForm({
 
   loading,
   editing,
+
+  /*
+  NOVAS
+  */
+
+  fixada,
+  setFixada,
+
+  seoTitle,
+  setSeoTitle,
+
+  seoDescription,
+  setSeoDescription,
+
+  seoKeywords,
+  setSeoKeywords,
+
+  autorNome,
+  setAutorNome,
+
+  bannerAlt,
+  setBannerAlt,
 }: Props) {
+
+  const quantidadePalavras =
+    conteudo
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean).length;
+
+  const tempoLeitura =
+    Math.max(
+      1,
+      Math.ceil(
+        quantidadePalavras /
+          200,
+      ),
+    );
 
   return (
 
@@ -168,9 +250,10 @@ export default function NoticiasForm({
             "
           >
 
-            Gerencie conteúdos,
-            banners, destaques
-            e publicação institucional.
+            Gestão profissional
+            de notícias, SEO,
+            banners e publicação
+            institucional ESG.
 
           </p>
 
@@ -276,6 +359,98 @@ export default function NoticiasForm({
 
         </div>
 
+        {/* AUTOR */}
+
+        <div className="space-y-3">
+
+          <label
+            className="
+              text-sm
+              font-black
+              text-zinc-700
+              flex
+              items-center
+              gap-2
+            "
+          >
+
+            <User size={16} />
+
+            Autor
+
+          </label>
+
+          <input
+            type="text"
+            placeholder="Nome do autor"
+            value={autorNome}
+            onChange={(e) =>
+              setAutorNome(
+                e.target.value,
+              )
+            }
+            className="
+              w-full
+              h-14
+              rounded-2xl
+              border
+              border-zinc-200
+              bg-zinc-50
+              px-5
+              outline-none
+              transition-all
+              focus:bg-white
+              focus:border-[#2E5E4E]
+              focus:ring-4
+              focus:ring-[#2E5E4E]/10
+            "
+          />
+
+        </div>
+
+        {/* TEMPO */}
+
+        <div className="space-y-3">
+
+          <label
+            className="
+              text-sm
+              font-black
+              text-zinc-700
+              flex
+              items-center
+              gap-2
+            "
+          >
+
+            <Clock3 size={16} />
+
+            Tempo de leitura
+
+          </label>
+
+          <div
+            className="
+              h-14
+              rounded-2xl
+              border
+              border-zinc-200
+              bg-zinc-100
+              px-5
+              flex
+              items-center
+              font-bold
+              text-zinc-700
+            "
+          >
+
+            {tempoLeitura}
+            min de leitura
+
+          </div>
+
+        </div>
+
         {/* RESUMO */}
 
         <div className="md:col-span-2 space-y-3">
@@ -330,8 +505,13 @@ export default function NoticiasForm({
               text-sm
               font-black
               text-zinc-700
+              flex
+              items-center
+              gap-2
             "
           >
+
+            <FileText size={16} />
 
             Conteúdo completo
 
@@ -363,6 +543,177 @@ export default function NoticiasForm({
               focus:ring-[#2E5E4E]/10
             "
           />
+
+          <div
+            className="
+              flex
+              justify-between
+              text-sm
+              text-zinc-500
+              font-medium
+            "
+          >
+
+            <span>
+              {
+                quantidadePalavras
+              }{" "}
+              palavras
+            </span>
+
+            <span>
+              {
+                conteudo.length
+              }{" "}
+              caracteres
+            </span>
+
+          </div>
+
+        </div>
+
+        {/* SEO */}
+
+        <div className="md:col-span-2">
+
+          <div
+            className="
+              border
+              border-zinc-200
+              rounded-[28px]
+              p-6
+              bg-zinc-50
+              space-y-6
+            "
+          >
+
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+              "
+            >
+
+              <div
+                className="
+                  w-12
+                  h-12
+                  rounded-2xl
+                  bg-green-100
+                  text-green-700
+                  flex
+                  items-center
+                  justify-center
+                "
+              >
+
+                <Search size={22} />
+
+              </div>
+
+              <div>
+
+                <h3
+                  className="
+                    text-xl
+                    font-black
+                    text-zinc-900
+                  "
+                >
+
+                  SEO Avançado
+
+                </h3>
+
+                <p
+                  className="
+                    text-zinc-500
+                    text-sm
+                  "
+                >
+
+                  Melhor posicionamento
+                  no Google.
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="space-y-4">
+
+              <input
+                type="text"
+                placeholder="SEO Title"
+                value={seoTitle}
+                onChange={(e) =>
+                  setSeoTitle(
+                    e.target.value,
+                  )
+                }
+                className="
+                  w-full
+                  h-14
+                  rounded-2xl
+                  border
+                  border-zinc-200
+                  bg-white
+                  px-5
+                  outline-none
+                "
+              />
+
+              <textarea
+                placeholder="SEO Description"
+                value={
+                  seoDescription
+                }
+                onChange={(e) =>
+                  setSeoDescription(
+                    e.target.value,
+                  )
+                }
+                className="
+                  w-full
+                  min-h-32
+                  rounded-2xl
+                  border
+                  border-zinc-200
+                  bg-white
+                  p-5
+                  outline-none
+                  resize-none
+                "
+              />
+
+              <input
+                type="text"
+                placeholder="SEO Keywords"
+                value={
+                  seoKeywords
+                }
+                onChange={(e) =>
+                  setSeoKeywords(
+                    e.target.value,
+                  )
+                }
+                className="
+                  w-full
+                  h-14
+                  rounded-2xl
+                  border
+                  border-zinc-200
+                  bg-white
+                  px-5
+                  outline-none
+                "
+              />
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -443,6 +794,7 @@ export default function NoticiasForm({
               >
 
                 PNG, JPG ou WEBP
+                até 10MB
 
               </p>
 
@@ -450,16 +802,38 @@ export default function NoticiasForm({
 
             <input
               type="file"
-              accept="image/*"
+              accept="
+                image/png,
+                image/jpeg,
+                image/webp
+              "
               className="hidden"
               onChange={(e) => {
 
                 const arquivo =
                   e.target.files?.[0];
 
-                if (!arquivo) return;
+                if (!arquivo)
+                  return;
 
-                setImagem(arquivo);
+                if (
+                  arquivo.size >
+                  10 *
+                    1024 *
+                    1024
+                ) {
+
+                  alert(
+                    "Imagem maior que 10MB.",
+                  );
+
+                  return;
+
+                }
+
+                setImagem(
+                  arquivo,
+                );
 
                 setPreviewImagem(
                   URL.createObjectURL(
@@ -471,8 +845,6 @@ export default function NoticiasForm({
             />
 
           </label>
-
-          {/* PREVIEW */}
 
           {previewImagem && (
 
@@ -487,18 +859,59 @@ export default function NoticiasForm({
             >
 
               <img
-                src={previewImagem}
+                src={
+                  previewImagem
+                }
                 alt="Preview"
                 className="
                   w-full
-                  h-100
+                  h-112.5
                   object-cover
                 "
-              /> 
+              />
 
             </div>
 
           )}
+
+        </div>
+
+        {/* ALT */}
+
+        <div className="md:col-span-2 space-y-3">
+
+          <label
+            className="
+              text-sm
+              font-black
+              text-zinc-700
+            "
+          >
+
+            Texto alternativo da imagem
+
+          </label>
+
+          <input
+            type="text"
+            placeholder="Descrição acessível da imagem"
+            value={bannerAlt}
+            onChange={(e) =>
+              setBannerAlt(
+                e.target.value,
+              )
+            }
+            className="
+              w-full
+              h-14
+              rounded-2xl
+              border
+              border-zinc-200
+              bg-zinc-50
+              px-5
+              outline-none
+            "
+          />
 
         </div>
 
@@ -508,7 +921,7 @@ export default function NoticiasForm({
           className="
             md:col-span-2
             grid
-            md:grid-cols-2
+            md:grid-cols-3
             gap-5
           "
         >
@@ -526,9 +939,6 @@ export default function NoticiasForm({
               bg-zinc-50
               p-6
               cursor-pointer
-              transition-all
-              hover:border-yellow-300
-              hover:bg-yellow-50
             "
           >
 
@@ -572,7 +982,7 @@ export default function NoticiasForm({
                 "
               >
 
-                Notícia em destaque
+                Destaque
 
               </h3>
 
@@ -580,11 +990,85 @@ export default function NoticiasForm({
                 className="
                   text-zinc-500
                   text-sm
-                  mt-1
                 "
               >
 
-                Mostrar na homepage.
+                Homepage
+
+              </p>
+
+            </div>
+
+          </label>
+
+          {/* FIXADA */}
+
+          <label
+            className="
+              flex
+              items-center
+              gap-5
+              rounded-[28px]
+              border
+              border-zinc-200
+              bg-zinc-50
+              p-6
+              cursor-pointer
+            "
+          >
+
+            <input
+              type="checkbox"
+              checked={fixada}
+              onChange={(e) =>
+                setFixada(
+                  e.target.checked,
+                )
+              }
+              className="
+                w-5
+                h-5
+              "
+            />
+
+            <div
+              className="
+                w-14
+                h-14
+                rounded-2xl
+                bg-purple-100
+                text-purple-700
+                flex
+                items-center
+                justify-center
+              "
+            >
+
+              <Pin size={24} />
+
+            </div>
+
+            <div>
+
+              <h3
+                className="
+                  font-black
+                  text-zinc-900
+                "
+              >
+
+                Fixar notícia
+
+              </h3>
+
+              <p
+                className="
+                  text-zinc-500
+                  text-sm
+                "
+              >
+
+                Topo do portal
 
               </p>
 
@@ -605,9 +1089,6 @@ export default function NoticiasForm({
               bg-zinc-50
               p-6
               cursor-pointer
-              transition-all
-              hover:border-blue-300
-              hover:bg-blue-50
             "
           >
 
@@ -651,7 +1132,7 @@ export default function NoticiasForm({
                 "
               >
 
-                Publicar notícia
+                Publicar
 
               </h3>
 
@@ -659,11 +1140,10 @@ export default function NoticiasForm({
                 className="
                   text-zinc-500
                   text-sm
-                  mt-1
                 "
               >
 
-                Tornar visível no portal.
+                Portal público
 
               </p>
 
