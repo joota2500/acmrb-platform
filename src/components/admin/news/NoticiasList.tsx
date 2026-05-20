@@ -1,8 +1,10 @@
 "use client";
 
+import { memo } from "react";
+
 import NoticiasCard from "./NoticiasCard";
 
-type Noticia = {
+export type Noticia = {
   id: string;
 
   titulo: string;
@@ -19,6 +21,8 @@ type Noticia = {
 
   publicado: boolean;
 
+  fixada: boolean;
+
   slug?: string;
 
   visualizacoes?: number;
@@ -27,10 +31,10 @@ type Noticia = {
 };
 
 type Props = {
-  noticias: Noticia[]; 
+  noticias: Noticia[];
 
   loading: boolean;
- 
+
   onEdit: (
     noticia: Noticia,
   ) => void;
@@ -40,14 +44,16 @@ type Props = {
   ) => void;
 };
 
-export default function NoticiasList({
+function NoticiasList({
   noticias,
   loading,
   onEdit,
   onDelete,
 }: Props) {
 
-  /* LOADING */
+  /*
+  LOADING
+  */
 
   if (loading) {
 
@@ -89,7 +95,9 @@ export default function NoticiasList({
 
   }
 
-  /* EMPTY */
+  /*
+  EMPTY
+  */
 
   if (
     !loading &&
@@ -143,7 +151,9 @@ export default function NoticiasList({
 
   }
 
-  /* GRID */
+  /*
+  GRID
+  */
 
   return (
 
@@ -156,13 +166,21 @@ export default function NoticiasList({
     >
 
       {noticias.map(
-        (noticia) => (
+        (noticia: Noticia) => (
 
           <NoticiasCard
             key={noticia.id}
             noticia={noticia}
-            onEdit={onEdit}
-            onDelete={onDelete}
+            onEdit={() =>
+              onEdit(
+                noticia,
+              )
+            }
+            onDelete={() =>
+              onDelete(
+                noticia.id,
+              )
+            }
           />
 
         ),
@@ -173,3 +191,7 @@ export default function NoticiasList({
   );
 
 }
+
+export default memo(
+  NoticiasList,
+);

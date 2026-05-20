@@ -20,7 +20,7 @@ type Props = {
 export default function NoticiasStats({
   total,
   publicadas,
-  destaques,
+  destaques, 
   visualizacoes,
 }: Props) { 
 

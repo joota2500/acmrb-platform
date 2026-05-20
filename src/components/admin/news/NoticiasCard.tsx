@@ -17,7 +17,7 @@ type Noticia = {
 
   resumo: string;
 
-  conteudo: string;
+  conteudo?: string;
 
   categoria: string;
 
@@ -117,7 +117,7 @@ export default function NoticiasCard({
             inset-0
             bg-linear-to-t 
             from-black/50
-            to-transparent
+            to-transparent 
           "
         /> 
 

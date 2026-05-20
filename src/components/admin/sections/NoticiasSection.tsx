@@ -3,57 +3,18 @@
 import {
   useEffect,
   useState,
+  useCallback,
 } from "react";
 
 import { supabase } from "@/lib/supabase";
 
 import NoticiasForm from "@/components/admin/news/NoticiasForm";
-import NoticiasList from "@/components/admin/news/NoticiasList";
+
+import NoticiasList, {
+  Noticia,
+} from "@/components/admin/news/NoticiasList";
+
 import NoticiasStats from "@/components/admin/news/NoticiasStats";
-
-type Noticia = {
-  id: string;
-
-  titulo: string;
-
-  resumo: string;
-
-  conteudo: string;
-
-  categoria: string;
-
-  imagem_url: string;
-
-  destaque: boolean;
-
-  publicado: boolean;
-
-  fixada?: boolean;
-
-  slug?: string;
-
-  visualizacoes?: number;
-
-  likes?: number;
-
-  compartilhamentos?: number;
-
-  seo_title?: string;
-
-  seo_description?: string;
-
-  seo_keywords?: string;
-
-  autor_nome?: string;
-
-  banner_alt?: string;
-
-  tempo_leitura?: number;
-
-  created_at: string;
-
-  updated_at?: string;
-};
 
 export default function NoticiasSection() {
 
@@ -85,6 +46,10 @@ export default function NoticiasSection() {
   ] = useState<
     string | null
   >(null);
+
+  /*
+  FORM
+  */
 
   const [
     titulo,
@@ -158,56 +123,80 @@ export default function NoticiasSection() {
     setBannerAlt,
   ] = useState("");
 
+  /*
+  LOAD
+  */
+
   useEffect(() => {
 
     carregarNoticias();
 
   }, []);
 
-  function gerarSlug(
-    texto: string,
-  ) {
+  /*
+  HELPERS
+  */
 
-    return (
-      texto
-        .normalize("NFD")
-        .replace(
-          /[\u0300-\u036f]/g,
-          "",
-        )
-        .toLowerCase()
-        .trim()
-        .replace(
-          /[^\w\s-]/g,
-          "",
-        )
-        .replace(
-          /\s+/g,
-          "-",
-        ) +
-      "-" +
-      Date.now()
+  const gerarSlug =
+    useCallback(
+      (
+        texto: string,
+      ) => {
+
+        return (
+          texto
+            .normalize(
+              "NFD",
+            )
+            .replace(
+              /[\u0300-\u036f]/g,
+              "",
+            )
+            .toLowerCase()
+            .trim()
+            .replace(
+              /[^\w\s-]/g,
+              "",
+            )
+            .replace(
+              /\s+/g,
+              "-",
+            ) +
+          "-" +
+          Date.now()
+        );
+
+      },
+      [],
     );
 
-  }
+  const calcularTempoLeitura =
+    useCallback(
+      (
+        texto: string,
+      ) => {
 
-  function calcularTempoLeitura(
-    texto: string,
-  ) {
+        const palavras =
+          texto
+            .trim()
+            .split(
+              /\s+/,
+            ).length;
 
-    const palavras =
-      texto
-        .trim()
-        .split(/\s+/).length;
+        return Math.max(
+          1,
+          Math.ceil(
+            palavras / 200,
+          ),
+        );
 
-    return Math.max(
-      1,
-      Math.ceil(
-        palavras / 200,
-      ),
+      },
+      [],
     );
 
-  }
+  /*
+  AUTH
+  */
 
   async function verificarSessao() {
 
@@ -216,14 +205,13 @@ export default function NoticiasSection() {
       const {
         data,
         error,
-      } = await supabase.auth.getSession();
+      } =
+        await supabase.auth.getSession();
 
       if (
         error ||
         !data.session
       ) {
-
-        console.log(error);
 
         alert(
           "Sessão expirada.",
@@ -238,9 +226,7 @@ export default function NoticiasSection() {
 
       return true;
 
-    } catch (err) {
-
-      console.log(err);
+    } catch {
 
       return false;
 
@@ -248,24 +234,42 @@ export default function NoticiasSection() {
 
   }
 
+  /*
+  LOAD NEWS
+  */
+
   async function carregarNoticias() {
 
     try {
 
       setLoading(true);
 
-      const sessaoOk =
+      const ok =
         await verificarSessao();
 
-      if (!sessaoOk)
-        return;
+      if (!ok) return;
+
+      /*
+      NÃO CARREGAR CONTEÚDO GIGANTE
+      */
 
       const {
         data,
         error,
       } = await supabase
         .from("noticias")
-        .select("*")
+        .select(`
+          id,
+          titulo,
+          resumo,
+          categoria,
+          imagem_url,
+          destaque,
+          publicado,
+          fixada,
+          visualizacoes,
+          created_at
+        `)
         .order(
           "fixada",
           {
@@ -281,7 +285,9 @@ export default function NoticiasSection() {
 
       if (error) {
 
-        console.log(error);
+        console.log(
+          error,
+        );
 
         alert(
           "Erro ao carregar notícias.",
@@ -292,15 +298,64 @@ export default function NoticiasSection() {
       }
 
       setNoticias(
-        data || [],
+        (
+          data ||
+          []
+        ).map(
+          (
+            item,
+          ) => ({
+
+            id:
+              item.id,
+
+            titulo:
+              item.titulo ||
+              "",
+
+            resumo:
+              item.resumo ||
+              "",
+
+            conteudo:
+              "",
+
+            categoria:
+              item.categoria ||
+              "",
+
+            imagem_url:
+              item.imagem_url ||
+              "",
+
+            destaque:
+              item.destaque ||
+              false,
+
+            publicado:
+              item.publicado ||
+              false,
+
+            fixada:
+              item.fixada ||
+              false,
+
+            visualizacoes:
+              item.visualizacoes ||
+              0,
+
+            created_at:
+              item.created_at,
+          }),
+        ),
       );
 
-    } catch (err) {
+    } catch (
+      err
+    ) {
 
-      console.log(err);
-
-      alert(
-        "Erro inesperado.",
+      console.log(
+        err,
       );
 
     } finally {
@@ -310,6 +365,10 @@ export default function NoticiasSection() {
     }
 
   }
+
+  /*
+  RESET
+  */
 
   function resetForm() {
 
@@ -337,7 +396,9 @@ export default function NoticiasSection() {
 
     setSeoKeywords("");
 
-    setAutorNome("ACMRB");
+    setAutorNome(
+      "ACMRB",
+    );
 
     setBannerAlt("");
 
@@ -346,6 +407,10 @@ export default function NoticiasSection() {
     setEditingId(null);
 
   }
+
+  /*
+  UPLOAD
+  */
 
   async function uploadImagem() {
 
@@ -357,51 +422,17 @@ export default function NoticiasSection() {
 
       }
 
-      if (
-        imagem.size >
-        10 * 1024 * 1024
-      ) {
-
-        alert(
-          "Imagem maior que 10MB.",
-        );
-
-        return "";
-
-      }
-
-      const extensoesPermitidas = [
-        "image/png",
-        "image/jpeg",
-        "image/webp",
-      ];
-
-      if (
-        !extensoesPermitidas.includes(
-          imagem.type,
-        )
-      ) {
-
-        alert(
-          "Formato inválido.",
-        );
-
-        return "";
-
-      }
-
-      const extensao =
-        imagem.name
-          .split(".")
-          .pop();
-
       const fileName =
-        `noticia-${Date.now()}.${extensao}`;
+        `noticia-${Date.now()}-${
+          imagem.name
+        }`;
 
       const {
         error,
       } = await supabase.storage
-        .from("noticias")
+        .from(
+          "noticias",
+        )
         .upload(
           fileName,
           imagem,
@@ -411,13 +442,10 @@ export default function NoticiasSection() {
               "3600",
 
             upsert: true,
-
           },
         );
 
       if (error) {
-
-        console.log(error);
 
         alert(
           error.message,
@@ -430,16 +458,18 @@ export default function NoticiasSection() {
       const {
         data,
       } = supabase.storage
-        .from("noticias")
+        .from(
+          "noticias",
+        )
         .getPublicUrl(
           fileName,
         );
 
       return data.publicUrl;
 
-    } catch (err: any) {
-
-      console.log(err);
+    } catch (
+      err: any
+    ) {
 
       alert(
         err.message,
@@ -451,17 +481,22 @@ export default function NoticiasSection() {
 
   }
 
+  /*
+  SAVE
+  */
+
   async function handleSubmit() {
 
     try {
 
-      setSalvando(true);
+      setSalvando(
+        true,
+      );
 
-      const sessaoOk =
+      const ok =
         await verificarSessao();
 
-      if (!sessaoOk)
-        return;
+      if (!ok) return;
 
       if (
         !titulo.trim()
@@ -469,19 +504,6 @@ export default function NoticiasSection() {
 
         alert(
           "Título obrigatório.",
-        );
-
-        return;
-
-      }
-
-      if (
-        titulo.length <
-        5
-      ) {
-
-        alert(
-          "Título muito curto.",
         );
 
         return;
@@ -500,31 +522,9 @@ export default function NoticiasSection() {
 
       }
 
-      if (
-        conteudo.length <
-        50
-      ) {
-
-        alert(
-          "Conteúdo muito curto.",
-        );
-
-        return;
-
-      }
-
-      if (
-        conteudo.length >
-        200000
-      ) {
-
-        alert(
-          "Conteúdo muito grande.",
-        );
-
-        return;
-
-      }
+      /*
+      REMOVE LIMITE
+      */
 
       let imagem_url =
         previewImagem;
@@ -533,14 +533,6 @@ export default function NoticiasSection() {
 
         imagem_url =
           await uploadImagem();
-
-        if (!imagem_url) {
-
-          setSalvando(false);
-
-          return;
-
-        }
 
       }
 
@@ -552,8 +544,7 @@ export default function NoticiasSection() {
         resumo:
           resumo.trim(),
 
-        conteudo:
-          conteudo.trim(),
+        conteudo,
 
         categoria:
           categoria.trim(),
@@ -572,12 +563,10 @@ export default function NoticiasSection() {
           ),
 
         seo_title:
-          seoTitle ||
-          titulo,
+          seoTitle,
 
         seo_description:
-          seoDescription ||
-          resumo,
+          seoDescription,
 
         seo_keywords:
           seoKeywords,
@@ -586,8 +575,7 @@ export default function NoticiasSection() {
           autorNome,
 
         banner_alt:
-          bannerAlt ||
-          titulo,
+          bannerAlt,
 
         tempo_leitura:
           calcularTempoLeitura(
@@ -596,13 +584,7 @@ export default function NoticiasSection() {
 
         updated_at:
           new Date().toISOString(),
-
       };
-
-      console.log(
-        "PAYLOAD:",
-        payload,
-      );
 
       if (
         editing &&
@@ -612,7 +594,9 @@ export default function NoticiasSection() {
         const {
           error,
         } = await supabase
-          .from("noticias")
+          .from(
+            "noticias",
+          )
           .update(
             payload,
           )
@@ -623,8 +607,6 @@ export default function NoticiasSection() {
 
         if (error) {
 
-          console.log(error);
-
           alert(
             error.message,
           );
@@ -632,24 +614,20 @@ export default function NoticiasSection() {
           return;
 
         }
-
-        alert(
-          "Notícia atualizada.",
-        );
 
       } else {
 
         const {
           error,
         } = await supabase
-          .from("noticias")
+          .from(
+            "noticias",
+          )
           .insert(
             payload,
           );
 
         if (error) {
-
-          console.log(error);
 
           alert(
             error.message,
@@ -659,19 +637,25 @@ export default function NoticiasSection() {
 
         }
 
-        alert(
-          "Notícia publicada.",
-        );
-
       }
+
+      alert(
+        editing
+          ? "Notícia atualizada."
+          : "Notícia publicada.",
+      );
 
       resetForm();
 
       await carregarNoticias();
 
-    } catch (err: any) {
+    } catch (
+      err: any
+    ) {
 
-      console.log(err);
+      console.log(
+        err,
+      );
 
       alert(
         err.message ||
@@ -680,81 +664,156 @@ export default function NoticiasSection() {
 
     } finally {
 
-      setSalvando(false);
+      setSalvando(
+        false,
+      );
 
     }
 
   }
 
-  function handleEdit(
+  /*
+  EDIT
+  */
+
+  async function handleEdit(
     noticia: Noticia,
   ) {
 
-    setEditing(true);
+    try {
 
-    setEditingId(
-      noticia.id,
-    );
+      setLoading(
+        true,
+      );
 
-    setTitulo(
-      noticia.titulo,
-    );
+      const {
+        data,
+        error,
+      } = await supabase
+        .from(
+          "noticias",
+        )
+        .select("*")
+        .eq(
+          "id",
+          noticia.id,
+        )
+        .single();
 
-    setResumo(
-      noticia.resumo,
-    );
+      if (
+        error ||
+        !data
+      ) {
 
-    setConteudo(
-      noticia.conteudo,
-    );
+        alert(
+          "Erro ao carregar notícia.",
+        );
 
-    setCategoria(
-      noticia.categoria,
-    );
+        return;
 
-    setDestaque(
-      noticia.destaque,
-    );
+      }
 
-    setPublicado(
-      noticia.publicado,
-    );
+      setEditing(
+        true,
+      );
 
-    setFixada(
-      noticia.fixada ||
+      setEditingId(
+        data.id,
+      );
+
+      setTitulo(
+        data.titulo ||
+          "",
+      );
+
+      setResumo(
+        data.resumo ||
+          "",
+      );
+
+      /*
+      AQUI RESOLVE O TRAVAMENTO
+      */
+
+      requestAnimationFrame(
+        () => {
+
+          setConteudo(
+            data.conteudo ||
+              "",
+          );
+
+        },
+      );
+
+      setCategoria(
+        data.categoria ||
+          "",
+      );
+
+      setDestaque(
+        !!data.destaque,
+      );
+
+      setPublicado(
+        !!data.publicado,
+      );
+
+      setFixada(
+        !!data.fixada,
+      );
+
+      setPreviewImagem(
+        data.imagem_url ||
+          "",
+      );
+
+      setSeoTitle(
+        data.seo_title ||
+          "",
+      );
+
+      setSeoDescription(
+        data.seo_description ||
+          "",
+      );
+
+      setSeoKeywords(
+        data.seo_keywords ||
+          "",
+      );
+
+      setAutorNome(
+        data.autor_nome ||
+          "ACMRB",
+      );
+
+      setBannerAlt(
+        data.banner_alt ||
+          "",
+      );
+
+    } catch (
+      err
+    ) {
+
+      console.log(
+        err,
+      );
+
+    } finally {
+
+      setLoading(
         false,
-    );
+      );
 
-    setPreviewImagem(
-      noticia.imagem_url,
-    );
-
-    setSeoTitle(
-      noticia.seo_title ||
-        "",
-    );
-
-    setSeoDescription(
-      noticia.seo_description ||
-        "",
-    );
-
-    setSeoKeywords(
-      noticia.seo_keywords ||
-        "",
-    );
-
-    setAutorNome(
-      noticia.autor_nome ||
-        "ACMRB",
-    );
-
-    setBannerAlt(
-      noticia.banner_alt ||
-        "",
-    );
+    }
 
   }
+
+  /*
+  DELETE
+  */
 
   async function handleDelete(
     id: string,
@@ -770,16 +829,12 @@ export default function NoticiasSection() {
 
     try {
 
-      const sessaoOk =
-        await verificarSessao();
-
-      if (!sessaoOk)
-        return;
-
       const {
         error,
       } = await supabase
-        .from("noticias")
+        .from(
+          "noticias",
+        )
         .delete()
         .eq(
           "id",
@@ -787,8 +842,6 @@ export default function NoticiasSection() {
         );
 
       if (error) {
-
-        console.log(error);
 
         alert(
           error.message,
@@ -799,24 +852,25 @@ export default function NoticiasSection() {
       }
 
       setNoticias(
-        (prev) =>
+        (
+          prev,
+        ) =>
+
           prev.filter(
-            (item) =>
+            (
+              item,
+            ) =>
               item.id !==
               id,
           ),
       );
 
-      alert(
-        "Notícia excluída.",
-      );
+    } catch (
+      err
+    ) {
 
-    } catch (err: any) {
-
-      console.log(err);
-
-      alert(
-        err.message,
+      console.log(
+        err,
       );
 
     }
@@ -837,13 +891,17 @@ export default function NoticiasSection() {
         }
         publicadas={
           noticias.filter(
-            (n) =>
+            (
+              n,
+            ) =>
               n.publicado,
           ).length
         }
         destaques={
           noticias.filter(
-            (n) =>
+            (
+              n,
+            ) =>
               n.destaque,
           ).length
         }
@@ -870,112 +928,88 @@ export default function NoticiasSection() {
         setTitulo={
           setTitulo
         }
-
         resumo={resumo}
         setResumo={
           setResumo
         }
-
         categoria={
           categoria
         }
         setCategoria={
           setCategoria
         }
-
         conteudo={
           conteudo
         }
         setConteudo={
           setConteudo
         }
-
         destaque={
           destaque
         }
         setDestaque={
           setDestaque
         }
-
         publicado={
           publicado
         }
         setPublicado={
           setPublicado
         }
-
         previewImagem={
           previewImagem
         }
-
         setImagem={
           setImagem
         }
-
         setPreviewImagem={
           setPreviewImagem
         }
-
         onSubmit={
           handleSubmit
         }
-
         onCancel={
           resetForm
         }
-
         loading={
           salvando
         }
-
         editing={
           editing
         }
-
         fixada={
           fixada
         }
-
         setFixada={
           setFixada
         }
-
         seoTitle={
           seoTitle
         }
-
         setSeoTitle={
           setSeoTitle
         }
-
         seoDescription={
           seoDescription
         }
-
         setSeoDescription={
           setSeoDescription
         }
-
         seoKeywords={
           seoKeywords
         }
-
         setSeoKeywords={
           setSeoKeywords
         }
-
         autorNome={
           autorNome
         }
-
         setAutorNome={
           setAutorNome
         }
-
         bannerAlt={
           bannerAlt
         }
-
         setBannerAlt={
           setBannerAlt
         }
@@ -985,15 +1019,12 @@ export default function NoticiasSection() {
         noticias={
           noticias
         }
-
         loading={
           loading
         }
-
         onEdit={
           handleEdit
         }
-
         onDelete={
           handleDelete
         }

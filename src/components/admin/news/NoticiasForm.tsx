@@ -519,8 +519,8 @@ export default function NoticiasForm({
 
           <textarea
             placeholder="Digite a notícia completa..."
-            value={conteudo}
-            onChange={(e) =>
+            defaultValue={conteudo}
+            onBlur={(e) =>
               setConteudo(
                 e.target.value,
               )
@@ -861,7 +861,7 @@ export default function NoticiasForm({
               <img
                 src={
                   previewImagem
-                }
+                } 
                 alt="Preview"
                 className="
                   w-full
