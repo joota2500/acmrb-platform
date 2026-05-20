@@ -15,14 +15,14 @@ type Props = {
   destaques: number;
 
   visualizacoes: number;
-};
+}; 
 
 export default function NoticiasStats({
   total,
   publicadas,
   destaques,
   visualizacoes,
-}: Props) {
+}: Props) { 
 
   const cards = [
     {

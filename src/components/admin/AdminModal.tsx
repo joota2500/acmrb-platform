@@ -503,7 +503,7 @@ export default function AdminModal({
                 text-white
                 font-black
                 transition-all
-                shadow-xl
+                shadow-xl 
                 disabled:opacity-60
               "
             >

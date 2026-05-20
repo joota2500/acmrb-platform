@@ -42,6 +42,6 @@ export default function AdminContent({
 
     </main>
 
-  );
+  ); 
 
 }

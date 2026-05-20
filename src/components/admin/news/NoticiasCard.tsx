@@ -119,7 +119,7 @@ export default function NoticiasCard({
             from-black/50
             to-transparent
           "
-        />
+        /> 
 
         {/* TOP BADGES */}
 

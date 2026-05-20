@@ -30,7 +30,7 @@ type Props = {
   noticias: Noticia[]; 
 
   loading: boolean;
-
+ 
   onEdit: (
     noticia: Noticia,
   ) => void;

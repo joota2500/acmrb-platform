@@ -40,14 +40,14 @@ import ContatoSection from "@/components/admin/sections/ContatoSection";
 
 import ConfiguracoesSection from "@/components/admin/sections/ConfiguracoesSection";
 
-import NoticiasSection from "@/components/admin/sections/NoticiasSection";
+import NoticiasSection from "@/components/admin/sections/NoticiasSection"; 
 
 /* MATERIALS */
 
 import MaterialsSection from "@/components/admin/materials/MaterialsSection";
 
 /* ICONS */
-
+ 
 import {
   LogOut,
   ShieldCheck,

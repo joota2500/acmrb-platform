@@ -494,7 +494,7 @@ export default function NoticiasForm({
                   h-100
                   object-cover
                 "
-              />
+              /> 
 
             </div>
 
