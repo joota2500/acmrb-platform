@@ -1,14 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import { supabase } from "@/lib/supabase";
 
 import NoticiasForm from "@/components/admin/news/NoticiasForm";
+
 import NoticiasList from "@/components/admin/news/NoticiasList";
+
 import NoticiasStats from "@/components/admin/news/NoticiasStats";
 
 type Noticia = {
+
   id: string;
 
   titulo: string;
@@ -30,48 +36,141 @@ type Noticia = {
   visualizacoes?: number;
 
   created_at: string;
+
 };
 
 export default function NoticiasSection() {
 
-  const [noticias, setNoticias] =
-    useState<Noticia[]>([]);
+  const [
+    noticias,
+    setNoticias,
+  ] = useState<
+    Noticia[]
+  >([]);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [
+    loading,
+    setLoading,
+  ] = useState(false);
 
-  const [salvando, setSalvando] =
-    useState(false);
+  const [
+    salvando,
+    setSalvando,
+  ] = useState(false);
 
-  const [editing, setEditing] =
-    useState(false);
+  const [
+    editing,
+    setEditing,
+  ] = useState(false);
 
-  const [editingId, setEditingId] =
-    useState<string | null>(null);
+  const [
+    editingId,
+    setEditingId,
+  ] = useState<
+    string | null
+  >(null);
 
-  const [titulo, setTitulo] =
-    useState("");
+  const [
+    titulo,
+    setTitulo,
+  ] = useState("");
 
-  const [resumo, setResumo] =
-    useState("");
+  const [
+    resumo,
+    setResumo,
+  ] = useState("");
 
-  const [conteudo, setConteudo] =
-    useState("");
+  const [
+    conteudo,
+    setConteudo,
+  ] = useState("");
 
-  const [categoria, setCategoria] =
-    useState("");
+  const [
+    categoria,
+    setCategoria,
+  ] = useState("");
 
-  const [destaque, setDestaque] =
-    useState(false);
+  const [
+    destaque,
+    setDestaque,
+  ] = useState(false);
 
-  const [publicado, setPublicado] =
-    useState(true);
+  const [
+    publicado,
+    setPublicado,
+  ] = useState(true);
 
-  const [imagem, setImagem] =
-    useState<File | null>(null);
+  const [
+    imagem,
+    setImagem,
+  ] = useState<
+    File | null
+  >(null);
 
-  const [previewImagem, setPreviewImagem] =
-    useState("");
+  const [
+    previewImagem,
+    setPreviewImagem,
+  ] = useState("");
+
+  useEffect(() => {
+
+    carregarNoticias();
+
+  }, []);
+
+  function gerarSlug(
+    texto: string,
+  ) {
+
+    return (
+      texto
+        .normalize("NFD")
+        .replace(
+          /[\u0300-\u036f]/g,
+          "",
+        )
+        .toLowerCase()
+        .trim()
+        .replace(
+          /[^\w\s-]/g,
+          "",
+        )
+        .replace(
+          /\s+/g,
+          "-",
+        ) +
+      "-" +
+      Date.now()
+    );
+
+  }
+
+  async function verificarSessao() {
+
+    const {
+      data,
+      error,
+    } = await supabase.auth.getSession();
+
+    if (
+      error ||
+      !data.session
+    ) {
+
+      alert(
+        "Sessão expirada. Faça login novamente.",
+      );
+
+      window.location.href =
+        "/login";
+
+      return false;
+
+    }
+
+    return true;
+
+  }
 
   async function carregarNoticias() {
 
@@ -79,23 +178,48 @@ export default function NoticiasSection() {
 
       setLoading(true);
 
-      const { data, error } =
-        await supabase
-          .from("noticias")
-          .select("*")
-          .order("created_at", {
+      const sessaoOk =
+        await verificarSessao();
+
+      if (!sessaoOk)
+        return;
+
+      const {
+        data,
+        error,
+      } = await supabase
+        .from("noticias")
+        .select("*")
+        .order(
+          "created_at",
+          {
             ascending: false,
-          });
+          },
+        );
 
       if (error) {
 
         console.log(error);
 
+        alert(
+          "Erro ao carregar notícias.",
+        );
+
         return;
 
       }
 
-      setNoticias(data || []);
+      setNoticias(
+        data || [],
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert(
+        "Erro inesperado.",
+      );
 
     } finally {
 
@@ -105,19 +229,18 @@ export default function NoticiasSection() {
 
   }
 
-  useEffect(() => {
-
-    carregarNoticias();
-
-  }, []);
-
   function resetForm() {
 
     setTitulo("");
+
     setResumo("");
+
     setConteudo("");
+
     setCategoria("");
+
     setDestaque(false);
+
     setPublicado(true);
 
     setImagem(null);
@@ -130,36 +253,115 @@ export default function NoticiasSection() {
 
   }
 
+  async function uploadImagem() {
+
+    if (!imagem) {
+
+      return previewImagem;
+
+    }
+
+    if (
+      imagem.size >
+      5 * 1024 * 1024
+    ) {
+
+      alert(
+        "Imagem maior que 5MB.",
+      );
+
+      return "";
+
+    }
+
+    const extensao =
+      imagem.name
+        .split(".")
+        .pop();
+
+    const fileName =
+      `noticia-${Date.now()}.${extensao}`;
+
+    const {
+      error,
+    } = await supabase.storage
+      .from("noticias")
+      .upload(
+        fileName,
+        imagem,
+        {
+
+          cacheControl:
+            "3600",
+
+          upsert: true,
+
+        },
+      );
+
+    if (error) {
+
+      console.log(error);
+
+      alert(
+        "Erro no upload.",
+      );
+
+      return "";
+
+    }
+
+    const {
+      data,
+    } = supabase.storage
+      .from("noticias")
+      .getPublicUrl(
+        fileName,
+      );
+
+    return data.publicUrl;
+
+  }
+
   async function handleSubmit() {
 
     try {
 
       setSalvando(true);
 
-      let imagem_url = previewImagem;
+      const sessaoOk =
+        await verificarSessao();
+
+      if (!sessaoOk)
+        return;
+
+      if (!titulo.trim()) {
+
+        alert(
+          "Título obrigatório.",
+        );
+
+        return;
+
+      }
+
+      if (!conteudo.trim()) {
+
+        alert(
+          "Conteúdo obrigatório.",
+        );
+
+        return;
+
+      }
+
+      let imagem_url =
+        previewImagem;
 
       if (imagem) {
 
-        const fileName =
-          `${Date.now()}-${imagem.name}`;
-
-        const { error: uploadError } =
-          await supabase.storage
-            .from("noticias")
-            .upload(fileName, imagem);
-
-        if (!uploadError) {
-
-          const {
-            data: publicUrl,
-          } = supabase.storage
-            .from("noticias")
-            .getPublicUrl(fileName);
-
-          imagem_url =
-            publicUrl.publicUrl;
-
-        }
+        imagem_url =
+          await uploadImagem();
 
       }
 
@@ -179,48 +381,85 @@ export default function NoticiasSection() {
 
         publicado,
 
-        slug: titulo
-          .toLowerCase()
-          .replaceAll(" ", "-"),
+        slug:
+          gerarSlug(
+            titulo,
+          ),
 
       };
 
-      if (editing && editingId) {
+      if (
+        editing &&
+        editingId
+      ) {
 
-        const { error } =
-          await supabase
-            .from("noticias")
-            .update(payload)
-            .eq("id", editingId);
+        const {
+          error,
+        } = await supabase
+          .from("noticias")
+          .update(
+            payload,
+          )
+          .eq(
+            "id",
+            editingId,
+          );
 
         if (error) {
 
           console.log(error);
 
+          alert(
+            "Erro ao atualizar notícia.",
+          );
+
           return;
 
         }
+
+        alert(
+          "Notícia atualizada.",
+        );
 
       } else {
 
-        const { error } =
-          await supabase
-            .from("noticias")
-            .insert(payload);
+        const {
+          error,
+        } = await supabase
+          .from("noticias")
+          .insert(
+            payload,
+          );
 
         if (error) {
 
           console.log(error);
 
+          alert(
+            "Erro ao publicar notícia.",
+          );
+
           return;
 
         }
+
+        alert(
+          "Notícia publicada.",
+        );
 
       }
 
       resetForm();
 
       carregarNoticias();
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert(
+        "Erro inesperado.",
+      );
 
     } finally {
 
@@ -236,19 +475,33 @@ export default function NoticiasSection() {
 
     setEditing(true);
 
-    setEditingId(noticia.id);
+    setEditingId(
+      noticia.id,
+    );
 
-    setTitulo(noticia.titulo);
+    setTitulo(
+      noticia.titulo,
+    );
 
-    setResumo(noticia.resumo);
+    setResumo(
+      noticia.resumo,
+    );
 
-    setConteudo(noticia.conteudo);
+    setConteudo(
+      noticia.conteudo,
+    );
 
-    setCategoria(noticia.categoria);
+    setCategoria(
+      noticia.categoria,
+    );
 
-    setDestaque(noticia.destaque);
+    setDestaque(
+      noticia.destaque,
+    );
 
-    setPublicado(noticia.publicado);
+    setPublicado(
+      noticia.publicado,
+    );
 
     setPreviewImagem(
       noticia.imagem_url,
@@ -262,50 +515,104 @@ export default function NoticiasSection() {
 
     const confirmar =
       confirm(
-        "Deseja excluir esta notícia?",
+        "Excluir notícia?",
       );
 
-    if (!confirmar) return;
-
-    const { error } =
-      await supabase
-        .from("noticias")
-        .delete()
-        .eq("id", id);
-
-    if (error) {
-
-      console.log(error);
-
+    if (!confirmar)
       return;
 
-    }
+    try {
 
-    carregarNoticias();
+      const sessaoOk =
+        await verificarSessao();
+
+      if (!sessaoOk)
+        return;
+
+      const {
+        error,
+      } = await supabase
+        .from("noticias")
+        .delete()
+        .eq(
+          "id",
+          id,
+        );
+
+      if (error) {
+
+        console.log(error);
+
+        alert(
+          "Erro ao excluir.",
+        );
+
+        return;
+
+      }
+
+      setNoticias(
+        (prev) =>
+          prev.filter(
+            (item) =>
+              item.id !==
+              id,
+          ),
+      );
+
+      alert(
+        "Notícia excluída.",
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert(
+        "Erro inesperado.",
+      );
+
+    }
 
   }
 
   return (
 
-    <div className="space-y-8">
+    <div
+      className="
+        space-y-8
+      "
+    >
 
       <NoticiasStats
-        total={noticias.length}
+        total={
+          noticias.length
+        }
         publicadas={
           noticias.filter(
-            (n) => n.publicado,
+            (n) =>
+              n.publicado,
           ).length
         }
         destaques={
           noticias.filter(
-            (n) => n.destaque,
+            (n) =>
+              n.destaque,
           ).length
         }
         visualizacoes={
           noticias.reduce(
-            (acc, item) =>
+            (
+              acc,
+              item,
+            ) =>
+
               acc +
-              (item.visualizacoes || 0),
+              (
+                item.visualizacoes ||
+                0
+              ),
+
             0,
           )
         }
@@ -313,33 +620,73 @@ export default function NoticiasSection() {
 
       <NoticiasForm
         titulo={titulo}
-        setTitulo={setTitulo}
+        setTitulo={
+          setTitulo
+        }
         resumo={resumo}
-        setResumo={setResumo}
-        categoria={categoria}
-        setCategoria={setCategoria}
-        conteudo={conteudo}
-        setConteudo={setConteudo}
-        destaque={destaque}
-        setDestaque={setDestaque}
-        publicado={publicado}
-        setPublicado={setPublicado}
-        previewImagem={previewImagem}
-        setImagem={setImagem}
+        setResumo={
+          setResumo
+        }
+        categoria={
+          categoria
+        }
+        setCategoria={
+          setCategoria
+        }
+        conteudo={
+          conteudo
+        }
+        setConteudo={
+          setConteudo
+        }
+        destaque={
+          destaque
+        }
+        setDestaque={
+          setDestaque
+        }
+        publicado={
+          publicado
+        }
+        setPublicado={
+          setPublicado
+        }
+        previewImagem={
+          previewImagem
+        }
+        setImagem={
+          setImagem
+        }
         setPreviewImagem={
           setPreviewImagem
         }
-        onSubmit={handleSubmit}
-        onCancel={resetForm}
-        loading={salvando}
-        editing={editing}
+        onSubmit={
+          handleSubmit
+        }
+        onCancel={
+          resetForm
+        }
+        loading={
+          salvando
+        }
+        editing={
+          editing
+        }
       />
 
       <NoticiasList
-        noticias={noticias}
-        loading={loading}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
+        noticias={
+          noticias
+        }
+        loading={
+          loading
+        }
+        onEdit={
+          handleEdit
+        }
+        onDelete={
+          handleDelete
+        }
       />
 
     </div>
