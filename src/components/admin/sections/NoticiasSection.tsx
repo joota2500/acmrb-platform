@@ -117,6 +117,11 @@ export default function NoticiasSection() {
   ] = useState(true);
 
   const [
+    fixada,
+    setFixada,
+  ] = useState(false);
+
+  const [
     imagem,
     setImagem,
   ] = useState<
@@ -127,11 +132,6 @@ export default function NoticiasSection() {
     previewImagem,
     setPreviewImagem,
   ] = useState("");
-
-  const [
-    fixada,
-    setFixada,
-  ] = useState(false);
 
   const [
     seoTitle,
@@ -223,13 +223,10 @@ export default function NoticiasSection() {
         !data.session
       ) {
 
-        console.log(
-          "Sessão inválida:",
-          error,
-        );
+        console.log(error);
 
         alert(
-          "Sessão expirada. Faça login novamente.",
+          "Sessão expirada.",
         );
 
         window.location.href =
@@ -303,7 +300,7 @@ export default function NoticiasSection() {
       console.log(err);
 
       alert(
-        "Erro inesperado ao carregar notícias.",
+        "Erro inesperado.",
       );
 
     } finally {
@@ -340,9 +337,9 @@ export default function NoticiasSection() {
 
     setSeoKeywords("");
 
-    setBannerAlt("");
-
     setAutorNome("ACMRB");
+
+    setBannerAlt("");
 
     setEditing(false);
 
@@ -370,6 +367,27 @@ export default function NoticiasSection() {
         );
 
         return "";
+
+      }
+
+      const extensoesPermitidas = [
+        "image/png",
+        "image/jpeg",
+        "image/webp",
+      ];
+
+      if (
+        !extensoesPermitidas.includes(
+          imagem.type,
+        )
+      ) {
+
+        alert(
+          "Formato inválido.",
+        );
+
+        return "";
+
       }
 
       const extensao =
@@ -402,7 +420,7 @@ export default function NoticiasSection() {
         console.log(error);
 
         alert(
-          "Erro ao fazer upload da imagem.",
+          error.message,
         );
 
         return "";
@@ -419,12 +437,12 @@ export default function NoticiasSection() {
 
       return data.publicUrl;
 
-    } catch (err) {
+    } catch (err: any) {
 
       console.log(err);
 
       alert(
-        "Erro inesperado no upload.",
+        err.message,
       );
 
       return "";
@@ -445,7 +463,9 @@ export default function NoticiasSection() {
       if (!sessaoOk)
         return;
 
-      if (!titulo.trim()) {
+      if (
+        !titulo.trim()
+      ) {
 
         alert(
           "Título obrigatório.",
@@ -468,7 +488,9 @@ export default function NoticiasSection() {
 
       }
 
-      if (!conteudo.trim()) {
+      if (
+        !conteudo.trim()
+      ) {
 
         alert(
           "Conteúdo obrigatório.",
@@ -511,6 +533,14 @@ export default function NoticiasSection() {
 
         imagem_url =
           await uploadImagem();
+
+        if (!imagem_url) {
+
+          setSalvando(false);
+
+          return;
+
+        }
 
       }
 
@@ -570,7 +600,7 @@ export default function NoticiasSection() {
       };
 
       console.log(
-        "ENVIANDO:",
+        "PAYLOAD:",
         payload,
       );
 
@@ -604,7 +634,7 @@ export default function NoticiasSection() {
         }
 
         alert(
-          "Notícia atualizada com sucesso.",
+          "Notícia atualizada.",
         );
 
       } else {
@@ -630,7 +660,7 @@ export default function NoticiasSection() {
         }
 
         alert(
-          "Notícia publicada com sucesso.",
+          "Notícia publicada.",
         );
 
       }
@@ -644,7 +674,7 @@ export default function NoticiasSection() {
       console.log(err);
 
       alert(
-        err?.message ||
+        err.message ||
           "Erro inesperado.",
       );
 
@@ -761,7 +791,7 @@ export default function NoticiasSection() {
         console.log(error);
 
         alert(
-          "Erro ao excluir notícia.",
+          error.message,
         );
 
         return;
@@ -781,12 +811,12 @@ export default function NoticiasSection() {
         "Notícia excluída.",
       );
 
-    } catch (err) {
+    } catch (err: any) {
 
       console.log(err);
 
       alert(
-        "Erro inesperado.",
+        err.message,
       );
 
     }
@@ -840,59 +870,67 @@ export default function NoticiasSection() {
         setTitulo={
           setTitulo
         }
+
         resumo={resumo}
         setResumo={
           setResumo
         }
+
         categoria={
           categoria
         }
         setCategoria={
           setCategoria
         }
+
         conteudo={
           conteudo
         }
         setConteudo={
           setConteudo
         }
+
         destaque={
           destaque
         }
         setDestaque={
           setDestaque
         }
+
         publicado={
           publicado
         }
         setPublicado={
           setPublicado
         }
+
         previewImagem={
           previewImagem
         }
+
         setImagem={
           setImagem
         }
+
         setPreviewImagem={
           setPreviewImagem
         }
+
         onSubmit={
           handleSubmit
         }
+
         onCancel={
           resetForm
         }
+
         loading={
           salvando
         }
+
         editing={
           editing
         }
-
-        /*
-        NOVOS CAMPOS
-        */
 
         fixada={
           fixada
@@ -947,12 +985,15 @@ export default function NoticiasSection() {
         noticias={
           noticias
         }
+
         loading={
           loading
         }
+
         onEdit={
           handleEdit
         }
+
         onDelete={
           handleDelete
         }
