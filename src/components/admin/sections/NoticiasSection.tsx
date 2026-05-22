@@ -903,7 +903,7 @@ if (!authOk) {
 
     resetForm();
 
-    await carregarNoticias();
+    //await carregarNoticias();
 
   } catch (
     err: any
