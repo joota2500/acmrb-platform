@@ -17,7 +17,7 @@ import {
 type Props = {
   titulo: string;
 
-  setTitulo: (
+  setTitulo: ( 
     value: string,
   ) => void;
 
@@ -164,19 +164,18 @@ export default function NoticiasForm({
 }: Props) {
 
   const quantidadePalavras =
-    conteudo
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean).length;
+  conteudo.length > 0
+    ? conteudo.match(/\S+/g)
+        ?.length || 0
+    : 0;
 
-  const tempoLeitura =
-    Math.max(
-      1,
-      Math.ceil(
-        quantidadePalavras /
-          200,
-      ),
-    );
+const tempoLeitura =
+  Math.max(
+    1,
+    Math.ceil(
+      quantidadePalavras / 200,
+    ),
+  );
 
   return (
 
@@ -287,15 +286,17 @@ export default function NoticiasForm({
 
           </label>
 
-          <input
+         <input
+            key={editing ? titulo : "new-titulo"}
             type="text"
             placeholder="Digite um título profissional..."
-            value={titulo}
-            onChange={(e) =>
+            defaultValue={titulo}
+            onBlur={(e) =>
               setTitulo(
                 e.target.value,
               )
             }
+
             className="
               w-full
               h-14
@@ -332,14 +333,19 @@ export default function NoticiasForm({
           </label>
 
           <input
+            key={editing ? categoria : "new-categoria"}
             type="text"
             placeholder="Ex: Sustentabilidade"
-            value={categoria}
-            onChange={(e) =>
+
+
+           defaultValue={categoria}
+            onBlur={(e) =>
               setCategoria(
                 e.target.value,
               )
             }
+
+
             className="
               w-full
               h-14
@@ -381,14 +387,19 @@ export default function NoticiasForm({
           </label>
 
           <input
+            key={editing ? autorNome : "new-autor"}
             type="text"
             placeholder="Nome do autor"
-            value={autorNome}
-            onChange={(e) =>
-              setAutorNome(
-                e.target.value,
-              )
-            }
+
+
+            defaultValue={autorNome}
+              onBlur={(e) =>
+                setAutorNome(
+                  e.target.value,
+                )
+              }
+
+            
             className="
               w-full
               h-14
@@ -468,13 +479,20 @@ export default function NoticiasForm({
           </label>
 
           <textarea
+           key={editing ? resumo : "new-resumo"}
             placeholder="Resumo curto da notícia..."
-            value={resumo}
-            onChange={(e) =>
+
+
+
+           defaultValue={resumo}
+            onBlur={(e) =>
               setResumo(
                 e.target.value,
               )
             }
+
+
+
             className="
               w-full
               min-h-36
@@ -517,14 +535,18 @@ export default function NoticiasForm({
 
           </label>
 
-          <textarea
+         <textarea
+            key={editing ? titulo : "new-conteudo"}
             placeholder="Digite a notícia completa..."
-            value={conteudo}
-            onChange={(e) =>
+            defaultValue={conteudo}
+            onBlur={(e) =>
               setConteudo(
                 e.target.value,
               )
             }
+            spellCheck={false}
+            autoCorrect="off"
+            autoCapitalize="off"
 
             className="
               w-full
@@ -646,14 +668,19 @@ export default function NoticiasForm({
             <div className="space-y-4">
 
               <input
+              key={editing ? seoTitle : "new-seo-title"}
                 type="text"
                 placeholder="SEO Title"
-                value={seoTitle}
-                onChange={(e) =>
-                  setSeoTitle(
-                    e.target.value,
-                  )
-                }
+
+
+                defaultValue={seoTitle}
+                  onBlur={(e) =>
+                    setSeoTitle(
+                      e.target.value,
+                    )
+                  }
+
+
                 className="
                   w-full
                   h-14
@@ -667,15 +694,15 @@ export default function NoticiasForm({
               />
 
               <textarea
+                key={editing ? seoDescription : "new-seo-description"}
                 placeholder="SEO Description"
-                value={
-                  seoDescription
-                }
-                onChange={(e) =>
+                defaultValue={seoDescription}
+                onBlur={(e) =>
                   setSeoDescription(
                     e.target.value,
                   )
                 }
+
                 className="
                   w-full
                   min-h-32
@@ -690,16 +717,18 @@ export default function NoticiasForm({
               />
 
               <input
+              key={editing ? seoKeywords : "new-seo-keywords"}
                 type="text"
                 placeholder="SEO Keywords"
-                value={
-                  seoKeywords
-                }
-                onChange={(e) =>
+              defaultValue={seoKeywords}
+                onBlur={(e) =>
                   setSeoKeywords(
                     e.target.value,
                   )
                 }
+
+
+
                 className="
                   w-full
                   h-14
@@ -894,14 +923,19 @@ export default function NoticiasForm({
           </label>
 
           <input
+          key={editing ? bannerAlt : "new-banner-alt"}
             type="text"
             placeholder="Descrição acessível da imagem"
-            value={bannerAlt}
-            onChange={(e) =>
+
+
+          defaultValue={bannerAlt}
+            onBlur={(e) =>
               setBannerAlt(
                 e.target.value,
               )
             }
+
+
             className="
               w-full
               h-14
@@ -1166,7 +1200,19 @@ export default function NoticiasForm({
         >
 
           <button
-            onClick={onSubmit}
+            onClick={async () => {
+
+              try {
+
+                await onSubmit();
+
+              } catch (err) {
+
+                console.error(err);
+
+              }
+
+            }}
             disabled={loading}
             className="
               flex-1

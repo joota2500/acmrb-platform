@@ -21,7 +21,7 @@ export default function NoticiasStats({
   total,
   publicadas,
   destaques, 
-  visualizacoes,
+  visualizacoes, 
 }: Props) { 
 
   const cards = [

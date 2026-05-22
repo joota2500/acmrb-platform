@@ -13,7 +13,7 @@ export type Noticia = {
 
   conteudo: string;
 
-  categoria: string;
+  categoria: string; 
 
   imagem_url: string;
 
