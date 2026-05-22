@@ -194,4 +194,4 @@ function NoticiasList({
 
 export default memo(
   NoticiasList,
-);
+); 

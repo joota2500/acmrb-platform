@@ -519,12 +519,13 @@ export default function NoticiasForm({
 
           <textarea
             placeholder="Digite a notícia completa..."
-            defaultValue={conteudo}
-            onBlur={(e) =>
+            value={conteudo}
+            onChange={(e) =>
               setConteudo(
                 e.target.value,
               )
             }
+
             className="
               w-full
               min-h-125

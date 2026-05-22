@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createClient,
 } from "@supabase/supabase-js";
@@ -9,6 +11,17 @@ const supabaseUrl =
 const supabaseAnonKey =
   process.env
     .NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+if (
+  !supabaseUrl ||
+  !supabaseAnonKey
+) {
+
+  throw new Error(
+    "Variáveis do Supabase ausentes.",
+  );
+
+}
 
 export const supabase =
   createClient(
@@ -23,6 +36,16 @@ export const supabase =
         autoRefreshToken: true,
 
         detectSessionInUrl: true,
+
+      },
+
+      realtime: {
+
+        params: {
+
+          eventsPerSecond: 10,
+
+        },
 
       },
 
