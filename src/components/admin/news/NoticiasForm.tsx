@@ -287,11 +287,10 @@ const tempoLeitura =
           </label>
 
          <input
-            key={editing ? titulo : "new-titulo"}
             type="text"
             placeholder="Digite um título profissional..."
-            defaultValue={titulo}
-            onBlur={(e) =>
+            value={titulo}
+            onChange={(e) =>
               setTitulo(
                 e.target.value,
               )
@@ -333,13 +332,10 @@ const tempoLeitura =
           </label>
 
           <input
-            key={editing ? categoria : "new-categoria"}
             type="text"
             placeholder="Ex: Sustentabilidade"
-
-
-           defaultValue={categoria}
-            onBlur={(e) =>
+           value={categoria}
+            onChange={(e) =>
               setCategoria(
                 e.target.value,
               )
@@ -387,17 +383,15 @@ const tempoLeitura =
           </label>
 
           <input
-            key={editing ? autorNome : "new-autor"}
             type="text"
             placeholder="Nome do autor"
+            value={autorNome}
+            onChange={(e) =>
+              setAutorNome(
+                e.target.value,
+              )
+            }
 
-
-            defaultValue={autorNome}
-              onBlur={(e) =>
-                setAutorNome(
-                  e.target.value,
-                )
-              }
 
             
             className="
@@ -479,13 +473,10 @@ const tempoLeitura =
           </label>
 
           <textarea
-           key={editing ? resumo : "new-resumo"}
             placeholder="Resumo curto da notícia..."
 
-
-
-           defaultValue={resumo}
-            onBlur={(e) =>
+           value={resumo}
+            onChange={(e) =>
               setResumo(
                 e.target.value,
               )
@@ -536,10 +527,9 @@ const tempoLeitura =
           </label>
 
          <textarea
-            key={editing ? titulo : "new-conteudo"}
             placeholder="Digite a notícia completa..."
-            defaultValue={conteudo}
-            onBlur={(e) =>
+            value={conteudo}
+            onChange={(e) =>
               setConteudo(
                 e.target.value,
               )
@@ -668,16 +658,13 @@ const tempoLeitura =
             <div className="space-y-4">
 
               <input
-              key={editing ? seoTitle : "new-seo-title"}
                 type="text"
                 placeholder="SEO Title"
-
-
-                defaultValue={seoTitle}
-                  onBlur={(e) =>
-                    setSeoTitle(
-                      e.target.value,
-                    )
+                value={seoTitle}
+                onChange={(e) =>
+                  setSeoTitle(
+                    e.target.value,
+                  )
                   }
 
 
@@ -694,10 +681,9 @@ const tempoLeitura =
               />
 
               <textarea
-                key={editing ? seoDescription : "new-seo-description"}
                 placeholder="SEO Description"
-                defaultValue={seoDescription}
-                onBlur={(e) =>
+                value={seoDescription}
+                onChange={(e) =>
                   setSeoDescription(
                     e.target.value,
                   )
@@ -717,11 +703,10 @@ const tempoLeitura =
               />
 
               <input
-              key={editing ? seoKeywords : "new-seo-keywords"}
                 type="text"
                 placeholder="SEO Keywords"
-              defaultValue={seoKeywords}
-                onBlur={(e) =>
+                value={seoKeywords}
+                onChange={(e) =>
                   setSeoKeywords(
                     e.target.value,
                   )
@@ -921,15 +906,12 @@ const tempoLeitura =
             Texto alternativo da imagem
 
           </label>
-
+ 
           <input
-          key={editing ? bannerAlt : "new-banner-alt"}
             type="text"
             placeholder="Descrição acessível da imagem"
-
-
-          defaultValue={bannerAlt}
-            onBlur={(e) =>
+            value={bannerAlt}
+            onChange={(e) =>
               setBannerAlt(
                 e.target.value,
               )

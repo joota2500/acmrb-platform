@@ -285,8 +285,12 @@ export default function NoticiasSection() {
 
     try {
 
+      console.log("AUTH START");
+
       const response =
         await supabase.auth.getSession();
+
+      console.log("AUTH RESPONSE", response);
 
       if (
         response.error
@@ -341,16 +345,16 @@ export default function NoticiasSection() {
 
       setLoading(true);
 
-      const ok =
-        await verificarSessao();
+      //const ok =
+        //await verificarSessao();
 
-      if (!ok) {
+     // if (!ok) {
 
-        throw new Error(
-          "Sessão inválida.",
-        );
+       // throw new Error(
+         // "Sessão inválida.",
+        //);
 
-      }
+      //}
 
       const {
         data,
@@ -419,7 +423,7 @@ export default function NoticiasSection() {
 
             imagem_url:
               item.imagem_url ||
-              "",
+              null,
 
             destaque:
               !!item.destaque,
@@ -510,85 +514,97 @@ export default function NoticiasSection() {
   UPLOAD
   */
 
-  async function uploadImagem() {
+async function uploadImagem(file: File) {
 
-    try {
+  try {
 
-      if (!imagem) {
-
-        return previewImagem;
-
-      }
-
-      /*
-      LIMITE 10MB
-      */
-
-      if (
-        imagem.size >
-        10 * 1024 * 1024
-      ) {
-
-        throw new Error(
-          "Imagem muito grande. Máximo 10MB.",
-        );
-
-      }
-
-      const fileName =
-        `noticia-${Date.now()}-${imagem.name}`;
-
-      const {
-        error,
-      } = await withTimeout(
-
-        supabase.storage
-          .from(
-            "noticias",
-          )
-          .upload(
-            fileName,
-            imagem,
-            {
-              cacheControl:
-                "3600",
-
-              upsert: false,
-            },
-          ),
-
-      );
-
-      if (error) {
-
-        throw error;
-
-      }
-
-      const {
-        data,
-      } = supabase.storage
-        .from(
-          "noticias",
-        )
-        .getPublicUrl(
-          fileName,
-        );
-
-      return data.publicUrl;
-
-    } catch (
-      err: any
-    ) {
+    if (!file) {
 
       throw new Error(
-        err.message ||
-        "Erro upload imagem.",
+        "Arquivo inválido.",
       );
 
     }
 
+    if (
+      file.size >
+      10 * 1024 * 1024
+    ) {
+
+      throw new Error(
+        "Imagem muito grande.",
+      );
+
+    }
+
+    const extensao =
+      file.name
+        .split(".")
+        .pop();
+
+    const fileName =
+      `noticia-${Date.now()}.${extensao}`;
+
+    console.log(
+      "UPLOAD INICIADO:",
+      fileName,
+    );
+    console.log(
+      "TAMANHO IMAGEM KB:",
+       file.size,
+    );
+
+  const response =
+  await withTimeout(
+
+    supabase.storage
+      .from("noticias")
+      .upload(
+        fileName,
+        file,
+        {
+          cacheControl: "3600",
+          upsert: true,
+        },
+      ),
+
+    15000,
+  );
+
+    console.log(
+      "UPLOAD RESPONSE:",
+      response,
+    );
+
+    if (
+      response.error
+    ) {
+
+      throw response.error;
+
+    }
+
+    const { data } =
+      supabase.storage
+        .from("noticias")
+        .getPublicUrl(
+          fileName,
+        );
+
+    return data.publicUrl;
+
+  } catch (
+    err: any
+  ) {
+
+    throw new Error(
+      err.message ||
+      "Erro upload imagem.",
+    );
+
   }
+
+}
 
   /*
   SAVE
@@ -611,26 +627,31 @@ export default function NoticiasSection() {
       setErro("");
 
       setSalvando(true);
+      console.log(
+        "INICIANDO PUBLICAÇÃO",
+      );
 
       /*
       AUTH
       */
 
-      const authOk =
-        await verificarSessao();
+    //  const authOk =
+       // await verificarSessao();
+      //console.log("1 seccao verificada");
 
-      if (!authOk) {
+      //if (!authOk) {
 
-        throw new Error(
-          "Sessão inválida.",
-        );
+        //throw new Error(
+          //"Sessão inválida.",
+        //);
 
-      }
+      //}
+      //console.log("2 sessão verificada passou auth");
 
       /*
       VALIDATION
       */
-
+      console.log("3 iniciando validação");
       if (!titulo.trim()) {
 
         throw new Error(
@@ -666,10 +687,14 @@ export default function NoticiasSection() {
       /*
       SANITIZA HTML
       */
-
+      console.log("4 - antes de limpar conteúdo:", conteudo);
       const conteudoLimpo =
         limparConteudo(
           conteudo,
+        );
+        console.log(
+          "CONTEÚDO LIMPO:",
+          conteudoLimpo,
         );
 
       /*
@@ -704,76 +729,99 @@ export default function NoticiasSection() {
 
       }
 
-      /*
+      /* 
       UPLOAD
       */
 
-      let imagem_url =
-        previewImagem;
+     let imagem_url = "";
 
       if (imagem) {
 
-        imagem_url =
-          await uploadImagem();
+        console.log(
+          "4 - iniciando upload",
+        );
 
-      }
+        imagem_url =
+          await uploadImagem(
+            imagem,
+          );
+
+        console.log(
+          "4.1 - upload concluído",
+        );
+
+}
+
+      console.log(
+        "IMAGEM URL: upload concluído:",
+        imagem_url,
+      );
 
       /*
       PAYLOAD
       */
+      console.log(
+        "GERANDO PAYLOAD",
+      );
 
-      const payload = {
+      const conteudoFinal =
+        conteudoLimpo.slice(0, 50000);
+const payload = {
 
-        titulo:
-          titulo.trim(),
+  titulo:
+    titulo.trim(),
 
-        resumo:
-          resumo.trim(),
+  resumo:
+    resumo.trim(),
 
-        conteudo:
-          conteudoLimpo,
+  conteudo:
+    conteudoFinal.trim(),
 
-        categoria:
-          categoria.trim(),
+  categoria:
+    categoria.trim(),
 
-        imagem_url,
+  imagem_url:
+    imagem_url || "",
 
-        destaque,
+  destaque,
 
-        publicado,
+  publicado,
 
-        fixada,
+  fixada,
 
-        slug:
-          gerarSlug(
-            titulo,
-          ),
+  slug:
+    gerarSlug(
+      titulo,
+    ),
 
-        seo_title:
-          seoTitle ||
-          titulo,
+  seo_title:
+    seoTitle.trim() ||
+    titulo.trim(),
 
-        seo_description:
-          seoDescription ||
-          resumo,
+  seo_description:
+    seoDescription.trim() ||
+    resumo.trim(),
 
-        seo_keywords:
-          seoKeywords,
+  seo_keywords:
+    seoKeywords.trim(),
 
-        autor_nome:
-          autorNome,
+  autor_nome:
+    autorNome.trim(),
 
-        banner_alt:
-          bannerAlt,
+  banner_alt:
+    bannerAlt.trim(),
 
-        tempo_leitura:
-          calcularTempoLeitura(
-            conteudoLimpo,
-          ),
+  tempo_leitura:
+    calcularTempoLeitura(
+      conteudoLimpo,
+    ),
 
-        updated_at:
-          new Date().toISOString(),
-      };
+  updated_at:
+    new Date().toISOString(),
+
+    created_at:
+       new Date().toISOString(),
+};
 
       /*
       UPDATE
@@ -785,17 +833,20 @@ export default function NoticiasSection() {
       ) {
 
        const response =
+
+
         await withTimeout(
           (async () => {
 
             return await supabase
               .from("noticias")
               .update(payload)
-              .eq("id", editingId)
-              .select();
+              .eq("id", editingId);
 
           })(),
         );
+
+
 
         if (
           response.error
@@ -812,46 +863,67 @@ export default function NoticiasSection() {
       */
 
       else {
+    console.log("5 - iniciando insert");
 
-     const response =
-        await withTimeout(
-          (async () => {
+        const response =
+          await withTimeout(
+            (async () => {
+              return await supabase
+                .from("noticias")
+                .insert(payload);
+            })(),
 
-            return await supabase
-              .from("noticias")
-              .insert([payload])
-              .select();
+          15000,
+          );
 
-          })(),
+
+  console.log(
+    "INSERT RESPONSE:",
+    response,
+  );
+
+      if (
+        response.error
+      ) {
+
+        console.error(
+          "INSERT ERROR:",
+          response.error,
         );
 
-        if (
-          response.error
-        ) {
-
-          throw response.error;
-
-        }
-
+        throw response.error;
+      }
+          console.log("6 - insert concluído");
       }
 
       /*
       RELOAD
       */
-
-      await carregarNoticias();
+      console.log(
+        " 7 - RECARREGANDO NOTÍCIAS",
+      );
+      try {
+        await carregarNoticias();
+      } catch (e) {
+        console.error("Erro ao recarregar notícias:", e);
+      }
 
       /*
       RESET
       */
-
+      console.log(
+        "8 - RESETANDO FORMULÁRIO",
+      );
       resetForm();
 
       /*
       SUCCESS
       */
-
       console.log(
+        "8.1 - PUBLICAÇÃO CONCLUÍDA",
+      );
+      console.log(
+        "9 - SUCESSO",
         editing
           ? "NOTÍCIA ATUALIZADA"
           : "NOTÍCIA PUBLICADA",
@@ -893,7 +965,7 @@ export default function NoticiasSection() {
   ) {
 
     try {
-
+      if(loading) return;
       setLoading(
         true,
       );
