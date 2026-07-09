@@ -2,34 +2,40 @@
 
 import { motion } from "framer-motion";
 import {
+  ArrowRight,
   ClipboardCheck,
-  Factory,
-  FileBarChart,
-  Handshake,
   Route,
   Scale,
+  FileBarChart,
+  Factory,
+  Users,
+  Award,
 } from "lucide-react";
 
 const steps = [
   {
+    number: "01",
     title: "Diagnóstico",
     description:
       "Mapeamento dos pontos de geração, tipos de resíduos e rotina de coleta mais adequada para cada parceiro.",
     icon: ClipboardCheck,
   },
   {
-    title: "Coleta seletiva",
+    number: "02",
+    title: "Coleta Seletiva",
     description:
       "Organização do recebimento, separação e pesagem dos materiais recicláveis com acompanhamento operacional.",
     icon: Route,
   },
   {
-    title: "Triagem e valorização",
+    number: "03",
+    title: "Triagem e Valorização",
     description:
       "Classificação dos materiais por categoria, valor estimado e destino ambientalmente correto.",
     icon: Scale,
   },
   {
+    number: "04",
     title: "Relatório ESG",
     description:
       "Consolidação de indicadores públicos para apoiar transparência, parcerias e prestação de contas.",
@@ -40,93 +46,97 @@ const steps = [
 const audiences = [
   {
     label: "Empresas",
-    text: "logística reversa, comprovação ambiental e apoio a metas ESG.",
+    text: "Logística reversa, comprovação ambiental e apoio a metas ESG.",
     icon: Factory,
   },
   {
     label: "Comunidade",
-    text: "educação ambiental, geração de renda e fortalecimento da coleta seletiva.",
-    icon: Handshake,
+    text: "Educação ambiental, geração de renda e fortalecimento da coleta seletiva.",
+    icon: Users,
   },
 ];
 
 export default function OperationsSection() {
   return (
-    <section className="section-spacing bg-white">
+    <section className="section-spacing bg-white relative overflow-hidden">
       <div className="container-custom">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <div className="grid lg:grid-cols-2 gap-16 lg:items-start">
+          {/* Lado Esquerdo - Explicação */}
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
             viewport={{ once: true }}
             className="lg:sticky lg:top-28"
           >
-            <div className="section-tag mb-6">
-              Operação integrada
-            </div>
+            <div className="section-tag mb-6">Operação Integrada</div>
 
-            <h2 className="section-title">
+            <h2 className="section-title text-balance">
               Do resíduo ao indicador: uma rotina preparada para parceiros,
               comunidade e transparência.
             </h2>
 
-            <p className="section-description mt-7">
+            <p className="section-description mt-8 max-w-xl">
               A ACMRB conecta coleta seletiva, controle de materiais,
               valorização do trabalho dos catadores e dados de impacto em uma
               jornada simples de acompanhar.
             </p>
 
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              {audiences.map((item) => {
+            {/* Públicos Alvo */}
+            <div className="mt-12 grid gap-6">
+              {audiences.map((item, index) => {
                 const Icon = item.icon;
-
                 return (
-                  <div
-                    key={item.label}
-                    className="rounded-lg border border-emerald-100 bg-emerald-50/50 p-5"
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="flex gap-5 bg-emerald-50/60 rounded-3xl p-6"
                   >
-                    <Icon className="text-emerald-700" size={24} />
-                    <h3 className="mt-4 text-lg font-black text-zinc-900">
-                      {item.label}
-                    </h3>
-                    <p className="mt-2 text-sm leading-6 text-zinc-600">
-                      {item.text}
-                    </p>
-                  </div>
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0">
+                      <Icon size={28} />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-xl text-emerald-800">
+                        {item.label}
+                      </h4>
+                      <p className="text-zinc-600 mt-2 leading-relaxed">
+                        {item.text}
+                      </p>
+                    </div>
+                  </motion.div>
                 );
               })}
             </div>
           </motion.div>
 
-          <div className="grid gap-5">
+          {/* Lado Direito - Passos */}
+          <div className="space-y-6">
             {steps.map((step, index) => {
               const Icon = step.icon;
-
               return (
                 <motion.div
-                  key={step.title}
-                  initial={{ opacity: 0, y: 24 }}
+                  key={index}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.55, delay: index * 0.06 }}
                   viewport={{ once: true }}
-                  className="grid gap-5 rounded-lg border border-zinc-200 bg-white p-6 shadow-sm sm:grid-cols-[4.5rem_1fr]"
+                  transition={{ delay: index * 0.1 }}
+                  className="glass-card rounded-4xl p-8 md:p-10 flex gap-6 group hover:shadow-xl transition-all"
                 >
-                  <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-[#E8F3EE] text-[#2E5E4E]">
-                    <Icon size={28} />
+                  <div className="w-16 h-16 rounded-3xl bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0 group-hover:scale-110 transition">
+                    <Icon size={34} />
                   </div>
 
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-black text-emerald-700">
-                        0{index + 1}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4">
+                      <span className="font-black text-4xl text-emerald-200">
+                        {step.number}
                       </span>
-                      <h3 className="text-2xl font-black text-zinc-900">
+                      <h3 className="text-2xl font-bold text-zinc-900">
                         {step.title}
                       </h3>
                     </div>
-
-                    <p className="mt-3 max-w-2xl leading-8 text-zinc-600">
+                    <p className="mt-5 text-zinc-600 leading-relaxed">
                       {step.description}
                     </p>
                   </div>
