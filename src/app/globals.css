@@ -33,6 +33,7 @@ body {
   color: var(--foreground);
   font-family: "Inter", system_ui, sans-serif;
   overflow-x: hidden;
+  font-size: 1rem;
 }
 
 /* ====================== CONTAINER ====================== */
@@ -40,25 +41,32 @@ body {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-/* ====================== SECTION STYLES ====================== */
+/* ====================== SECTION ====================== */
 .section-spacing {
-  padding-top: 6rem;
-  padding-bottom: 6rem;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 768px) {
+  .section-spacing {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
 }
 
 .section-tag {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 24px;
+  padding: 8px 20px;
   border-radius: 9999px;
   background: #10b98120;
   color: #10b981;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -66,16 +74,16 @@ body {
 }
 
 .section-title {
-  font-size: clamp(2.4rem, 5.5vw, 4.8rem);
-  line-height: 1.05;
+  font-size: clamp(2.1rem, 5vw, 4rem);
+  line-height: 1.1;
   font-weight: 800;
   letter-spacing: -0.04em;
   color: #111827;
 }
 
 .section-description {
-  font-size: 1.1rem;
-  line-height: 1.85;
+  font-size: 1rem;
+  line-height: 1.8;
   color: #52525b;
   text-align: justify;
 }
@@ -90,7 +98,7 @@ body {
 }
 
 .glass-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-4px);
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
 }
 
@@ -100,13 +108,13 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.75rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 9999px;
   background: linear-gradient(135deg, var(--primary), #4ade80);
   color: white;
   font-weight: 600;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
-  font-size: 1rem;
 }
 
 .primary-button:hover {
@@ -117,8 +125,8 @@ body {
 /* ====================== UTILITIES ====================== */
 .auto-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
 }
 
 /* ====================== DARK MODE ====================== */
@@ -134,15 +142,21 @@ body {
 
 /* ====================== RESPONSIVIDADE ====================== */
 @media (max-width: 768px) {
-  .section-spacing {
-    padding-top: 4rem;
-    padding-bottom: 4rem;
-  }
   .section-title {
-    font-size: 2.5rem;
+    font-size: 2.3rem;
+  }
+  .section-description {
+    font-size: 0.95rem;
   }
   .primary-button {
-    padding: 0.75rem 1.5rem;
-    font-size: 0.95rem;
+    padding: 0.7rem 1.4rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container-custom {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }

@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  motion,
-} from "framer-motion";
-
+import { motion } from "framer-motion";
 import Link from "next/link";
-
 import {
   Recycle,
   Cloud,
@@ -13,725 +9,166 @@ import {
   Trees,
   TrendingUp,
   ArrowRight,
+  Award,
 } from "lucide-react";
-
-import {
-  useESGMetrics,
-} from "@/hooks/useESGMetrics";
+import { useESGMetrics } from "@/hooks/useESGMetrics";
 
 export default function ESGMetrics() {
-
-  const {
-
-    loading,
-
-    totalPeso,
-
-    co2,
-
-    arvores,
-
-    familiasImpactadas,
-
-  } = useESGMetrics();
-
-  /* =========================
-     METAS
-  ========================= */
+  const { loading, totalPeso, co2, arvores, familiasImpactadas } =
+    useESGMetrics();
 
   const metaPeso = 5000;
-
   const metaCo2 = 10000;
-
   const metaArvores = 500;
-
   const metaFamilias = 300;
 
-  function percentual(
-    atual: number,
-    meta: number,
-  ) {
+  const percentual = (atual: number, meta: number) => {
+    const valor = (atual / meta) * 100;
+    return `${Math.min(valor, 100).toFixed(0)}%`;
+  };
 
-    const valor =
-      (atual / meta) * 100;
-
-    return `${Math.min(
-      valor,
-      100,
-    ).toFixed(0)}%`;
-
-  }
-
-  function formatPeso(
-    value: number,
-  ) {
-
-    if (value >= 1000) {
-
-      return `${(
-        value / 1000
-      ).toFixed(1)}t`;
-
-    }
-
+  const formatPeso = (value: number) => {
+    if (value >= 1000) return `${(value / 1000).toFixed(1)}t`;
     return `${value.toFixed(0)}kg`;
-
-  }
-
-  /* =========================
-     MÉTRICAS HOME
-  ========================= */
+  };
 
   const metrics = [
-
     {
-      title:
-        "Resíduos coletados",
-
-      value:
-        formatPeso(
-          totalPeso,
-        ),
-
-      progress:
-        percentual(
-          totalPeso,
-          metaPeso,
-        ),
-
+      title: "Resíduos Coletados",
+      value: formatPeso(totalPeso),
+      progress: percentual(totalPeso, metaPeso),
       description:
-        "Total acumulado de resíduos recicláveis coletados pela ACMRB.",
-
+        "Total acumulado de materiais recicláveis processados pela ACMRB.",
       icon: Recycle,
-
-      gradient:
-        "from-[#2E5E4E] to-[#5C9B80]",
+      color: "from-emerald-600 to-teal-600",
     },
-
     {
-      title:
-        "CO₂ evitado",
-
-      value:
-        formatPeso(
-          co2,
-        ),
-
-      progress:
-        percentual(
-          co2,
-          metaCo2,
-        ),
-
-      description:
-        "Estimativa de emissões reduzidas através da reciclagem.",
-
+      title: "CO₂ Evitado",
+      value: formatPeso(co2),
+      progress: percentual(co2, metaCo2),
+      description: "Emissões de carbono evitadas graças à reciclagem.",
       icon: Cloud,
-
-      gradient:
-        "from-cyan-500 to-blue-500",
+      color: "from-sky-500 to-blue-600",
     },
-
     {
-      title:
-        "Famílias impactadas",
-
-      value:
-        `${familiasImpactadas}+`,
-
-      progress:
-        percentual(
-          familiasImpactadas,
-          metaFamilias,
-        ),
-
+      title: "Famílias Impactadas",
+      value: `${familiasImpactadas}+`,
+      progress: percentual(familiasImpactadas, metaFamilias),
       description:
-        "Famílias beneficiadas direta e indiretamente pelas ações da associação.",
-
+        "Famílias que tiveram sua renda e qualidade de vida melhoradas.",
       icon: Users,
-
-      gradient:
-        "from-violet-500 to-fuchsia-500",
+      color: "from-violet-600 to-fuchsia-600",
     },
-
     {
-      title:
-        "Árvores preservadas",
-
-      value:
-        `${arvores.toFixed(0)}`,
-
-      progress:
-        percentual(
-          arvores,
-          metaArvores,
-        ),
-
-      description:
-        "Impacto ambiental equivalente gerado pelas operações sustentáveis.",
-
+      title: "Árvores Preservadas",
+      value: arvores.toFixed(0),
+      progress: percentual(arvores, metaArvores),
+      description: "Equivalente ambiental gerado pelas nossas ações.",
       icon: Trees,
-
-      gradient:
-        "from-emerald-500 to-green-500",
+      color: "from-emerald-500 to-green-600",
     },
-
   ];
 
   return (
-
-    <section
-      className="
-        py-24
-        md:py-32
-        relative
-        overflow-hidden
-        bg-linear-to-b
-        from-[#F5F7F4]
-        to-white
-      "
-    >
-
-      {/* BG */}
-
-      <div className="absolute inset-0">
-
-        <div
-          className="
-            absolute
-            top-0
-            left-0
-            w-96
-            h-96
-            bg-emerald-200/20
-            blur-3xl
-            rounded-full
-          "
-        />
-
-        <div
-          className="
-            absolute
-            bottom-0
-            right-0
-            w-96
-            h-96
-            bg-cyan-200/20
-            blur-3xl
-            rounded-full
-          "
-        />
-
-      </div>
-
-      <div
-        className="
-          container-custom
-          relative
-          z-10
-        "
-      >
-
-        {/* HEADER */}
-
+    <section className="py-24 md:py-32 bg-linear-to-b from-[#F5F7F4] to-white relative overflow-hidden">
+      <div className="container-custom relative z-10">
+        {/* Header */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 25,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.7,
-          }}
-          viewport={{
-            once: true,
-          }}
-          className="
-            max-w-5xl
-          "
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center max-w-4xl mx-auto mb-16"
         >
-
-          <div
-            className="
-              inline-flex
-              items-center
-              gap-2
-              px-5
-              py-3
-              rounded-full
-              bg-[#E8F3EE]
-              text-[#2E5E4E]
-              font-black
-              text-xs
-              sm:text-sm
-              mb-8
-            "
-          >
-
-            🌎 Dashboard ESG
-
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-emerald-100 text-emerald-700 font-bold text-sm mb-6">
+            <Award size={20} /> DASHBOARD ESG AO VIVO
           </div>
 
-          <h2
-            className="
-              text-4xl
-              sm:text-5xl
-              md:text-6xl
-              font-black
-              leading-none
-              tracking-[-0.04em]
-              text-[#111827]
-            "
-          >
-
-            Transparência ambiental,
-            impacto social e
-            métricas ESG
-
+          <h2 className="text-4xl md:text-6xl font-black tracking-tight leading-none text-zinc-900">
+            Transparência em números
           </h2>
 
-          <p
-            className="
-              text-zinc-600
-              text-base
-              sm:text-lg
-              md:text-xl
-              leading-8
-              mt-8
-              max-w-4xl
-            "
-          >
-
-            Indicadores públicos derivados
-            das operações de reciclagem,
-            logística reversa e impacto
-            socioambiental da ACMRB.
-
+          <p className="mt-6 text-lg text-zinc-600 max-w-2xl mx-auto">
+            Resultados reais da nossa atuação em coleta seletiva, impacto social
+            e preservação ambiental.
           </p>
-
         </motion.div>
 
-        {/* GRID */}
-
-        <div
-          className="
-            grid
-            lg:grid-cols-2
-            gap-6
-            md:gap-8
-            mt-20
-          "
-        >
-
-          {metrics.map(
-            (
-              metric,
-              index,
-            ) => {
-
-              const Icon =
-                metric.icon;
-
-              return (
-
-                <motion.div
-                  key={metric.title}
-                  initial={{
-                    opacity: 0,
-                    y: 40,
-                  }}
-                  whileInView={{
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    delay:
-                      index * 0.08,
-                  }}
-                  viewport={{
-                    once: true,
-                  }}
-                  className="
-                    relative
-                    overflow-hidden
-                    bg-white/80
-                    backdrop-blur-xl
-                    border
-                    border-white/50
-                    shadow-xl
-                    rounded-4xl
-                    p-6
-                    md:p-10
-                  "
-                >
-
-                  {/* GLOW */}
-
-                  <div
-                    className="
-                      absolute
-                      -top-10
-                      -right-10
-                      w-40
-                      h-40
-                      bg-emerald-100/40
-                      rounded-full
-                      blur-3xl
-                    "
-                  />
-
-                  {/* TOP */}
-
-                  <div
-                    className="
-                      relative
-                      z-10
-                      flex
-                      items-start
-                      justify-between
-                      gap-6
-                    "
-                  >
-
-                    <div className="flex-1">
-
-                      <p
-                        className="
-                          text-xs
-                          sm:text-sm
-                          font-black
-                          uppercase
-                          tracking-widest
-                          text-zinc-500
-                        "
-                      >
-
-                        {metric.title}
-
-                      </p>
-
-                      <h3
-                        className="
-                          text-4xl
-                          md:text-6xl
-                          font-black
-                          text-[#111827]
-                          tracking-[-0.04em]
-                          mt-4
-                          wrap-break-word
-                          leading-none
-                        "
-                      >
-
-                        {loading
-                          ? "--"
-                          : metric.value}
-
-                      </h3>
-
-                    </div>
-
-                    <div
-                      className={`
-                        shrink-0
-                        w-16
-                        h-16
-                        rounded-3xl
-                        flex
-                        items-center
-                        justify-center
-                        text-white
-                        bg-linear-to-br
-                        ${metric.gradient}
-                      `}
-                    >
-
-                      <Icon size={28} />
-
-                    </div>
-
+        {/* Metrics Grid */}
+        <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+          {metrics.map((metric, index) => {
+            const Icon = metric.icon;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="glass-card rounded-4xl p-8 md:p-10 group hover:shadow-2xl transition-all"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-widest text-zinc-500">
+                      {metric.title}
+                    </p>
+                    <h3 className="text-5xl md:text-6xl font-black text-zinc-900 mt-4">
+                      {loading ? "—" : metric.value}
+                    </h3>
                   </div>
 
-                  {/* DESC */}
-
-                  <p
-                    className="
-                      relative
-                      z-10
-                      text-zinc-600
-                      leading-7
-                      mt-8
-                    "
-                  >
-
-                    {metric.description}
-
-                  </p>
-
-                  {/* PROGRESS */}
-
                   <div
-                    className="
-                      relative
-                      z-10
-                      mt-10
-                    "
+                    className={`w-16 h-16 rounded-3xl bg-linear-to-br ${metric.color} flex items-center justify-center text-white shadow-lg group-hover:scale-110 transition`}
                   >
-
-                    <div
-                      className="
-                        flex
-                        items-center
-                        justify-between
-                        mb-4
-                      "
-                    >
-
-                      <span
-                        className="
-                          text-sm
-                          font-medium
-                          text-zinc-500
-                        "
-                      >
-
-                        Meta ESG
-
-                      </span>
-
-                      <span
-                        className="
-                          text-sm
-                          font-black
-                          text-[#2E5E4E]
-                        "
-                      >
-
-                        {metric.progress}
-
-                      </span>
-
-                    </div>
-
-                    <div
-                      className="
-                        w-full
-                        h-3
-                        rounded-full
-                        bg-zinc-200
-                        overflow-hidden
-                      "
-                    >
-
-                      <motion.div
-                        initial={{
-                          width: 0,
-                        }}
-                        whileInView={{
-                          width:
-                            metric.progress,
-                        }}
-                        transition={{
-                          duration: 1,
-                        }}
-                        viewport={{
-                          once: true,
-                        }}
-                        className={`
-                          h-full
-                          rounded-full
-                          bg-linear-to-r
-                          ${metric.gradient}
-                        `}
-                      />
-
-                    </div>
-
+                    <Icon size={32} />
                   </div>
-
-                </motion.div>
-
-              );
-
-            },
-          )}
-
-        </div>
-
-        {/* CTA */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 30,
-          }}
-          whileInView={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            duration: 0.7,
-          }}
-          viewport={{
-            once: true,
-          }}
-          className="mt-20"
-        >
-
-          <div
-            className="
-              rounded-4xl
-              bg-linear-to-br
-              from-[#2E5E4E]
-              to-[#5C9B80]
-              p-10
-              md:p-16
-              text-white
-              shadow-2xl
-              overflow-hidden
-              relative
-            "
-          >
-
-            {/* EFFECT */}
-
-            <div
-              className="
-                absolute
-                top-0
-                right-0
-                w-80
-                h-80
-                bg-white/10
-                rounded-full
-                blur-3xl
-              "
-            />
-
-            <div
-              className="
-                relative
-                z-10
-                grid
-                lg:grid-cols-2
-                gap-12
-                items-center
-              "
-            >
-
-              <div>
-
-                <div
-                  className="
-                    inline-flex
-                    items-center
-                    gap-2
-                    px-5
-                    py-3
-                    rounded-full
-                    bg-white/20
-                    text-xs
-                    sm:text-sm
-                    font-black
-                    mb-8
-                  "
-                >
-
-                  🌱 Transparência Pública
-
                 </div>
 
-                <h3
-                  className="
-                    text-3xl
-                    md:text-5xl
-                    font-black
-                    leading-tight
-                  "
-                >
-
-                  Relatórios completos
-                  de impacto ambiental
-                  e operacional
-
-                </h3>
-
-              </div>
-
-              <div>
-
-                <p
-                  className="
-                    text-white/85
-                    leading-8
-                    text-base
-                    md:text-lg
-                  "
-                >
-
-                  Consulte indicadores completos,
-                  dados ambientais, materiais
-                  recicláveis, métricas ESG,
-                  logística reversa e impacto
-                  socioambiental da ACMRB.
-
+                <p className="text-zinc-600 mt-8 leading-relaxed">
+                  {metric.description}
                 </p>
 
-                <Link
-                  href="/transparencia"
-                  className="
-                    mt-10
-                    inline-flex
-                    items-center
-                    gap-3
-                    h-14
-                    px-8
-                    rounded-2xl
-                    bg-white
-                    hover:bg-zinc-100
-                    transition-all
-                    text-[#2E5E4E]
-                    font-black
-                    shadow-lg
-                  "
-                >
+                <div className="mt-10">
+                  <div className="flex justify-between text-sm mb-3">
+                    <span className="text-zinc-500">Progresso da Meta</span>
+                    <span className="font-bold text-emerald-700">
+                      {metric.progress}
+                    </span>
+                  </div>
+                  <div className="h-2.5 bg-zinc-200 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      whileInView={{ width: metric.progress }}
+                      transition={{ duration: 1.2 }}
+                      viewport={{ once: true }}
+                      className={`h-full bg-linear-to-r ${metric.color}`}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
 
-                  <TrendingUp size={20} />
-
-                  Ver informações completas
-
-                  <ArrowRight size={18} />
-
-                </Link>
-
-                <p
-                  className="
-                    text-white/60
-                    text-sm
-                    mt-5
-                  "
-                >
-
-                  Página pública detalhada em desenvolvimento.
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
+        {/* CTA Final */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-20 text-center"
+        >
+          <Link
+            href="/transparencia"
+            className="inline-flex items-center gap-3 h-16 px-12 rounded-3xl bg-emerald-700 hover:bg-emerald-800 text-white text-lg font-bold transition-all active:scale-95 shadow-xl"
+          >
+            Ver Todos os Relatórios ESG
+            <ArrowRight />
+          </Link>
+          <p className="text-zinc-500 text-sm mt-6">
+            Dados atualizados em tempo real • Transparência total
+          </p>
         </motion.div>
-
       </div>
-
     </section>
-
   );
-
 }
