@@ -6,7 +6,7 @@ const institutionalLinks = [
   {
     title: "Quem Somos",
     items: [
-      "História da associação",
+      "História da associação", 
       "Missão e visão",
       "Equipe e associados",
       "Atuação institucional",

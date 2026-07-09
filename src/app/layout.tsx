@@ -1,16 +1,15 @@
+// No topo do arquivo
 import "./globals.css";
-
 import { AuthProvider } from "@/contexts/AuthContext";
-
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   title: {
-    default: "ACMRB | Plataforma ESG e Reciclagem",
+    default: "ACMRB | Plataforma de Gestão",
     template: "%s | ACMRB",
   },
   description:
-    "Plataforma institucional da ACMRB para gestão de materiais recicláveis, transparência ESG, logística reversa e impacto social em Baturité.",
+    "Plataforma institucional da Associação dos Catadores de Materiais Recicláveis de Baturité - Gestão ESG, Transparência e Logística Reversa.",
   applicationName: "ACMRB Platform",
   authors: [{ name: "ACMRB" }],
   keywords: [
@@ -19,13 +18,16 @@ export const metadata: Metadata = {
     "Baturité",
     "ESG",
     "logística reversa",
-    "coleta seletiva",
-    "materiais recicláveis",
+    "catadores",
+    "meio ambiente",
   ],
+  icons: {
+    icon: "/images/acmrb-hero.jpg",
+  },
   openGraph: {
-    title: "ACMRB | Plataforma ESG e Reciclagem",
+    title: "ACMRB | Plataforma de Gestão",
     description:
-      "Gestão de materiais recicláveis, transparência ESG e impacto social em Baturité.",
+      "Gestão completa de materiais recicláveis, transparência e impacto social.",
     locale: "pt_BR",
     siteName: "ACMRB",
     type: "website",
@@ -33,27 +35,22 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0f766e",
-  colorScheme: "light",
+  themeColor: "#166534", // Verde escuro institucional
+  colorScheme: "light dark",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) { 
- 
+}>) {
   return (
-    <html lang="pt-BR">
-
-      <body>
-
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body className="antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+        <AuthProvider>{children}</AuthProvider>
       </body>
-
     </html>
   );
 }
