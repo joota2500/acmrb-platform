@@ -1,27 +1,53 @@
-# ACMRB / Reciclaê Platform
+# ACMRB Platform
 
-Plataforma institucional da Associação dos Catadores de Materiais Recicláveis de Baturité.
+Plataforma institucional e operacional da ACMRB para reciclagem, logística
+reversa, transparência ESG e gestão de materiais recicláveis em Baturité.
+
+## Módulos
+
+- Site público institucional com seções de impacto, materiais, notícias,
+  parceiros, projetos e contato.
+- Central de transparência ESG com indicadores ambientais e operacionais.
+- Painel administrativo para associados, notícias, materiais, métricas,
+  parceiros e configurações.
+- Integração com Supabase para autenticação, banco de dados e arquivos.
 
 ## Stack
+
 - Next.js 15
+- React 19
 - TypeScript
-- TailwindCSS
+- Tailwind CSS
 - Supabase
 - PostgreSQL
-- shadcn/ui
+- Framer Motion
+- Lucide React
 
-## Instalação
+## Configuração
+
+Crie um arquivo `.env.local` com as chaves do Supabase:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```
+
+Prepare o banco usando o arquivo:
+
+```text
+supabase/schema.sql
+```
+
+## Desenvolvimento
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Configuração Supabase
+## Build
 
-Crie um arquivo `.env.local`
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+```bash
+npm run build
+npm run start
 ```

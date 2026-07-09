@@ -8,6 +8,8 @@ import StatsSection from "../components/home/StatsSection";
 
 import AboutSection from "../components/home/AboutSection";
 
+import OperationsSection from "../components/home/OperationsSection";
+
 import ESGMetrics from "../components/home/ESGMetrics";
 
 import ReverseLogisticsSection from "../components/home/ReverseLogisticsSection";
@@ -54,6 +56,8 @@ export default function Home() {
 
 
       <AboutSection />
+
+      <OperationsSection />
 
        {/* =========================
           RESUMO ESG
