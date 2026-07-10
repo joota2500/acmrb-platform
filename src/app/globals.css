@@ -19,7 +19,7 @@
   --border: #334155;
 }
 
-/* ====================== BASE ====================== */
+/* Base Global */
 * {
   box-sizing: border-box;
 }
@@ -36,7 +36,6 @@ body {
   font-size: 1rem;
 }
 
-/* ====================== CONTAINER ====================== */
 .container-custom {
   width: 100%;
   max-width: 1280px;
@@ -45,116 +44,8 @@ body {
   padding-right: 1rem;
 }
 
-/* ====================== SECTION ====================== */
-.section-spacing {
-  padding-top: 4rem;
-  padding-bottom: 4rem;
-}
-
-@media (min-width: 768px) {
-  .section-spacing {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-
-.section-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 20px;
-  border-radius: 9999px;
-  background: #10b98120;
-  color: #10b981;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  border: 1px solid #10b98130;
-}
-
-.section-title {
-  font-size: clamp(2.1rem, 5vw, 4rem);
-  line-height: 1.1;
-  font-weight: 800;
-  letter-spacing: -0.04em;
-  color: #111827;
-}
-
-.section-description {
-  font-size: 1rem;
-  line-height: 1.8;
-  color: #52525b;
-  text-align: justify;
-}
-
-/* ====================== CARDS ====================== */
-.glass-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05);
-  transition: all 0.3s ease;
-}
-
-.glass-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-}
-
-/* ====================== BUTTONS ====================== */
-.primary-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 9999px;
-  background: linear-gradient(135deg, var(--primary), #4ade80);
-  color: white;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.primary-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgb(22 101 52 / 0.4);
-}
-
-/* ====================== UTILITIES ====================== */
-.auto-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-/* ====================== DARK MODE ====================== */
-.dark .glass-card {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
-}
-
-/* Selection */
-::selection {
-  background: rgba(22, 101, 52, 0.25);
-  color: var(--foreground);
-}
-
-/* ====================== RESPONSIVIDADE ====================== */
+/* Responsividade Global */
 @media (max-width: 768px) {
-  .section-title {
-    font-size: 2.3rem;
-  }
-  .section-description {
-    font-size: 0.95rem;
-  }
-  .primary-button {
-    padding: 0.7rem 1.4rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 480px) {
   .container-custom {
     padding-left: 1rem;
     padding-right: 1rem;

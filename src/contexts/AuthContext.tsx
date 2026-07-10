@@ -1,91 +1,47 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-import {
-  Session,
-  User,
-} from "@supabase/supabase-js";
+import { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/lib/supabase";
 
 interface Perfil {
-
-  tipo:
-    | "admin"
-    | "visitante"
-    | null;
-
+  tipo: "admin" | "visitante" | null;
   role?: string;
-
   nome?: string;
-
   avatar_url?: string;
-
+  isGod?: boolean; // Adm Deus
 }
 
 interface AuthContextType {
-
   user: User | null;
-
   session: Session | null;
-
   perfil: Perfil | null;
-
   loading: boolean;
-
   logout: () => Promise<void>;
-
+  isAdmin: boolean;
+  isGod: boolean;
 }
 
-const AuthContext =
-  createContext<AuthContextType | null>(
-    null,
-  );
+const AuthContext = createContext<AuthContextType | null>(null);
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [perfil, setPerfil] = useState<Perfil | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const [user, setUser] =
-    useState<User | null>(null);
-
-  const [session, setSession] =
-    useState<Session | null>(null);
-
-  const [perfil, setPerfil] =
-    useState<Perfil | null>(null);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  async function loadPerfil(
-    currentUser: User | null,
-  ) {
-
+  async function loadPerfil(currentUser: User | null) {
     if (!currentUser) {
-
       setPerfil(null);
-
       return;
-
     }
 
-    const email =
-      currentUser.email;
+    const email = currentUser.email;
 
-    // ADMIN
-
-    const {
-      data: admin,
-    } = await supabase
+    // Verificar se é Adm Deus
+    const { data: admin } = await supabase
       .from("admins")
       .select("*")
       .eq("email", email)
@@ -93,128 +49,76 @@ export function AuthProvider({
       .maybeSingle();
 
     if (admin) {
-
       setPerfil({
         tipo: "admin",
         role: admin.role,
         nome: admin.nome,
-        avatar_url:
-          admin.avatar_url,
+        avatar_url: admin.avatar_url,
+        isGod: admin.email === "joaovictorrc25@gmail.com", // Adm Deus
       });
-
       return;
-
     }
 
-    // VISITANTE
-
-    const {
-      data: visitante,
-    } = await supabase
+    // Visitante
+    const { data: visitante } = await supabase
       .from("visitantes")
       .select("*")
       .eq("email", email)
       .maybeSingle();
 
     if (visitante) {
-
       setPerfil({
         tipo: "visitante",
-        role:
-          visitante.role,
-        nome:
-          visitante.nome,
-        avatar_url:
-          visitante.avatar_url,
+        role: visitante.role,
+        nome: visitante.nome,
+        avatar_url: visitante.avatar_url,
+        isGod: false,
       });
-
       return;
-
     }
 
     setPerfil(null);
-
   }
 
   useEffect(() => {
-
     async function initialize() {
-
       setLoading(true);
 
-      const {
-        data,
-      } =
-        await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
+      const currentSession = data.session;
+      const currentUser = currentSession?.user ?? null;
 
-      const currentSession =
-        data.session;
-
-      const currentUser =
-        currentSession?.user ??
-        null;
-
-      setSession(
-        currentSession,
-      );
-
+      setSession(currentSession);
       setUser(currentUser);
-
-      await loadPerfil(
-        currentUser,
-      );
+      await loadPerfil(currentUser);
 
       setLoading(false);
-
     }
 
     initialize();
 
-    const {
-      data: listener,
-    } =
-      supabase.auth.onAuthStateChange(
-        async (
-          _event,
-          session,
-        ) => {
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        const currentUser = session?.user ?? null;
+        setSession(session);
+        setUser(currentUser);
+        await loadPerfil(currentUser);
+        setLoading(false);
+      },
+    );
 
-          const currentUser =
-            session?.user ??
-            null;
-
-          setSession(session);
-
-          setUser(currentUser);
-
-          await loadPerfil(
-            currentUser,
-          );
-
-          setLoading(false);
-
-        },
-      );
-
-    return () => {
-
-      listener.subscription.unsubscribe();
-
-    };
-
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   async function logout() {
-
     await supabase.auth.signOut();
-
-    window.location.href =
-      "/";
-
+    window.location.href = "/";
   }
 
-  return (
+  const isAdmin = perfil?.tipo === "admin";
+  const isGod = perfil?.isGod === true;
 
+  return (
     <AuthContext.Provider
       value={{
         user,
@@ -222,30 +126,19 @@ export function AuthProvider({
         perfil,
         loading,
         logout,
+        isAdmin,
+        isGod,
       }}
     >
-
       {children}
-
     </AuthContext.Provider>
-
   );
-
 }
 
 export function useAuth() {
-
-  const context =
-    useContext(AuthContext);
-
+  const context = useContext(AuthContext);
   if (!context) {
-
-    throw new Error(
-      "useAuth precisa estar dentro do AuthProvider",
-    );
-
+    throw new Error("useAuth precisa estar dentro do AuthProvider");
   }
-
   return context;
-
-} 
+}

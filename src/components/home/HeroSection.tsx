@@ -4,6 +4,10 @@ import { motion } from "framer-motion";
 import { ArrowRight, Leaf, Users, Award, PlayCircle } from "lucide-react";
 import { useESGMetrics } from "@/hooks/useESGMetrics";
 
+import "../../../styles/admin.css";
+import "../../../styles/components.css";
+import "../../styles/globals.css";
+
 export default function HeroSection() {
   const { loading, totalPeso, familiasImpactadas, co2 } = useESGMetrics();
 

@@ -1,17 +1,16 @@
 "use client";
 
 import { useState } from "react";
-
 import { useRouter } from "next/navigation";
-
 import {
   ShieldCheck,
   Mail,
   Lock,
   AlertTriangle,
   X,
+  Eye,
+  EyeOff,
 } from "lucide-react";
-
 import { supabase } from "@/lib/supabase";
 
 type Props = {
@@ -19,509 +18,159 @@ type Props = {
   onClose: () => void;
 };
 
-export default function AdminModal({
-  open,
-  onClose,
-}: Props) {
-
+export default function AdminModal({ open, onClose }: Props) {
   const router = useRouter();
-
-  const [email, setEmail] =
-    useState("");
-
-  const [password, setPassword] =
-    useState("");
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [error, setError] =
-    useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleLogin() {
-
     try {
-
       setLoading(true);
-
       setError("");
 
-      // LOGIN
-
-      const {
-        data,
-        error: loginError,
-      } =
+      const { data, error: loginError } =
         await supabase.auth.signInWithPassword({
-
-          email:
-            email
-              .trim()
-              .toLowerCase(),
-
+          email: email.trim().toLowerCase(),
           password,
-
         });
 
-      if (loginError) {
-
-        setError(
-          "Email ou senha inválidos.",
-        );
-
+      if (loginError || !data.user) {
+        setError("Email ou senha inválidos.");
         return;
-
       }
 
-      if (!data.user) {
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
-        setError(
-          "Usuário inválido.",
-        );
-
-        return;
-
-      }
-
-      // ESPERA SESSÃO ESTABILIZAR
-
-      await new Promise(
-        (resolve) =>
-          setTimeout(
-            resolve,
-            1200,
-          ),
-      );
-
-      // PEGA SESSÃO REAL
-
-      const {
-        data: sessionData,
-      } =
-        await supabase.auth.getSession();
-
-      const sessionUser =
-        sessionData
-          ?.session?.user;
+      const { data: sessionData } = await supabase.auth.getSession();
+      const sessionUser = sessionData?.session?.user;
 
       if (!sessionUser) {
-
-        setError(
-          "Sessão inválida.",
-        );
-
+        setError("Sessão inválida.");
         return;
-
       }
 
-      // BUSCA ADMIN
-
-      const {
-        data: admin,
-        error: adminError,
-      } = await supabase
+      const { data: admin } = await supabase
         .from("admins")
         .select("*")
-        .eq(
-          "auth_user_id",
-          sessionUser.id,
-        )
+        .eq("auth_user_id", sessionUser.id)
         .eq("ativo", true)
         .maybeSingle();
 
-      console.log(
-        "ADMIN:",
-        admin,
-      );
-
-      console.log(
-        "ADMIN ERROR:",
-        adminError,
-      );
-
-      if (
-        adminError ||
-        !admin
-      ) {
-
+      if (!admin) {
         await supabase.auth.signOut();
-
-        setError(
-          "Acesso permitido apenas para administradores.",
-        );
-
+        setError("Acesso permitido apenas para administradores.");
         return;
-
       }
 
-      // UPDATE LOGIN
-
+      // Atualizar último login
       await supabase
         .from("admins")
-        .update({
-          ultimo_login:
-            new Date().toISOString(),
-        })
-        .eq(
-          "auth_user_id",
-          sessionUser.id,
-        );
+        .update({ ultimo_login: new Date().toISOString() })
+        .eq("auth_user_id", sessionUser.id);
 
       onClose();
-
       router.push("/admin");
-
       router.refresh();
-
     } catch (err) {
-
-      console.log(err);
-
-      setError(
-        "Erro inesperado.",
-      );
-
+      console.error(err);
+      setError("Erro inesperado. Tente novamente.");
     } finally {
-
       setLoading(false);
-
     }
-
   }
 
   if (!open) return null;
 
   return (
-
-    <div
-      className="
-        fixed
-        inset-0
-        z-999
-        bg-black/60
-        backdrop-blur-md
-        flex
-        items-center
-        justify-center
-        p-5
-      "
-    >
-
-      <div
-        className="
-          relative
-          w-full
-          max-w-md
-          overflow-hidden
-          rounded-[38px]
-          bg-white
-          shadow-[0_25px_90px_rgba(0,0,0,0.35)]
-        "
-      >
-
-        {/* HEADER */}
-
-        <div
-          className="
-            relative
-            bg-linear-to-br
-            from-[#111827]
-            via-[#1F2937]
-            to-[#0F172A]
-            px-8
-            pt-8
-            pb-20
-          "
-        >
-
-          {/* CLOSE */}
-
+    <div className="fixed inset-0 z-9999 bg-black/70 backdrop-blur-md flex items-center justify-center p-5">
+      <div className="relative w-full max-w-md overflow-hidden rounded-[38px] bg-white shadow-2xl">
+        {/* Header */}
+        <div className="relative bg-linear-to-br from-[#111827] to-[#1F2937] px-8 pt-8 pb-20 text-white">
           <button
             onClick={onClose}
-            className="
-              absolute
-              top-5
-              right-5
-              w-11
-              h-11
-              rounded-2xl
-              bg-white/10
-              hover:bg-white/20
-              transition-all
-              flex
-              items-center
-              justify-center
-              text-white
-            "
+            className="absolute top-5 right-5 w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/20 transition flex items-center justify-center"
           >
-
             <X size={18} />
-
           </button>
 
-          {/* ICON */}
-
-          <div
-            className="
-              w-20
-              h-20
-              rounded-[28px]
-              bg-white
-              text-[#111827]
-              flex
-              items-center
-              justify-center
-              shadow-2xl
-            "
-          >
-
-            <ShieldCheck
-              size={34}
-            />
-
+          <div className="w-20 h-20 rounded-[28px] bg-white text-[#111827] flex items-center justify-center shadow-2xl mx-auto">
+            <ShieldCheck size={38} />
           </div>
 
-          {/* TITLE */}
-
-          <h2
-            className="
-              mt-7
-              text-4xl
-              font-black
-              tracking-tight
-              text-white
-            "
-          >
-
-            Administração
-
+          <h2 className="mt-7 text-4xl font-black tracking-tight text-center">
+            Área Administrativa Privada
           </h2>
-
-          <p
-            className="
-              mt-3
-              text-white/70
-              leading-7
-            "
-          >
-
-            Área exclusiva para
-            administradores ACMRB.
-
+          <p className="mt-3 text-white/70 text-center">
+            Acesso exclusivo para administradores da ACMRB
           </p>
-
         </div>
 
-        {/* FORM */}
-
-        <div
-          className="
-            relative
-            px-8
-            pb-8
-            -mt-10
-          "
-        >
-
-          <div
-            className="
-              rounded-4xl
-              bg-white
-              border
-              border-black/5
-              shadow-xl
-              p-6
-              space-y-5
-            "
-          >
-
-            {/* EMAIL */}
-
+        {/* Form */}
+        <div className="relative px-8 pb-8 -mt-10">
+          <div className="rounded-4xl bg-white border border-black/5 shadow-xl p-8 space-y-6">
+            {/* Email */}
             <div>
-
-              <label
-                className="
-                  text-sm
-                  font-black
-                  text-zinc-700
-                "
-              >
-
+              <label className="text-sm font-bold text-zinc-700 block mb-2">
                 Email administrativo
-
               </label>
-
-              <div
-                className="
-                  mt-2
-                  flex
-                  items-center
-                  gap-3
-                  h-14
-                  px-5
-                  rounded-2xl
-                  border
-                  border-zinc-200
-                  bg-zinc-50
-                "
-              >
-
-                <Mail
-                  size={18}
-                  className="
-                    text-zinc-400
-                  "
-                />
-
+              <div className="flex items-center gap-3 h-14 px-5 rounded-2xl border border-zinc-200 bg-zinc-50">
+                <Mail size={18} className="text-zinc-400" />
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) =>
-                    setEmail(
-                      e.target.value,
-                    )
-                  }
-                  className="
-                    w-full
-                    bg-transparent
-                    outline-none
-                    text-zinc-800
-                  "
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-transparent outline-none text-zinc-800"
+                  placeholder="seu@email.com"
                 />
-
               </div>
-
             </div>
 
-            {/* PASSWORD */}
-
+            {/* Password */}
             <div>
-
-              <label
-                className="
-                  text-sm
-                  font-black
-                  text-zinc-700
-                "
-              >
-
+              <label className="text-sm font-bold text-zinc-700 block mb-2">
                 Senha
-
               </label>
-
-              <div
-                className="
-                  mt-2
-                  flex
-                  items-center
-                  gap-3
-                  h-14
-                  px-5
-                  rounded-2xl
-                  border
-                  border-zinc-200
-                  bg-zinc-50
-                "
-              >
-
-                <Lock
-                  size={18}
-                  className="
-                    text-zinc-400
-                  "
-                />
-
+              <div className="flex items-center gap-3 h-14 px-5 rounded-2xl border border-zinc-200 bg-zinc-50">
+                <Lock size={18} className="text-zinc-400" />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) =>
-                    setPassword(
-                      e.target.value,
-                    )
-                  }
-                  className="
-                    w-full
-                    bg-transparent
-                    outline-none
-                    text-zinc-800
-                  "
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-transparent outline-none text-zinc-800"
+                  placeholder="••••••••"
                 />
-
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-zinc-400 hover:text-zinc-600"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
-
             </div>
 
-            {/* ERROR */}
-
+            {/* Error */}
             {error && (
-
-              <div
-                className="
-                  flex
-                  items-start
-                  gap-3
-                  rounded-2xl
-                  border
-                  border-red-200
-                  bg-red-50
-                  px-4
-                  py-4
-                  text-sm
-                  text-red-600
-                "
-              >
-
-                <AlertTriangle
-                  size={18}
-                  className="
-                    mt-0.5
-                    shrink-0
-                  "
-                />
-
-                <span>
-                  {error}
-                </span>
-
+              <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-4 py-4 text-sm text-red-600">
+                <AlertTriangle size={18} className="mt-0.5 shrink-0" />
+                <span>{error}</span>
               </div>
-
             )}
 
-            {/* BUTTON */}
-
+            {/* Button */}
             <button
               onClick={handleLogin}
               disabled={loading}
-              className="
-                w-full
-                h-14
-                rounded-2xl
-                bg-linear-to-r
-                from-[#2E5E4E]
-                to-[#1E3A32]
-                hover:opacity-95
-                text-white
-                font-black
-                transition-all
-                shadow-xl 
-                disabled:opacity-60
-              "
+              className="w-full h-14 rounded-3xl bg-linear-to-r from-[#2E5E4E] to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
             >
-
-              {loading
-                ? "Entrando..."
-                : "Entrar no painel"}
-
+              {loading ? "Entrando..." : "Entrar no Painel"}
             </button>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
-
   );
-
 }

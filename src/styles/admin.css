@@ -1,0 +1,22 @@
+/* Admin Modal Styles */
+.fixed.inset-0.z-9999 {
+  z-index: 9999;
+}
+
+.bg-linear-to-br {
+  background: linear-gradient(to bottom right, var(--tw-gradient-stops));
+}
+
+/* Form styles */
+.rounded-4xl {
+  border-radius: 2rem;
+}
+
+.h-14 {
+  height: 3.5rem;
+}
+
+/* Button */
+.bg-linear-to-r {
+  background: linear-gradient(to right, var(--tw-gradient-stops));
+}

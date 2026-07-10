@@ -2,6 +2,9 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Leaf, Users2, Building2 } from "lucide-react";
+import "../../app/globals.css";
+import "../../styles/sections.css";
+import "../../styles/components.css";
 
 export default function AboutSection() {
   return (

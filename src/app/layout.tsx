@@ -2,6 +2,8 @@
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import type { Metadata, Viewport } from "next";
+import "../styles/admin.css";
+import "../styles/components.css";
 
 export const metadata: Metadata = {
   title: {
