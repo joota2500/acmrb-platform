@@ -3,13 +3,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 import {
   ArrowLeft,
   ArrowRight,
-  Phone,
-  Mail,
-  MapPin,
   Recycle,
   Users,
   HeartHandshake,
@@ -23,9 +21,14 @@ import {
   Sparkles,
   Clock3,
   ChevronRight,
+  Handshake,
+  Heart,
+  Scale,
+  Sun,
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
+import "@/styles/quem-somos.css";
 
 type Associado = {
   id: string;
@@ -46,587 +49,134 @@ type Associado = {
 };
 
 export default function QuemSomosPage() {
-
-  const [associados, setAssociados] =
-    useState<Associado[]>([]);
-
-  const [totalAssociados, setTotalAssociados] =
-    useState(0);
-
-  const [loading, setLoading] =
-    useState(true);
+  const [associados, setAssociados] = useState<Associado[]>([]);
+  const [totalAssociados, setTotalAssociados] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   async function carregarAssociados() {
-
     try {
-
       setLoading(true);
 
-      const { data } =
-        await supabase
-          .from("associados")
-          .select("*")
-          .eq("ativo", true)
-          .order("destaque", {
-            ascending: false,
-          })
-          .limit(4);
+      const { data } = await supabase
+        .from("associados")
+        .select("*")
+        .eq("ativo", true)
+        .order("destaque", { ascending: false })
+        .limit(4);
 
-      setAssociados(
-        (data as Associado[]) || [],
-      );
+      setAssociados((data as Associado[]) || []);
 
-      const { count } =
-        await supabase
-          .from("associados")
-          .select("*", {
-            count: "exact",
-            head: true,
-          });
+      const { count } = await supabase
+        .from("associados")
+        .select("*", { count: "exact", head: true });
 
       setTotalAssociados(count || 0);
-
     } catch (error) {
-
       console.error(error);
-
     } finally {
-
       setLoading(false);
-
     }
-
   }
 
   useEffect(() => {
-
     carregarAssociados();
-
   }, []);
 
   return (
+    <main className="qs-page">
+      {/* ==================== HERO ==================== */}
+      <section className="qs-hero">
+        <div className="qs-hero-bg" />
+        <div className="qs-hero-blob" />
 
-    <main className="bg-[#F4F7F3] overflow-hidden">
-
-      {/* HERO */}
-
-      <section
-        className="
-          relative
-          pt-24
-          md:pt-28
-          pb-20
-          md:pb-24
-        "
-      >
-
-        <div
-          className="
-            absolute
-            inset-0
-            bg-linear-to-b
-            from-[#DDF5EC]
-            to-transparent
-            opacity-70
-          "
-        />
-
-        <div
-          className="
-            absolute
-            top-0
-            right-0
-            w-125
-            h-125
-            bg-[#DDF5EC]
-            blur-3xl
-            opacity-40
-            rounded-full
-          "
-        />
-
-        <div
-          className="
-            relative
-            max-w-7xl
-            mx-auto
-            px-4
-            md:px-5
-          "
-        >
-
-          {/* VOLTAR */}
-
-          <Link
-            href="/"
-            className="
-              inline-flex
-              items-center
-              gap-3
-              h-12
-              px-5
-              rounded-2xl
-              bg-white
-              border
-              border-black/5
-              shadow-sm
-              hover:shadow-lg
-              hover:-translate-y-0.5
-              transition-all
-              text-[#111827]
-              font-semibold
-            "
-          >
-
+        <div className="qs-container">
+          <Link href="/" className="qs-back">
             <ArrowLeft size={18} />
-
             Voltar para início
-
           </Link>
 
-          {/* HERO */}
-
-          <div
-            className="
-              mt-8
-              bg-white
-              rounded-[42px]
-              overflow-hidden
-              border
-              border-black/5
-              shadow-2xl
-            "
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="qs-hero-card"
           >
-
-            <div
-              className="
-                grid
-                xl:grid-cols-2
-              "
-            >
-
-              {/* TEXTO */}
-
-              <div
-                className="
-                  p-6
-                  sm:p-8
-                  md:p-14
-                  xl:p-16
-                "
-              >
-
-                <div
-                  className="
-                    inline-flex
-                    items-center
-                    gap-3
-                    px-5
-                    py-3
-                    rounded-full
-                    bg-[#DDF5EC]
-                    text-[#2E5E4E]
-                    font-bold
-                    text-xs
-                    md:text-sm
-                  "
-                >
-
+            <div className="qs-hero-grid">
+              <div className="qs-hero-content">
+                <div className="qs-badge">
                   <Recycle size={18} />
-
                   Associação Reciclaê • ACMRB
-
                 </div>
 
-                <h1
-                  className="
-                    mt-8
-                    text-4xl
-                    sm:text-5xl
-                    md:text-6xl
-                    font-black
-                    leading-[1.05]
-                    text-[#111827]
-                  "
-                >
-                  Transformando vidas através da
-                  reciclagem, dignidade e inclusão
-                  social.
+                <h1 className="qs-title">
+                  Transformando vidas através da reciclagem, dignidade e
+                  inclusão social.
                 </h1>
 
-                <p
-                  className="
-                    mt-8
-                    text-base
-                    md:text-lg
-                    xl:text-xl
-                    leading-8
-                    md:leading-9
-                    text-zinc-600
-                    text-justify
-                  "
-                >
-                  A Associação dos Catadores de
-                  Materiais Recicláveis de
-                  Baturité nasceu da luta diária de
-                  trabalhadores que sobreviveram
-                  durante anos em condições
-                  extremamente difíceis no antigo
-                  lixão municipal.
+                <p className="qs-text">
+                  A Associação dos Catadores de Materiais Recicláveis de
+                  Baturité nasceu da luta diária de trabalhadores que
+                  sobreviveram durante anos em condições extremamente difíceis
+                  no antigo lixão municipal.
                 </p>
 
-                <p
-                  className="
-                    mt-6
-                    text-base
-                    md:text-lg
-                    leading-8
-                    md:leading-9
-                    text-zinc-600
-                    text-justify
-                  "
-                >
-                  Hoje a ACMRB representa uma nova
-                  oportunidade para dezenas de
-                  famílias que buscam renda,
-                  reconhecimento, estrutura,
-                  inclusão social e valorização do
-                  trabalho ambiental.
+                <p className="qs-text" style={{ marginTop: "1.25rem" }}>
+                  Hoje a ACMRB representa uma nova oportunidade para dezenas de
+                  famílias que buscam renda, reconhecimento, estrutura, inclusão
+                  social e valorização do trabalho ambiental.
                 </p>
 
-                {/* BADGES */}
-
-                <div
-                  className="
-                    flex
-                    flex-wrap
-                    gap-3
-                    mt-8
-                  "
-                >
-
-                  <div
-                    className="
-                      h-12
-                      px-5
-                      rounded-2xl
-                      bg-[#F5F7F4]
-                      border
-                      border-black/5
-                      flex
-                      items-center
-                      gap-3
-                      text-sm
-                      font-semibold
-                      text-[#111827]
-                    "
-                  >
-
-                    <ShieldCheck
-                      size={18}
-                      className="text-[#2E5E4E]"
-                    />
-
+                <div className="qs-tags">
+                  <div className="qs-tag">
+                    <ShieldCheck size={16} />
                     Projeto ESG
-
                   </div>
-
-                  <div
-                    className="
-                      h-12
-                      px-5
-                      rounded-2xl
-                      bg-[#F5F7F4]
-                      border
-                      border-black/5
-                      flex
-                      items-center
-                      gap-3
-                      text-sm
-                      font-semibold
-                      text-[#111827]
-                    "
-                  >
-
-                    <Sparkles
-                      size={18}
-                      className="text-[#2E5E4E]"
-                    />
-
+                  <div className="qs-tag">
+                    <Sparkles size={16} />
                     Inclusão social
-
                   </div>
-
-                  <div
-                    className="
-                      h-12
-                      px-5
-                      rounded-2xl
-                      bg-[#F5F7F4]
-                      border
-                      border-black/5
-                      flex
-                      items-center
-                      gap-3
-                      text-sm
-                      font-semibold
-                      text-[#111827]
-                    "
-                  >
-
-                    <Leaf
-                      size={18}
-                      className="text-[#2E5E4E]"
-                    />
-
+                  <div className="qs-tag">
+                    <Leaf size={16} />
                     Sustentabilidade
-
                   </div>
-
                 </div>
 
-                {/* STATS */}
-
-                <div
-                  className="
-                    grid
-                    grid-cols-2
-                    md:grid-cols-4
-                    gap-4
-                    mt-10
-                  "
-                >
-
-                  <div
-                    className="
-                      bg-[#F5F7F4]
-                      rounded-3xl
-                      p-5
-                      border
-                      border-black/5
-                    "
-                  >
-
-                    <Users
-                      size={28}
-                      className="text-[#2E5E4E]"
-                    />
-
-                    <h3
-                      className="
-                        mt-4
-                        text-2xl
-                        md:text-3xl
-                        font-black
-                        text-[#111827]
-                      "
-                    >
-                      {totalAssociados}+
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-500
-                        mt-1
-                        text-xs
-                        md:text-sm
-                      "
-                    >
-                      Associados
-                    </p>
-
+                {/* Contadores - dados do banco */}
+                <div className="qs-stats">
+                  <div className="qs-stat">
+                    <Users size={24} />
+                    <h3>{totalAssociados}+</h3>
+                    <p>Associados</p>
                   </div>
-
-                  <div
-                    className="
-                      bg-[#F5F7F4]
-                      rounded-3xl
-                      p-5
-                      border
-                      border-black/5
-                    "
-                  >
-
-                    <HeartHandshake
-                      size={28}
-                      className="text-[#2E5E4E]"
-                    />
-
-                    <h3
-                      className="
-                        mt-4
-                        text-2xl
-                        md:text-3xl
-                        font-black
-                        text-[#111827]
-                      "
-                    >
-                      30+
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-500
-                        mt-1
-                        text-xs
-                        md:text-sm
-                      "
-                    >
-                      Famílias impactadas
-                    </p>
-
+                  <div className="qs-stat">
+                    <HeartHandshake size={24} />
+                    <h3>30+</h3>
+                    <p>Famílias impactadas</p>
                   </div>
-
-                  <div
-                    className="
-                      bg-[#F5F7F4]
-                      rounded-3xl
-                      p-5
-                      border
-                      border-black/5
-                    "
-                  >
-
-                    <Recycle
-                      size={28}
-                      className="text-[#2E5E4E]"
-                    />
-
-                    <h3
-                      className="
-                        mt-4
-                        text-2xl
-                        md:text-3xl
-                        font-black
-                        text-[#111827]
-                      "
-                    >
-                      ESG
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-500
-                        mt-1
-                        text-xs
-                        md:text-sm
-                      "
-                    >
-                      Sustentabilidade
-                    </p>
-
+                  <div className="qs-stat">
+                    <Recycle size={24} />
+                    <h3>ESG</h3>
+                    <p>Sustentabilidade</p>
                   </div>
-
-                  <div
-                    className="
-                      bg-[#F5F7F4]
-                      rounded-3xl
-                      p-5
-                      border
-                      border-black/5
-                    "
-                  >
-
-                    <Leaf
-                      size={28}
-                      className="text-[#2E5E4E]"
-                    />
-
-                    <h3
-                      className="
-                        mt-4
-                        text-2xl
-                        md:text-3xl
-                        font-black
-                        text-[#111827]
-                      "
-                    >
-                      2025
-                    </h3>
-
-                    <p
-                      className="
-                        text-zinc-500
-                        mt-1
-                        text-xs
-                        md:text-sm
-                      "
-                    >
-                      Fundação
-                    </p>
-
+                  <div className="qs-stat">
+                    <Leaf size={24} />
+                    <h3>2025</h3>
+                    <p>Fundação</p>
                   </div>
-
                 </div>
 
-                {/* BOTÕES */}
-
-                <div
-                  className="
-                    flex
-                    flex-wrap
-                    gap-4
-                    mt-10
-                  "
-                >
-
-                  <a
-                    href="#associados"
-                    className="
-                      h-14
-                      px-8
-                      rounded-2xl
-                      bg-[#2E5E4E]
-                      hover:bg-[#21463A]
-                      transition-all
-                      text-white
-                      font-bold
-                      inline-flex
-                      items-center
-                      gap-3
-                      shadow-lg
-                      shadow-[#2E5E4E]/20
-                    "
-                  >
-
+                <div className="qs-actions">
+                  <a href="#associados" className="qs-btn-primary">
                     Conhecer associados
-
                     <ArrowRight size={18} />
-
                   </a>
-
-                  <Link
-                    href="/parcerias"
-                    className="
-                      h-14
-                      px-8
-                      rounded-2xl
-                      bg-zinc-100
-                      hover:bg-zinc-200
-                      transition
-                      text-[#111827]
-                      font-bold
-                      inline-flex
-                      items-center
-                    "
-                  >
+                  <Link href="/#contato" className="qs-btn-secondary">
                     Seja parceiro
                   </Link>
-
                 </div>
-
               </div>
 
-              {/* IMAGEM */}
-
-              <div
-                className="
-                  relative
-                  min-h-105
-                  xl:min-h-full
-                "
-              >
-
+              <div className="qs-hero-image">
                 <Image
                   src="/images/acmrb-hero.jpg"
                   alt="ACMRB"
@@ -634,1480 +184,376 @@ export default function QuemSomosPage() {
                   priority
                   className="object-cover"
                 />
-
-                <div
-                  className="
-                    absolute
-                    inset-0
-                    bg-linear-to-t
-                    from-black/70
-                    via-black/20
-                    to-transparent
-                  "
-                />
-
-                <div
-                  className="
-                    absolute
-                    bottom-6
-                    md:bottom-10
-                    left-6
-                    md:left-10
-                    right-6
-                    bg-white/10
-                    backdrop-blur-md
-                    border
-                    border-white/20
-                    rounded-3xl
-                    p-5
-                    md:p-6
-                    text-white
-                  "
-                >
-
-                  <p
-                    className="
-                      text-lg
-                      md:text-2xl
-                      font-black
-                      leading-tight
-                    "
-                  >
-                    “A reciclagem mudou não apenas
-                    o meio ambiente, mas também a
-                    história de dezenas de famílias
-                    em Baturité.”
+                <div className="qs-hero-overlay" />
+                <div className="qs-quote">
+                  <p>
+                    “A reciclagem mudou não apenas o meio ambiente, mas também a
+                    história de dezenas de famílias em Baturité.”
                   </p>
-
                 </div>
-
               </div>
-
             </div>
-
-          </div>
-
+          </motion.div>
         </div>
-
       </section>
 
-      {/* TRAJETÓRIA */}
-
-      <section
-        className="
-          max-w-7xl
-          mx-auto
-          px-4
-          md:px-5
-          pb-24
-        "
-      >
-
-        <div className="mb-14">
-
-          <span
-            className="
-              text-[#2E5E4E]
-              font-bold
-            "
-          >
-            Nossa trajetória
-          </span>
-
-          <h2
-            className="
-              mt-4
-              text-3xl
-              md:text-5xl
-              font-black
-              text-[#111827]
-            "
-          >
-            Uma história construída pela luta.
+      {/* ==================== NOSSA HISTÓRIA (TIMELINE) ==================== */}
+      <section className="qs-section">
+        <div className="qs-section-header">
+          <span className="qs-section-label">Nossa História</span>
+          <h2 className="qs-section-title">
+            Da luta no lixão à construção de um futuro digno
           </h2>
-
+          <p className="qs-section-desc">
+            Uma trajetória marcada pela resistência, organização e esperança dos
+            catadores de Baturité.
+          </p>
         </div>
 
-        <div
-          className="
-            grid
-            xl:grid-cols-3
-            gap-8
-          "
-        >
-
-          {/* CARD 1 */}
-
-          <div
-            className="
-              bg-white
-              rounded-[36px]
-              overflow-hidden
-              border
-              border-black/5
-              shadow-sm
-              hover:shadow-xl
-              transition
-            "
+        <div className="qs-timeline">
+          {/* Item 1 */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="qs-timeline-item"
           >
-
-            <div className="relative h-72">
-
-              <Image
-                src="/images/lixao.jpg"
-                alt="Lixão"
-                fill
-                className="object-cover"
-              />
-
-            </div>
-
-            <div className="p-8">
-
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  text-[#2E5E4E]
-                  font-semibold
-                  text-sm
-                "
-              >
-
-                <Clock3 size={16} />
-
-                História
-
-              </div>
-
-              <h3
-                className="
-                  mt-4
-                  text-3xl
-                  font-black
-                  text-[#111827]
-                "
-              >
-                Antes da associação
-              </h3>
-
-              <p
-                className="
-                  mt-5
-                  text-zinc-600
-                  leading-8
-                  text-base
-                  md:text-lg
-                  text-justify
-                "
-              >
-                Muitos trabalhadores passavam
-                diariamente horas sob o sol no
-                antigo lixão de Baturité,
-                enfrentando condições precárias,
-                riscos ambientais e ausência de
-                estrutura adequada.
+            <div className="qs-timeline-dot" />
+            <div className="qs-timeline-content">
+              <span className="qs-timeline-year">Décadas anteriores</span>
+              <h3>Trabalho no lixão a céu aberto</h3>
+              <p>
+                Por muitos anos, dezenas de famílias sobreviveram coletando
+                materiais recicláveis no antigo lixão municipal de Baturité,
+                enfrentando condições precárias, riscos à saúde e falta de
+                estrutura.
               </p>
-
             </div>
+          </motion.div>
 
-          </div>
-
-          {/* CARD 2 */}
-
-          <div
-            className="
-              bg-[#2E5E4E]
-              text-white
-              rounded-[36px]
-              p-10
-              shadow-2xl
-            "
+          {/* Item 2 */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="qs-timeline-item"
           >
-
-            <Building2 size={44} />
-
-            <h3
-              className="
-                mt-8
-                text-4xl
-                font-black
-              "
-            >
-              Organização e união
-            </h3>
-
-            <p
-              className="
-                mt-6
-                leading-9
-                text-base
-                md:text-lg
-                opacity-90
-                text-justify
-              "
-            >
-              Com apoio institucional da
-              Secretaria de Meio Ambiente,
-              Autarquia Municipal e parceiros,
-              nasceu a ACMRB, iniciando uma nova
-              etapa de inclusão social,
-              valorização humana e fortalecimento
-              ambiental.
-            </p>
-
-            <div
-              className="
-                mt-8
-                flex
-                flex-wrap
-                gap-3
-              "
-            >
-
-              <div
-                className="
-                  px-4
-                  py-2
-                  rounded-full
-                  bg-white/10
-                  border
-                  border-white/10
-                  text-sm
-                  font-semibold
-                "
-              >
-                Inclusão social
-              </div>
-
-              <div
-                className="
-                  px-4
-                  py-2
-                  rounded-full
-                  bg-white/10
-                  border
-                  border-white/10
-                  text-sm
-                  font-semibold
-                "
-              >
-                Logística reversa
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* CARD 3 */}
-
-          <div
-            className="
-              bg-white
-              rounded-[36px]
-              overflow-hidden
-              border
-              border-black/5
-              shadow-sm
-              hover:shadow-xl
-              transition
-            "
-          >
-
-            <div className="relative h-72">
-
-              <Image
-                src="/images/reciclagem.jpg"
-                alt="Reciclagem"
-                fill
-                className="object-cover"
-              />
-
-            </div>
-
-            <div className="p-8">
-
-              <div
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
-                  text-[#2E5E4E]
-                  font-semibold
-                  text-sm
-                "
-              >
-
-                <Award size={16} />
-
-                Futuro
-
-              </div>
-
-              <h3
-                className="
-                  mt-4
-                  text-3xl
-                  font-black
-                  text-[#111827]
-                "
-              >
-                Futuro sustentável
-              </h3>
-
-              <p
-                className="
-                  mt-5
-                  text-zinc-600
-                  leading-8
-                  text-base
-                  md:text-lg
-                  text-justify
-                "
-              >
-                A associação continua buscando
-                novas oportunidades, projetos,
-                capacitações e parcerias ESG para
-                ampliar renda, estrutura e impacto
-                ambiental positivo na região.
+            <div className="qs-timeline-dot" />
+            <div className="qs-timeline-content">
+              <span className="qs-timeline-year">Processo de organização</span>
+              <h3>A união dos catadores</h3>
+              <p>
+                Com o apoio da Secretaria de Meio Ambiente, Autarquia Municipal
+                e parceiros, os catadores começaram a se organizar, buscando
+                reconhecimento, dignidade e melhores condições de trabalho.
               </p>
-
             </div>
+          </motion.div>
 
-          </div>
+          {/* Item 3 */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="qs-timeline-item"
+          >
+            <div className="qs-timeline-dot" />
+            <div className="qs-timeline-content">
+              <span className="qs-timeline-year">2024 – 2025</span>
+              <h3>Fechamento do lixão e transição</h3>
+              <p>
+                Com a inauguração do Aterro Sanitário Regional do Maciço de
+                Baturité (2024) e o processo de desativação do antigo lixão, os
+                catadores iniciaram a transição para um modelo mais organizado e
+                sustentável de coleta e triagem.
+              </p>
+            </div>
+          </motion.div>
 
+          {/* Item 4 */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="qs-timeline-item"
+          >
+            <div className="qs-timeline-dot qs-timeline-dot--active" />
+            <div className="qs-timeline-content">
+              <span className="qs-timeline-year">10 de julho de 2025</span>
+              <h3>Fundação oficial da ACMRB</h3>
+              <p>
+                Nasce formalmente a Associação dos Catadores de Materiais
+                Recicláveis de Baturité (ACMRB – Reciclaê), consolidando a luta
+                por inclusão social, renda digna e valorização do trabalho
+                ambiental.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Item 5 */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="qs-timeline-item"
+          >
+            <div className="qs-timeline-dot" />
+            <div className="qs-timeline-content">
+              <span className="qs-timeline-year">Hoje e amanhã</span>
+              <h3>Construindo o futuro</h3>
+              <p>
+                A ACMRB segue fortalecendo a coleta seletiva, a educação
+                ambiental, as parcerias ESG e a geração de renda para as
+                famílias associadas, transformando a realidade de Baturité.
+              </p>
+            </div>
+          </motion.div>
         </div>
-
       </section>
 
-      {/* ASSOCIADOS */}
+      {/* ==================== NOSSOS VALORES ==================== */}
+      <section className="qs-section">
+        <div className="qs-section-header">
+          <span className="qs-section-label">Nossos Valores</span>
+          <h2 className="qs-section-title">O que nos guia todos os dias</h2>
+        </div>
 
-      <section
-        id="associados"
-        className="
-          max-w-7xl
-          mx-auto
-          px-4
-          md:px-5
-          pb-24
-        "
-      >
-
-        <div
-          className="
-            flex
-            flex-col
-            lg:flex-row
-            lg:items-end
-            lg:justify-between
-            gap-6
-            mb-12
-          "
-        >
-
-          <div>
-
-            <span
-              className="
-                text-[#2E5E4E]
-                font-bold
-              "
-            >
-              Associados
-            </span>
-
-            <h2
-              className="
-                mt-4
-                text-3xl
-                md:text-5xl
-                font-black
-                text-[#111827]
-              "
-            >
-              Pessoas que fazem a diferença todos
-              os dias.
-            </h2>
-
-            <p
-              className="
-                mt-5
-                max-w-3xl
-                text-zinc-600
-                leading-8
-                text-base
-                md:text-lg
-                text-justify
-              "
-            >
-              Conheça alguns dos associados que
-              contribuem diariamente para o
-              fortalecimento ambiental, social e
-              operacional da ACMRB.
-            </p>
-
-          </div>
-
-          <Link
-            href="/associados"
-            className="
-              h-14
-              px-8
-              rounded-2xl
-              bg-[#2E5E4E]
-              hover:bg-[#21463A]
-              transition
-              text-white
-              font-bold
-              inline-flex
-              items-center
-              gap-3
-              shadow-lg
-            "
-          >
-
-            Ver todos os associados
-
-            <ChevronRight size={18} />
-
+        <div className="qs-valores-grid">
+          <Link href="/valores" className="qs-valor-card">
+            <div className="qs-valor-icon">
+              <Heart size={28} />
+            </div>
+            <h3>Dignidade</h3>
+            <p>Valorizamos cada trabalhador e sua história de vida.</p>
           </Link>
 
+          <Link href="/valores" className="qs-valor-card">
+            <div className="qs-valor-icon">
+              <Leaf size={28} />
+            </div>
+            <h3>Sustentabilidade</h3>
+            <p>Cuidamos do meio ambiente e do futuro das próximas gerações.</p>
+          </Link>
+
+          <Link href="/valores" className="qs-valor-card">
+            <div className="qs-valor-icon">
+              <Handshake size={28} />
+            </div>
+            <h3>Inclusão</h3>
+            <p>Promovemos oportunidades reais de renda e reconhecimento.</p>
+          </Link>
+
+          <Link href="/valores" className="qs-valor-card">
+            <div className="qs-valor-icon">
+              <Scale size={28} />
+            </div>
+            <h3>Transparência</h3>
+            <p>Atuamos com clareza, ética e responsabilidade social.</p>
+          </Link>
+
+          <Link href="/valores" className="qs-valor-card">
+            <div className="qs-valor-icon">
+              <Users size={28} />
+            </div>
+            <h3>Trabalho Coletivo</h3>
+            <p>A união dos catadores é a base de toda a nossa força.</p>
+          </Link>
+
+          <Link href="/valores" className="qs-valor-card">
+            <div className="qs-valor-icon">
+              <Sun size={28} />
+            </div>
+            <h3>Educação Ambiental</h3>
+            <p>
+              Conscientizamos a comunidade sobre a importância da reciclagem.
+            </p>
+          </Link>
+        </div>
+      </section>
+
+      {/* ==================== ASSOCIADOS ==================== */}
+      <section id="associados" className="qs-section">
+        <div className="qs-associados-header">
+          <div>
+            <span className="qs-section-label">Associados</span>
+            <h2 className="qs-section-title">
+              Pessoas que fazem a diferença todos os dias.
+            </h2>
+            <p className="qs-section-desc">
+              Conheça alguns dos associados que contribuem diariamente para o
+              fortalecimento ambiental, social e operacional da ACMRB.
+            </p>
+          </div>
+
+          <Link href="/associados" className="qs-btn-primary">
+            Ver todos os associados
+            <ChevronRight size={18} />
+          </Link>
         </div>
 
         {loading ? (
-
-          <div
-            className="
-              bg-white
-              rounded-[36px]
-              p-16
-              text-center
-              border
-              border-black/5
-            "
-          >
-            Carregando associados...
-          </div>
-
+          <div className="qs-loading">Carregando associados...</div>
         ) : (
-
-          <div
-            className="
-              grid
-              md:grid-cols-2
-              xl:grid-cols-4
-              gap-6
-            "
-          >
-
+          <div className="qs-associados-grid">
             {associados.map((item) => (
-
               <Link
                 key={item.id}
                 href={`/associados/${item.slug}`}
-                className="
-                  bg-white
-                  rounded-[36px]
-                  overflow-hidden
-                  border
-                  border-black/5
-                  shadow-sm
-                  hover:-translate-y-1
-                  hover:shadow-2xl
-                  transition-all
-                  group
-                "
+                className="qs-associado-card"
               >
-
-                <div className="relative h-80">
-
-                  <img
-                    src={item.foto_url}
-                    alt={item.nome}
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                      group-hover:scale-105
-                      transition
-                      duration-500
-                    "
-                  />
-
+                <div className="qs-associado-image">
+                  <img src={item.foto_url} alt={item.nome} />
                   {item.destaque && (
-
-                    <div
-                      className="
-                        absolute
-                        top-4
-                        right-4
-                        px-4
-                        py-2
-                        rounded-full
-                        bg-yellow-400
-                        text-black
-                        text-xs
-                        font-bold
-                        shadow-lg
-                      "
-                    >
-                      Destaque
-                    </div>
-
+                    <span className="qs-destaque">Destaque</span>
                   )}
-
                 </div>
-
-                <div className="p-6">
-
-                  <h3
-                    className="
-                      text-2xl
-                      font-black
-                      text-[#111827]
-                    "
-                  >
-                    {item.nome}
-                  </h3>
-
-                  <p
-                    className="
-                      mt-2
-                      text-[#2E5E4E]
-                      font-semibold
-                    "
-                  >
-                    {item.cargo}
-                  </p>
-
-                  <p
-                    className="
-                      mt-1
-                      text-sm
-                      text-zinc-500
-                    "
-                  >
-                    {item.tipo_associado}
-                  </p>
-
-                  <div
-                    className="
-                      mt-6
-                      inline-flex
-                      items-center
-                      gap-2
-                      text-[#2E5E4E]
-                      font-bold
-                    "
-                  >
-
+                <div className="qs-associado-body">
+                  <h3>{item.nome}</h3>
+                  <p className="qs-cargo">{item.cargo}</p>
+                  <p className="qs-tipo">{item.tipo_associado}</p>
+                  <span className="qs-ver-perfil">
                     Ver perfil completo
-
-                    <ArrowRight size={16} />
-
-                  </div>
-
+                    <ArrowRight size={15} />
+                  </span>
                 </div>
-
               </Link>
-
             ))}
-
           </div>
-
         )}
-
       </section>
 
-      {/* IMPACTO ESG */}
-
-      <section
-        className="
-          max-w-7xl
-          mx-auto
-          px-4
-          md:px-5
-          pb-24
-        "
-      >
-
-        <div
-          className="
-            bg-white
-            rounded-[42px]
-            border
-            border-black/5
-            overflow-hidden
-            shadow-sm
-          "
-        >
-
-          <div
-            className="
-              p-8
-              md:p-14
-            "
-          >
-
-            <div
-              className="
-                flex
-                flex-col
-                xl:flex-row
-                xl:items-end
-                xl:justify-between
-                gap-8
-              "
-            >
-
-              <div>
-
-                <span
-                  className="
-                    text-[#2E5E4E]
-                    font-bold
-                  "
-                >
-                  Impacto ESG
-                </span>
-
-                <h2
-                  className="
-                    mt-4
-                    text-3xl
-                    md:text-5xl
-                    font-black
-                    text-[#111827]
-                  "
-                >
-                  Resultados ambientais e sociais.
-                </h2>
-
-              </div>
-
-              <p
-                className="
-                  max-w-2xl
-                  text-zinc-600
-                  leading-8
-                  text-base
-                  md:text-lg
-                  text-justify
-                "
-              >
-                A ACMRB atua diretamente na
-                valorização humana, reciclagem,
-                logística reversa, educação
-                ambiental e redução de impactos
-                ambientais no município de
-                Baturité.
-              </p>
-
-            </div>
-
-            <div
-              className="
-                grid
-                md:grid-cols-2
-                xl:grid-cols-4
-                gap-6
-                mt-14
-              "
-            >
-
-              <div
-                className="
-                  rounded-4xl
-                  bg-[#F5F7F4]
-                  p-8
-                  border
-                  border-black/5
-                "
-              >
-
-                <Recycle
-                  size={42}
-                  className="text-[#2E5E4E]"
-                />
-
-                <h3
-                  className="
-                    mt-6
-                    text-5xl
-                    font-black
-                    text-[#111827]
-                  "
-                >
-                  +12T
-                </h3>
-
-                <p
-                  className="
-                    mt-3
-                    text-zinc-600
-                    leading-7
-                  "
-                >
-                  Materiais recicláveis
-                  destinados corretamente.
-                </p>
-
-              </div>
-
-              <div
-                className="
-                  rounded-4xl
-                  bg-[#F5F7F4]
-                  p-8
-                  border
-                  border-black/5
-                "
-              >
-
-                <Users
-                  size={42}
-                  className="text-[#2E5E4E]"
-                />
-
-                <h3
-                  className="
-                    mt-6
-                    text-5xl
-                    font-black
-                    text-[#111827]
-                  "
-                >
-                  30+
-                </h3>
-
-                <p
-                  className="
-                    mt-3
-                    text-zinc-600
-                    leading-7
-                  "
-                >
-                  Famílias impactadas
-                  diretamente pela associação.
-                </p>
-
-              </div>
-
-              <div
-                className="
-                  rounded-4xl
-                  bg-[#F5F7F4]
-                  p-8
-                  border
-                  border-black/5
-                "
-              >
-
-                <Leaf
-                  size={42}
-                  className="text-[#2E5E4E]"
-                />
-
-                <h3
-                  className="
-                    mt-6
-                    text-5xl
-                    font-black
-                    text-[#111827]
-                  "
-                >
-                  ESG
-                </h3>
-
-                <p
-                  className="
-                    mt-3
-                    text-zinc-600
-                    leading-7
-                  "
-                >
-                  Sustentabilidade, inclusão
-                  social e responsabilidade
-                  ambiental.
-                </p>
-
-              </div>
-
-              <div
-                className="
-                  rounded-4xl
-                  bg-[#F5F7F4]
-                  p-8
-                  border
-                  border-black/5
-                "
-              >
-
-                <Award
-                  size={42}
-                  className="text-[#2E5E4E]"
-                />
-
-                <h3
-                  className="
-                    mt-6
-                    text-5xl
-                    font-black
-                    text-[#111827]
-                  "
-                >
-                  2026
-                </h3>
-
-                <p
-                  className="
-                    mt-3
-                    text-zinc-600
-                    leading-7
-                  "
-                >
-                  Expansão institucional,
-                  parcerias e novos projetos.
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* AÇÕES FUTURAS */}
-
-      <section
-        className="
-          max-w-7xl
-          mx-auto
-          px-4
-          md:px-5
-          pb-24
-        "
-      >
-
-        <div
-          className="
-            flex
-            flex-col
-            lg:flex-row
-            gap-8
-          "
-        >
-
-          <div
-            className="
-              flex-1
-              bg-[#111827]
-              rounded-[42px]
-              p-8
-              md:p-14
-              text-white
-              relative
-              overflow-hidden
-            "
-          >
-
-            <div
-              className="
-                absolute
-                top-0
-                right-0
-                w-80
-                h-80
-                bg-white/5
-                rounded-full
-                blur-3xl
-              "
-            />
-
-            <div className="relative">
-
-              <span
-                className="
-                  inline-flex
-                  items-center
-                  gap-3
-                  px-5
-                  py-3
-                  rounded-full
-                  bg-white/10
-                  border
-                  border-white/10
-                  text-sm
-                  font-bold
-                "
-              >
-
-                <Sparkles size={18} />
-
-                Próximos passos
-
-              </span>
-
-              <h2
-                className="
-                  mt-8
-                  text-3xl
-                  md:text-5xl
-                  font-black
-                  leading-tight
-                "
-              >
-                Expansão institucional e novas
-                ações ambientais.
+      {/* ==================== IMPACTO ESG ==================== */}
+      <section className="qs-section">
+        <div className="qs-esg-wrapper">
+          <div className="qs-esg-header">
+            <div>
+              <span className="qs-section-label">Impacto ESG</span>
+              <h2 className="qs-section-title">
+                Resultados ambientais e sociais.
               </h2>
-
-              <p
-                className="
-                  mt-8
-                  text-zinc-300
-                  leading-8
-                  text-base
-                  md:text-lg
-                  text-justify
-                  max-w-3xl
-                "
-              >
-                A ACMRB busca ampliar sua atuação
-                com educação ambiental, coleta
-                seletiva, novas parcerias ESG,
-                capacitações técnicas,
-                profissionalização operacional e
-                fortalecimento da economia
-                circular em Baturité.
-              </p>
-
-              <div
-                className="
-                  grid
-                  md:grid-cols-2
-                  gap-4
-                  mt-10
-                "
-              >
-
-                <div
-                  className="
-                    rounded-3xl
-                    bg-white/5
-                    border
-                    border-white/10
-                    p-5
-                  "
-                >
-
-                  <BadgeCheck
-                    size={24}
-                  />
-
-                  <h3
-                    className="
-                      mt-4
-                      text-xl
-                      font-black
-                    "
-                  >
-                    Educação ambiental
-                  </h3>
-
-                </div>
-
-                <div
-                  className="
-                    rounded-3xl
-                    bg-white/5
-                    border
-                    border-white/10
-                    p-5
-                  "
-                >
-
-                  <ShieldCheck
-                    size={24}
-                  />
-
-                  <h3
-                    className="
-                      mt-4
-                      text-xl
-                      font-black
-                    "
-                  >
-                    Projetos ESG
-                  </h3>
-
-                </div>
-
-                <div
-                  className="
-                    rounded-3xl
-                    bg-white/5
-                    border
-                    border-white/10
-                    p-5
-                  "
-                >
-
-                  <Recycle
-                    size={24}
-                  />
-
-                  <h3
-                    className="
-                      mt-4
-                      text-xl
-                      font-black
-                    "
-                  >
-                    Coleta seletiva
-                  </h3>
-
-                </div>
-
-                <div
-                  className="
-                    rounded-3xl
-                    bg-white/5
-                    border
-                    border-white/10
-                    p-5
-                  "
-                >
-
-                  <Building2
-                    size={24}
-                  />
-
-                  <h3
-                    className="
-                      mt-4
-                      text-xl
-                      font-black
-                    "
-                  >
-                    Novas parcerias
-                  </h3>
-
-                </div>
-
-              </div>
-
             </div>
-
+            <p className="qs-section-desc">
+              A ACMRB atua diretamente na valorização humana, reciclagem,
+              logística reversa, educação ambiental e redução de impactos
+              ambientais no município de Baturité.
+            </p>
           </div>
 
+          <div className="qs-esg-grid">
+            <div className="qs-esg-card">
+              <Recycle size={28} />
+              <h3>+12T</h3>
+              <p>Materiais recicláveis destinados corretamente.</p>
+            </div>
+            <div className="qs-esg-card">
+              <Users size={28} />
+              <h3>30+</h3>
+              <p>Famílias impactadas diretamente pela associação.</p>
+            </div>
+            <div className="qs-esg-card">
+              <Leaf size={28} />
+              <h3>ESG</h3>
+              <p>
+                Sustentabilidade, inclusão social e responsabilidade ambiental.
+              </p>
+            </div>
+            <div className="qs-esg-card">
+              <Award size={28} />
+              <h3>2026</h3>
+              <p>Expansão institucional, parcerias e novos projetos.</p>
+            </div>
+          </div>
         </div>
-
       </section>
 
-      {/* VIDEO */}
+      {/* ==================== AÇÕES FUTURAS ==================== */}
+      <section className="qs-section">
+        <div className="qs-future">
+          <span className="qs-future-badge">
+            <Sparkles size={16} />
+            Próximos passos
+          </span>
 
-      <section
-        className="
-          max-w-7xl
-          mx-auto
-          px-4
-          md:px-5
-          pb-24
-        "
-      >
+          <h2>Expansão institucional e novas ações ambientais.</h2>
 
-        <div
-          className="
-            bg-white
-            rounded-[42px]
-            overflow-hidden
-            border
-            border-black/5
-            shadow-sm
-          "
-        >
+          <p>
+            A ACMRB busca ampliar sua atuação com educação ambiental, coleta
+            seletiva, novas parcerias ESG, capacitações técnicas,
+            profissionalização operacional e fortalecimento da economia circular
+            em Baturité.
+          </p>
 
-          <div className="p-8 md:p-14">
-
-            <div
-              className="
-                flex
-                items-center
-                gap-3
-                text-[#2E5E4E]
-                font-bold
-              "
-            >
-
-              <PlayCircle size={22} />
-
-              Vídeo institucional
-
+          <div className="qs-future-grid">
+            <div className="qs-future-item">
+              <BadgeCheck size={22} />
+              <h3>Educação ambiental</h3>
             </div>
-
-            <h2
-              className="
-                mt-5
-                text-3xl
-                md:text-5xl
-                font-black
-                text-[#111827]
-              "
-            >
-              Conheça mais sobre a ACMRB.
-            </h2>
-
+            <div className="qs-future-item">
+              <ShieldCheck size={22} />
+              <h3>Projetos ESG</h3>
+            </div>
+            <div className="qs-future-item">
+              <Recycle size={22} />
+              <h3>Coleta seletiva</h3>
+            </div>
+            <div className="qs-future-item">
+              <Building2 size={22} />
+              <h3>Novas parcerias</h3>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="aspect-video">
-
+      {/* ==================== VÍDEO ==================== */}
+      <section className="qs-section">
+        <div className="qs-video-wrapper">
+          <div className="qs-video-header">
+            <div className="qs-video-label">
+              <PlayCircle size={20} />
+              Vídeo institucional
+            </div>
+            <h2>Conheça mais sobre a ACMRB.</h2>
+          </div>
+          <div className="qs-video">
             <iframe
-              className="w-full h-full"
               src="https://www.youtube.com/embed/ITur0JNJZos"
               title="Vídeo ACMRB"
               allowFullScreen
             />
-
           </div>
-
         </div>
-
       </section>
 
-      {/* INSTAGRAM */}
-
-      <section
-        className="
-          max-w-7xl
-          mx-auto
-          px-4
-          md:px-5
-          pb-24
-        "
-      >
-
-        <div
-          className="
-            flex
-            flex-col
-            lg:flex-row
-            lg:items-end
-            lg:justify-between
-            gap-6
-            mb-12
-          "
-        >
-
+      {/* ==================== INSTAGRAM ==================== */}
+      <section className="qs-section">
+        <div className="qs-instagram-header">
           <div>
-
-            <span
-              className="
-                text-[#2E5E4E]
-                font-bold
-              "
-            >
-              Instagram
-            </span>
-
-            <h2
-              className="
-                mt-4
-                text-3xl
-                md:text-5xl
-                font-black
-                text-[#111827]
-              "
-            >
+            <span className="qs-section-label">Instagram</span>
+            <h2 className="qs-section-title">
               Acompanhe nossas ações ambientais.
             </h2>
-
           </div>
-
           <a
             href="https://instagram.com"
             target="_blank"
-            className="
-              h-14
-              px-8
-              rounded-2xl
-              bg-[#111827]
-              hover:bg-black
-              transition
-              text-white
-              font-bold
-              inline-flex
-              items-center
-              gap-3
-            "
+            rel="noopener noreferrer"
+            className="qs-btn-dark"
           >
-
-            <Globe size={20} />
-
+            <Globe size={18} />
             Ver Instagram
-
           </a>
-
         </div>
 
-        <div
-          className="
-            grid
-            md:grid-cols-3
-            gap-6
-          "
-        >
-
-          <iframe
-            src="https://www.instagram.com/p/DYcEwegMSmg/embed"
-            className="
-              w-full
-              min-h-162.5
-              rounded-3xl
-              bg-white
-              border
-              border-black/5
-            "
-          />
-
-          <iframe
-            src="https://www.instagram.com/reel/DX4O5DgtuE3/embed"
-            className="
-              w-full
-              min-h-162.5
-              rounded-3xl
-              bg-white
-              border
-              border-black/5
-            "
-          />
-
-          <iframe
-            src="https://www.instagram.com/p/DW90q-MF38J/embed"
-            className="
-              w-full
-              min-h-162.5
-              rounded-3xl
-              bg-white
-              border
-              border-black/5
-            "
-          />
-
+        <div className="qs-instagram-grid">
+          <iframe src="https://www.instagram.com/p/DYcEwegMSmg/embed" />
+          <iframe src="https://www.instagram.com/reel/DX4O5DgtuE3/embed" />
+          <iframe src="https://www.instagram.com/p/DW90q-MF38J/embed" />
         </div>
-
       </section>
-
-      {/* FOOTER */}
-
-      <footer
-        className="
-          bg-[#111827]
-          text-white
-          pt-20
-          pb-10
-          relative
-          overflow-hidden
-        "
-      >
-
-        <div
-          className="
-            absolute
-            top-0
-            right-0
-            w-125
-            h-125
-            bg-[#2E5E4E]/20
-            blur-3xl
-            rounded-full
-          "
-        />
-
-        <div
-          className="
-            relative
-            max-w-7xl
-            mx-auto
-            px-4
-            md:px-5
-          "
-        >
-
-          <div
-            className="
-              grid
-              md:grid-cols-2
-              xl:grid-cols-4
-              gap-12
-              pb-16
-              border-b
-              border-white/10
-            "
-          >
-
-            <div>
-
-              <h3
-                className="
-                  text-4xl
-                  font-black
-                "
-              >
-                ACMRB
-              </h3>
-
-              <p
-                className="
-                  mt-5
-                  text-zinc-400
-                  leading-8
-                  text-justify
-                "
-              >
-                Associação dos Catadores de
-                Materiais Recicláveis de
-                Baturité.
-              </p>
-
-            </div>
-
-            <div>
-
-              <h4
-                className="
-                  font-bold
-                  text-xl
-                "
-              >
-                Institucional
-              </h4>
-
-              <div
-                className="
-                  mt-5
-                  flex
-                  flex-col
-                  gap-4
-                  text-zinc-400
-                "
-              >
-
-                <Link href="/">
-                  Início
-                </Link>
-
-                <Link href="/quem-somos">
-                  Quem somos
-                </Link>
-
-                <Link href="/associados">
-                  Associados
-                </Link>
-
-                <Link href="/parcerias">
-                  Parcerias
-                </Link>
-
-              </div>
-
-            </div>
-
-            <div>
-
-              <h4
-                className="
-                  font-bold
-                  text-xl
-                "
-              >
-                Contato
-              </h4>
-
-              <div
-                className="
-                  mt-5
-                  space-y-4
-                  text-zinc-400
-                "
-              >
-
-                <p className="flex gap-3">
-                  <Phone size={18} />
-                  Baturité • Ceará
-                </p>
-
-                <p className="flex gap-3">
-                  <Mail size={18} />
-                  contato@acmrb.org
-                </p>
-
-              </div>
-
-            </div>
-
-            <div>
-
-              <h4
-                className="
-                  font-bold
-                  text-xl
-                "
-              >
-                ESG e sustentabilidade
-              </h4>
-
-              <p
-                className="
-                  mt-5
-                  text-zinc-400
-                  leading-8
-                  text-justify
-                "
-              >
-                Plataforma institucional focada
-                em reciclagem, inclusão social,
-                logística reversa e impacto
-                ambiental positivo.
-              </p>
-
-            </div>
-
-          </div>
-
-          <div
-            className="
-              pt-8
-              flex
-              flex-col
-              md:flex-row
-              md:items-center
-              md:justify-between
-              gap-4
-              text-sm
-              text-zinc-500
-            "
-          >
-
-            <p>
-              © 2026 ACMRB • Todos os direitos
-              reservados.
-            </p>
-
-            <p>
-              Plataforma ESG • Reciclaê
-            </p>
-
-          </div>
-
-        </div>
-
-      </footer>
     </main>
-
   );
-
 }
