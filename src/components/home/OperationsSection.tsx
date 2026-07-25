@@ -2,15 +2,15 @@
 
 import { motion } from "framer-motion";
 import {
-  ArrowRight,
   ClipboardCheck,
   Route,
   Scale,
   FileBarChart,
   Factory,
   Users,
-  Award,
 } from "lucide-react";
+
+import "@/styles/operations-section.css";
 
 const steps = [
   {
@@ -58,51 +58,47 @@ const audiences = [
 
 export default function OperationsSection() {
   return (
-    <section className="section-spacing bg-white relative overflow-hidden">
-      <div className="container-custom">
-        <div className="grid lg:grid-cols-2 gap-16 lg:items-start">
-          {/* Lado Esquerdo - Explicação */}
+    <section className="operations">
+      <div className="operations__container">
+        <div className="operations__layout">
+          {/* Lado Esquerdo */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="lg:sticky lg:top-28"
+            className="operations__left"
           >
-            <div className="section-tag mb-6">Operação Integrada</div>
+            <span className="operations__tag">Operação Integrada</span>
 
-            <h2 className="section-title text-balance">
+            <h2 className="operations__title">
               Do resíduo ao indicador: uma rotina preparada para parceiros,
               comunidade e transparência.
             </h2>
 
-            <p className="section-description mt-8 max-w-xl">
+            <p className="operations__description">
               A ACMRB conecta coleta seletiva, controle de materiais,
               valorização do trabalho dos catadores e dados de impacto em uma
               jornada simples de acompanhar.
             </p>
 
-            {/* Públicos Alvo */}
-            <div className="mt-12 grid gap-6">
+            <div className="operations__audiences">
               {audiences.map((item, index) => {
                 const Icon = item.icon;
                 return (
                   <motion.div
                     key={index}
-                    initial={{ opacity: 0, x: -30 }}
+                    initial={{ opacity: 0, x: -20 }}
                     whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
-                    className="flex gap-5 bg-emerald-50/60 rounded-3xl p-6"
+                    className="operations__audience"
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0">
-                      <Icon size={28} />
+                    <div className="operations__audience-icon">
+                      <Icon size={22} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-xl text-emerald-800">
-                        {item.label}
-                      </h4>
-                      <p className="text-zinc-600 mt-2 leading-relaxed">
-                        {item.text}
-                      </p>
+                      <h4>{item.label}</h4>
+                      <p>{item.text}</p>
                     </div>
                   </motion.div>
                 );
@@ -111,34 +107,28 @@ export default function OperationsSection() {
           </motion.div>
 
           {/* Lado Direito - Passos */}
-          <div className="space-y-6">
+          <div className="operations__steps">
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, y: 40 }}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
-                  className="glass-card rounded-4xl p-8 md:p-10 flex gap-6 group hover:shadow-xl transition-all"
+                  className="operations__step"
                 >
-                  <div className="w-16 h-16 rounded-3xl bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0 group-hover:scale-110 transition">
-                    <Icon size={34} />
+                  <div className="operations__step-icon">
+                    <Icon size={26} />
                   </div>
 
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4">
-                      <span className="font-black text-4xl text-emerald-200">
-                        {step.number}
-                      </span>
-                      <h3 className="text-2xl font-bold text-zinc-900">
-                        {step.title}
-                      </h3>
+                  <div className="operations__step-content">
+                    <div className="operations__step-header">
+                      <span>{step.number}</span>
+                      <h3>{step.title}</h3>
                     </div>
-                    <p className="mt-5 text-zinc-600 leading-relaxed">
-                      {step.description}
-                    </p>
+                    <p>{step.description}</p>
                   </div>
                 </motion.div>
               );
