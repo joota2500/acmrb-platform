@@ -1,0 +1,222 @@
+/* ==================== FOOTER ==================== */
+
+.footer {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid #d1fae5;
+  background: white;
+}
+
+.footer__bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(236, 253, 245, 0.5), white);
+  pointer-events: none;
+}
+
+.footer__container {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .footer__container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* ==================== TOP ==================== */
+.footer__top {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr; /* 3 colunas lado a lado no celular */
+  gap: 1.25rem;
+  padding: 2.5rem 0 2rem;
+}
+
+/* Brand ocupa a linha inteira no celular e tablet */
+.footer__brand {
+  grid-column: 1 / -1;
+}
+
+/* Desktop: 4 colunas lado a lado */
+@media (min-width: 1024px) {
+  .footer__top {
+    grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+    gap: 2.5rem;
+    padding: 4rem 0 3rem;
+  }
+
+  .footer__brand {
+    grid-column: auto;
+  }
+}
+
+/* ==================== BRAND ==================== */
+.footer__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.footer__logo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #059669, #14b8a6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.footer__logo h3 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #064e3b;
+  line-height: 1.1;
+}
+
+.footer__logo p {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.1rem;
+}
+
+.footer__description {
+  margin-top: 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: #4b5563;
+}
+
+/* ==================== COLUMNS ==================== */
+.footer__column h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #064e3b;
+  margin-bottom: 0.9rem;
+}
+
+.footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.footer__links a {
+  font-size: 0.85rem;
+  color: #4b5563;
+  text-decoration: none;
+  transition: color 0.25s;
+}
+
+.footer__links a:hover {
+  color: #059669;
+}
+
+/* ==================== CONTACT ==================== */
+.footer__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.footer__contact-item {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.footer__contact-item svg {
+  color: #059669;
+  flex-shrink: 0;
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+}
+
+.footer__contact-item span {
+  display: block;
+  font-size: 0.7rem;
+  color: #6b7280;
+}
+
+.footer__contact-item p {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-top: 0.1rem;
+}
+
+/* ==================== BOTTOM ==================== */
+.footer__bottom {
+  border-top: 1px solid #d1fae5;
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .footer__bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+    padding: 1.75rem 0;
+  }
+}
+
+.footer__copyright {
+  font-size: 0.8rem;
+  color: #6b7280;
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+.footer__dev {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer__dev p {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.footer__dev span {
+  font-weight: 700;
+  color: #059669;
+}
+
+.footer__social {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.footer__social a {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ecfdf5;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+}
+
+.footer__social a:hover {
+  background: #d1fae5;
+  transform: translateY(-2px);
+}

@@ -4,6 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Footer from "@/components/layout/Footer";
+import InstitutionalSection from "@/components/home/InstitutionalSection";
 
 import {
   ArrowLeft,
@@ -554,6 +556,9 @@ export default function QuemSomosPage() {
           <iframe src="https://www.instagram.com/p/DW90q-MF38J/embed" />
         </div>
       </section>
+
+      {/* ==================== FOOTER ==================== */}
+      <Footer />
     </main>
   );
 }
