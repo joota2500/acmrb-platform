@@ -1,0 +1,189 @@
+/* ==========================================================
+   LOGO - ACMRB
+   ========================================================== */
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
+  user-select: none;
+
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.logo:hover {
+  transform: translateY(-1px);
+}
+
+.logo:active {
+  transform: scale(0.98);
+}
+
+/* ========================================================== */
+
+.logo__icon {
+  width: 56px;
+  height: 56px;
+
+  border-radius: 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(135deg, #10b981, #0f766e);
+
+  box-shadow:
+    0 10px 25px rgba(16, 185, 129, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+  flex-shrink: 0;
+}
+
+.logo__icon div {
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.92);
+}
+
+/* ========================================================== */
+
+.logo__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo__title {
+  margin: 0;
+
+  font-size: 2rem;
+  font-weight: 900;
+
+  line-height: 1;
+
+  letter-spacing: -0.04em;
+
+  color: #18181b;
+}
+
+.dark .logo__title {
+  color: #ffffff;
+}
+
+.logo__subtitle {
+  margin-top: 0.25rem;
+
+  font-size: 0.9rem;
+  font-weight: 500;
+
+  color: #71717a;
+}
+
+.dark .logo__subtitle {
+  color: #a1a1aa;
+}
+
+/* ==========================================================
+   TABLET
+   ========================================================== */
+
+@media (max-width: 1024px) {
+  .logo {
+    gap: 0.8rem;
+  }
+
+  .logo__icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 16px;
+  }
+
+  .logo__icon div {
+    width: 20px;
+    height: 20px;
+  }
+
+  .logo__title {
+    font-size: 1.65rem;
+  }
+
+  .logo__subtitle {
+    font-size: 0.82rem;
+  }
+}
+
+/* ==========================================================
+   MOBILE
+   ========================================================== */
+
+@media (max-width: 768px) {
+  .logo {
+    gap: 0.65rem;
+  }
+
+  .logo__icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+  }
+
+  .logo__icon div {
+    width: 18px;
+    height: 18px;
+  }
+
+  .logo__title {
+    font-size: 1.35rem;
+  }
+
+  .logo__subtitle {
+    font-size: 0.74rem;
+  }
+}
+
+/* ==========================================================
+   CELULARES PEQUENOS
+   ========================================================== */
+
+@media (max-width: 480px) {
+  .logo {
+    gap: 0.55rem;
+  }
+
+  .logo__icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+  }
+
+  .logo__icon::before {
+    content: "";
+
+    width: 24px;
+    height: 24px;
+
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    display: block;
+  }
+
+  .logo__title {
+    font-size: 1.15rem;
+  }
+
+  .logo__subtitle {
+    font-size: 0.68rem;
+  }
+}

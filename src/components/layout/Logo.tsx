@@ -1,38 +1,23 @@
 "use client";
 
+import "@/styles/logo.css";
+
 type Props = {
   onSecretClick?: () => void;
 };
 
-export default function Logo({
-  onSecretClick,
-}: Props) {
-
+export default function Logo({ onSecretClick }: Props) {
   return (
-
-    <button
-      onClick={onSecretClick}
-      className="flex items-center gap-4"
-    >
-
-      <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
-
-        <div className="w-6 h-6 rounded-full bg-white/90" />
-
+    <button type="button" onClick={onSecretClick} className="logo">
+      <div className="logo__icon">
+        <div />
       </div>
 
-      <div className="text-left">
+      <div className="logo__content">
+        <h1 className="logo__title">ACMRB</h1>
 
-        <h1 className="text-2xl font-black tracking-[-0.04em] text-zinc-900">
-          ACMRB
-        </h1>
-
-        <p className="text-sm text-zinc-500 font-medium">
-          Plataforma ESG
-        </p>
-
+        <p className="logo__subtitle">Plataforma ESG</p>
       </div>
-
     </button>
   );
 }

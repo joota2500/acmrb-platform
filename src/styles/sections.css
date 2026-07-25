@@ -3,13 +3,6 @@
   padding-bottom: 4rem;
 }
 
-@media (min-width: 768px) {
-  .section-spacing {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-
 .section-tag {
   display: inline-flex;
   align-items: center;
@@ -38,14 +31,4 @@
   line-height: 1.8;
   color: #52525b;
   text-align: justify;
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .section-title {
-    font-size: 2.3rem;
-  }
-  .section-description {
-    font-size: 0.95rem;
-  }
 }

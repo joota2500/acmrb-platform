@@ -19,7 +19,6 @@
   --border: #334155;
 }
 
-/* Base Global */
 * {
   box-sizing: border-box;
 }
@@ -42,12 +41,4 @@ body {
   margin: 0 auto;
   padding-left: 1rem;
   padding-right: 1rem;
-}
-
-/* Responsividade Global */
-@media (max-width: 768px) {
-  .container-custom {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
 }

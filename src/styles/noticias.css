@@ -1,0 +1,63 @@
+/* ====================== NOTICIAS FORM ====================== */
+
+.noticias-form {
+  background: white;
+  border-radius: 2rem;
+  border: 1px solid #e5e7eb;
+  padding: 2rem;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05);
+}
+
+.noticias-form label {
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.noticias-form input,
+.noticias-form textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #f9fafb;
+  transition: all 0.2s ease;
+}
+
+.noticias-form input:focus,
+.noticias-form textarea:focus {
+  border-color: #166534;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(22, 101, 52, 0.1);
+  outline: none;
+}
+
+.noticias-form button {
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.noticias-form .primary-button {
+  background: linear-gradient(135deg, #166534, #4ade80);
+  color: white;
+}
+
+.noticias-form .switch-label {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.75rem;
+  background: #f9fafb;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.noticias-form .switch-label:hover {
+  border-color: #166534;
+  background: #f0fdf4;
+}

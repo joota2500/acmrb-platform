@@ -1,0 +1,65 @@
+xodigo do header tsx
+#tirado do header e colocado no menu user
+{/* Actions codigo - comentado para desativar temporariamente para testes
+          <div className="flex items-center gap-4 flex-1 md:flex-none justify-end">
+            {!loading && user && perfil ? (
+              <div className="hidden md:flex items-center gap-4">
+                <div className="flex items-center gap-3 pr-4 border-r border-slate-200 dark:border-slate-700">
+                  <div className="text-right">
+                    <p className="font-semibold text-sm">{perfil.nome}</p>
+                    <p className="text-xs text-emerald-600 capitalize">
+                      {perfil.tipo}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 rounded-2xl overflow-hidden ring-2 ring-emerald-100">
+                    {perfil.avatar_url ? (
+                      <img
+                        src={perfil.avatar_url}
+                        alt=""
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-emerald-700 text-white flex items-center justify-center text-xl font-bold">
+                        {perfil.nome?.[0] || "U"}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {perfil.tipo === "admin" && (
+                  <Link
+                    href="/admin"
+                    className="px-7 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-2xl transition-all active:scale-95"
+                  >
+                    Painel
+                  </Link>
+                )}
+
+                <button
+                  onClick={logout}
+                  className="p-3 hover:bg-red-50 rounded-2xl text-red-500 hover:text-red-600 transition"
+                >
+                  <LogOut size={22} />
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden md:block px-8 py-3 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold rounded-2xl transition-all"
+              >
+                Acessar Plataforma
+              </Link>
+            )}
+                  */}
+
+          {/* Mobile Toggle 
+
+            
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden p-4 text-slate-700 dark:text-slate-300"
+            >
+              {menuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
+*/}

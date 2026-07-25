@@ -1,0 +1,161 @@
+/* mobile-menu.css - Versão Melhorada e Profissional */
+
+.mobileOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 55;
+  backdrop-filter: blur(6px);
+}
+
+.mobileMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 380px;
+  height: 100vh;
+  background: #ffffff;
+  z-index: 60;
+  box-shadow: 6px 0 30px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+}
+
+.dark .mobileMenu {
+  background: #0f172a;
+}
+
+/* Cabeçalho do Menu */
+.mobileMenu__header {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dark .mobileMenu__header {
+  border-bottom-color: #334155;
+}
+
+.mobileMenu__close {
+  width: 50px;
+  height: 50px;
+  border: none;
+  background: none;
+  font-size: 1.8rem;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .mobileMenu__close {
+  color: #94a3b8;
+}
+
+/* Conteúdo */
+.mobileMenu__content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mobileNavLink {
+  padding: 1.15rem 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #1e2937;
+  text-decoration: none;
+  border-radius: 14px;
+  transition: all 0.35s ease;
+}
+
+.mobileNavLink:hover {
+  background: #ecfdf5;
+  color: #10b981;
+  transform: translateX(14px);
+}
+
+.dark .mobileNavLink {
+  color: #e2e8f0;
+}
+
+.dark .mobileNavLink:hover {
+  background: #052e16;
+}
+
+/* Seção do Usuário / Login */
+.mobileMenu__user-section {
+  margin-top: 2rem;
+  padding: 1.75rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.dark .mobileMenu__user-section {
+  background: #1e2937;
+  border-color: #334155;
+}
+
+.mobileMenu__user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.mobileMenu__avatar {
+  width: 62px;
+  height: 62px;
+  border-radius: 14px;
+  background: #10b981;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.mobileMenu__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.mobileMenu__login-btn,
+.mobileMenu__admin-btn,
+.mobileMenu__logout-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 8px;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.mobileMenu__login-btn {
+  background: #10b981;
+  color: white;
+  font-size: 1.15rem;
+}
+
+.mobileMenu__admin-btn {
+  background: #10b981;
+  color: white;
+}
+
+.mobileMenu__logout-btn {
+  background: #fee2e2;
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}

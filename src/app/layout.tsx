@@ -1,9 +1,11 @@
-// No topo do arquivo
-import "./globals.css";
+import "@/app/globals.css";
+import "@/styles/logo.css";
+import "@/styles/navigation.css";
+import "@/styles/mobile-menu.css";
+import "@/styles/user-menu.css";
+
 import { AuthProvider } from "@/contexts/AuthContext";
 import type { Metadata, Viewport } from "next";
-import "../styles/admin.css";
-import "../styles/components.css";
 
 export const metadata: Metadata = {
   title: {
@@ -37,7 +39,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#166534", // Verde escuro institucional
+  themeColor: "#166534",
   colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,

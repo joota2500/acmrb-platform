@@ -1,0 +1,99 @@
+/* ============================
+   Navigation
+============================ */
+
+.navigation {
+  display: flex;
+
+  align-items: center;
+
+  gap: 2.5rem;
+}
+
+/* ============================ */
+
+.navigation__link {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 0.85rem 0;
+
+  text-decoration: none;
+
+  transition: 0.3s;
+}
+
+/* ============================ */
+
+.navigation__text {
+  font-size: 0.95rem;
+
+  font-weight: 600;
+
+  color: #475569;
+
+  transition: 0.3s;
+}
+
+.dark .navigation__text {
+  color: #cbd5e1;
+}
+
+/* ============================ */
+
+.navigation__indicator {
+  position: absolute;
+
+  left: 0;
+
+  bottom: -7px;
+
+  width: 0;
+
+  height: 3px;
+
+  border-radius: 999px;
+
+  background: #059669;
+
+  transition: width 0.3s ease;
+}
+
+/* ============================ */
+
+.navigation__link:hover .navigation__text {
+  color: #047857;
+}
+
+.navigation__link:hover .navigation__indicator {
+  width: 100%;
+}
+
+/* ============================ */
+
+.navigation__link--active .navigation__text {
+  color: #047857;
+}
+
+.navigation__link--active .navigation__indicator {
+  width: 100%;
+}
+
+/* ============================ */
+
+@media (max-width: 1200px) {
+  .navigation {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .navigation {
+    display: none;
+  }
+}
