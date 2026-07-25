@@ -55,10 +55,10 @@ export default function Header() {
           >
             <div className="logoIcon">♻</div>
             <div className="leading-none text-left">
-              <div className="font-black text-3xl tracking-[-2.5px] text-emerald-950 dark:text-white">
+              <div className="font-black text-3xl tracking-[-2.5px] text-white">
                 ACMRB
               </div>
-              <div className="text-sm text-emerald-600 dark:text-emerald-400 font-medium tracking-wide">
+              <div className="text-sm text-emerald-200 font-medium tracking-wide">
                 Associação dos Catadores
               </div>
             </div>
@@ -95,7 +95,13 @@ export default function Header() {
       </motion.header>
 
       {/* Mobile Menu - Slide da Esquerda */}
-      <MobileMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+      <MobileMenu
+        isOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        user={user}
+        perfil={perfil}
+        logout={logout}
+      />
 
       <AdminModal open={unlocked} onClose={closeAdmin} />
     </>

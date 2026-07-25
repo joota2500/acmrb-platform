@@ -1,9 +1,9 @@
-/* mobile-menu.css - Versão Melhorada e Profissional */
+/* mobile-menu.css - Versão profissional */
 
 .mobileOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.7);
   z-index: 55;
   backdrop-filter: blur(6px);
 }
@@ -15,14 +15,14 @@
   width: 100%;
   max-width: 380px;
   height: 100vh;
-  background: #ffffff;
+  background: #064e3b; /* verde esmeralda escuro */
   z-index: 60;
-  box-shadow: 6px 0 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 8px 0 40px rgba(0, 0, 0, 0.4);
   overflow-y: auto;
 }
 
 .dark .mobileMenu {
-  background: #0f172a;
+  background: #064e3b;
 }
 
 /* Cabeçalho do Menu */
@@ -30,11 +30,7 @@
   padding: 1.25rem 1.5rem;
   display: flex;
   justify-content: flex-end;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.dark .mobileMenu__header {
-  border-bottom-color: #334155;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.25);
 }
 
 .mobileMenu__close {
@@ -43,15 +39,16 @@
   border: none;
   background: none;
   font-size: 1.8rem;
-  color: #64748b;
+  color: #a7f3d0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: color 0.3s;
 }
 
-.dark .mobileMenu__close {
-  color: #94a3b8;
+.mobileMenu__close:hover {
+  color: #ffffff;
 }
 
 /* Conteúdo */
@@ -66,38 +63,25 @@
   padding: 1.15rem 1.5rem;
   font-size: 1.25rem;
   font-weight: 500;
-  color: #1e2937;
+  color: #ecfdf5;
   text-decoration: none;
   border-radius: 14px;
   transition: all 0.35s ease;
 }
 
 .mobileNavLink:hover {
-  background: #ecfdf5;
-  color: #10b981;
-  transform: translateX(14px);
-}
-
-.dark .mobileNavLink {
-  color: #e2e8f0;
-}
-
-.dark .mobileNavLink:hover {
-  background: #052e16;
+  background: rgba(16, 185, 129, 0.2);
+  color: #a7f3d0;
+  transform: translateX(12px);
 }
 
 /* Seção do Usuário / Login */
 .mobileMenu__user-section {
   margin-top: 2rem;
   padding: 1.75rem;
-  background: #f8fafc;
+  background: rgba(16, 185, 129, 0.15);
   border-radius: 16px;
-  border: 1px solid #e2e8f0;
-}
-
-.dark .mobileMenu__user-section {
-  background: #1e2937;
-  border-color: #334155;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .mobileMenu__user-info {
@@ -146,16 +130,24 @@
   font-size: 1.15rem;
 }
 
+.mobileMenu__login-btn:hover {
+  background: #059669;
+}
+
 .mobileMenu__admin-btn {
   background: #10b981;
   color: white;
 }
 
 .mobileMenu__logout-btn {
-  background: #fee2e2;
-  color: #ef4444;
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+}
+
+.mobileMenu__logout-btn:hover {
+  background: rgba(239, 68, 68, 0.35);
 }

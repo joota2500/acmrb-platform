@@ -1,4 +1,5 @@
 /* user-menu.css */
+
 .user-menu {
   display: flex;
   align-items: center;
@@ -17,11 +18,7 @@
   align-items: center;
   gap: 12px;
   padding-right: 1rem;
-  border-right: 1px solid #e2e8f0;
-}
-
-.dark .user-menu__profile {
-  border-right-color: #334155;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .user-menu__info {
@@ -31,12 +28,12 @@
 .user-menu__name {
   font-weight: 700;
   font-size: 0.95rem;
-  color: #1e2937;
+  color: #ffffff;
 }
 
 .user-menu__role {
   font-size: 0.78rem;
-  color: #10b981;
+  color: #a7f3d0;
   text-transform: capitalize;
 }
 
@@ -93,7 +90,7 @@
   height: 48px;
   border-radius: 14px;
   background: transparent;
-  color: #ef4444;
+  color: #fca5a5;
   border: none;
   display: flex;
   align-items: center;
@@ -103,32 +100,24 @@
 }
 
 .user-menu__logout:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(239, 68, 68, 0.2);
 }
 
-/* Hambúrguer */
+/* Hambúrguer - CORRIGIDO */
 .user-menu__hamburger {
   display: none;
   width: 48px;
   height: 48px;
   border: none;
   background: transparent;
-  color: #334155;
+  color: #ffffff; /* agora branco */
   cursor: pointer;
   border-radius: 12px;
   transition: all 0.3s;
 }
 
 .user-menu__hamburger:hover {
-  background: #f1f5f9;
-}
-
-.dark .user-menu__hamburger {
-  color: #e2e8f0;
-}
-
-.dark .user-menu__hamburger:hover {
-  background: #334155;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* Responsivo */
