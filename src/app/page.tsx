@@ -15,11 +15,11 @@ import InstitutionalSection from "@/components/home/InstitutionalSection";
 import MaterialsPublicSection from "@/components/home/MaterialsPublicSection";
 
 import { Suspense } from "react";
-import Loading from "@/components/ui/LoadingState"; // vamos criar depois se não existir
+import Loading from "@/components/ui/LoadingState";
 
 export default function Home() {
   return (
-    <main className="overflow-hidden bg-white dark:bg-gray-950 min-h-screen">
+    <main className="overflow-hidden bg-white min-h-screen">
       {/* Header */}
       <Header />
 
@@ -27,11 +27,9 @@ export default function Home() {
       <HeroSection />
 
       {/* Conteúdo Principal */}
-      <div className="space-y-20">
+      <div>
         <AboutSection />
         <OperationsSection />
-
-        {/* Stats + ESG */}
         <StatsSection />
 
         <Suspense fallback={<Loading />}>
