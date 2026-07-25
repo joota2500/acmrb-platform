@@ -432,19 +432,20 @@
 .qs-valores-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr; /* 3 colunas no celular */
-  gap: 0.1rem;
+  gap: 0.6rem;
 }
 
 @media (min-width: 768px) {
   .qs-valores-grid {
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.1rem;
+    gap: 1rem;
   }
 }
 
 @media (min-width: 1024px) {
   .qs-valores-grid {
     grid-template-columns: repeat(3, 1fr); /* 3 colunas no desktop */
+    gap: 1.75rem;
   }
 }
 
@@ -488,6 +489,35 @@
   font-size: 0.7rem;
   color: #4b5563;
   line-height: 1.35;
+}
+/* ===== MAIOR NO COMPUTADOR / NOTEBOOK ===== */
+@media (min-width: 1024px) {
+  .qs-valor-card {
+    padding: 2.25rem 1.75rem;
+    border-radius: 1.5rem;
+  }
+
+  .qs-valor-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1.25rem;
+    border-radius: 1rem;
+  }
+
+  .qs-valor-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .qs-valor-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .qs-valor-card p {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
 }
 
 /* ==================== ASSOCIADOS ==================== */
