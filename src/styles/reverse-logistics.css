@@ -1,0 +1,249 @@
+/* ==================== REVERSE LOGISTICS ==================== */
+
+.reverse {
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 0;
+}
+
+@media (min-width: 768px) {
+  .reverse {
+    padding: 5.5rem 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .reverse {
+    padding: 6.5rem 0;
+  }
+}
+
+.reverse__bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, white, rgba(236, 253, 245, 0.5));
+  pointer-events: none;
+}
+
+.reverse__container {
+  position: relative;
+  z-index: 10;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 768px) {
+  .reverse__container {
+    padding: 0 1.5rem;
+  }
+}
+
+/* Layout */
+.reverse__layout {
+  display: grid;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .reverse__layout {
+    grid-template-columns: 1fr 1fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+}
+
+/* Left */
+.reverse__tag {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.reverse__title {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.25;
+}
+
+@media (min-width: 768px) {
+  .reverse__title {
+    font-size: 2.15rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .reverse__title {
+    font-size: 2.4rem;
+  }
+}
+
+.reverse__description {
+  margin-top: 1.15rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #4b5563;
+}
+
+@media (min-width: 768px) {
+  .reverse__description {
+    font-size: 1.05rem;
+  }
+}
+
+/* Features - 2 colunas no celular */
+.reverse__features {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 1024px) {
+  .reverse__features {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.reverse__feature {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.15rem;
+  padding: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .reverse__feature {
+    padding: 1.25rem;
+  }
+}
+
+.reverse__feature h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+@media (min-width: 1024px) {
+  .reverse__feature h3 {
+    font-size: 1.1rem;
+  }
+}
+
+.reverse__feature p {
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+@media (min-width: 1024px) {
+  .reverse__feature p {
+    font-size: 0.95rem;
+  }
+}
+
+/* Botão */
+.reverse__btn {
+  margin-top: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 0.9rem;
+  background: #047857;
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+
+.reverse__btn:hover {
+  background: #065f46;
+  transform: translateY(-2px);
+}
+
+/* Services - 2 colunas no celular */
+.reverse__services {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.85rem;
+}
+
+@media (min-width: 1024px) {
+  .reverse__services {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.reverse__service {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1.2rem;
+  padding: 1.15rem;
+  transition: all 0.3s;
+}
+
+@media (min-width: 1024px) {
+  .reverse__service {
+    flex-direction: row;
+    gap: 1.15rem;
+    padding: 1.35rem;
+  }
+}
+
+.reverse__service:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+  border-color: #a7f3d0;
+}
+
+.reverse__service-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #d1fae5;
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.reverse__service h3 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+@media (min-width: 1024px) {
+  .reverse__service h3 {
+    font-size: 1.15rem;
+  }
+}
+
+.reverse__service p {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+@media (min-width: 1024px) {
+  .reverse__service p {
+    font-size: 0.95rem;
+  }
+}
