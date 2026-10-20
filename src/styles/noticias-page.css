@@ -212,8 +212,7 @@
 .nj__manchete .ncard__link { flex-direction: column; }
 .nj__manchete .ncard__moldura {
   flex: none;
-  aspect-ratio: 16 / 9;
-  min-height: 0;
+  aspect-ratio: 16 / 10;
   border-right: 0;
   border-bottom: 1px solid #ecfdf5;
 }

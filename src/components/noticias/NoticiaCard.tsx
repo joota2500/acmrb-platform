@@ -3,7 +3,8 @@
  * ------------------------------------------------------------
  * Usado na home, na página /noticias e em "relacionadas".
  * A imagem aparece INTEIRA (object-fit: contain) dentro de uma
- * moldura de proporção fixa com fundo neutro, sem cortar a foto.
+ * moldura de proporção fixa (16:10), sem cortar a foto; por trás,
+ * a mesma imagem desfocada preenche as laterais (sem faixa vazia).
  * Variantes: "grande" (manchete), "normal" e "compacto" (lista lateral).
  */
 
@@ -29,8 +30,12 @@ export default function NoticiaCard({ noticia: n, variante = "normal", mostrarVi
       <Link href={`/noticias/${n.slug}`} className="ncard__link" aria-label={`Ler notícia: ${n.titulo}`}>
         <div className="ncard__moldura">
           {n.imagem_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={n.imagem_url} alt={n.imagem_alt} loading="lazy" className="ncard__img" />
+            <>
+              {/* fundo desfocado com a própria imagem */}
+              <span className="ncard__fundo" aria-hidden="true" style={{ backgroundImage: `url("${n.imagem_url}")` }} />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={n.imagem_url} alt={n.imagem_alt} loading="lazy" className="ncard__img" />
+            </>
           ) : (
             <span className="ncard__sem-img" aria-hidden="true">
               <ImageOff size={28} />
