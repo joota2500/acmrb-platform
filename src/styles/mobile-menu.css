@@ -78,15 +78,15 @@
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px; /* espaço entre os itens do menu */
 }
 
 .mobileNavLink {
   display: flex;
   align-items: center;
-  min-height: 52px; /* alvo de toque confortável (>=44px) */
-  padding: 0.75rem 1.25rem;
-  font-size: 1.15rem;
+  min-height: 48px; /* alvo de toque confortável (>=44px) */
+  padding: 0.7rem 1.1rem;
+  font-size: 1rem; /* reduzido de 1.15rem: nomes ficavam grandes demais no menu mobile */
   font-weight: 500;
   color: #ecfdf5;
   text-decoration: none;
