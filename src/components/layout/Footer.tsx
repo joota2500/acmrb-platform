@@ -76,7 +76,7 @@ export default function Footer() {
                 <MapPin size={20} />
                 <div>
                   <span>Localização</span>
-                  <p>Baturité • Ceará</p>
+                  <p>Rua Kaolim, 252 – Manga, Baturité/CE</p>
                 </div>
               </div>
             </div>
