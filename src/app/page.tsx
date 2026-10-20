@@ -28,7 +28,8 @@ import OperationsSection from "@/components/home/OperationsSection"; // Como a a
 import ReverseLogisticsSection from "@/components/home/ReverseLogisticsSection"; // Logística reversa
 import NewsSection from "@/components/home/NewsSection"; // Últimas notícias (dados do Supabase)
 import DenunciasSection from "@/components/home/DenunciasSection"; // Denúncia ambiental (direciona à AMAB)
-import PartnersSection from "@/components/home/PartnersSection"; // Parceiros
+// PartnersSection (cards genéricos) foi substituída pelo mapa de apoiadores
+import ApoiadoresMapaSection from "@/components/home/ApoiadoresMapaSection"; // Parceiros e apoiadores (mapa)
 import ContactSection from "@/components/home/ContactSection"; // Formulário de contato
 import InstitutionalSection from "@/components/home/InstitutionalSection"; // Informações institucionais
 // MaterialsPublicSection ("Transparência Operacional") saiu da home: o conteúdo agora fica em /transparencia
@@ -73,8 +74,8 @@ export default function Home() {
         {/* 9. Canal de denúncias */}
         <DenunciasSection />
 
-        {/* 10. Parceiros e apoiadores */}
-        <PartnersSection />
+        {/* 10. Parceiros e apoiadores: mapa de Baturité + link para /parceiros */}
+        <ApoiadoresMapaSection />
 
         {/* 11. Contato */}
         <ContactSection />

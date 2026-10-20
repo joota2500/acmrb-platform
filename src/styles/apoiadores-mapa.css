@@ -1,0 +1,102 @@
+/* ==================== APOIADORES + MAPA ("Parceiros e Apoiadores") ====================
+ * Mesmo padrão visual de DenunciasSection / ReverseLogisticsSection.
+ * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
+ */
+
+.apmapa { position: relative; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 55%, #ffffff 100%); padding: 4.5rem 0; }
+.apmapa__container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
+.apmapa p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+
+/* Cabeçalho */
+.apmapa__header { max-width: 48rem; margin: 0 auto 2.25rem; text-align: center; }
+.apmapa__tag { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 1rem; border-radius: 9999px; background: #ecfdf5; color: #059669; font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem; }
+.apmapa__title { font-size: 2.1rem; font-weight: 900; color: #111827; line-height: 1.25; text-align: center; }
+.apmapa__title span { color: #047857; }
+.apmapa__description { margin-top: 1.25rem; font-size: 1.05rem; line-height: 1.75; color: #4b5563; }
+
+/* Contadores */
+.apmapa__stats { list-style: none; padding: 0; margin: 0 auto 1.75rem; max-width: 46rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.apmapa__stats li { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 1.1rem; border-radius: 1.25rem; background: #fff; border: 1px solid #d1fae5; box-shadow: 0 4px 18px rgba(4, 120, 87, 0.06); color: #059669; }
+.apmapa__stats strong { font-size: 1.75rem; font-weight: 900; color: #111827; line-height: 1.1; }
+.apmapa__stats span { font-size: 0.82rem; color: #4b5563; text-align: center; }
+
+/* Filtros */
+.apmapa__filters { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+.apmapa__chips { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.apmapa__chips-label { font-size: 0.78rem; font-weight: 800; color: #374151; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 0.25rem; }
+.apmapa__chip { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.85rem; border-radius: 9999px; border: 1px solid #d1fae5; background: #fff; color: #374151; font-size: 0.84rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+.apmapa__chip:hover { border-color: #a7f3d0; }
+.apmapa__chip[aria-pressed="true"] { background: var(--chip, #047857); border-color: var(--chip, #047857); color: #fff; }
+.apmapa__chip--apoio[aria-pressed="true"] { background: #047857; border-color: #047857; }
+.apmapa__dot { width: 0.6rem; height: 0.6rem; border-radius: 9999px; background: var(--chip, #10b981); box-shadow: 0 0 0 2px #fff; }
+.apmapa__clear { align-self: flex-start; display: inline-flex; align-items: center; gap: 0.35rem; border: 0; background: none; color: #047857; font-weight: 700; font-size: 0.85rem; cursor: pointer; padding: 0.2rem 0; }
+
+/* Mapa + lista */
+.apmapa__board { display: grid; grid-template-columns: 1fr 22rem; gap: 1.25rem; margin-bottom: 2.5rem; }
+.apmapa__map { position: relative; height: 480px; border-radius: 1.25rem; background: #fff; border: 1px solid #d1fae5; box-shadow: 0 10px 30px rgba(4, 120, 87, 0.1); }
+.apmapa__map-loading { display: flex; align-items: center; justify-content: center; height: 100%; color: #059669; font-weight: 700; background: #ecfdf5; border-radius: 1.25rem; }
+.apmapa__empty { position: absolute; inset: auto 1rem 1rem 1rem; z-index: 450; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; text-align: center; padding: 1.1rem 1.25rem; border-radius: 1rem; background: rgba(255, 255, 255, 0.95); border: 1px solid #a7f3d0; color: #047857; box-shadow: 0 8px 24px rgba(4, 120, 87, 0.15); }
+.apmapa__empty strong { color: #111827; font-size: 1rem; }
+.apmapa__empty p { font-size: 0.88rem; color: #4b5563; max-width: 30rem; text-align: center; }
+
+.apmapa__list { display: flex; flex-direction: column; background: #fff; border: 1px solid #d1fae5; border-radius: 1.25rem; padding: 1rem; max-height: 480px; box-shadow: 0 4px 18px rgba(4, 120, 87, 0.06); }
+.apmapa__list-count { font-size: 0.8rem; font-weight: 800; color: #047857; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.6rem; text-align: left !important; }
+.apmapa__list-empty { font-size: 0.9rem; color: #6b7280; }
+.apmapa__list ul { list-style: none; padding: 0; margin: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 0.4rem; }
+.apmapa__item { width: 100%; display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem; border-radius: 0.9rem; border: 1px solid transparent; background: #f9fafb; text-align: left; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease; }
+.apmapa__item:hover:not(:disabled), .apmapa__item[aria-current="true"] { background: #ecfdf5; border-color: #a7f3d0; }
+.apmapa__item:disabled { cursor: default; opacity: 0.85; }
+.apmapa__item-logo { width: 2.5rem; height: 2.5rem; border-radius: 0.7rem; object-fit: contain; background: #fff; border: 1px solid #e5e7eb; flex-shrink: 0; }
+.apmapa__item-logo--ini { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; border: 0; }
+.apmapa__item-text { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.apmapa__item-text strong { font-size: 0.92rem; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.apmapa__item-text span { font-size: 0.78rem; color: #6b7280; }
+.apmapa__item-pin { color: #059669; flex-shrink: 0; }
+
+/* CTA */
+.apmapa__cta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 2.25rem; border-radius: 1.5rem; background: linear-gradient(135deg, #047857 0%, #059669 60%, #10b981 100%); color: #fff; box-shadow: 0 14px 40px rgba(4, 120, 87, 0.25); }
+.apmapa__cta-text h3 { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem; }
+.apmapa__cta-text p { color: #d1fae5; line-height: 1.65; max-width: 36rem; }
+.apmapa__cta-actions { display: flex; flex-direction: column; gap: 0.7rem; flex-shrink: 0; }
+.apmapa__btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; padding: 0.9rem 1.5rem; border-radius: 9999px; background: #fff; color: #047857; font-weight: 800; text-decoration: none; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.apmapa__btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18); }
+.apmapa__btn--ghost { background: transparent; color: #fff; border: 2px solid rgba(255, 255, 255, 0.7); }
+
+.apmapa a:focus-visible, .apmapa button:focus-visible { outline: 3px solid #34d399; outline-offset: 3px; }
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .apmapa__board { grid-template-columns: 1fr; }
+  .apmapa__map { height: 420px; }
+  .apmapa__list { max-height: 340px; }
+  .apmapa__cta { flex-direction: column; align-items: flex-start; }
+  .apmapa__cta-actions { flex-direction: row; flex-wrap: wrap; }
+}
+
+/* Celular */
+@media (max-width: 480px) {
+  .apmapa { padding: 3rem 0; }
+  .apmapa__container { padding: 0 1rem; }
+  .apmapa__title { font-size: 1.5rem; }
+  .apmapa__description { font-size: 0.92rem; line-height: 1.65; }
+  .apmapa__stats { gap: 0.5rem; }
+  .apmapa__stats li { padding: 0.75rem 0.4rem; border-radius: 1rem; }
+  .apmapa__stats strong { font-size: 1.3rem; }
+  .apmapa__stats span { font-size: 0.7rem; }
+  .apmapa__chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 0.3rem; scrollbar-width: none; }
+  .apmapa__chips::-webkit-scrollbar { display: none; }
+  .apmapa__chip { flex-shrink: 0; font-size: 0.78rem; }
+  .apmapa__map { height: 320px; border-radius: 1rem; }
+  .apmapa__empty { inset: auto 0.6rem 0.6rem 0.6rem; padding: 0.8rem; }
+  .apmapa__empty p { font-size: 0.8rem; }
+  .apmapa__cta { padding: 1.5rem; border-radius: 1.25rem; }
+  .apmapa__cta-text h3 { font-size: 1.2rem; }
+  .apmapa__cta-text p { font-size: 0.9rem; }
+  .apmapa__cta-actions { flex-direction: column; width: 100%; }
+  .apmapa__btn { width: 100%; padding: 0.8rem 1rem; font-size: 0.92rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apmapa__chip, .apmapa__item, .apmapa__btn { transition: none; }
+  .apmapa__btn:hover { transform: none; }
+}

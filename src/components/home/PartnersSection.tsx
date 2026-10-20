@@ -1,4 +1,5 @@
 "use client";
+// NÃO UTILIZADO — substituído por ApoiadoresMapaSection (mapa de apoiadores)
 
 import { motion } from "framer-motion";
 
