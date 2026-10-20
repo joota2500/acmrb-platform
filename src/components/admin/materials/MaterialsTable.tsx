@@ -185,12 +185,13 @@ export default function MaterialsTable({
             peso:
               Number(peso),
 
+            // valor_kg é NOT NULL no banco: vazio vira 0 (antes null dava erro)
             valor_kg:
               valorKg
                 ? Number(
                     valorKg,
                   )
-                : null,
+                : 0,
 
             subtotal,
 
