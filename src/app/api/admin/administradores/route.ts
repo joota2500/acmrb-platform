@@ -1,147 +1,127 @@
 /**
- * API — Administradores (somente o "deus")
+ * API — Administradores (somente o deus)
  * ------------------------------------------------------------
  * POST   → cria o administrador normal (usuário no Auth + linha em admins)
- * DELETE → exclui o administrador normal (?id=<id da tabela admins>)
+ * PATCH  → ações sobre o admin normal: { id, acao: "desativar" | "ativar"
+ *          | "senha" (novaSenha) | "email" (novoEmail) }
+ * DELETE → exclui o administrador normal (?id=)
  *
- * Segurança:
- *  1. O navegador envia o token da sessão (Authorization: Bearer ...).
- *  2. Validamos o token no Supabase e conferimos na tabela admins que
- *     quem chama é o deus ativo.
- *  3. Só então usamos a service role (que fica apenas no servidor).
+ * Todas validam o token e o papel deus (autorizar) e gravam auditoria.
  * O banco ainda reforça: no máximo 1 deus + 1 admin (índice + gatilho).
  */
 
 import { NextResponse } from "next/server";
-import { clienteServidor, MSG_SEM_CHAVE } from "@/lib/supabaseServidor";
+import {
+  auditar, autorizar, emailEmUso, emailValido, erro, idAuth, senhaForte, trocarEmail,
+} from "@/lib/supabaseServidor";
 
 export const runtime = "nodejs";
 
-const erro = (mensagem: string, status: number) =>
-  NextResponse.json({ erro: mensagem }, { status });
-
-/** Confere o token e se o usuário é o deus. Retorna o cliente admin. */
-async function autorizarDeus(req: Request) {
-  const admin = clienteServidor();
-  if (!admin) return { resposta: erro(MSG_SEM_CHAVE, 500) };
-
-  const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
-  if (!token) return { resposta: erro("Sessão ausente. Entre novamente.", 401) };
-
-  const { data, error } = await admin.auth.getUser(token);
-  const email = data.user?.email;
-  if (error || !email) return { resposta: erro("Sessão inválida ou expirada. Entre novamente.", 401) };
-
-  const { data: linha } = await admin
-    .from("admins")
-    .select("id")
-    .eq("email", email)
-    .eq("ativo", true)
-    .eq("role", "deus")
-    .maybeSingle();
-
-  if (!linha) return { resposta: erro("Somente o administrador deus pode gerenciar administradores.", 403) };
-  return { admin };
-}
-
-/** Senha forte: 8+ caracteres com maiúscula, minúscula e número */
-function senhaForte(s: string) {
-  return s.length >= 8 && /[A-Z]/.test(s) && /[a-z]/.test(s) && /\d/.test(s);
-}
-
 export async function POST(req: Request) {
-  const { admin, resposta } = await autorizarDeus(req);
-  if (!admin) return resposta;
+  const r = await autorizar(req, true);
+  if (r.resposta) return r.resposta;
+  const { admin, ator } = r;
 
-  let corpo: { nome?: string; email?: string; senha?: string };
-  try {
-    corpo = await req.json();
-  } catch {
-    return erro("Dados inválidos.", 400);
-  }
-
-  const nome = (corpo.nome ?? "").trim();
-  const email = (corpo.email ?? "").trim().toLowerCase();
-  const senha = corpo.senha ?? "";
+  const corpo = await req.json().catch(() => ({}));
+  const nome = String(corpo.nome ?? "").trim();
+  const email = String(corpo.email ?? "").trim().toLowerCase();
+  const senha = String(corpo.senha ?? "");
 
   if (nome.length < 3) return erro("Informe o nome completo.", 400);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return erro("E-mail inválido.", 400);
+  if (!emailValido(email)) return erro("E-mail inválido.", 400);
   if (!senhaForte(senha))
     return erro("A senha temporária precisa ter 8+ caracteres, com maiúscula, minúscula e número.", 400);
 
-  // Limite: só um admin normal
   const { count } = await admin.from("admins").select("id", { count: "exact", head: true }).eq("role", "admin");
   if ((count ?? 0) >= 1)
     return erro("Limite atingido: já existe um administrador normal. Exclua o atual para cadastrar outro.", 409);
 
-  const { data: existente } = await admin.from("admins").select("id").ilike("email", email).maybeSingle();
-  if (existente) return erro("Este e-mail já é usado por um administrador.", 409);
+  if (await emailEmUso(admin, email))
+    return erro("Este e-mail já está em uso (por um administrador ou outra conta). Use outro.", 409);
 
-  // 1) Usuário no Auth (já confirmado, entra com a senha temporária)
   const { data: criado, error: erroAuth } = await admin.auth.admin.createUser({
-    email,
-    password: senha,
-    email_confirm: true,
-    user_metadata: { nome },
+    email, password: senha, email_confirm: true, user_metadata: { nome },
   });
+  if (erroAuth || !criado.user) return erro("Não foi possível criar o usuário de acesso.", 500);
 
-  if (erroAuth || !criado.user) {
-    const jaExiste = /already|registered|exists/i.test(erroAuth?.message ?? "");
-    return erro(
-      jaExiste
-        ? "Este e-mail já tem uma conta no sistema (por exemplo, como visitante). Use outro e-mail."
-        : "Não foi possível criar o usuário de acesso.",
-      jaExiste ? 409 : 500,
-    );
-  }
-
-  // 2) Linha em admins; se falhar, desfaz o usuário do Auth
   const { error: erroLinha } = await admin.from("admins").insert({
-    nome,
-    email,
-    role: "admin",
-    ativo: true,
-    auth_user_id: criado.user.id,
+    nome, email, role: "admin", ativo: true, auth_user_id: criado.user.id,
   });
-
   if (erroLinha) {
     await admin.auth.admin.deleteUser(criado.user.id);
     const limite = /Limite|duplicate|um_por_papel/i.test(erroLinha.message);
-    return erro(
-      limite ? "Limite atingido: já existe um administrador normal." : "Não foi possível salvar o administrador.",
-      limite ? 409 : 500,
-    );
+    return erro(limite ? "Limite atingido: já existe um administrador normal." : "Não foi possível salvar o administrador.", limite ? 409 : 500);
   }
 
+  await auditar(admin, ator.email, "criar_admin", email, { nome });
   return NextResponse.json({ ok: true });
 }
 
+export async function PATCH(req: Request) {
+  const r = await autorizar(req, true);
+  if (r.resposta) return r.resposta;
+  const { admin, ator } = r;
+
+  const corpo = await req.json().catch(() => ({}));
+  const { data: alvo } = await admin
+    .from("admins").select("id, email, role, ativo, auth_user_id").eq("id", String(corpo.id ?? "")).maybeSingle();
+  if (!alvo) return erro("Administrador não encontrado.", 404);
+  if (alvo.role === "deus") return erro("Use “Minha conta” para alterar a sua própria conta.", 403);
+
+  const authId = await idAuth(admin, alvo);
+
+  switch (corpo.acao) {
+    case "desativar":
+    case "ativar": {
+      const ativo = corpo.acao === "ativar";
+      const { error } = await admin.from("admins").update({ ativo }).eq("id", alvo.id);
+      if (error) return erro("Não foi possível alterar a situação.", 500);
+      // Bloqueia o login no Auth também (derruba as sessões ao expirar o token)
+      if (authId) await admin.auth.admin.updateUserById(authId, { ban_duration: ativo ? "none" : "876000h" });
+      await auditar(admin, ator.email, ativo ? "reativar_admin" : "desativar_admin", alvo.email);
+      return NextResponse.json({ ok: true });
+    }
+    case "senha": {
+      const nova = String(corpo.novaSenha ?? "");
+      if (!senhaForte(nova)) return erro("A nova senha precisa ter 8+ caracteres, com maiúscula, minúscula e número.", 400);
+      if (!authId) return erro("Usuário de acesso não encontrado.", 404);
+      const { error } = await admin.auth.admin.updateUserById(authId, { password: nova });
+      if (error) return erro("Não foi possível redefinir a senha.", 500);
+      await auditar(admin, ator.email, "redefinir_senha", alvo.email);
+      return NextResponse.json({ ok: true });
+    }
+    case "email": {
+      const novo = String(corpo.novoEmail ?? "").trim().toLowerCase();
+      if (!emailValido(novo)) return erro("E-mail inválido.", 400);
+      if (novo === alvo.email.toLowerCase()) return erro("O novo e-mail é igual ao atual.", 400);
+      if (await emailEmUso(admin, novo, authId)) return erro("Este e-mail já está em uso.", 409);
+      const falha = await trocarEmail(admin, alvo, novo);
+      if (falha) return erro(falha, 500);
+      await auditar(admin, ator.email, "trocar_email", novo, { anterior: alvo.email });
+      return NextResponse.json({ ok: true });
+    }
+    default:
+      return erro("Ação inválida.", 400);
+  }
+}
+
 export async function DELETE(req: Request) {
-  const { admin, resposta } = await autorizarDeus(req);
-  if (!admin) return resposta;
+  const r = await autorizar(req, true);
+  if (r.resposta) return r.resposta;
+  const { admin, ator } = r;
 
   const id = new URL(req.url).searchParams.get("id");
   if (!id) return erro("Administrador não informado.", 400);
 
-  const { data: alvo } = await admin
-    .from("admins")
-    .select("id, role, email, auth_user_id")
-    .eq("id", id)
-    .maybeSingle();
-
+  const { data: alvo } = await admin.from("admins").select("id, role, email, auth_user_id").eq("id", id).maybeSingle();
   if (!alvo) return erro("Administrador não encontrado.", 404);
   if (alvo.role === "deus") return erro("O administrador deus não pode ser excluído.", 403);
 
-  const { error: erroLinha } = await admin.from("admins").delete().eq("id", id);
-  if (erroLinha) return erro("Não foi possível excluir o administrador.", 500);
-
-  // Remove também o acesso (usuário do Auth)
-  let authId: string | null = alvo.auth_user_id ?? null;
-  if (!authId) {
-    const { data } = await admin.auth.admin.listUsers({ perPage: 1000 });
-    authId = data?.users.find((u) => u.email?.toLowerCase() === alvo.email.toLowerCase())?.id ?? null;
-  }
+  const authId = await idAuth(admin, alvo);
+  const { error } = await admin.from("admins").delete().eq("id", id);
+  if (error) return erro("Não foi possível excluir o administrador.", 500);
   if (authId) await admin.auth.admin.deleteUser(authId);
 
+  await auditar(admin, ator.email, "excluir_admin", alvo.email);
   return NextResponse.json({ ok: true });
 }
