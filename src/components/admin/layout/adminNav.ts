@@ -13,10 +13,12 @@ import {
   FolderKanban,
   Handshake,
   LayoutDashboard,
+  MapPinned,
   Leaf,
   Newspaper,
   PackageSearch,
   Settings,
+  Truck,
   ShieldAlert,
   UserCog,
   UserRound,
@@ -29,6 +31,8 @@ export type SecaoId =
   | "noticias"
   | "projetos"
   | "parceiros"
+  | "apoiadores"
+  | "logistica"
   | "associados"
   | "denuncias"
   | "materiais"
@@ -66,6 +70,8 @@ export const GRUPOS_NAV: GrupoNav[] = [
       { id: "noticias", rotulo: "Notícias", icone: Newspaper, pronto: true, rapido: true, descricao: "Publicações do site (somente ADM DEUS)" },
       { id: "projetos", rotulo: "Projetos", icone: FolderKanban, pronto: false, descricao: "Projetos e campanhas" },
       { id: "parceiros", rotulo: "Parceiros", icone: Handshake, pronto: true, descricao: "Empresas e instituições parceiras" },
+      { id: "apoiadores", rotulo: "Apoiadores e Mapa", icone: MapPinned, pronto: true, descricao: "Apoiadores e pontos no mapa de Baturité (somente ADM DEUS)" },
+      { id: "logistica", rotulo: "Logística Reversa", icone: Truck, pronto: true, descricao: "Empresas parceiras e repasses de material (somente ADM DEUS)" },
     ],
   },
   {
