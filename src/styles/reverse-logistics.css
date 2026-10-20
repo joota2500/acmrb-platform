@@ -1,60 +1,37 @@
-/* ==================== REVERSE LOGISTICS ==================== */
+/* ==================== REVERSE LOGISTICS SECTION ("Logística Reversa") ====================
+ * Paleta: verdes/esmeralda do projeto (#047857, #059669, #10b981, #a7f3d0,
+ * #d1fae5, #ecfdf5) + cinzas de texto (#111827, #374151, #4b5563).
+ * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
+ */
 
-.reverse {
+.revlog {
   position: relative;
   overflow: hidden;
-  padding: 4rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 55%, #ffffff 100%);
+  padding: 4.5rem 0;
 }
 
-@media (min-width: 768px) {
-  .reverse {
-    padding: 5.5rem 0;
-  }
-}
-
-@media (min-width: 1024px) {
-  .reverse {
-    padding: 6.5rem 0;
-  }
-}
-
-.reverse__bg {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, white, rgba(236, 253, 245, 0.5));
-  pointer-events: none;
-}
-
-.reverse__container {
-  position: relative;
-  z-index: 10;
+.revlog__container {
   max-width: 80rem;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
-@media (min-width: 768px) {
-  .reverse__container {
-    padding: 0 1.5rem;
-  }
+/* Parágrafos justificados em todas as telas; títulos ficam sem justificar */
+.revlog p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
 }
 
-/* Layout */
-.reverse__layout {
-  display: grid;
-  gap: 2.5rem;
+/* ---------- Cabeçalho ---------- */
+.revlog__header {
+  max-width: 48rem;
+  margin: 0 auto 3rem;
+  text-align: center;
 }
 
-@media (min-width: 1024px) {
-  .reverse__layout {
-    grid-template-columns: 1fr 1fr;
-    gap: 3.5rem;
-    align-items: center;
-  }
-}
-
-/* Left */
-.reverse__tag {
+.revlog__tag {
   display: inline-block;
   padding: 0.4rem 1rem;
   border-radius: 9999px;
@@ -65,185 +42,525 @@
   margin-bottom: 1rem;
 }
 
-.reverse__title {
-  font-size: 1.55rem;
+.revlog__title {
+  font-size: 2.1rem;
   font-weight: 900;
   color: #111827;
   line-height: 1.25;
+  text-align: center;
 }
 
-@media (min-width: 768px) {
-  .reverse__title {
-    font-size: 2.15rem;
-  }
+.revlog__title span {
+  color: #047857;
 }
 
-@media (min-width: 1024px) {
-  .reverse__title {
-    font-size: 2.4rem;
-  }
-}
-
-.reverse__description {
-  margin-top: 1.15rem;
-  font-size: 0.95rem;
-  line-height: 1.7;
+.revlog__description {
+  margin-top: 1.25rem;
+  font-size: 1.05rem;
+  line-height: 1.75;
   color: #4b5563;
 }
 
-@media (min-width: 768px) {
-  .reverse__description {
-    font-size: 1.05rem;
-  }
-}
-
-/* Features - 2 colunas no celular */
-.reverse__features {
-  margin-top: 1.75rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
-}
-
-@media (min-width: 1024px) {
-  .reverse__features {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-.reverse__feature {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 1.15rem;
-  padding: 1rem;
-}
-
-@media (min-width: 1024px) {
-  .reverse__feature {
-    padding: 1.25rem;
-  }
-}
-
-.reverse__feature h3 {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #111827;
-}
-
-@media (min-width: 1024px) {
-  .reverse__feature h3 {
-    font-size: 1.1rem;
-  }
-}
-
-.reverse__feature p {
-  margin-top: 0.45rem;
-  font-size: 0.8rem;
-  line-height: 1.5;
-  color: #4b5563;
-}
-
-@media (min-width: 1024px) {
-  .reverse__feature p {
-    font-size: 0.95rem;
-  }
-}
-
-/* Botão */
-.reverse__btn {
-  margin-top: 1.75rem;
-  display: inline-flex;
+/* Subtítulos de cada bloco (com linha decorativa) */
+.revlog__subtitle {
+  display: flex;
   align-items: center;
-  gap: 0.5rem;
-  height: 3rem;
-  padding: 0 1.5rem;
-  border-radius: 0.9rem;
-  background: #047857;
-  color: white;
-  font-weight: 700;
-  font-size: 0.9rem;
-  text-decoration: none;
-  transition: all 0.3s;
+  gap: 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #065f46;
+  margin: 3rem 0 1.25rem;
 }
 
-.reverse__btn:hover {
-  background: #065f46;
-  transform: translateY(-2px);
+.revlog__subtitle::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, #a7f3d0, transparent);
 }
 
-/* Services - 2 colunas no celular */
-.reverse__services {
+/* ---------- Públicos ---------- */
+.revlog__partners {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
 }
 
-@media (min-width: 1024px) {
-  .reverse__services {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-.reverse__service {
+.revlog__partner {
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 1.2rem;
-  padding: 1.15rem;
-  transition: all 0.3s;
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  border-radius: 1.25rem;
+  padding: 1.4rem;
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.06);
+  transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
 }
 
-@media (min-width: 1024px) {
-  .reverse__service {
-    flex-direction: row;
-    gap: 1.15rem;
-    padding: 1.35rem;
-  }
-}
-
-.reverse__service:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.1);
+.revlog__partner:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 32px rgba(16, 185, 129, 0.12);
   border-color: #a7f3d0;
 }
 
-.reverse__service-icon {
-  width: 44px;
-  height: 44px;
+.revlog__partner-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.revlog__icon {
+  width: 42px;
+  height: 42px;
   border-radius: 12px;
   background: #d1fae5;
-  color: #059669;
+  color: #047857;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.reverse__service h3 {
-  font-size: 0.95rem;
+.revlog__partner h4 {
+  font-size: 1.05rem;
   font-weight: 800;
   color: #111827;
 }
 
-@media (min-width: 1024px) {
-  .reverse__service h3 {
-    font-size: 1.15rem;
-  }
+.revlog__partner p {
+  margin-top: 0.85rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #4b5563;
 }
 
-.reverse__service p {
-  margin-top: 0.4rem;
-  font-size: 0.8rem;
+.revlog__partner ul {
+  margin-top: auto;
+  padding-top: 0.9rem;
+  list-style: none;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.revlog__partner li {
+  position: relative;
+  padding-left: 1.35rem;
+  font-size: 0.85rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Marcador verde da lista desenhado em CSS */
+.revlog__partner li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: inset 0 0 0 3px #d1fae5;
+}
+
+/* ---------- Linha do tempo ---------- */
+.revlog__timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.revlog__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+/* Conector tracejado horizontal entre os marcadores */
+.revlog__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 32px;
+  left: calc(50% + 40px);
+  width: calc(100% - 80px + 1.5rem);
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #10b981 0 8px, transparent 8px 14px);
+}
+
+.revlog__step-marker {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #047857, #10b981);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 10px 24px rgba(4, 120, 87, 0.25);
+}
+
+.revlog__step-marker span {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #047857;
+  border: 2px solid #a7f3d0;
+  font-size: 0.7rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.revlog__step-body {
+  flex: 1;
+  margin-top: 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1.1rem;
+}
+
+.revlog__step-body h4 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.revlog__step-body p {
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* ---------- Compromissos ---------- */
+.revlog__deliverables {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.revlog__deliverable {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 1rem;
+  padding: 1rem;
+  color: #047857;
+}
+
+.revlog__deliverable svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.revlog__deliverable h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #065f46;
+}
+
+.revlog__deliverable p {
+  margin-top: 0.25rem;
+  font-size: 0.82rem;
   line-height: 1.5;
   color: #4b5563;
 }
 
-@media (min-width: 1024px) {
-  .reverse__service p {
+/* ---------- CTA ---------- */
+.revlog__cta {
+  margin-top: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2rem 2.25rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #047857, #059669 60%, #10b981);
+  color: #ffffff;
+  box-shadow: 0 18px 40px rgba(4, 120, 87, 0.25);
+}
+
+.revlog__cta-text h3 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.revlog__cta-text p {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #d1fae5;
+  max-width: 38rem;
+}
+
+.revlog__cta-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.revlog__btn-primary,
+.revlog__btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 3rem;
+  padding: 0 1.4rem;
+  border-radius: 0.85rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.revlog__btn-primary {
+  background: #ffffff;
+  color: #047857;
+}
+
+.revlog__btn-secondary {
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  color: #ffffff;
+}
+
+.revlog__btn-primary:hover,
+.revlog__btn-secondary:hover {
+  transform: translateY(-2px);
+}
+
+.revlog__btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ==================== TABLET (481–1024px) ==================== */
+@media (max-width: 1024px) {
+  .revlog {
+    padding: 4rem 0;
+  }
+
+  .revlog__title {
+    font-size: 1.85rem;
+  }
+
+  .revlog__partners,
+  .revlog__deliverables {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Etapas em 2 colunas; conector só entre 01→02 e 03→04 */
+  .revlog__timeline {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 2rem;
+  }
+
+  .revlog__step:nth-child(2n)::after {
+    display: none;
+  }
+
+  .revlog__cta {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.75rem;
+  }
+}
+
+/* ==================== CELULAR (≤480px) ==================== */
+@media (max-width: 480px) {
+  .revlog {
+    padding: 3rem 0;
+  }
+
+  .revlog__container {
+    padding: 0 1rem;
+  }
+
+  .revlog__header {
+    margin-bottom: 2rem;
+  }
+
+  .revlog__tag {
+    font-size: 0.72rem;
+  }
+
+  .revlog__title {
+    font-size: 1.4rem;
+  }
+
+  .revlog__description {
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .revlog__subtitle {
+    font-size: 1rem;
+    margin: 2.25rem 0 1rem;
+  }
+
+  .revlog__partners,
+  .revlog__deliverables {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .revlog__partner {
+    padding: 1.1rem;
+  }
+
+  .revlog__partner p {
+    font-size: 0.82rem;
+  }
+
+  .revlog__partner li {
+    font-size: 0.78rem;
+  }
+
+  /* Linha do tempo vertical: marcador à esquerda, conector descendo */
+  .revlog__timeline {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .revlog__step {
+    flex-direction: row;
+    gap: 0.9rem;
+    text-align: left;
+  }
+
+  .revlog__step:not(:last-child)::after,
+  .revlog__step:nth-child(2n):not(:last-child)::after {
+    display: block;
+    top: 52px;
+    bottom: -1.25rem;
+    left: 25px;
+    width: 2px;
+    height: auto;
+    background: repeating-linear-gradient(180deg, #10b981 0 6px, transparent 6px 11px);
+  }
+
+  .revlog__step-marker {
+    width: 52px;
+    height: 52px;
+    margin: 0;
+  }
+
+  .revlog__step-marker svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .revlog__step-body {
+    margin-top: 0;
+    padding: 0.9rem;
+  }
+
+  .revlog__step-body h4 {
     font-size: 0.95rem;
+  }
+
+  .revlog__step-body p {
+    font-size: 0.8rem;
+  }
+
+  .revlog__deliverable p {
+    font-size: 0.78rem;
+  }
+
+  .revlog__cta {
+    margin-top: 2.25rem;
+    padding: 1.4rem;
+    gap: 1.25rem;
+  }
+
+  .revlog__cta-text h3 {
+    font-size: 1.1rem;
+  }
+
+  .revlog__cta-text p {
+    font-size: 0.85rem;
+  }
+
+  .revlog__cta-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .revlog__btn-primary,
+  .revlog__btn-secondary {
+    width: 100%;
+  }
+}
+
+/* Respeita "reduzir movimento": sem deslocamentos no hover */
+@media (prefers-reduced-motion: reduce) {
+  .revlog__partner,
+  .revlog__btn-primary,
+  .revlog__btn-secondary {
+    transition: none;
+  }
+
+  .revlog__partner:hover,
+  .revlog__btn-primary:hover,
+  .revlog__btn-secondary:hover {
+    transform: none;
+  }
+}
+
+/* ==================== Ajustes específicos da Logística Reversa ==================== */
+/* Desktop: 5 etapas na linha do tempo */
+.revlog__timeline {
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+}
+
+.revlog__step:not(:last-child)::after {
+  width: calc(100% - 80px + 1.25rem);
+}
+
+/* Foco visível para navegação por teclado */
+.revlog__btn-primary:focus-visible,
+.revlog__btn-secondary:focus-visible {
+  outline: 3px solid #a7f3d0;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1024px) {
+  .revlog__timeline {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 2rem;
+  }
+
+  .revlog__step:nth-child(2n)::after,
+  .revlog__step:last-child::after {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .revlog__timeline {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .revlog__step:not(:last-child)::after,
+  .revlog__step:nth-child(2n):not(:last-child)::after {
+    display: block;
+    width: 2px;
   }
 }
