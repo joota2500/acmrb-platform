@@ -15,7 +15,10 @@
  *  5. Botões: "Conheça nossas empresas parceiras" (/parceiros) e
  *     "Quero apoiar" (/#contato).
  *
- * Dados: view pública apoiadores_publicos (sem CPF; pessoa física e
+ * Dados: view pública apoiadores_publicos + empresas_logistica_publicas
+ * (só as marcadas "mostrar no mapa", categoria "Logística reversa").
+ * Camadas Mapa/Satélite/Híbrido no próprio mapa.
+ * View pública apoiadores_publicos (sem CPF; pessoa física e
  * anônimos com localização aproximada). Se a migration ainda não foi
  * rodada ou não houver pontos, aparece o estado "Em breve".
  * Responsividade em src/styles/apoiadores-mapa.css.
@@ -28,7 +31,9 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Building2, Handshake, HeartHandshake, MapPin, MapPinned, RotateCcw, Tags } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
-import { CATEGORIAS, TIPOS_APOIO, corCategoria, listarApoiadoresPublicos, type ApoiadorPublico } from "@/lib/apoiadores";
+import {
+  CATEGORIAS, TIPOS_APOIO, corCategoria, empresaComoPonto, listarApoiadoresPublicos, listarEmpresasLogisticaPublicas, type ApoiadorPublico,
+} from "@/lib/apoiadores";
 import "@/styles/apoiadores-mapa.css";
 
 // Leaflet usa window: carrega só no navegador (não quebra o SSR)
@@ -47,9 +52,11 @@ export default function ApoiadoresMapaSection() {
 
   useEffect(() => {
     let vivo = true;
-    listarApoiadoresPublicos(supabase).then((r) => {
+    // apoiadores + empresas de logística marcadas para o mapa (cor própria)
+    Promise.all([listarApoiadoresPublicos(supabase), listarEmpresasLogisticaPublicas(supabase)]).then(([a, e]) => {
       if (!vivo) return;
-      setLista(r.dados);
+      const empresas = e.dados.filter((x) => x.no_mapa && x.latitude != null && x.longitude != null).map(empresaComoPonto);
+      setLista([...a.dados, ...empresas]);
       setCarregando(false);
     });
     return () => {
@@ -65,7 +72,10 @@ export default function ApoiadoresMapaSection() {
   });
 
   // Só mostra chips de categorias/apoios que existem nos dados
-  const categoriasUsadas = useMemo(() => CATEGORIAS.filter((c) => lista.some((a) => a.categoria === c)), [lista]);
+  const categoriasUsadas = useMemo(
+    () => [...CATEGORIAS, "Logística reversa"].filter((c) => lista.some((a) => a.categoria === c)),
+    [lista],
+  );
   const apoiosUsados = useMemo(() => TIPOS_APOIO.filter((t) => lista.some((a) => a.tipos_apoio.includes(t))), [lista]);
 
   const filtrados = useMemo(
