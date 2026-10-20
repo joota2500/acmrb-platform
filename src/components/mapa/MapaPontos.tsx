@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * MapaPontos — mapa Leaflet (OpenStreetMap) com marcadores coloridos
+ * MapaPontos — mapa Leaflet com marcadores coloridos
+ * Camadas Mapa (CARTO/OSM), Satélite e Híbrido (Esri) — src/lib/mapaCamadas.ts
  * ------------------------------------------------------------
  * Só roda no navegador: carregue SEMPRE com next/dynamic({ ssr: false }).
  * - Não captura a rolagem da página: zoom pela roda desligado e, em
@@ -15,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
+import { adicionarCamadas, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
 import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, escaparHtml, linkExterno, type ApoiadorPublico } from "@/lib/apoiadores";
 
 interface Props {
@@ -71,6 +73,7 @@ export default function MapaPontos({ pontos, selecionado, onSelecionar, rotulo =
     const mapa = L.map(divRef.current, {
       center: BATURITE_CENTRO,
       zoom: BATURITE_ZOOM,
+      maxZoom: ZOOM_MAXIMO,
       scrollWheelZoom: false,
       dragging: !toque,
       touchZoom: !toque,
@@ -78,10 +81,8 @@ export default function MapaPontos({ pontos, selecionado, onSelecionar, rotulo =
       fadeAnimation: !reduzir,
       markerZoomAnimation: !reduzir,
     });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
-    }).addTo(mapa);
+    // Mapa / Satélite / Híbrido (lembra a última escolha do visitante)
+    adicionarCamadas(mapa, "acmrb-mapa-camada-publico", "mapa");
     camadaRef.current = L.layerGroup().addTo(mapa);
     mapaRef.current = mapa;
     return () => {

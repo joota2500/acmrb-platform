@@ -51,3 +51,24 @@
 @media (prefers-reduced-motion: reduce) {
   .mapa-pin__gota { transition: none; }
 }
+
+/* Controle de camadas (Mapa / Satélite / Híbrido) */
+.leaflet-control-layers {
+  border: 0 !important; border-radius: 0.8rem !important; padding: 0.15rem 0.3rem !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18) !important; background: rgba(255, 255, 255, 0.95) !important;
+  font-size: 0.78rem; color: #064e3b;
+}
+.leaflet-control-layers-base { display: flex; gap: 0.15rem; }
+.leaflet-control-layers-base label { margin: 0; }
+.leaflet-control-layers-base label > span { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.3rem 0.5rem; border-radius: 0.55rem; cursor: pointer; font-weight: 600; }
+.leaflet-control-layers-base label:has(input:checked) > span { background: #047857; color: #fff; }
+.leaflet-control-layers-selector { accent-color: #047857; margin: 0 !important; }
+.leaflet-control-layers-base label:has(input:checked) .leaflet-control-layers-selector { display: none; }
+.leaflet-control-layers-separator { display: none; }
+@media (max-width: 480px) {
+  .leaflet-control-layers { font-size: 0.7rem; }
+  .leaflet-control-layers-base label > span { padding: 0.25rem 0.4rem; }
+}
+
+/* Marcador de item oculto do site (visão do painel) */
+.mapa-pin__gota--oculto { opacity: 0.55; outline: 2px dashed #fff; outline-offset: -4px; filter: grayscale(0.4); }

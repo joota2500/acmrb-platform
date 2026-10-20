@@ -4,12 +4,15 @@
  * MapaSeletor — mapa do painel para marcar um ponto (clicar ou arrastar)
  * ------------------------------------------------------------
  * Carregue com next/dynamic({ ssr: false }). Devolve lat/lng com 6 casas.
+ * Camadas Mapa/Satélite/Híbrido (padrão Híbrido, lembra a escolha).
+ * Quando o ponto chega de fora (busca), centraliza com zoom 18.
  */
 
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
+import { adicionarCamadas, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
 import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/lib/apoiadores";
 import { iconeCategoria } from "@/components/mapa/MapaPontos";
 
@@ -26,16 +29,22 @@ export default function MapaSeletor({ latitude, longitude, categoria, onChange }
   const divRef = useRef<HTMLDivElement>(null);
   const mapaRef = useRef<L.Map | null>(null);
   const mkRef = useRef<L.Marker | null>(null);
-  const cbRef = useRef(onChange);
-  cbRef.current = onChange;
+  // último ponto emitido pelo próprio mapa (clique/arrasto): não recentraliza
+  const ultimoRef = useRef<string | null>(null);
+  const cbRef = useRef((lat: number, lng: number) => {
+    ultimoRef.current = `${lat},${lng}`;
+    onChange(lat, lng);
+  });
+  cbRef.current = (lat: number, lng: number) => {
+    ultimoRef.current = `${lat},${lng}`;
+    onChange(lat, lng);
+  };
 
   useEffect(() => {
     if (!divRef.current || mapaRef.current) return;
-    const mapa = L.map(divRef.current, { center: BATURITE_CENTRO, zoom: BATURITE_ZOOM, scrollWheelZoom: false });
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
-    }).addTo(mapa);
+    const mapa = L.map(divRef.current, { center: BATURITE_CENTRO, zoom: BATURITE_ZOOM, maxZoom: ZOOM_MAXIMO, scrollWheelZoom: false });
+    // No painel o padrão é o Híbrido (satélite + nomes) para marcar com precisão
+    adicionarCamadas(mapa, "acmrb-mapa-camada-admin", "hibrido");
     mapa.on("click", (e: L.LeafletMouseEvent) => cbRef.current(arred(e.latlng.lat), arred(e.latlng.lng)));
     mapaRef.current = mapa;
     // o modal pode abrir com animação: recalcula o tamanho
@@ -68,7 +77,12 @@ export default function MapaSeletor({ latitude, longitude, categoria, onChange }
       mkRef.current.setLatLng([latitude, longitude]);
       mkRef.current.setIcon(iconeCategoria(categoria, true));
     }
-    if (!mapa.getBounds().contains([latitude, longitude])) mapa.setView([latitude, longitude], 17);
+    // ponto vindo de fora (busca de endereço/CNPJ): centraliza bem perto
+    if (ultimoRef.current !== `${latitude},${longitude}`) {
+      mapa.setView([latitude, longitude], 18);
+      ultimoRef.current = `${latitude},${longitude}`;
+    }
+    else if (!mapa.getBounds().contains([latitude, longitude])) mapa.setView([latitude, longitude], 17);
   }, [latitude, longitude, categoria]);
 
   return (
