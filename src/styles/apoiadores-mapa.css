@@ -100,3 +100,27 @@
   .apmapa__chip, .apmapa__item, .apmapa__btn { transition: none; }
   .apmapa__btn:hover { transform: none; }
 }
+
+/* ---------- Ajuste do bloco "Empresas parceiras" (CTA) em tablet e celular ---------- */
+.apmapa__cta-text p { text-align: justify; hyphens: auto; }
+.apmapa__btn { white-space: nowrap; }
+
+/* Tablet: textos e botões mais contidos */
+@media (max-width: 1024px) {
+  .apmapa__cta { gap: 1.1rem; padding: 1.6rem; }
+  .apmapa__cta-text h3 { font-size: 1.25rem; }
+  .apmapa__cta-text p { font-size: 0.95rem; line-height: 1.55; max-width: none; }
+  .apmapa__cta-actions { gap: 0.6rem; }
+  .apmapa__btn { padding: 0.65rem 1.1rem; font-size: 0.9rem; gap: 0.45rem; }
+  .apmapa__btn svg { width: 16px; height: 16px; }
+}
+
+/* Celular: compacto, botões em largura total e texto quebrando se precisar */
+@media (max-width: 480px) {
+  .apmapa__cta { padding: 1.15rem; gap: 0.9rem; border-radius: 1rem; }
+  .apmapa__cta-text h3 { font-size: 1.05rem; line-height: 1.3; margin-bottom: 0.35rem; }
+  .apmapa__cta-text p { font-size: 0.84rem; line-height: 1.5; }
+  .apmapa__cta-actions { gap: 0.5rem; }
+  .apmapa__btn { width: 100%; white-space: normal; text-align: center; padding: 0.6rem 0.9rem; font-size: 0.84rem; border-width: 1.5px; }
+  .apmapa__btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+}
