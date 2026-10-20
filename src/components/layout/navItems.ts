@@ -10,5 +10,6 @@ export const navigation: NavItem[] = [
   { id: "acoes", name: "Nossas Ações", href: "#projetos" },
   { id: "transparencia", name: "Transparência", href: "#transparencia" },
   { id: "noticias", name: "Notícias", href: "#noticias" },
+  { id: "denuncias", name: "Denúncias", href: "#denuncias" }, // rola até a seção de denúncia ambiental
   { id: "contato", name: "Contato", href: "#contato" },
 ];
