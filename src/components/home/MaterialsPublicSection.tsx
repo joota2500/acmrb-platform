@@ -1,5 +1,8 @@
 "use client";
 
+// NÃO UTILIZADO: removido da home. Peso total, valor operacional e ranking de
+// materiais agora ficam em /transparencia (src/components/transparencia/TranspOperacional.tsx).
+
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";

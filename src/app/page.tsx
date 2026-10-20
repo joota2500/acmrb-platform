@@ -31,7 +31,7 @@ import DenunciasSection from "@/components/home/DenunciasSection"; // Formulári
 import PartnersSection from "@/components/home/PartnersSection"; // Parceiros
 import ContactSection from "@/components/home/ContactSection"; // Formulário de contato
 import InstitutionalSection from "@/components/home/InstitutionalSection"; // Informações institucionais
-import MaterialsPublicSection from "@/components/home/MaterialsPublicSection"; // Materiais recicláveis aceitos
+// MaterialsPublicSection ("Transparência Operacional") saiu da home: o conteúdo agora fica em /transparencia
 
 // ---------- Utilitários ----------
 import { Suspense } from "react";
@@ -58,9 +58,6 @@ export default function Home() {
 
         {/* 3 e 4. Resumo de transparência com indicadores do banco */}
         <TransparencySummarySection />
-
-        {/* 5. Materiais recicláveis aceitos */}
-        <MaterialsPublicSection />
 
         {/* 6. Logística reversa */}
         <ReverseLogisticsSection />
