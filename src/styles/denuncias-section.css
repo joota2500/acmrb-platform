@@ -1,0 +1,151 @@
+/* ==================== DENÚNCIAS SECTION ("Denúncia Ambiental") ====================
+ * Paleta: verdes/esmeralda do projeto (#047857, #059669, #10b981, #a7f3d0,
+ * #d1fae5, #ecfdf5) + cinzas de texto (#111827, #374151, #4b5563) e um
+ * âmbar/vermelho suave apenas para o aviso de emergência.
+ * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
+ */
+
+.denun {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 55%, #ffffff 100%);
+  padding: 4.5rem 0;
+}
+
+.denun__container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
+
+/* Parágrafos justificados; títulos sem justificar */
+.denun p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+
+/* ---------- Cabeçalho ---------- */
+.denun__header { max-width: 48rem; margin: 0 auto 3rem; text-align: center; }
+.denun__tag {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 1rem; border-radius: 9999px;
+  background: #ecfdf5; color: #059669;
+  font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem;
+}
+.denun__title { font-size: 2.1rem; font-weight: 900; color: #111827; line-height: 1.25; text-align: center; }
+.denun__title span { color: #047857; }
+.denun__description { margin-top: 1.25rem; font-size: 1.05rem; line-height: 1.75; color: #4b5563; }
+
+.denun__subtitle {
+  font-size: 1.35rem; font-weight: 800; color: #111827;
+  margin: 0 0 1.25rem; text-align: center;
+}
+
+/* ---------- Tipos ---------- */
+.denun__grid {
+  list-style: none; padding: 0; margin: 0 0 3.5rem;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+}
+.denun__card {
+  background: #fff; border: 1px solid #d1fae5; border-radius: 1.25rem;
+  padding: 1.5rem; box-shadow: 0 4px 18px rgba(4, 120, 87, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.denun__card:hover { transform: translateY(-4px); border-color: #a7f3d0; box-shadow: 0 10px 28px rgba(4, 120, 87, 0.12); }
+.denun__icon {
+  width: 2.9rem; height: 2.9rem; border-radius: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #059669, #10b981); color: #fff; margin-bottom: 1rem;
+}
+.denun__card-title { font-size: 1.05rem; font-weight: 800; color: #111827; margin-bottom: 0.4rem; }
+.denun__card-text { font-size: 0.93rem; line-height: 1.6; color: #4b5563; }
+
+/* ---------- Passo a passo ---------- */
+.denun__steps {
+  list-style: none; padding: 0; margin: 0 0 3.5rem;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+  counter-reset: none; position: relative;
+}
+.denun__step {
+  position: relative; background: #fff; border-radius: 1.25rem;
+  padding: 1.5rem; border-top: 4px solid #10b981;
+  box-shadow: 0 4px 18px rgba(17, 24, 39, 0.06);
+}
+.denun__step-num { position: absolute; top: 1rem; right: 1.1rem; font-size: 1.6rem; font-weight: 900; color: #d1fae5; }
+.denun__step-icon {
+  width: 2.6rem; height: 2.6rem; border-radius: 9999px; background: #ecfdf5; color: #047857;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 0.9rem;
+}
+.denun__step-title { font-size: 1rem; font-weight: 800; color: #111827; margin-bottom: 0.35rem; }
+.denun__step-text { font-size: 0.9rem; line-height: 1.6; color: #4b5563; }
+
+/* ---------- Dicas e emergência ---------- */
+.denun__info { display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; margin-bottom: 3rem; }
+.denun__tips, .denun__emergency { border-radius: 1.25rem; padding: 1.75rem; }
+.denun__tips { background: #ecfdf5; border: 1px solid #a7f3d0; }
+.denun__info-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 1.1rem; font-weight: 800; color: #047857; margin-bottom: 1rem;
+}
+.denun__tips ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem 1.25rem; }
+.denun__tips li { display: flex; gap: 0.6rem; align-items: flex-start; color: #374151; }
+.denun__tips li svg { flex-shrink: 0; color: #059669; margin-top: 0.2rem; }
+.denun__tips li p { font-size: 0.93rem; line-height: 1.55; }
+
+.denun__emergency { background: #fff7ed; border: 1px solid #fed7aa; }
+.denun__emergency .denun__info-title { color: #c2410c; }
+.denun__emergency p { font-size: 0.93rem; line-height: 1.6; color: #374151; margin-bottom: 1rem; }
+.denun__emergency-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.65rem 1.25rem; border-radius: 9999px;
+  background: #dc2626; color: #fff; font-weight: 800; text-decoration: none;
+  transition: background 0.2s ease;
+}
+.denun__emergency-btn:hover { background: #b91c1c; }
+
+/* ---------- CTA ---------- */
+.denun__cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+  padding: 2.25rem; border-radius: 1.5rem;
+  background: linear-gradient(135deg, #047857 0%, #059669 60%, #10b981 100%);
+  color: #fff; box-shadow: 0 14px 40px rgba(4, 120, 87, 0.25);
+}
+.denun__cta-text h3 { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem; }
+.denun__cta-text p { color: #d1fae5; line-height: 1.65; max-width: 36rem; }
+.denun__cta-action { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+.denun__btn {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.9rem 1.6rem; border-radius: 9999px;
+  background: #fff; color: #047857; font-weight: 800; text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.denun__btn:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18); }
+.denun__notice { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; color: #ecfdf5; text-align: center; }
+
+/* Foco visível para navegação por teclado */
+.denun a:focus-visible { outline: 3px solid #a7f3d0; outline-offset: 3px; }
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+  .denun__grid, .denun__steps { grid-template-columns: repeat(2, 1fr); }
+  .denun__info { grid-template-columns: 1fr; }
+  .denun__cta { flex-direction: column; text-align: center; }
+  .denun__cta-text h3 { text-align: center; }
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 480px) {
+  .denun { padding: 3rem 0; }
+  .denun__container { padding: 0 1rem; }
+  .denun__header { margin-bottom: 2rem; }
+  .denun__title { font-size: 1.55rem; }
+  .denun__description { font-size: 0.92rem; }
+  .denun__subtitle { font-size: 1.15rem; }
+  .denun__grid, .denun__steps { grid-template-columns: 1fr; gap: 0.85rem; margin-bottom: 2.5rem; }
+  .denun__card, .denun__step { padding: 1.15rem; }
+  .denun__card-text, .denun__step-text, .denun__tips li p, .denun__emergency p { font-size: 0.85rem; }
+  .denun__tips ul { grid-template-columns: 1fr; }
+  .denun__tips, .denun__emergency { padding: 1.25rem; }
+  .denun__cta { padding: 1.5rem; gap: 1.25rem; }
+  .denun__cta-text h3 { font-size: 1.2rem; }
+  .denun__btn { width: 100%; justify-content: center; padding: 0.8rem 1.2rem; }
+}
+
+/* ---------- Reduzir movimento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .denun__card, .denun__btn, .denun__emergency-btn { transition: none; }
+  .denun__card:hover, .denun__btn:hover { transform: none; }
+}
