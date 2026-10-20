@@ -125,14 +125,25 @@ export function ordenarRecentes(lista: Noticia[]): Noticia[] {
   return [...lista].sort((a, b) => +new Date(b.publicado_em) - +new Date(a.publicado_em));
 }
 
-/** Notícias da home: destaques (por ordem_destaque) ou as 3 mais recentes */
+/**
+ * Notícias da home: no MÁXIMO `max` (3).
+ * 1º os destaques (por ordem_destaque); se faltarem, completa com as
+ * mais recentes publicadas, sem repetir (dedup por id).
+ */
 export function selecionarHome(lista: Noticia[], max = 3): Noticia[] {
   const recentes = ordenarRecentes(lista);
   const destaques = recentes
     .filter((n) => n.destaque)
     .sort((a, b) => (a.ordem_destaque ?? 999) - (b.ordem_destaque ?? 999));
-  const base = destaques.length ? destaques : recentes;
-  return base.slice(0, max);
+  const vistos = new Set<string>();
+  const saida: Noticia[] = [];
+  for (const n of [...destaques, ...recentes]) {
+    if (saida.length >= max) break;
+    if (vistos.has(n.id)) continue;
+    vistos.add(n.id);
+    saida.push(n);
+  }
+  return saida;
 }
 
 /** Gera slug a partir do título (sem acentos, minúsculo, com hífens) */
