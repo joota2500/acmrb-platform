@@ -134,6 +134,8 @@ export default function NoticiaDetalhe({ noticia: n, anterior, proxima, relacion
         {n.imagem_url && (
           <figure className="nd__figura">
             <div className="nd__moldura">
+              {/* fundo desfocado com a própria imagem (preenche as laterais) */}
+              <span className="nd__fundo" aria-hidden="true" style={{ backgroundImage: `url("${n.imagem_url}")` }} />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={n.imagem_url} alt={n.imagem_alt} />
             </div>
