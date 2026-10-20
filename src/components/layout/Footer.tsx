@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ArrowUp, AtSign, Globe, Mail, MapPin, Phone } from "lucide-react";
 
+import { CONTATO } from "@/lib/contatoInstitucional";
 import "@/styles/footer.css";
 
 export default function Footer() {
@@ -59,7 +60,7 @@ export default function Footer() {
                 <Phone size={20} />
                 <div>
                   <span>WhatsApp</span>
-                  <p>(85) 98921-4864</p>
+                  <p>{CONTATO.whatsappExibicao}</p>
                 </div>
               </div>
 

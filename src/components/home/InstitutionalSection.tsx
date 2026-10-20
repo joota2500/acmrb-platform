@@ -23,6 +23,7 @@ import {
 import { useESGMetrics } from "@/hooks/useESGMetrics";
 import { supabase } from "@/lib/supabase";
 
+import { CONTATO, linkMapaBusca } from "@/lib/contatoInstitucional";
 import "@/styles/institutional-section.css";
 
 type LinkItem = { label: string; href: string };
@@ -77,9 +78,10 @@ const docsPadrao = ["Estatuto Social", "Relatório Anual", "Prestação de Conta
 
 type Doc = { id: string; titulo: string; url_arquivo: string; ano: number | null };
 
-const CNPJ = "62.166.052/0001-90";
-const ENDERECO = "Rua Kaolim, 252 – Mangá, Baturité/CE";
-const MAPS = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("Rua Kaolim, 252, Mangá, Baturité, CE")}`;
+// Dados oficiais centralizados em src/lib/contatoInstitucional.ts
+const CNPJ = CONTATO.cnpj;
+const ENDERECO = CONTATO.endereco;
+const MAPS = linkMapaBusca();
 
 export default function InstitutionalSection() {
   const { totalPeso, familiasImpactadas, loading } = useESGMetrics();
