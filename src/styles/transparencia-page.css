@@ -1,0 +1,260 @@
+/* ==================== PÁGINA /transparencia (estrutura geral) ====================
+ * Hero, navegação fixa por âncoras, títulos de seção, alertas e esqueleto.
+ * Cada seção tem seu CSS (transp-*.css). Paleta do projeto: verdes/esmeralda.
+ * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
+ * Altura do Header fixo: 64px (celular), 72px (≥640px), 80px (≥1024px).
+ */
+
+.tp-pagina {
+  --tp-topo: 64px;
+  background: #ffffff;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+@media (min-width: 640px) { .tp-pagina { --tp-topo: 72px; } }
+@media (min-width: 1024px) { .tp-pagina { --tp-topo: 68px; } }
+
+.tp-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Parágrafos justificados; títulos não */
+.tp-pagina p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* ---------- Hero ---------- */
+.tp-hero {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.25), transparent 45%),
+    linear-gradient(135deg, #022c22 0%, #064e3b 60%, #065f46 100%);
+  color: #fff;
+  padding: calc(var(--tp-topo) + 2.5rem) 0 3.5rem;
+}
+
+.tp-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #a7f3d0;
+  margin-bottom: 1.5rem;
+}
+.tp-breadcrumb a { color: #d1fae5; text-decoration: none; }
+.tp-breadcrumb a:hover { text-decoration: underline; }
+
+.tp-hero__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  background: rgba(209, 250, 229, 0.15);
+  border: 1px solid rgba(167, 243, 208, 0.35);
+  color: #a7f3d0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tp-hero__titulo {
+  margin-top: 1.1rem;
+  max-width: 48rem;
+  font-size: 2.75rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+.tp-hero__titulo span { color: #6ee7b7; }
+
+.tp-hero__texto {
+  margin-top: 1.1rem;
+  max-width: 46rem;
+  font-size: 1.08rem;
+  line-height: 1.75;
+  color: #d1fae5;
+}
+
+.tp-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1.75rem;
+}
+
+.tp-hero__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.85rem;
+  color: #ecfdf5;
+}
+.tp-hero__chip--claro { background: #d1fae5; color: #065f46; font-weight: 600; }
+
+.tp-hero__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(167, 243, 208, 0.45);
+  background: transparent;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.tp-hero__btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); }
+.tp-hero__btn:disabled { opacity: 0.6; cursor: wait; }
+
+.tp-girando { animation: tp-girar 1s linear infinite; }
+@keyframes tp-girar { to { transform: rotate(360deg); } }
+
+/* ---------- Navegação fixa ---------- */
+.tp-nav {
+  position: sticky;
+  top: var(--tp-topo);
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tp-nav__trilho {
+  display: flex;
+  gap: 0.35rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+}
+.tp-nav__trilho::-webkit-scrollbar { display: none; }
+
+.tp-nav__link {
+  flex-shrink: 0;
+  padding: 0.5rem 0.95rem;
+  border-radius: 9999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #4b5563;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.tp-nav__link:hover { background: #ecfdf5; color: #047857; }
+.tp-nav__link.is-ativo { background: #047857; color: #fff; }
+
+/* ---------- Seções ---------- */
+.tp-secao {
+  padding: 4.5rem 0;
+  scroll-margin-top: calc(var(--tp-topo) + 3.5rem);
+}
+.tp-secao--suave { background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%); }
+
+.tp-secao__cab { max-width: 46rem; margin-bottom: 2.25rem; }
+
+.tp-secao__tag {
+  display: inline-block;
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  background: #d1fae5;
+  color: #047857;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.tp-secao__titulo {
+  margin-top: 0.8rem;
+  font-size: 2rem;
+  font-weight: 900;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.tp-secao__texto {
+  margin-top: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #4b5563;
+}
+
+/* ---------- Alerta e carregamento ---------- */
+.tp-alerta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 0.9rem;
+}
+.tp-alerta button {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 0.6rem;
+  border: none;
+  background: #991b1b;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tp-carregando {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+.tp-esqueleto {
+  height: 11rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+  background-size: 200% 100%;
+  animation: tp-brilho 1.4s ease-in-out infinite;
+}
+@keyframes tp-brilho { to { background-position: -200% 0; } }
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+  .tp-hero__titulo { font-size: 2.25rem; }
+  .tp-carregando { grid-template-columns: repeat(2, 1fr); }
+  .tp-secao { padding: 3.5rem 0; }
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 480px) {
+  .tp-container { padding: 0 1rem; }
+  .tp-hero { padding: calc(var(--tp-topo) + 1.5rem) 0 2.5rem; }
+  .tp-hero__titulo { font-size: 1.6rem; }
+  .tp-hero__texto { font-size: 0.92rem; line-height: 1.65; }
+  .tp-hero__chip, .tp-hero__btn { font-size: 0.78rem; }
+  .tp-nav__link { font-size: 0.8rem; padding: 0.45rem 0.8rem; }
+  .tp-secao { padding: 2.75rem 0; }
+  .tp-secao__titulo { font-size: 1.45rem; }
+  .tp-secao__texto { font-size: 0.9rem; line-height: 1.65; }
+  .tp-carregando { grid-template-columns: 1fr; }
+  .tp-esqueleto { height: 8rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tp-girando, .tp-esqueleto { animation: none; }
+}

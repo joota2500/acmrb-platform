@@ -1,0 +1,78 @@
+/* ==================== TRANSPARÊNCIA › DOCUMENTOS (#documentos) ==================== */
+
+.td-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.25rem; }
+.td-chips button {
+  padding: 0.45rem 0.95rem;
+  border-radius: 9999px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+}
+.td-chips button.is-ativo { background: #047857; border-color: #047857; color: #fff; }
+
+.td-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.9rem;
+}
+
+.td-doc {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  height: 100%;
+  padding: 1.15rem;
+  border-radius: 1.2rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.td-doc:hover { border-color: #10b981; box-shadow: 0 10px 25px -18px rgba(6, 78, 59, 0.5); }
+.td-doc:focus-visible { outline: 2px solid #10b981; outline-offset: 2px; }
+
+.td-doc__icone {
+  flex-shrink: 0;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: #ecfdf5;
+  color: #047857;
+}
+.td-doc__corpo { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+.td-doc__meta { font-size: 0.72rem; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.04em; }
+.td-doc__corpo strong { font-size: 1rem; color: #111827; }
+.td-doc__desc { font-size: 0.85rem; line-height: 1.55; color: #4b5563; text-align: justify; hyphens: auto; }
+.td-doc__abrir { flex-shrink: 0; color: #9ca3af; }
+
+.td-vazio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 2.5rem 1.25rem;
+  border-radius: 1.25rem;
+  border: 2px dashed #d1d5db;
+  color: #6b7280;
+}
+.td-vazio p { max-width: 32rem; text-align: center; }
+
+@media (max-width: 720px) {
+  .td-lista { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .td-doc { padding: 0.9rem; gap: 0.7rem; }
+  .td-doc__corpo strong { font-size: 0.92rem; }
+  .td-doc__desc { font-size: 0.78rem; }
+  .td-chips button { font-size: 0.78rem; padding: 0.4rem 0.8rem; }
+}

@@ -1,0 +1,155 @@
+/* ==================== TRANSPARÊNCIA › INDICADORES (#indicadores) ====================
+ * 4 cards principais com meta + faixa de indicadores complementares + nota pública.
+ */
+
+.ti-grade {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.ti-card {
+  --tom: #059669;
+  --tom-claro: #d1fae5;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.6rem;
+  border-radius: 1.5rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 30px -18px rgba(6, 78, 59, 0.35);
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+.ti-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--tom);
+}
+.ti-card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -20px rgba(6, 78, 59, 0.45); }
+
+.ti-card--verde { --tom: #059669; --tom-claro: #d1fae5; }
+.ti-card--ceu { --tom: #0284c7; --tom-claro: #e0f2fe; }
+.ti-card--violeta { --tom: #7c3aed; --tom-claro: #ede9fe; }
+.ti-card--folha { --tom: #16a34a; --tom-claro: #dcfce7; }
+
+.ti-card__icone {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.9rem;
+  background: var(--tom-claro);
+  color: var(--tom);
+}
+
+.ti-card__titulo {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ti-card__valor {
+  margin-top: 0.35rem;
+  font-size: 2.1rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.ti-apuracao {
+  display: inline-block;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #9ca3af;
+  padding: 0.35rem 0;
+}
+
+.ti-card__desc {
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #4b5563;
+  flex: 1;
+}
+
+.ti-meta { margin-top: 1.1rem; }
+.ti-meta__topo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 0.4rem;
+}
+.ti-meta__barra {
+  height: 8px;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+.ti-meta__barra span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--tom);
+}
+
+/* ---------- Complementares ---------- */
+.ti-extras {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.9rem;
+  margin-top: 1.5rem;
+}
+.ti-extra {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 1.15rem;
+  border-radius: 1rem;
+  background: #f0fdf4;
+  border: 1px solid #d1fae5;
+  color: #047857;
+}
+.ti-extra div { display: flex; flex-direction: column; }
+.ti-extra strong { font-size: 1.15rem; color: #064e3b; font-variant-numeric: tabular-nums; }
+.ti-extra span { font-size: 0.8rem; color: #4b5563; }
+
+.ti-nota {
+  margin-top: 1.5rem;
+  padding: 1.1rem 1.3rem;
+  border-left: 4px solid #059669;
+  border-radius: 0 1rem 1rem 0;
+  background: #ecfdf5;
+}
+.ti-nota strong { font-size: 0.85rem; color: #065f46; }
+.ti-nota p { margin-top: 0.35rem; font-size: 0.92rem; line-height: 1.65; color: #374151; }
+
+@media (max-width: 1024px) {
+  .ti-grade { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .ti-grade { grid-template-columns: 1fr; gap: 0.9rem; }
+  .ti-card { padding: 1.2rem; border-radius: 1.2rem; }
+  .ti-card__valor { font-size: 1.65rem; }
+  .ti-card__desc { font-size: 0.82rem; }
+  .ti-extras { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .ti-extra { padding: 0.75rem; gap: 0.5rem; }
+  .ti-extra strong { font-size: 0.95rem; }
+  .ti-extra span { font-size: 0.72rem; }
+  .ti-nota p { font-size: 0.85rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ti-card { transition: none; }
+  .ti-card:hover { transform: none; }
+}

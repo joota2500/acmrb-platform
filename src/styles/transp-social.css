@@ -1,0 +1,60 @@
+/* ==================== TRANSPARÊNCIA › IMPACTO SOCIAL (#impacto) ==================== */
+
+.ts-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.1rem;
+}
+
+.ts-card {
+  padding: 1.4rem;
+  border-radius: 1.4rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  transition: border-color 0.2s, transform 0.25s;
+}
+.ts-card:hover { border-color: #6ee7b7; transform: translateY(-3px); }
+
+.ts-card__icone {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.8rem;
+  background: #d1fae5;
+  color: #047857;
+}
+.ts-card strong {
+  display: block;
+  margin-top: 0.9rem;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #064e3b;
+  font-variant-numeric: tabular-nums;
+}
+.ts-card h3 { margin-top: 0.2rem; font-size: 1rem; font-weight: 800; color: #111827; }
+.ts-card p { margin-top: 0.45rem; font-size: 0.88rem; line-height: 1.6; color: #4b5563; }
+
+.ts-vazio {
+  padding: 2rem;
+  border-radius: 1.25rem;
+  border: 2px dashed #d1d5db;
+  color: #6b7280;
+}
+
+@media (min-width: 481px) and (max-width: 1024px) {
+  .ts-grade { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .ts-grade { grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+  .ts-card { padding: 0.95rem; border-radius: 1rem; }
+  .ts-card strong { font-size: 1.4rem; margin-top: 0.6rem; }
+  .ts-card h3 { font-size: 0.85rem; }
+  .ts-card p { font-size: 0.75rem; line-height: 1.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ts-card { transition: none; }
+  .ts-card:hover { transform: none; }
+}
