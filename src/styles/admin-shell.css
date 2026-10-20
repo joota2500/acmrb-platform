@@ -185,3 +185,12 @@
   .admin-coluna, .admin-sidebar { transition: none; }
   .admin-gaveta__fundo, .admin-gaveta__painel { animation: none; }
 }
+
+/* Tabela de materiais (7 colunas): abaixo de 768px ganha largura mínima
+   e rola na horizontal dentro do próprio wrapper .overflow-x-auto,
+   em vez de espremer as colunas. */
+@media (max-width: 767.98px) {
+  .admin-main table { min-width: 720px; }
+  .admin-main th,
+  .admin-main td { padding: 0.75rem 0.85rem; }
+}

@@ -201,7 +201,7 @@ export default function MaterialEditModal({
   return (
 
     <div
-      className="
+      className="admin-modal
         fixed
         inset-0
         z-50
@@ -215,7 +215,7 @@ export default function MaterialEditModal({
     >
 
       <div
-        className="
+        className="admin-modal__painel
           w-full
           max-w-2xl 
           bg-white 
