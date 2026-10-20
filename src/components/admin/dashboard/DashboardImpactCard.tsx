@@ -1,3 +1,4 @@
+// NÃO UTILIZADO (substituído pela Visão Geral: src/components/admin/visao-geral/VisaoGeral.tsx)
 export default function DashboardMaterialsCard() {
 
   return (

@@ -1,4 +1,5 @@
 "use client";
+// NÃO UTILIZADO (substituído pela Visão Geral: src/components/admin/visao-geral/VisaoGeral.tsx)
 
 import { formatarNumero, formatarPeso } from "@/lib/formatadores";
 
