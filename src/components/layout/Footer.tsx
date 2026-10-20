@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { AtSign, Globe, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUp, AtSign, Globe, Mail, MapPin, Phone } from "lucide-react";
 
 import "@/styles/footer.css";
 
@@ -85,7 +85,7 @@ export default function Footer() {
         {/* BOTTOM */}
         <div className="footer__bottom">
           <p className="footer__copyright">
-            © 2026 ACMRB — Associação dos Catadores de Materiais Recicláveis de
+            © {new Date().getFullYear()} ACMRB — Associação dos Catadores de Materiais Recicláveis de
             Baturité. Todos os direitos reservados.
           </p>
 
@@ -114,6 +114,17 @@ export default function Footer() {
             </div>
           </div>
         </div>
+
+        {/* Botão voltar ao topo */}
+        <button
+          type="button"
+          className="footer__topo"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Voltar ao topo da página"
+        >
+          <ArrowUp size={18} aria-hidden />
+          <span>Voltar ao topo</span>
+        </button>
       </div>
     </footer>
   );

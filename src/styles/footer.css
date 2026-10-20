@@ -220,3 +220,23 @@
   background: #d1fae5;
   transform: translateY(-2px);
 }
+
+/* ---------- Botão voltar ao topo ---------- */
+.footer__topo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 1.5rem auto 0;
+  padding: 0.6rem 1.1rem;
+  border-radius: 9999px;
+  border: 1px solid #a7f3d0;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.footer__topo:hover { background: #047857; color: #ffffff; }
+.footer__topo:focus-visible { outline: 3px solid #10b981; outline-offset: 2px; }
+@media (max-width: 480px) { .footer__topo { font-size: 0.8rem; } }
