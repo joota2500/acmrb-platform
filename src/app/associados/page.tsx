@@ -1,412 +1,258 @@
 "use client";
 
+/**
+ * Página /associados — Equipe ACMRB
+ * ------------------------------------------------------------
+ * Seções:
+ *  1. Hero: breadcrumb (Início › Quem somos › Associados), título e texto
+ *  2. Diretoria: Presidente, Secretário(a) e Tesoureiro(a) em destaque
+ *  3. Todos os associados ativos, com busca por nome e filtros por
+ *     cargo e por tipo de associado
+ *
+ * Dados: listarAssociadosPublicos() (src/lib/associados.ts) → view
+ * associados_publicos, ou a tabela associados (só colunas públicas)
+ * enquanto a migration não for rodada. Nada de CPF, e-mail, telefone
+ * ou endereço é buscado aqui.
+ *
+ * Responsividade (src/styles/associados.css):
+ *  - Celular (<640px): diretoria em 1 coluna (cartão horizontal), grade
+ *    geral em 2 colunas compactas, filtros empilhados.
+ *  - Tablet (640–1023px): diretoria 3 colunas, grade 3 colunas, filtros
+ *    lado a lado.
+ *  - Desktop (>=1024px): grade em 4 colunas.
+ */
+
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ChevronRight, Search, X } from "lucide-react";
+
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import LoadingState from "@/components/ui/LoadingState";
+import EmptyState from "@/components/ui/EmptyState";
+import AssociadoCard from "@/components/associados/AssociadoCard";
 
 import {
-  ArrowLeft,
-  ArrowRight,
-  Star,
-  Users,
-} from "lucide-react";
+  cargoDiretoria,
+  filtrarDiretoria,
+  listarAssociadosPublicos,
+  normalizar,
+  ordenarAssociados,
+} from "@/lib/associados";
+import type { AssociadoPublico } from "@/types/associados";
 
-import { supabase } from "@/lib/supabase";
+import "@/styles/associados.css";
 
-type Associado = {
-  id: string;
-  nome: string;
-  cargo: string;
-  tipo_associado: string;
-  foto_url?: string;
-  destaque?: boolean;
-  slug?: string;
-};
+/** Valores únicos (sem repetir por maiúsculas/acentos), em ordem alfabética. */
+function opcoesUnicas(valores: (string | null)[]) {
+  const mapa = new Map<string, string>();
+  valores.forEach((v) => {
+    if (v && v.trim()) mapa.set(normalizar(v), v.trim());
+  });
+  return [...mapa.values()].sort((a, b) => a.localeCompare(b, "pt-BR"));
+}
 
 export default function AssociadosPage() {
+  const [lista, setLista] = useState<AssociadoPublico[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState<string | null>(null);
 
-  const [associados, setAssociados] =
-    useState<Associado[]>([]);
+  // Filtros
+  const [busca, setBusca] = useState("");
+  const [cargo, setCargo] = useState("");
+  const [tipo, setTipo] = useState("");
 
-  const [loading, setLoading] =
-    useState(true);
-
-  async function carregar() {
-
-    try {
-
-      setLoading(true);
-
-      const { data, error } =
-        await supabase
-          .from("associados")
-          .select(`
-            id,
-            nome,
-            cargo,
-            tipo_associado,
-            foto_url,
-            destaque,
-            slug
-          `)
-          .eq("ativo", true)
-          .order("destaque", {
-            ascending: false,
-          })
-          .order("created_at", {
-            ascending: false,
-          });
-
-      if (error) {
-
-        console.error(error);
-
-        return;
-
-      }
-
-      setAssociados(
-        (data as Associado[]) || [],
-      );
-
-    } catch (err) {
-
-      console.error(err);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
-  }
-
+  // Carrega uma vez ao abrir a página (com limite de 10s na lib)
   useEffect(() => {
-
-    carregar();
-
+    let ativo = true;
+    listarAssociadosPublicos().then(({ data, erro }) => {
+      if (!ativo) return;
+      setLista(ordenarAssociados(data));
+      setErro(erro);
+      setLoading(false);
+    });
+    return () => {
+      ativo = false;
+    };
   }, []);
 
+  const diretoria = useMemo(() => filtrarDiretoria(lista), [lista]);
+  const cargos = useMemo(() => opcoesUnicas(lista.map((a) => a.cargo)), [lista]);
+  const tipos = useMemo(() => opcoesUnicas(lista.map((a) => a.tipo_associado)), [lista]);
+
+  // Aplica busca (sem acento/maiúscula) + filtros
+  const filtrados = useMemo(() => {
+    const termo = normalizar(busca);
+    return lista.filter(
+      (a) =>
+        (!termo || normalizar(a.nome).includes(termo)) &&
+        (!cargo || normalizar(a.cargo) === normalizar(cargo)) &&
+        (!tipo || normalizar(a.tipo_associado) === normalizar(tipo)),
+    );
+  }, [lista, busca, cargo, tipo]);
+
+  const temFiltro = Boolean(busca || cargo || tipo);
+  const limpar = () => {
+    setBusca("");
+    setCargo("");
+    setTipo("");
+  };
+
   return (
+    <>
+      <Header />
 
-    <main className="bg-[#F5F7F4] min-h-screen">
+      <main className="as-page">
+        {/* ==================== 1. HERO ==================== */}
+        <section className="as-hero" aria-labelledby="as-titulo">
+          <div className="as-container">
+            <nav aria-label="Você está em" className="as-breadcrumb">
+              <ol>
+                <li><Link href="/">Início</Link></li>
+                <li aria-hidden="true"><ChevronRight size={14} /></li>
+                <li><Link href="/quem-somos">Quem somos</Link></li>
+                <li aria-hidden="true"><ChevronRight size={14} /></li>
+                <li aria-current="page">Associados</li>
+              </ol>
+            </nav>
 
-      {/* HERO */}
-
-      <section
-        className="
-          pt-28
-          pb-20
-        "
-      >
-
-        <div
-          className="
-            max-w-7xl
-            mx-auto
-            px-5
-          "
-        >
-
-          {/* VOLTAR */}
-
-          <Link
-            href="/quem-somos"
-            className="
-              inline-flex
-              items-center
-              gap-3
-              px-5
-              h-12
-              rounded-2xl
-              bg-white
-              border
-              border-black/5
-              shadow-sm
-              hover:shadow-lg
-              transition
-              font-semibold
-            "
-          >
-
-            <ArrowLeft size={18} />
-
-            Voltar
-
-          </Link>
-
-          {/* HERO CARD */}
-
-          <div
-            className="
-              mt-10
-              bg-white
-              rounded-[40px]
-              p-8
-              md:p-14
-              border
-              border-black/5
-              shadow-sm
-            "
-          >
-
-            <div
-              className="
-                inline-flex
-                items-center
-                gap-3
-                px-5
-                py-3
-                rounded-full
-                bg-[#DDF5EC]
-                text-[#2E5E4E]
-                font-bold
-              "
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
             >
-
-              <Users size={18} />
-
-              Equipe ACMRB
-
-            </div>
-
-            <h1
-              className="
-                mt-8
-                text-5xl
-                md:text-6xl
-                font-black
-                leading-none
-                text-[#111827]
-              "
-            >
-              Todos os associados
-              da ACMRB.
-            </h1>
-
-            <p
-              className="
-                mt-8
-                max-w-4xl
-                text-lg
-                leading-9
-                text-zinc-600
-              "
-            >
-              Conheça as pessoas que
-              fazem parte da Associação
-              dos Catadores de Materiais
-              Recicláveis de Baturité,
-              fortalecendo diariamente a
-              reciclagem, inclusão social
-              e transformação ambiental.
-            </p>
-
+              <span className="as-badge">Associação dos Catadores de Baturité</span>
+              <h1 id="as-titulo" className="as-hero__title">Equipe ACMRB</h1>
+              <p className="as-text as-text--light" lang="pt-BR">
+                Conheça as pessoas que fazem a ACMRB acontecer: catadores,
+                diretoria e voluntários que, juntos, transformam materiais
+                recicláveis em renda, dignidade e cuidado com Baturité.
+              </p>
+            </motion.div>
           </div>
-
-        </div>
-
-      </section>
-
-      {/* LISTA */}
-
-      <section
-        className="
-          max-w-7xl
-          mx-auto
-          px-5
-          pb-24
-        "
-      >
+        </section>
 
         {loading ? (
-
-          <div
-            className="
-              bg-white
-              rounded-[40px]
-              p-16
-              text-center
-              border
-              border-black/5
-            "
-          >
-            Carregando associados...
+          <div className="as-container as-section">
+            <LoadingState text="Carregando associados..." />
           </div>
-
+        ) : erro ? (
+          <div className="as-container as-section" role="alert">
+            <EmptyState
+              title="Não foi possível carregar"
+              description="Estamos com dificuldade para acessar a lista de associados. Tente novamente em alguns instantes."
+            />
+          </div>
         ) : (
-
-          <div
-            className="
-              grid
-              md:grid-cols-2
-              xl:grid-cols-3
-              gap-8
-            "
-          >
-
-            {associados.map(
-              (item) => (
-
-              <Link
-                key={item.id}
-                href={`/associados/${item.slug}`}
-                className="
-                  bg-white
-                  rounded-[36px]
-                  overflow-hidden
-                  border
-                  border-black/5
-                  shadow-sm
-                  hover:shadow-2xl
-                  transition
-                  group
-                "
-              >
-
-                {/* FOTO */}
-
-                <div
-                  className="
-                    relative
-                    h-85
-                    bg-zinc-100
-                    overflow-hidden
-                  "
-                >
-
-                  <img
-                    src={
-                      item.foto_url ||
-                      "/placeholder.png"
-                    }
-                    alt={item.nome}
-                    className="
-                      w-full
-                      h-full
-                      object-cover
-                      group-hover:scale-105
-                      transition
-                      duration-500
-                    "
-                  />
-
-                  {item.destaque && (
-
-                    <div
-                      className="
-                        absolute
-                        top-5
-                        right-5
-                        bg-yellow-400
-                        text-black
-                        px-4
-                        py-2
-                        rounded-full
-                        text-xs
-                        font-bold
-                        flex
-                        items-center
-                        gap-2
-                      "
-                    >
-
-                      <Star size={14} />
-
-                      Destaque
-
-                    </div>
-
-                  )}
-
+          <>
+            {/* ==================== 2. DIRETORIA ==================== */}
+            {diretoria.length > 0 && (
+              <section className="as-section as-section--alt" aria-labelledby="as-diretoria">
+                <div className="as-container">
+                  <header className="as-section__header">
+                    <span className="as-label">Diretoria</span>
+                    <h2 id="as-diretoria" className="as-section__title">
+                      Quem conduz a associação
+                    </h2>
+                  </header>
+                  <ul className="as-diretoria">
+                    {diretoria.map((a) => (
+                      <li key={a.id}>
+                        <AssociadoCard associado={a} variante="diretoria" />
+                      </li>
+                    ))}
+                  </ul>
                 </div>
+              </section>
+            )}
 
-                {/* INFO */}
-
-                <div className="p-7">
-
-                  <p
-                    className="
-                      text-sm
-                      font-bold
-                      text-[#2E5E4E]
-                    "
-                  >
-                    {item.tipo_associado}
-                  </p>
-
-                  <h2
-                    className="
-                      mt-3
-                      text-3xl
-                      font-black
-                      text-[#111827]
-                    "
-                  >
-                    {item.nome}
+            {/* ==================== 3. TODOS OS ASSOCIADOS ==================== */}
+            <section className="as-section" aria-labelledby="as-todos">
+              <div className="as-container">
+                <header className="as-section__header">
+                  <span className="as-label">Associados</span>
+                  <h2 id="as-todos" className="as-section__title">
+                    Todos os associados
                   </h2>
+                </header>
 
-                  <p
-                    className="
-                      mt-3
-                      text-zinc-600
-                      font-semibold
-                    "
-                  >
-                    {item.cargo}
-                  </p>
+                {/* Busca e filtros */}
+                <form
+                  className="as-filtros"
+                  role="search"
+                  onSubmit={(e) => e.preventDefault()}
+                >
+                  <label className="as-campo as-campo--busca">
+                    <span className="sr-only">Buscar por nome</span>
+                    <Search size={18} aria-hidden="true" className="as-campo__icone" />
+                    <input
+                      type="search"
+                      placeholder="Buscar por nome"
+                      value={busca}
+                      onChange={(e) => setBusca(e.target.value)}
+                    />
+                  </label>
 
-                  <div
-                    className="
-                      mt-8
-                      flex
-                      items-center
-                      justify-between
-                    "
-                  >
+                  <label className="as-campo">
+                    <span className="sr-only">Filtrar por cargo</span>
+                    <select value={cargo} onChange={(e) => setCargo(e.target.value)}>
+                      <option value="">Todos os cargos</option>
+                      {cargos.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </label>
 
-                    <span
-                      className="
-                        text-sm
-                        text-zinc-500
-                        font-semibold
-                      "
-                    >
-                      Ver perfil
-                    </span>
+                  <label className="as-campo">
+                    <span className="sr-only">Filtrar por tipo</span>
+                    <select value={tipo} onChange={(e) => setTipo(e.target.value)}>
+                      <option value="">Todos os tipos</option>
+                      {tipos.map((t) => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </label>
 
-                    <div
-                      className="
-                        w-11
-                        h-11
-                        rounded-2xl
-                        bg-[#2E5E4E]
-                        text-white
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
+                  {temFiltro && (
+                    <button type="button" className="as-limpar" onClick={limpar}>
+                      <X size={16} aria-hidden="true" /> Limpar
+                    </button>
+                  )}
+                </form>
 
-                      <ArrowRight size={18} />
+                {/* Leitores de tela são avisados do resultado da busca */}
+                <p className="as-contagem" aria-live="polite">
+                  {filtrados.length === 1
+                    ? "1 associado encontrado"
+                    : `${filtrados.length} associados encontrados`}
+                </p>
 
-                    </div>
-
-                  </div>
-
-                </div>
-
-              </Link>
-
-            ))}
-
-          </div>
-
+                {lista.length === 0 ? (
+                  <EmptyState
+                    title="Nenhum associado cadastrado"
+                    description="A lista de associados ainda está sendo preparada."
+                  />
+                ) : filtrados.length === 0 ? (
+                  <EmptyState
+                    title="Nenhum resultado"
+                    description="Nenhum associado corresponde à busca. Tente outro nome ou limpe os filtros."
+                  />
+                ) : (
+                  <ul className="as-grid">
+                    {filtrados.map((a) => (
+                      <li key={a.id}>
+                        <AssociadoCard
+                          associado={a}
+                          variante={cargoDiretoria(a.cargo) ? "destaque" : "padrao"}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+          </>
         )}
+      </main>
 
-      </section>
-
-    </main>
-
+      <Footer />
+    </>
   );
-
 }
