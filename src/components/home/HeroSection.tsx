@@ -31,21 +31,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Leaf } from "lucide-react";
 import { useESGMetrics } from "@/hooks/useESGMetrics";
-
-/** Converte o peso total (kg) em texto: "850 kg", "1,5 t", "12 t". */
-function formatarPeso(kg: number): string {
-  if (kg < 1000) {
-    return `${kg.toLocaleString("pt-BR", { maximumFractionDigits: 0 })} kg`;
-  }
-  const t = kg / 1000;
-  return `${t.toLocaleString("pt-BR", {
-    maximumFractionDigits: t < 10 ? 1 : 0,
-  })} t`;
-}
-
-/** Formata números com separador brasileiro (ex.: 1.250). */
-const formatarNumero = (n: number) =>
-  n.toLocaleString("pt-BR", { maximumFractionDigits: 1 });
+// Formatação kg/t compartilhada com a página /quem-somos
+import { formatarNumero, formatarPeso } from "@/lib/formatadores";
 
 export default function HeroSection() {
   // Métricas do Supabase (veja o hook para os detalhes de cada tabela)
