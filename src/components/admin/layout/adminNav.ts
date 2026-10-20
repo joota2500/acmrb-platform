@@ -63,7 +63,7 @@ export const GRUPOS_NAV: GrupoNav[] = [
   {
     titulo: "Visão geral",
     itens: [
-      { id: "dashboard", rotulo: "Dashboard", icone: LayoutDashboard, pronto: true, rapido: true, descricao: "Resumo da operação e indicadores" },
+      { id: "dashboard", rotulo: "Visão geral", icone: LayoutDashboard, pronto: true, rapido: true, descricao: "Indicadores, gráficos, pendências e atalhos" },
     ],
   },
   {

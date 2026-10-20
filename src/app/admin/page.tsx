@@ -30,7 +30,7 @@ import { useInatividade, MINUTOS_INATIVIDADE } from "@/hooks/useInatividade";
 import { PapelProvider } from "@/components/admin/layout/PapelAdmin";
 import AdministradoresSection from "@/components/admin/sections/AdministradoresSection";
 import MinhaContaSection from "@/components/admin/sections/MinhaContaSection";
-import { podeEditar, podeVer, ROTULO_PAPEL, type PapelAdmin } from "@/lib/permissions";
+import { podeVer, ROTULO_PAPEL, type PapelAdmin } from "@/lib/permissions";
 import AdminContainer from "@/components/admin/layout/AdminContainer";
 import AdminContent from "@/components/admin/layout/AdminContent";
 import AdminHeader from "@/components/admin/layout/AdminHeader";
@@ -38,7 +38,8 @@ import AdminBottomNav from "@/components/admin/layout/AdminBottomNav";
 import { itemPorId, secaoValida, type SecaoId } from "@/components/admin/layout/adminNav";
 
 /* Seções */
-import DashboardSection from "@/components/admin/sections/DashboardSection";
+// DashboardSection: NÃO UTILIZADO (substituída pela VisaoGeral)
+import VisaoGeral from "@/components/admin/visao-geral/VisaoGeral";
 import AssociadosSection from "@/components/admin/sections/AssociadosSection";
 import VisitantesSection from "@/components/admin/sections/VisitantesSection";
 import DenunciasSection from "@/components/admin/sections/DenunciasSection";
@@ -194,7 +195,7 @@ function PainelAdmin() {
             <SemPermissao />
           ) : (
             <>
-              {ativa === "dashboard" && <DashboardSection podeEditar={podeEditar(papel, "dashboard")} />}
+              {ativa === "dashboard" && <VisaoGeral papel={papel} nome={usuario.nome} />}
               {ativa === "noticias" && <NoticiasSection />}
               {ativa === "projetos" && <ProjetosSection />}
               {ativa === "apoiadores" && <ApoiadoresSection />}
