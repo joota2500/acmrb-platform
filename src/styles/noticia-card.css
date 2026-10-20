@@ -1,0 +1,166 @@
+/* ==================== NOTÍCIA — CARTÃO (home, /noticias, relacionadas) ====================
+ * Paleta do projeto: #047857, #059669, #10b981, #a7f3d0, #d1fae5, #ecfdf5,
+ * textos #111827, #374151, #4b5563. Celular ≤480px | tablet 481–1024px.
+ */
+
+.ncard { height: 100%; }
+
+.ncard__link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 6px 20px -12px rgba(4, 120, 87, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.ncard__link:hover {
+  transform: translateY(-4px);
+  border-color: #a7f3d0;
+  box-shadow: 0 18px 36px -18px rgba(4, 120, 87, 0.45);
+}
+
+.ncard__link:focus-visible { outline: 3px solid #10b981; outline-offset: 3px; }
+
+/* Moldura: proporção fixa, fundo neutro, imagem inteira (contain) */
+.ncard__moldura {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: repeating-linear-gradient(45deg, #f3f4f6 0 10px, #eef2f1 10px 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #ecfdf5;
+}
+
+.ncard__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.ncard__sem-img { color: #9ca3af; }
+
+.ncard__selo {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  background: #047857;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.ncard__corpo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.1rem 1.2rem 1.25rem;
+  flex: 1;
+}
+
+.ncard__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem 0.8rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.ncard__categoria {
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  background: #ecfdf5;
+  color: #047857;
+  font-weight: 700;
+}
+
+.ncard__info { display: inline-flex; align-items: center; gap: 0.3rem; }
+
+.ncard__titulo {
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.35;
+  color: #111827;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ncard__link:hover .ncard__titulo { color: #047857; }
+
+.ncard__resumo {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: #4b5563;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ncard__ler {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #059669;
+}
+
+/* ---------- Variante grande (manchete) ---------- */
+.ncard--grande .ncard__titulo { font-size: 1.55rem; -webkit-line-clamp: 4; }
+.ncard--grande .ncard__resumo { font-size: 1rem; -webkit-line-clamp: 4; }
+
+@media (min-width: 1025px) {
+  .ncard--grande .ncard__link { flex-direction: row; }
+  .ncard--grande .ncard__moldura {
+    flex: 0 0 55%;
+    aspect-ratio: auto;
+    min-height: 20rem;
+    border-bottom: 0;
+    border-right: 1px solid #ecfdf5;
+  }
+  .ncard--grande .ncard__corpo { padding: 1.75rem; justify-content: center; }
+}
+
+/* ---------- Variante compacta (lista lateral) ---------- */
+.ncard--compacto .ncard__link { flex-direction: row; }
+.ncard--compacto .ncard__moldura {
+  flex: 0 0 38%;
+  aspect-ratio: 4 / 3;
+  border-bottom: 0;
+  border-right: 1px solid #ecfdf5;
+}
+.ncard--compacto .ncard__corpo { padding: 0.85rem 1rem; gap: 0.45rem; }
+.ncard--compacto .ncard__titulo { font-size: 0.98rem; }
+.ncard--compacto .ncard__ler { display: none; }
+
+/* ---------- Celular ---------- */
+@media (max-width: 480px) {
+  .ncard__corpo { padding: 0.9rem 1rem 1rem; }
+  .ncard__titulo { font-size: 1rem; }
+  .ncard--grande .ncard__titulo { font-size: 1.15rem; }
+  .ncard__resumo, .ncard--grande .ncard__resumo { font-size: 0.86rem; }
+  .ncard__meta { font-size: 0.7rem; }
+  .ncard--compacto .ncard__moldura { flex-basis: 34%; }
+  .ncard--compacto .ncard__titulo { font-size: 0.9rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ncard__link { transition: none; }
+  .ncard__link:hover { transform: none; }
+}
