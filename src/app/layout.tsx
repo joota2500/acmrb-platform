@@ -5,6 +5,7 @@ import "@/styles/mobile-menu.css";
 import "@/styles/user-menu.css";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import RastreadorVisitante from "@/components/rastreio/RastreadorVisitante";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
@@ -53,7 +54,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <body className="antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          {children}
+          {/* Atividade de visitantes logados (só para o painel do deus) */}
+          <RastreadorVisitante />
+        </AuthProvider>
       </body>
     </html>
   );
