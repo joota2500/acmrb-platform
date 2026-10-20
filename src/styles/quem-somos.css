@@ -698,3 +698,80 @@
   .qs-btn, .qs-card, .qs-associado { transition: none; }
   .qs-btn:hover, .qs-card:hover, .qs-associado:hover { transform: none; }
 }
+
+/* ==========================================================
+   AJUSTES — grades compactas (Valores e "O que fazemos")
+   ----------------------------------------------------------
+   Celular e tablet: 2 colunas (Valores 2-2-2; Atuação 2-2).
+   Desktop (>=1024px): continua 3 (Valores) e 4 (Atuação) colunas
+   pelas regras .qs-grid--3 / .qs-grid--4 acima.
+   No celular, padding, ícone e textos menores para cada card ter
+   ~150px de largura numa tela de 360px sem ficar apertado.
+   ========================================================== */
+.qs-grid--compacta {
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.qs-grid--compacta .qs-card {
+  padding: 0.85rem;
+  border-radius: 1rem;
+}
+
+.qs-grid--compacta .qs-card__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  margin-bottom: 0.6rem;
+}
+
+.qs-grid--compacta .qs-card__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.qs-grid--compacta .qs-card__title {
+  font-size: 0.9rem;
+  line-height: 1.25;
+}
+
+/* Descrição justificada com hifenização (pedido do Artur) */
+.qs-grid--compacta .qs-card .qs-text {
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+@media (min-width: 640px) {
+  .qs-grid--compacta { gap: 1.25rem; }
+  .qs-grid--compacta .qs-card { padding: 1.25rem; border-radius: 1.25rem; }
+  .qs-grid--compacta .qs-card__icon { width: 46px; height: 46px; border-radius: 14px; margin-bottom: 1rem; }
+  .qs-grid--compacta .qs-card__icon svg { width: 24px; height: 24px; }
+  .qs-grid--compacta .qs-card__title { font-size: 1.05rem; }
+  .qs-grid--compacta .qs-card .qs-text { font-size: 0.9rem; margin-top: 0.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .qs-grid--compacta.qs-grid--3 { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .qs-grid--compacta.qs-grid--4 { grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .qs-grid--compacta .qs-card { padding: 1.75rem; }
+  .qs-grid--compacta .qs-card__title { font-size: 1.2rem; }
+  .qs-grid--compacta .qs-card .qs-text { font-size: 0.97rem; }
+}
+
+/* ===== Cabeçalho de "Associados" centralizado (selo, título, texto e botão) ===== */
+.qs-section__header--centro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.qs-section__header--centro .qs-text {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}

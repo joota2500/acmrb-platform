@@ -277,7 +277,7 @@ export default function QuemSomosPage() {
               </div>
             )}
 
-            <ul className="qs-grid qs-grid--3">
+            <ul className="qs-grid qs-grid--3 qs-grid--compacta">
               {valores.map((v, i) => {
                 const Icone = icone(v.icone);
                 return (
@@ -312,7 +312,7 @@ export default function QuemSomosPage() {
                 </h2>
               </motion.header>
 
-              <ul className="qs-grid qs-grid--4">
+              <ul className="qs-grid qs-grid--4 qs-grid--compacta">
                 {atuacao.map((a, i) => {
                   const Icone = icone(a.icone);
                   return (
@@ -340,7 +340,7 @@ export default function QuemSomosPage() {
         {/* ==================== 6. ASSOCIADOS ==================== */}
         <section id="associados" className="qs-section qs-section--alt" aria-labelledby="qs-associados">
           <div className="qs-container">
-            <div className="qs-section__header qs-section__header--row">
+            <div className="qs-section__header qs-section__header--centro">
               <div>
                 <span className="qs-label">Associados</span>
                 <h2 id="qs-associados" className="qs-section__title">
@@ -351,6 +351,7 @@ export default function QuemSomosPage() {
                   o fortalecimento ambiental, social e operacional da ACMRB.
                 </p>
               </div>
+              {/* Botão centralizado abaixo do título (cabeçalho centralizado) */}
               <Link href="/associados" className="qs-btn qs-btn--primary">
                 Ver todos os associados
                 <ChevronRight size={18} aria-hidden="true" />
