@@ -1,0 +1,53 @@
+/* ==================== MAPA (Leaflet) ====================
+ * Usado na home (MapaPontos), em /parceiros e no painel (MapaSeletor).
+ * Paleta verde/esmeralda do projeto.
+ */
+
+.mapa-wrap { position: relative; width: 100%; height: 100%; min-height: 320px; border-radius: 1.25rem; overflow: hidden; isolation: isolate; }
+.mapa-canvas { position: absolute; inset: 0; background: #ecfdf5; }
+.mapa-wrap--seletor { height: 320px; border: 1px solid #d1fae5; }
+
+/* Botão para liberar o arrasto em telas de toque */
+.mapa-ativar {
+  position: absolute; inset: auto 50% 1rem auto; transform: translateX(50%); z-index: 500;
+  padding: 0.55rem 1.1rem; border-radius: 9999px; border: 0;
+  background: rgba(4, 120, 87, 0.92); color: #fff; font-weight: 700; font-size: 0.85rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); cursor: pointer;
+}
+.mapa-ativar:focus-visible { outline: 3px solid #a7f3d0; outline-offset: 2px; }
+
+/* Marcador em forma de gota */
+.mapa-pin { background: none; border: 0; }
+.mapa-pin__gota {
+  display: block; width: 30px; height: 30px; border-radius: 50% 50% 50% 0;
+  background: var(--pin, #059669); transform: rotate(-45deg);
+  border: 3px solid #fff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+}
+.mapa-pin__gota--ativo { transform: rotate(-45deg) scale(1.15); }
+.mapa-pin__ponto { position: absolute; top: 50%; left: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: #fff; }
+.leaflet-marker-icon:focus-visible .mapa-pin__gota { outline: 3px solid #111827; outline-offset: 2px; }
+
+/* Popup */
+.leaflet-popup-content-wrapper { border-radius: 1rem; box-shadow: 0 12px 30px rgba(4, 120, 87, 0.2); }
+.leaflet-popup-content { margin: 0.9rem 1rem; }
+.mapa-pop { font-family: inherit; color: #374151; min-width: 190px; }
+.mapa-pop__topo { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.mapa-pop__logo { width: 42px; height: 42px; object-fit: contain; border-radius: 0.6rem; background: #fff; border: 1px solid #e5e7eb; padding: 2px; flex-shrink: 0; }
+.mapa-pop__inicial { width: 42px; height: 42px; border-radius: 0.6rem; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.mapa-pop__nome { display: block; font-size: 0.95rem; color: #111827; line-height: 1.25; }
+.mapa-pop__cat { font-size: 0.75rem; font-weight: 700; }
+.mapa-pop__bairro { margin: 0 0 0.35rem !important; font-size: 0.8rem; color: #6b7280; }
+.mapa-pop__apoios { list-style: none; padding: 0; margin: 0.25rem 0 0.4rem; display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.mapa-pop__apoios li { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 9999px; background: #ecfdf5; color: #047857; font-weight: 600; }
+.mapa-pop__aprox { margin: 0.2rem 0 !important; font-size: 0.72rem; color: #9ca3af; font-style: italic; }
+.mapa-pop__link { display: inline-block; margin-top: 0.3rem; font-weight: 700; color: #047857 !important; font-size: 0.82rem; }
+
+@media (max-width: 480px) {
+  .mapa-wrap { min-height: 300px; border-radius: 1rem; }
+  .mapa-wrap--seletor { height: 280px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mapa-pin__gota { transition: none; }
+}
