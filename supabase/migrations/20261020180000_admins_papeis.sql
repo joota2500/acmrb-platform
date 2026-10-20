@@ -29,6 +29,8 @@ alter table public.admins add column if not exists updated_at timestamptz not nu
 
 -- 1. Papéis: Artur (joaovictorrc25@gmail.com) vira 'deus' — era o e-mail
 --    que o AuthContext usava para definir o "ADM DEUS".
+-- Remove a regra antiga de papéis (não aceitava "deus") antes de atualizar os dados.
+alter table public.admins drop constraint if exists admins_role_check;
 update public.admins set role = 'deus'
   where lower(email) = 'joaovictorrc25@gmail.com' and role is distinct from 'deus';
 update public.admins set role = 'admin'
@@ -47,7 +49,6 @@ begin
   end if;
 end $$;
 
-alter table public.admins drop constraint if exists admins_role_check;
 alter table public.admins add constraint admins_role_check check (role in ('deus', 'admin'));
 
 -- Um registro por papel ⇒ no máximo 1 deus + 1 admin = 2 no total
