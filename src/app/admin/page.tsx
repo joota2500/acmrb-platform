@@ -25,6 +25,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
+import MfaPortao from "@/components/admin/MfaPortao";
+import { useInatividade, MINUTOS_INATIVIDADE } from "@/hooks/useInatividade";
 import { PapelProvider } from "@/components/admin/layout/PapelAdmin";
 import AdministradoresSection from "@/components/admin/sections/AdministradoresSection";
 import MinhaContaSection from "@/components/admin/sections/MinhaContaSection";
@@ -137,6 +139,13 @@ function PainelAdmin() {
   const fecharGaveta = useCallback(() => setGaveta(false), []);
   const cancelarSaida = useCallback(() => setConfirmarSaida(false), []);
 
+  // Sai sozinho após MINUTOS_INATIVIDADE sem uso (segurança em viagem)
+  const expirar = useCallback(() => {
+    alert(`Sessão encerrada após ${MINUTOS_INATIVIDADE} minutos sem uso.`);
+    logout();
+  }, [logout]);
+  useInatividade(!!user && perfil?.tipo === "admin", expirar);
+
   if (loading || !perfil) return <Validando />;
 
   // Papel e permissões (src/lib/permissions.ts)
@@ -150,6 +159,7 @@ function PainelAdmin() {
   };
 
   return (
+    <MfaPortao onSair={logout}>
     <PapelProvider value={papel}>
     <AdminContainer recolhida={recolhida}>
       <AdminSidebar
@@ -213,6 +223,7 @@ function PainelAdmin() {
       />
     </AdminContainer>
     </PapelProvider>
+    </MfaPortao>
   );
 }
 
