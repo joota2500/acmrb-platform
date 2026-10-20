@@ -44,6 +44,7 @@ import DenunciasSection from "@/components/admin/sections/DenunciasSection";
 import ParceirosSection from "@/components/admin/sections/ParceirosSection";
 import ProjetosSection from "@/components/admin/sections/ProjetosSection";
 import ESGSection from "@/components/admin/sections/ESGSection";
+import RelatoriosSection from "@/components/admin/sections/RelatoriosSection";
 import ConfiguracoesSection from "@/components/admin/sections/ConfiguracoesSection";
 import NoticiasSection from "@/components/admin/sections/NoticiasSection";
 import MaterialsSection from "@/components/admin/materials/MaterialsSection";
@@ -198,7 +199,7 @@ function PainelAdmin() {
               {ativa === "materiais" && <MaterialsSection />}
               {ativa === "coletas" && <EmBreve titulo="Coletas" descricao={item.descricao} />}
               {ativa === "esg" && <ESGSection />}
-              {ativa === "relatorios" && <EmBreve titulo="Relatórios" descricao={item.descricao} />}
+              {ativa === "relatorios" && <RelatoriosSection />}
               {ativa === "administradores" && <AdministradoresSection />}
               {ativa === "configuracoes" && <ConfiguracoesSection />}
               {ativa === "minha-conta" && <MinhaContaSection />}

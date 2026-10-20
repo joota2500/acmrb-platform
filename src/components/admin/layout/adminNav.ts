@@ -86,7 +86,7 @@ export const GRUPOS_NAV: GrupoNav[] = [
   {
     titulo: "Sistema",
     itens: [
-      { id: "relatorios", rotulo: "Relatórios", icone: FileText, pronto: false, descricao: "Relatórios e exportações" },
+      { id: "relatorios", rotulo: "Relatórios", icone: FileText, pronto: true, descricao: "Documentos públicos da transparência" },
       { id: "administradores", rotulo: "Administradores", icone: UserCog, pronto: true, descricao: "Quem pode acessar o painel (máx. 2)" },
       { id: "configuracoes", rotulo: "Configurações", icone: Settings, pronto: false, descricao: "Configurações do sistema" },
       { id: "minha-conta", rotulo: "Minha conta", icone: UserRound, pronto: true, descricao: "Seu perfil, foto e senha" },
