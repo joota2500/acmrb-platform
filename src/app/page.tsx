@@ -27,7 +27,7 @@ import AboutSection from "@/components/home/AboutSection"; // Quem somos (âncor
 import OperationsSection from "@/components/home/OperationsSection"; // Como a associação opera
 import ReverseLogisticsSection from "@/components/home/ReverseLogisticsSection"; // Logística reversa
 import NewsSection from "@/components/home/NewsSection"; // Últimas notícias (dados do Supabase)
-import DenunciasSection from "@/components/home/DenunciasSection"; // Formulário de denúncias
+import DenunciasSection from "@/components/home/DenunciasSection"; // Denúncia ambiental (direciona à AMAB)
 import PartnersSection from "@/components/home/PartnersSection"; // Parceiros
 import ContactSection from "@/components/home/ContactSection"; // Formulário de contato
 import InstitutionalSection from "@/components/home/InstitutionalSection"; // Informações institucionais
