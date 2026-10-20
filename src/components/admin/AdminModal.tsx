@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ESPERA_EMAIL_SEG, urlRedefinir } from "@/lib/apiAdmin";
 import { useRouter } from "next/navigation";
 import {
   ShieldCheck,
@@ -25,6 +26,34 @@ export default function AdminModal({ open, onClose }: Props) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  // "Esqueci minha senha": modo de recuperação + espera entre envios
+  const [recuperar, setRecuperar] = useState(false);
+  const [aviso, setAviso] = useState("");
+  const [espera, setEspera] = useState(0);
+
+  useEffect(() => {
+    if (espera <= 0) return;
+    const t = setTimeout(() => setEspera((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [espera]);
+
+  async function enviarRecuperacao() {
+    const alvo = email.trim().toLowerCase();
+    setError("");
+    setAviso("");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(alvo)) {
+      setError("Informe o e-mail administrativo.");
+      return;
+    }
+    setEspera(ESPERA_EMAIL_SEG);
+    const { error: erroEnvio } = await supabase.auth.resetPasswordForEmail(alvo, { redirectTo: urlRedefinir() });
+    if (erroEnvio && /rate|limit/i.test(erroEnvio.message)) {
+      setError("Muitos envios em pouco tempo. Aguarde alguns minutos.");
+      return;
+    }
+    // Mensagem neutra: não revela se o e-mail existe
+    setAviso("Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha.");
+  }
 
   async function handleLogin() {
     try {
@@ -75,7 +104,6 @@ export default function AdminModal({ open, onClose }: Props) {
       router.push("/admin");
       router.refresh();
     } catch (err) {
-      console.error(err);
       setError("Erro inesperado. Tente novamente.");
     } finally {
       setLoading(false);
@@ -128,8 +156,8 @@ export default function AdminModal({ open, onClose }: Props) {
               </div>
             </div>
 
-            {/* Password */}
-            <div>
+            {/* Password (oculto no modo "esqueci minha senha") */}
+            <div hidden={recuperar}>
               <label className="text-sm font-bold text-zinc-700 block mb-2">
                 Senha
               </label>
@@ -160,13 +188,41 @@ export default function AdminModal({ open, onClose }: Props) {
               </div>
             )}
 
+            {aviso && (
+              <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-4 text-sm text-emerald-800">
+                {aviso}
+              </p>
+            )}
+
             {/* Button */}
+            {recuperar ? (
+              <button
+                onClick={enviarRecuperacao}
+                disabled={espera > 0}
+                className="w-full h-14 rounded-3xl bg-linear-to-r from-[#2E5E4E] to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
+              >
+                {espera > 0 ? `Aguarde ${espera}s para reenviar` : "Enviar link de redefinição"}
+              </button>
+            ) : (
+              <button
+                onClick={handleLogin}
+                disabled={loading}
+                className="w-full h-14 rounded-3xl bg-linear-to-r from-[#2E5E4E] to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
+              >
+                {loading ? "Entrando..." : "Entrar no Painel"}
+              </button>
+            )}
+
             <button
-              onClick={handleLogin}
-              disabled={loading}
-              className="w-full h-14 rounded-3xl bg-linear-to-r from-[#2E5E4E] to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
+              type="button"
+              onClick={() => {
+                setRecuperar((v) => !v);
+                setError("");
+                setAviso("");
+              }}
+              className="w-full text-sm font-semibold text-[#2E5E4E] hover:underline"
             >
-              {loading ? "Entrando..." : "Entrar no Painel"}
+              {recuperar ? "Voltar para o login" : "Esqueci minha senha"}
             </button>
           </div>
         </div>
