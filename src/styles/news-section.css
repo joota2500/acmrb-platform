@@ -43,30 +43,18 @@
 
 .news__description { margin-top: 1.25rem; font-size: 1.05rem; line-height: 1.75; color: #4b5563; }
 
-/* ---------- Grade: 1 grande + 2 menores ---------- */
+/* ---------- Grade: 3 colunas iguais (mesma altura) ---------- */
 .news__grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  grid-template-rows: auto auto;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.25rem;
+  align-items: stretch;
 }
 
-.news__principal { grid-row: span 2; }
-.news__grid--1 { grid-template-columns: 1fr; }
-.news__grid--1 .news__principal { grid-row: auto; }
-.news__grid--2 .news__principal { grid-row: auto; }
-
-/* No desktop o grande fica em coluna (imagem em cima) dentro da grade */
-@media (min-width: 1025px) {
-  .news__grid:not(.news__grid--1) .news__principal .ncard__link { flex-direction: column; }
-  .news__grid:not(.news__grid--1) .news__principal .ncard__moldura {
-    flex: none;
-    aspect-ratio: 16 / 9;
-    min-height: 0;
-    border-right: 0;
-    border-bottom: 1px solid #ecfdf5;
-  }
-}
+.news__grid--1 { grid-template-columns: minmax(0, 36rem); justify-content: center; }
+.news__grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.news__item { display: flex; min-width: 0; }
+.news__item > .ncard { flex: 1; }
 
 /* ---------- Estados ---------- */
 .news__skeleton {
@@ -77,7 +65,7 @@
   animation: news-brilho 1.4s infinite linear;
 }
 
-.news__skeleton--grande { grid-row: span 2; min-height: 29rem; }
+.news__skeleton { min-height: 24rem; }
 
 @keyframes news-brilho { to { background-position: -200% 0; } }
 
@@ -125,10 +113,16 @@
 
 /* ---------- Tablet ---------- */
 @media (max-width: 1024px) {
-  .news__grid { grid-template-columns: 1fr 1fr; }
-  .news__principal { grid-column: 1 / -1; grid-row: auto; }
-  .news__grid--2 .news__secundaria { grid-column: 1 / -1; }
-  .news__skeleton--grande { grid-column: 1 / -1; grid-row: auto; min-height: 20rem; }
+  .news__grid, .news__grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* 3º cartão ocupa a linha inteira, na horizontal */
+  .news__grid--3 .news__item:nth-child(3) { grid-column: 1 / -1; }
+  .news__grid--3 .news__item:nth-child(3) .ncard__link { flex-direction: row; }
+  .news__grid--3 .news__item:nth-child(3) .ncard__moldura {
+    flex: 0 0 50%;
+    border-bottom: 0;
+    border-right: 1px solid #ecfdf5;
+  }
+  .news__grid--3 .news__item:nth-child(3) .ncard__corpo { justify-content: center; }
   .news__title { font-size: 1.8rem; }
 }
 
@@ -136,13 +130,14 @@
 @media (max-width: 480px) {
   .news { padding: 3rem 0; }
   .news__container { padding: 0 1rem; }
-  .news__grid { grid-template-columns: 1fr; gap: 1rem; }
+  .news__grid, .news__grid--1, .news__grid--2, .news__grid--3 { grid-template-columns: 1fr; gap: 1rem; }
+  .news__grid--3 .news__item:nth-child(3) .ncard__link { flex-direction: column; }
+  .news__grid--3 .news__item:nth-child(3) .ncard__moldura { flex: none; border-right: 0; border-bottom: 1px solid #ecfdf5; }
   .news__header { margin-bottom: 2rem; }
   .news__title { font-size: 1.45rem; }
   .news__description { font-size: 0.9rem; line-height: 1.65; }
   .news__btn { width: 100%; justify-content: center; font-size: 0.9rem; }
   .news__skeleton { min-height: 12rem; }
-  .news__skeleton--grande { min-height: 16rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

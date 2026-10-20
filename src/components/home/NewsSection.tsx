@@ -6,8 +6,9 @@
  * Mostra no máximo 3 notícias:
  *   1. as marcadas como destaque pelo ADM DEUS (ordem_destaque);
  *   2. se não houver destaque, as 3 mais recentes publicadas.
- * Desktop: 1 cartão grande + 2 menores ao lado. Tablet: grande em
- * cima + 2 lado a lado. Celular: uma coluna.
+ *   3. nunca mais de 3 (selecionarHome deduplica e corta).
+ * Desktop: 3 colunas iguais (mesma altura). Tablet: 2 colunas e o
+ * 3º cartão ocupa a linha inteira na horizontal. Celular: 1 coluna.
  * Estados: carregando (esqueleto), vazio e erro com "Tentar de novo".
  */
 
@@ -24,7 +25,6 @@ export default function NewsSection() {
   const { noticias, carregando, erro, recarregar } = useNoticiasPublicas(60);
   const reduzir = useReducedMotion();
   const lista = selecionarHome(noticias, 3);
-  const [principal, ...outras] = lista;
 
   const anim = (atraso = 0) =>
     reduzir
@@ -55,7 +55,7 @@ export default function NewsSection() {
 
         {carregando && (
           <div className="news__grid" aria-busy="true" aria-label="Carregando notícias">
-            <div className="news__skeleton news__skeleton--grande" />
+            <div className="news__skeleton" />
             <div className="news__skeleton" />
             <div className="news__skeleton" />
           </div>
@@ -79,13 +79,10 @@ export default function NewsSection() {
           </div>
         )}
 
-        {!carregando && !erro && principal && (
+        {!carregando && !erro && lista.length > 0 && (
           <div className={`news__grid news__grid--${lista.length}`}>
-            <motion.div className="news__principal" {...anim(0.05)}>
-              <NoticiaCard noticia={principal} variante="grande" />
-            </motion.div>
-            {outras.map((n, i) => (
-              <motion.div key={n.id} className="news__secundaria" {...anim(0.12 + i * 0.08)}>
+            {lista.map((n, i) => (
+              <motion.div key={n.id} className="news__item" {...anim(0.05 + i * 0.08)}>
                 <NoticiaCard noticia={n} />
               </motion.div>
             ))}
