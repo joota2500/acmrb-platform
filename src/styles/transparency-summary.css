@@ -1,0 +1,324 @@
+/* ==================== TRANSPARENCY SUMMARY ("Transparência em números") ====================
+ * Resumo dos indicadores na home. Mesma linguagem visual da OperationsSection.
+ * Paleta do projeto: verdes/esmeralda + sky/violet já usados no antigo ESGMetrics.
+ * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
+ */
+
+.tsum {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #ecfdf5 50%, #ffffff 100%);
+  padding: 4.5rem 0;
+}
+
+.tsum__container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Parágrafos justificados; títulos não */
+.tsum p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* ---------- Cabeçalho ---------- */
+.tsum__header {
+  max-width: 46rem;
+  margin: 0 auto 2.75rem;
+  text-align: center;
+}
+
+.tsum__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  background: #d1fae5;
+  color: #047857;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+
+.tsum__title {
+  font-size: 2.1rem;
+  font-weight: 900;
+  color: #111827;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.tsum__title span {
+  color: #047857;
+}
+
+.tsum__description {
+  margin-top: 1.1rem;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: #4b5563;
+}
+
+/* ---------- Avisos (erro / vazio) ---------- */
+.tsum__aviso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  max-width: 46rem;
+  margin: 0 auto 1.75rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 0.95rem;
+}
+
+.tsum__aviso p {
+  text-align: center;
+}
+
+.tsum__aviso--neutro {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #065f46;
+}
+
+.tsum__retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- Grade de indicadores ---------- */
+.tsum__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.tsum__card {
+  --tom: #059669;
+  --tom-claro: #ecfdf5;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-top: 4px solid var(--tom);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px -18px rgba(4, 120, 87, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tsum__card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -20px rgba(4, 120, 87, 0.45);
+}
+
+.tsum__card--emerald { --tom: #059669; --tom-claro: #ecfdf5; }
+.tsum__card--sky     { --tom: #0284c7; --tom-claro: #e0f2fe; }
+.tsum__card--violet  { --tom: #7c3aed; --tom-claro: #ede9fe; }
+.tsum__card--green   { --tom: #16a34a; --tom-claro: #dcfce7; }
+
+.tsum__card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.tsum__icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+  border-radius: 0.9rem;
+  background: var(--tom-claro);
+  color: var(--tom);
+}
+
+.tsum__label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #374151;
+}
+
+.tsum__value {
+  margin: 1rem 0 0.5rem;
+  min-height: 2.6rem;
+  font-size: 2.2rem;
+  font-weight: 900;
+  line-height: 1.15;
+  color: #111827;
+  font-variant-numeric: tabular-nums;
+}
+
+.tsum__apurando {
+  display: inline-block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--tom);
+  background: var(--tom-claro);
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+}
+
+.tsum__skeleton {
+  display: block;
+  width: 60%;
+  height: 2.2rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: tsum-brilho 1.2s linear infinite;
+}
+
+@keyframes tsum-brilho {
+  to { background-position: -200% 0; }
+}
+
+.tsum__desc {
+  flex: 1;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.tsum__meta {
+  margin-top: 1.1rem;
+}
+
+.tsum__meta-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-bottom: 0.4rem;
+}
+
+.tsum__meta-info strong {
+  color: var(--tom);
+}
+
+.tsum__track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  overflow: hidden;
+}
+
+.tsum__bar {
+  height: 100%;
+  border-radius: 9999px;
+  background: var(--tom);
+}
+
+/* ---------- Chamada final ---------- */
+.tsum__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: 2.75rem;
+  padding: 2rem 2.25rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #047857 0%, #059669 60%, #10b981 100%);
+  color: #ffffff;
+}
+
+.tsum__cta-text h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.tsum__cta-text p {
+  margin-top: 0.5rem;
+  max-width: 40rem;
+  line-height: 1.65;
+  color: #d1fae5;
+}
+
+.tsum__updated {
+  display: block;
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: #a7f3d0;
+}
+
+.tsum__cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.tsum__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.tsum__btn:hover { transform: translateY(-2px); }
+
+.tsum__btn--primary { background: #ffffff; color: #047857; }
+.tsum__btn--secondary { border: 2px solid rgba(255, 255, 255, 0.7); color: #ffffff; }
+.tsum__btn--secondary:hover { background: rgba(255, 255, 255, 0.12); }
+
+.tsum__btn:focus-visible,
+.tsum__retry:focus-visible {
+  outline: 3px solid #a7f3d0;
+  outline-offset: 2px;
+}
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+  .tsum { padding: 3.75rem 0; }
+  .tsum__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tsum__cta { flex-direction: column; align-items: flex-start; }
+  .tsum__title { font-size: 1.85rem; }
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 480px) {
+  .tsum { padding: 2.75rem 0; }
+  .tsum__container { padding: 0 1rem; }
+  .tsum__header { margin-bottom: 1.75rem; }
+  .tsum__title { font-size: 1.45rem; }
+  .tsum__description { font-size: 0.92rem; line-height: 1.65; }
+  .tsum__grid { grid-template-columns: 1fr; gap: 0.9rem; }
+  .tsum__card { padding: 1.1rem; border-radius: 1rem; }
+  .tsum__value { font-size: 1.75rem; min-height: 2.1rem; margin: 0.75rem 0 0.4rem; }
+  .tsum__desc { font-size: 0.85rem; }
+  .tsum__cta { padding: 1.4rem 1.2rem; gap: 1.25rem; margin-top: 1.75rem; }
+  .tsum__cta-text h3 { font-size: 1.2rem; }
+  .tsum__cta-text p { font-size: 0.88rem; }
+  .tsum__cta-buttons { width: 100%; flex-direction: column; }
+  .tsum__btn { width: 100%; font-size: 0.9rem; }
+}
+
+/* ---------- Movimento reduzido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .tsum__card, .tsum__btn { transition: none; }
+  .tsum__card:hover, .tsum__btn:hover { transform: none; }
+  .tsum__skeleton { animation: none; }
+}
