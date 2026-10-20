@@ -1,0 +1,28 @@
+/* ==================== Resultados da geocodificação (painel) ==================== */
+.geo { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.35rem; }
+.geo__aviso {
+  display: flex; gap: 0.45rem; align-items: flex-start; margin: 0; padding: 0.55rem 0.75rem; border-radius: 0.8rem;
+  background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-size: 0.8rem; line-height: 1.4;
+}
+.geo__aviso svg { flex-shrink: 0; margin-top: 1px; }
+.geo__aviso--fraco { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+.geo__lista { list-style: none; margin: 0; padding: 0; border: 1px solid #e4e4e7; border-radius: 0.8rem; overflow: hidden; max-height: 230px; overflow-y: auto; }
+.geo__lista button {
+  width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: 0.2rem 0.45rem; align-items: center; text-align: left;
+  padding: 0.5rem 0.7rem; border: 0; border-bottom: 1px solid #f4f4f5; background: #fff; font-size: 0.78rem; color: #3f3f46; cursor: pointer;
+}
+.geo__lista li:last-child button { border-bottom: 0; }
+.geo__lista button:hover, .geo__lista button:focus-visible { background: #E8F3EE; outline: none; }
+.geo__lista button[aria-pressed="true"] { background: #d1fae5; box-shadow: inset 3px 0 0 #047857; }
+.geo__nome { overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.geo__prec { font-size: 0.68rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 9999px; white-space: nowrap; }
+.geo__prec--endereco { background: #d1fae5; color: #047857; }
+.geo__prec--rua { background: #e0f2fe; color: #0369a1; }
+.geo__prec--bairro { background: #fef3c7; color: #b45309; }
+.geo__prec--cidade { background: #f4f4f5; color: #52525b; }
+.geo__fonte { grid-column: 2 / 4; font-size: 0.68rem; color: #a1a1aa; }
+@media (max-width: 480px) {
+  .geo__lista button { grid-template-columns: auto 1fr; }
+  .geo__prec { grid-column: 2; justify-self: start; }
+  .geo__fonte { grid-column: 2; }
+}

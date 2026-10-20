@@ -53,6 +53,8 @@ export const COR_CATEGORIA: Record<string, string> = {
   "Órgão público": "#1d4ed8",
   "ONG/Associação": "#db2777",
   "Outro": "#65a30d",
+  // empresas de logística reversa exibidas no mapa (não é categoria de apoiador)
+  "Logística reversa": "#0f766e",
 };
 export const corCategoria = (c?: string | null) => COR_CATEGORIA[c ?? ""] ?? "#10b981";
 
@@ -108,6 +110,12 @@ export interface EmpresaLogisticaPublica {
   total_repassado_kg: number;
   total_repasses: number;
   ultimo_repasse: string | null;
+  // localização (migration 20261020250000; ausentes antes dela)
+  endereco?: string | null;
+  bairro?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  no_mapa?: boolean;
 }
 
 export interface RepassePublico {
@@ -157,6 +165,18 @@ export const listarEmpresasLogisticaPublicas = (cli: SupabaseClient | null) =>
 export async function listarRepassesPublicos(cli: SupabaseClient | null): Promise<Resultado<RepassePublico>> {
   const r = await ler<RepassePublico>(cli, "repasses_logistica_publicos", "data");
   return { ...r, dados: [...r.dados].reverse() }; // mais recentes primeiro
+}
+
+/** Converte uma empresa de logística em ponto do mapa (categoria própria) */
+export function empresaComoPonto(e: EmpresaLogisticaPublica): ApoiadorPublico {
+  return {
+    id: `log-${e.id}`, tipo_pessoa: "juridica", nome_exibicao: e.nome, nome: e.nome, categoria: "Logística reversa",
+    tipos_apoio: ["Logística reversa"], descricao: e.descricao, logo_url: e.logo_url, site: e.site, instagram: null,
+    telefone_publico: e.telefone_publico, email_publico: e.email_publico, cnpj: e.cnpj, endereco: e.endereco ?? null,
+    bairro: e.bairro ?? null, latitude: e.latitude ?? null, longitude: e.longitude ?? null,
+    no_mapa: !!e.no_mapa && e.latitude != null && e.longitude != null, localizacao_aproximada: false, anonimo: false,
+    desde: e.parceria_desde, ordem: 1000 + (e.ordem ?? 0),
+  };
 }
 
 // ---------- Documentos (CNPJ/CPF) ----------

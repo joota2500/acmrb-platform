@@ -60,6 +60,13 @@ export interface EmpresaLogistica {
   exibir_publicamente: boolean;
   observacoes_internas: string | null;
   ordem: number;
+  // localização (migration 20261020250000)
+  endereco?: string | null;
+  bairro?: string | null;
+  cep?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  mostrar_no_mapa?: boolean;
 }
 
 export interface Repasse {
@@ -150,10 +157,19 @@ export const empresaSchema = z
     exibir_publicamente: z.boolean(),
     observacoes_internas: z.string().trim().max(2000).optional().transform((v) => (v ? v : null)),
     ordem: z.number().int().min(0).max(9999),
+    // localização (migration 20261020250000)
+    endereco: textoOpc,
+    bairro: textoOpc,
+    cep: z.string().optional().transform((v) => soDigitos(v ?? "").slice(0, 8) || null),
+    latitude: z.number().min(-90).max(90).nullable(),
+    longitude: z.number().min(-180).max(180).nullable(),
+    mostrar_no_mapa: z.boolean(),
   })
   .superRefine((v, ctx) => {
     const d = soDigitos(v.cnpj ?? "");
     if (d && !cnpjValido(d)) ctx.addIssue({ code: "custom", path: ["cnpj"], message: "CNPJ inválido (confira os dígitos)" });
+    if (v.mostrar_no_mapa && (v.latitude == null || v.longitude == null))
+      ctx.addIssue({ code: "custom", path: ["latitude"], message: "Marque o ponto no mapa para exibi-lo" });
   })
   .transform((v) => ({ ...v, cnpj: soDigitos(v.cnpj ?? "") || null }));
 
@@ -182,6 +198,7 @@ export function primeiroErro(e: z.ZodError) {
 function traduzir(err: { code?: string; message?: string }) {
   if (err.code === "23505") return "Já existe um cadastro com este documento (CNPJ/CPF).";
   if (err.code === "42501" || /row-level security/i.test(err.message ?? "")) return "Sem permissão: apenas o ADM DEUS pode alterar.";
+  if (err.code === "PGRST204" || /column .* does not exist|Could not find the .* column/i.test(err.message ?? "")) return "Coluna nova não encontrada. Rode a migration 20261020250000_logistica_localizacao.sql.";
   if (err.code === "42P01" || err.code === "PGRST205") return "Tabela não encontrada. Rode a migration 20261020240000_apoiadores_mapa.sql.";
   if (err.code === "23514") return "Algum campo não passou na validação do banco (documento, categoria ou coordenadas).";
   return err.message || "Erro ao salvar.";
@@ -216,6 +233,17 @@ export const salvarEmpresa = (dados: ReturnType<typeof empresaSchema.parse>, id?
     : exec(supabase.from("empresas_logistica").insert(dados).select().single());
 
 export const excluirEmpresa = (id: string) => exec(supabase.from("empresas_logistica").delete().eq("id", id));
+
+// ---------- Localização (Visão do Mapa: confirmação em lote) ----------
+
+/** Grava só as coordenadas (e opcionalmente liga "mostrar no mapa") */
+export const salvarLocalizacao = (
+  tabela: "apoiadores" | "empresas_logistica",
+  id: string,
+  lat: number,
+  lng: number,
+  mostrar: boolean,
+) => exec(supabase.from(tabela).update({ latitude: lat, longitude: lng, mostrar_no_mapa: mostrar }).eq("id", id).select("id").single());
 
 // ---------- Repasses ----------
 
@@ -263,31 +291,101 @@ export interface DadosCnpj {
   data_inicio_atividade?: string;
 }
 
-/** Consulta pública da BrasilAPI (dados da Receita Federal) */
-export async function buscarCnpj(cnpj: string): Promise<DadosCnpj> {
+/** Dados do CNPJ já normalizados pela rota /api/cnpj (BrasilAPI ou CNPJ.ws) */
+export interface DadosCnpjApi {
+  razao_social: string;
+  nome_fantasia: string;
+  logradouro: string;
+  numero: string;
+  complemento: string;
+  bairro: string;
+  municipio: string;
+  uf: string;
+  cep: string;
+  telefone: string;
+  email: string;
+  data_inicio_atividade: string;
+  fonte: string;
+}
+
+async function lerErro(r: Response, padrao: string) {
+  const b = await r.json().catch(() => null);
+  return (b && typeof b.erro === "string" && b.erro) || padrao;
+}
+
+/** Consulta de CNPJ pelo servidor (BrasilAPI, com reserva na CNPJ.ws) */
+export async function buscarCnpj(cnpj: string): Promise<DadosCnpjApi> {
   const d = soDigitos(cnpj);
   if (!cnpjValido(d)) throw new Error("Digite um CNPJ válido antes de buscar.");
-  const r = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${d}`);
-  if (r.status === 404) throw new Error("CNPJ não encontrado na Receita.");
-  if (!r.ok) throw new Error("Serviço de CNPJ indisponível agora. Tente mais tarde.");
+  const r = await fetch(`/api/cnpj/${d}`);
+  if (!r.ok) throw new Error(await lerErro(r, "Serviço de CNPJ indisponível agora. Tente mais tarde."));
   return r.json();
 }
 
-/**
- * Busca de endereço no Nominatim (OpenStreetMap).
- * Política de uso: 1 requisição por ação do usuário, sem autocompletar,
- * com identificação da aplicação (o navegador envia o Referer do site;
- * o User-Agent não pode ser alterado no navegador) e idioma pt-BR.
- */
-export async function buscarEndereco(texto: string): Promise<{ lat: number; lng: number; nome: string }[]> {
+// ---------- Geocodificação (rota /api/geocodificar) ----------
+
+export type PrecisaoGeo = "endereco" | "rua" | "bairro" | "cidade";
+
+export interface ResultadoGeo {
+  lat: number;
+  lng: number;
+  nome: string;
+  fonte: string;
+  precisao: PrecisaoGeo;
+  rotulo_precisao: string;
+}
+
+export interface ConsultaGeo {
+  q?: string;
+  logradouro?: string;
+  numero?: string;
+  bairro?: string;
+  cidade?: string;
+  uf?: string;
+  cep?: string;
+}
+
+/** Cadeia Nominatim → Photon → Esri → CEP → bairro/cidade (no servidor) */
+export async function geocodificar(c: ConsultaGeo): Promise<ResultadoGeo[]> {
+  const params = new URLSearchParams();
+  Object.entries(c).forEach(([k, v]) => v && String(v).trim() && params.set(k, String(v).trim()));
+  const r = await fetch(`/api/geocodificar?${params}`);
+  if (!r.ok) throw new Error(await lerErro(r, "Busca de endereço indisponível agora."));
+  const b = (await r.json()) as { resultados: ResultadoGeo[] };
+  return b.resultados ?? [];
+}
+
+/** Busca por texto livre (campo "Buscar endereço no mapa") */
+export const buscarEndereco = (texto: string) => {
   const q = texto.trim();
-  if (q.length < 4) throw new Error("Digite um endereço mais completo.");
-  const consulta = /baturit/i.test(q) ? q : `${q}, Baturité, Ceará, Brasil`;
-  const url =
-    "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&countrycodes=br&accept-language=pt-BR&q=" +
-    encodeURIComponent(consulta);
-  const r = await fetch(url, { headers: { Accept: "application/json" }, referrerPolicy: "strict-origin-when-cross-origin" });
-  if (!r.ok) throw new Error("Busca de endereço indisponível agora.");
-  const lista = (await r.json()) as { lat: string; lon: string; display_name: string }[];
-  return lista.map((i) => ({ lat: Number(i.lat), lng: Number(i.lon), nome: i.display_name }));
+  if (q.length < 4) return Promise.reject(new Error("Digite um endereço mais completo."));
+  return geocodificar({ q });
+};
+
+/** Consulta a partir do endereço que veio do CNPJ */
+export const consultaDoCnpj = (d: DadosCnpjApi): ConsultaGeo => ({
+  logradouro: d.logradouro, numero: /^\d+/.test(d.numero) ? d.numero : "", bairro: d.bairro, cidade: d.municipio, uf: d.uf, cep: d.cep,
+});
+
+/** Texto do endereço para o formulário (ex.: "Rua X, 252 – Baturité/CE") */
+export function enderecoDoCnpj(d: DadosCnpjApi) {
+  const base = [d.logradouro, d.numero, d.complemento].filter(Boolean).join(", ");
+  return base ? `${base}${d.municipio ? ` – ${d.municipio}/${d.uf}` : ""}` : "";
+}
+
+/**
+ * Interpreta o endereço salvo ("Rua X, 252 – Baturité/CE") para a
+ * geocodificação em lote. Sem garantia: é só uma sugestão.
+ */
+export function consultaDoEndereco(endereco?: string | null, bairro?: string | null): ConsultaGeo | null {
+  const e = (endereco ?? "").trim();
+  if (!e && !bairro) return null;
+  const m = e.match(/^(.*?)\s*[–-]\s*([^/–-]+)\/([A-Za-z]{2})\s*$/);
+  const rua = (m ? m[1] : e).trim();
+  const partes = rua.split(",").map((x) => x.trim());
+  const numero = partes.find((x, i) => i > 0 && /^\d+[A-Za-z]?$/.test(x)) ?? "";
+  return {
+    logradouro: partes[0] ?? "", numero, bairro: bairro ?? "",
+    cidade: m ? m[2].trim() : "Baturité", uf: m ? m[3].toUpperCase() : "CE",
+  };
 }
