@@ -16,9 +16,14 @@ import {
 import { useState } from "react";
 
 import DashboardMetricModal from "./DashboardMetricModal";
+import { formatarNumero, formatarPeso } from "@/lib/formatadores";
 
 type Props = {
   dados: any;
+  /** Só o deus edita as métricas manuais (os demais só visualizam) */
+  podeEditar?: boolean;
+  /** Chamado após salvar uma métrica */
+  onAtualizado?: () => void | Promise<void>;
 };
 
 type Card = {
@@ -35,6 +40,8 @@ type Card = {
 
 export default function DashboardStatsCards({
   dados,
+  podeEditar = true,
+  onAtualizado,
 }: Props) {
 
   const [
@@ -49,240 +56,111 @@ export default function DashboardStatsCards({
     null,
   );
 
+  /*
+   * Cards do dashboard. Unidades (auditoria):
+   *  - Resíduos: soma de materiais_registros.peso (kg) → "kg"/"t" pelo
+   *    formatarPeso (antes: campo manual residuos_reciclados, sempre 0).
+   *  - Renda: soma de materiais_registros.subtotal (antes: renda_gerada manual).
+   *  - CO₂: tratado como toneladas, igual ao site (antes aparecia "kg" aqui
+   *    e "t" no site para o mesmo número).
+   *  - Empresas parceiras: contagem da tabela parceiros (ativos).
+   * "editable" = campo manual de dashboard_metricas, editável só pelo deus.
+   */
+  const reais = (n: number) =>
+    n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
   const cards: Card[] = [
-
-    /* =========================
-       AUTOMÁTICOS
-    ========================= */
-
+    /* ===== Calculados automaticamente ===== */
     {
       id: dados.id,
-
-      title:
-        "Resíduos Reciclados",
-
-      field:
-        "residuos_reciclados",
-
-      value:
-        `${Number(
-          dados.residuos_reciclados || 0,
-        ).toFixed(0)}kg`,
-
-      rawValue:
-        Number(
-          dados.residuos_reciclados || 0,
-        ),
-
+      title: "Resíduos Reciclados",
+      field: "residuos_kg",
+      value: formatarPeso(Number(dados.residuos_kg || 0)),
+      rawValue: Number(dados.residuos_kg || 0),
       icon: Recycle,
-
       editable: false,
-
-      description:
-        "Calculado automaticamente pelos materiais registrados.",
-
-      color:
-        "from-[#2E5E4E] to-[#5C9B80]",
+      description: `Soma de ${dados.total_registros ?? 0} registros de materiais.`,
+      color: "from-[#2E5E4E] to-[#5C9B80]",
     },
-
     {
       id: dados.id,
-
-      title:
-        "Renda Gerada",
-
-      field:
-        "renda_gerada",
-
-      value:
-        `R$ ${Number(
-          dados.renda_gerada || 0,
-        ).toFixed(2)}`,
-
-      rawValue:
-        Number(
-          dados.renda_gerada || 0,
-        ),
-
+      title: "Renda Gerada",
+      field: "renda_materiais",
+      value: reais(Number(dados.renda_materiais || 0)),
+      rawValue: Number(dados.renda_materiais || 0),
       icon: Coins,
-
       editable: false,
-
-      description:
-        "Valor calculado automaticamente a partir dos materiais.",
-
-      color:
-        "from-green-500 to-emerald-400",
+      description: "Soma dos subtotais dos materiais registrados.",
+      color: "from-green-500 to-emerald-400",
     },
-
-    /* =========================
-       MANUAIS
-    ========================= */
-
     {
       id: dados.id,
-
-      title:
-        "Famílias Impactadas",
-
-      field:
-        "familias_impactadas",
-
-      value:
-        dados.familias_impactadas || 0,
-
-      rawValue:
-        dados.familias_impactadas || 0,
-
-      icon: Users,
-
-      editable: true,
-
-      description:
-        "Indicador institucional editável.",
-
-      color:
-        "from-blue-500 to-cyan-400",
-    },
-
-    {
-      id: dados.id,
-
-      title:
-        "CO₂ Evitado",
-
-      field:
-        "co2_evitado",
-
-      value:
-        `${Number(
-          dados.co2_evitado || 0,
-        ).toFixed(0)}kg`,
-
-      rawValue:
-        Number(
-          dados.co2_evitado || 0,
-        ),
-
-      icon: Leaf,
-
-      editable: true,
-
-      description:
-        "Indicador ESG institucional.",
-
-      color:
-        "from-emerald-500 to-lime-400",
-    },
-
-    {
-      id: dados.id,
-
-      title:
-        "Empresas Parceiras",
-
-      field:
-        "empresas_parceiras",
-
-      value:
-        dados.empresas_parceiras || 0,
-
-      rawValue:
-        dados.empresas_parceiras || 0,
-
+      title: "Empresas Parceiras",
+      field: "parceiros_ativos",
+      value: dados.parceiros_ativos ?? "—",
+      rawValue: Number(dados.parceiros_ativos || 0),
       icon: Handshake,
-
-      editable: true,
-
-      description:
-        "Quantidade de parceiros ativos.",
-
-      color:
-        "from-orange-500 to-yellow-400",
+      editable: false,
+      description: "Parceiros ativos cadastrados.",
+      color: "from-orange-500 to-yellow-400",
     },
 
+    /* ===== Manuais (dashboard_metricas) ===== */
     {
       id: dados.id,
-
-      title:
-        "Coletas Realizadas",
-
-      field:
-        "coletas_realizadas",
-
-      value:
-        dados.coletas_realizadas || 0,
-
-      rawValue:
-        dados.coletas_realizadas || 0,
-
+      title: "Famílias Impactadas",
+      field: "familias_impactadas",
+      value: formatarNumero(Number(dados.familias_impactadas || 0)),
+      rawValue: Number(dados.familias_impactadas || 0),
+      icon: Users,
+      editable: podeEditar,
+      description: "Indicador institucional editável.",
+      color: "from-blue-500 to-cyan-400",
+    },
+    {
+      id: dados.id,
+      title: "CO₂ Evitado",
+      field: "co2_evitado",
+      value: `${formatarNumero(Number(dados.co2_evitado || 0))} t`,
+      rawValue: Number(dados.co2_evitado || 0),
+      icon: Leaf,
+      editable: podeEditar,
+      description: "Indicador ESG institucional (toneladas).",
+      color: "from-emerald-500 to-lime-400",
+    },
+    {
+      id: dados.id,
+      title: "Coletas Realizadas",
+      field: "coletas_realizadas",
+      value: formatarNumero(Number(dados.coletas_realizadas || 0)),
+      rawValue: Number(dados.coletas_realizadas || 0),
       icon: Truck,
-
-      editable: true,
-
-      description:
-        "Total de operações realizadas.",
-
-      color:
-        "from-violet-500 to-fuchsia-400",
+      editable: podeEditar,
+      description: "Total de operações realizadas.",
+      color: "from-violet-500 to-fuchsia-400",
     },
-
     {
       id: dados.id,
-
-      title:
-        "Árvores Preservadas",
-
-      field:
-        "arvores_preservadas",
-
-      value:
-        dados.arvores_preservadas || 0,
-
-      rawValue:
-        dados.arvores_preservadas || 0,
-
+      title: "Árvores Preservadas",
+      field: "arvores_preservadas",
+      value: formatarNumero(Number(dados.arvores_preservadas || 0)),
+      rawValue: Number(dados.arvores_preservadas || 0),
       icon: Trees,
-
-      editable: true,
-
-      description:
-        "Estimativa institucional de impacto ambiental.",
-
-      color:
-        "from-lime-500 to-green-400",
+      editable: podeEditar,
+      description: "Estimativa institucional de impacto ambiental.",
+      color: "from-lime-500 to-green-400",
     },
-
     {
       id: dados.id,
-
-      title:
-        "Energia Economizada",
-
-      field:
-        "energia_economizada",
-
-      value:
-        `${Number(
-          dados.energia_economizada || 0,
-        ).toFixed(0)}kWh`,
-
-      rawValue:
-        Number(
-          dados.energia_economizada || 0,
-        ),
-
+      title: "Energia Economizada",
+      field: "energia_economizada",
+      value: `${formatarNumero(Number(dados.energia_economizada || 0))} kWh`,
+      rawValue: Number(dados.energia_economizada || 0),
       icon: Zap,
-
-      editable: true,
-
-      description:
-        "Indicador ESG de eficiência energética.",
-
-      color:
-        "from-yellow-500 to-orange-400",
+      editable: podeEditar,
+      description: "Indicador ESG de eficiência energética.",
+      color: "from-yellow-500 to-orange-400",
     },
-
   ];
 
   return (
@@ -448,6 +326,9 @@ export default function DashboardStatsCards({
           setModalOpen(false)
         }
         metric={selectedMetric}
+        // Recarrega o dashboard depois de salvar (antes o valor novo só
+        // aparecia ao recarregar a página)
+        onUpdated={onAtualizado}
       />
 
     </>

@@ -1,5 +1,7 @@
 "use client";
 
+import { formatarNumero, formatarPeso } from "@/lib/formatadores";
+
 import {
   Package,
   TrendingUp,
@@ -164,7 +166,8 @@ export default function DashboardMaterialsCard({
             "
           >
 
-            {dados.residuos_reciclados}t
+            {/* Soma real dos registros (kg → kg/t) */}
+                {formatarPeso(Number(dados.residuos_kg || 0))}
 
           </h3>
 
@@ -220,7 +223,7 @@ export default function DashboardMaterialsCard({
             "
           >
 
-            {dados.coletas_realizadas}
+            {formatarNumero(Number(dados.coletas_realizadas || 0))}
 
           </h3>
 
@@ -276,7 +279,7 @@ export default function DashboardMaterialsCard({
             "
           >
 
-            {dados.co2_evitado}t
+            {formatarNumero(Number(dados.co2_evitado || 0))} t
 
           </h3>
 
@@ -332,7 +335,7 @@ export default function DashboardMaterialsCard({
             "
           >
 
-            {dados.familias_impactadas}
+            {formatarNumero(Number(dados.familias_impactadas || 0))}
 
           </h3>
 

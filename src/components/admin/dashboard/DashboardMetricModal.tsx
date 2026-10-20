@@ -128,7 +128,6 @@ export default function DashboardMetricModal({
 
     } catch (error) {
 
-      console.log(error);
 
       alert(
         "Erro ao atualizar indicador.",
@@ -197,7 +196,6 @@ export default function DashboardMetricModal({
 
     } catch (error) {
 
-      console.log(error);
 
       alert(
         "Erro ao resetar indicador.",

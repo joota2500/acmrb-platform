@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
+import { comLimite } from "@/lib/associados";
 
 import DashboardStatsCards from "@/components/admin/dashboard/DashboardStatsCards";
 
@@ -19,6 +20,12 @@ import DashboardImpactCard from "@/components/admin/dashboard/DashboardImpactCar
 import DashboardMaterialsCard from "@/components/admin/dashboard/DashboardMaterialsCard";
 
 type DashboardMetricas = {
+  /* Calculados no carregamento (não existem na tabela) */
+  residuos_kg?: number;
+  renda_materiais?: number;
+  total_registros?: number;
+  parceiros_ativos?: number | null;
+
 
   id?: string;
 
@@ -62,7 +69,12 @@ type DashboardMetricas = {
 
 };
 
-export default function DashboardSection() {
+type DashboardSectionProps = {
+  /** Só o deus edita as métricas manuais; o admin normal só visualiza */
+  podeEditar?: boolean;
+};
+
+export default function DashboardSection({ podeEditar = true }: DashboardSectionProps) {
 
   const [
     dados,
@@ -79,39 +91,59 @@ export default function DashboardSection() {
     setAtualizando,
   ] = useState(false);
 
+    // Mensagem de erro exibida na tela (antes só ia para o console)
+  const [erro, setErro] = useState<string | null>(null);
+
+/**
+   * Carrega os indicadores. Correções (auditoria):
+   *  - "Resíduos reciclados" e "Renda gerada" eram lidos de campos
+   *    manuais de dashboard_metricas (residuos_reciclados / renda_gerada,
+   *    ambos 0 no banco), embora o card dissesse "calculado
+   *    automaticamente". Agora são somados de materiais_registros
+   *    (peso em KG e subtotal em R$).
+   *  - "Empresas parceiras" passa a contar a tabela parceiros (ativos).
+   *  - Erros não ficam mais só no console: aparecem na tela.
+   *  - Limite de 10s em cada consulta (comLimite).
+   */
   async function carregarDados() {
-
+    setAtualizando(true);
+    setErro(null);
     try {
+      const [metricas, registros, parceiros] = await Promise.all([
+        comLimite(supabase.from("dashboard_metricas").select("*").limit(1).maybeSingle()),
+        comLimite(supabase.from("materiais_registros").select("peso, subtotal")),
+        comLimite(
+          supabase.from("parceiros").select("id", { count: "exact", head: true }).eq("ativo", true),
+        ),
+      ]);
 
-      setAtualizando(true);
-
-      const {
-        data,
-        error,
-      } = await supabase
-        .from("dashboard_metricas")
-        .select("*")
-        .limit(1)
-        .maybeSingle();
-
-      if (error) {
-
-        console.log(error);
-
+      if (metricas.error) throw metricas.error;
+      if (!metricas.data) {
+        setDados(null);
         return;
-
       }
 
-      setDados(data);
+      const lista = registros.error ? [] : registros.data ?? [];
+      const soma = (campo: "peso" | "subtotal") =>
+        lista.reduce((acc: number, r: any) => acc + Number(r[campo] || 0), 0);
 
+      setDados({
+        ...metricas.data,
+        residuos_kg: soma("peso"),
+        renda_materiais: soma("subtotal"),
+        total_registros: lista.length,
+        parceiros_ativos: parceiros.error ? null : parceiros.count ?? 0,
+      });
+
+      if (registros.error) {
+        setErro("Os registros de materiais não puderam ser carregados; os totais automáticos podem estar incompletos.");
+      }
+    } catch {
+      setErro("Não foi possível carregar os indicadores. Verifique a conexão e tente novamente.");
     } finally {
-
       setLoading(false);
-
       setAtualizando(false);
-
     }
-
   }
 
   useEffect(() => {
@@ -164,6 +196,22 @@ export default function DashboardSection() {
 
     );
 
+  }
+
+  // Erro sem dados: mensagem + tentar de novo
+  if (erro && !dados) {
+    return (
+      <div role="alert" className="bg-white rounded-3xl border border-red-100 p-6 sm:p-10 text-center">
+        <p className="font-bold text-red-600">{erro}</p>
+        <button
+          type="button"
+          onClick={carregarDados}
+          className="mt-4 h-12 px-6 rounded-2xl bg-[#2E5E4E] text-white font-bold hover:bg-[#21463A]"
+        >
+          Tentar novamente
+        </button>
+      </div>
+    );
   }
 
   if (!dados) {
@@ -374,10 +422,19 @@ export default function DashboardSection() {
 
       </div>
 
+      {/* Aviso de carregamento parcial */}
+      {erro && (
+        <p role="alert" className="rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3 text-sm">
+          {erro}
+        </p>
+      )}
+
       {/* STATS */}
 
       <DashboardStatsCards
         dados={dados}
+        podeEditar={podeEditar}
+        onAtualizado={carregarDados}
       />
 
       {/* DETAILS */}
