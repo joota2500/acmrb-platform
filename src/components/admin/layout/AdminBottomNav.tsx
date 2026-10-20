@@ -9,6 +9,8 @@
 
 import { MoreHorizontal } from "lucide-react";
 import { ITENS_NAV, type SecaoId } from "./adminNav";
+import { usePapelAdmin } from "./PapelAdmin";
+import { podeVer } from "@/lib/permissions";
 
 type Props = {
   ativa: SecaoId;
@@ -17,7 +19,9 @@ type Props = {
 };
 
 export default function AdminBottomNav({ ativa, onSelecionar, onMais }: Props) {
-  const rapidos = ITENS_NAV.filter((i) => i.rapido);
+  const papel = usePapelAdmin();
+  // Atalhos só das seções permitidas ao papel logado
+  const rapidos = ITENS_NAV.filter((i) => i.rapido && podeVer(papel, i.id));
   const ativaEhRapida = rapidos.some((i) => i.id === ativa);
 
   const botao = (ativo: boolean) =>

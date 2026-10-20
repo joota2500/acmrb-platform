@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Verificar se é Adm Deus
     const { data: admin } = await supabase
       .from("admins")
-      .select("*")
+      .select("nome, email, role, avatar_url, ativo")
       .eq("email", email)
       .eq("ativo", true)
       .maybeSingle();
@@ -54,7 +54,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         role: admin.role,
         nome: admin.nome,
         avatar_url: admin.avatar_url,
-        isGod: admin.email === "joaovictorrc25@gmail.com", // Adm Deus
+        // Deus = role "deus" no banco (migration admins_papeis). O e-mail
+        // fica como reserva enquanto a migration não for rodada.
+        isGod: admin.role === "deus" || admin.email === "joaovictorrc25@gmail.com",
       });
       return;
     }

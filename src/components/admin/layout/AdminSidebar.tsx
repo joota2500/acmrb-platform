@@ -17,6 +17,8 @@ import { useEffect, useRef } from "react";
 import { ChevronsLeft, ChevronsRight, LogOut, X } from "lucide-react";
 
 import { GRUPOS_NAV, type SecaoId } from "./adminNav";
+import { usePapelAdmin } from "./PapelAdmin";
+import { podeVer } from "@/lib/permissions";
 
 interface Usuario {
   nome: string;
@@ -65,9 +67,15 @@ function Menu({
   onSelecionar: (id: SecaoId) => void;
   compacta?: boolean;
 }) {
+  // Esconde as seções sem permissão para o papel logado
+  const papel = usePapelAdmin();
+  const grupos = GRUPOS_NAV.map((g) => ({ ...g, itens: g.itens.filter((i) => podeVer(papel, i.id)) })).filter(
+    (g) => g.itens.length > 0,
+  );
+
   return (
     <nav aria-label="Seções do painel" className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
-      {GRUPOS_NAV.map((grupo) => (
+      {grupos.map((grupo) => (
         <div key={grupo.titulo}>
           {compacta ? (
             <div className="mx-3 mb-2 h-px bg-white/10" aria-hidden="true" />

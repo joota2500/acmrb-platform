@@ -25,6 +25,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
+import { PapelProvider } from "@/components/admin/layout/PapelAdmin";
+import AdministradoresSection from "@/components/admin/sections/AdministradoresSection";
+import MinhaContaSection from "@/components/admin/sections/MinhaContaSection";
+import { podeEditar, podeVer, ROTULO_PAPEL, type PapelAdmin } from "@/lib/permissions";
 import AdminContainer from "@/components/admin/layout/AdminContainer";
 import AdminContent from "@/components/admin/layout/AdminContent";
 import AdminHeader from "@/components/admin/layout/AdminHeader";
@@ -68,6 +72,16 @@ function EmBreve({ titulo, descricao }: { titulo: string; descricao: string }) {
       </span>
       <h2 className="mt-4 text-xl sm:text-2xl font-black text-zinc-900">{titulo}: em breve</h2>
       <p className="mt-2 text-zinc-500 max-w-md mx-auto">{descricao}. Esta seção ainda está em desenvolvimento.</p>
+    </div>
+  );
+}
+
+/** Seção bloqueada para o papel logado (ex.: link direto ?secao=esg) */
+function SemPermissao() {
+  return (
+    <div role="alert" className="bg-white rounded-3xl border border-black/5 p-6 sm:p-10 text-center">
+      <h2 className="text-xl sm:text-2xl font-black text-zinc-900">Acesso restrito</h2>
+      <p className="mt-2 text-zinc-500 max-w-md mx-auto">Esta área é exclusiva do ADM DEUS.</p>
     </div>
   );
 }
@@ -125,13 +139,18 @@ function PainelAdmin() {
 
   if (loading || !perfil) return <Validando />;
 
+  // Papel e permissões (src/lib/permissions.ts)
+  const papel: PapelAdmin = isGod ? "deus" : "admin";
+  const permitido = podeVer(papel, ativa);
+
   const usuario = {
     nome: perfil.nome ?? "Administrador",
     email: user?.email ?? "",
-    papel: isGod ? "ADM DEUS" : "Administrador",
+    papel: ROTULO_PAPEL[papel],
   };
 
   return (
+    <PapelProvider value={papel}>
     <AdminContainer recolhida={recolhida}>
       <AdminSidebar
         ativa={ativa}
@@ -156,17 +175,25 @@ function PainelAdmin() {
         />
 
         <AdminContent>
-          {ativa === "dashboard" && <DashboardSection />}
-          {ativa === "noticias" && <NoticiasSection />}
-          {ativa === "projetos" && <ProjetosSection />}
-          {ativa === "parceiros" && <ParceirosSection />}
-          {ativa === "associados" && <AssociadosSection />}
-          {ativa === "denuncias" && <DenunciasSection />}
-          {ativa === "materiais" && <MaterialsSection />}
-          {ativa === "coletas" && <EmBreve titulo="Coletas" descricao={item.descricao} />}
-          {ativa === "esg" && <ESGSection />}
-          {ativa === "relatorios" && <EmBreve titulo="Relatórios" descricao={item.descricao} />}
-          {ativa === "configuracoes" && <ConfiguracoesSection />}
+          {!permitido ? (
+            <SemPermissao />
+          ) : (
+            <>
+              {ativa === "dashboard" && <DashboardSection podeEditar={podeEditar(papel, "dashboard")} />}
+              {ativa === "noticias" && <NoticiasSection />}
+              {ativa === "projetos" && <ProjetosSection />}
+              {ativa === "parceiros" && <ParceirosSection />}
+              {ativa === "associados" && <AssociadosSection />}
+              {ativa === "denuncias" && <DenunciasSection />}
+              {ativa === "materiais" && <MaterialsSection />}
+              {ativa === "coletas" && <EmBreve titulo="Coletas" descricao={item.descricao} />}
+              {ativa === "esg" && <ESGSection />}
+              {ativa === "relatorios" && <EmBreve titulo="Relatórios" descricao={item.descricao} />}
+              {ativa === "administradores" && <AdministradoresSection />}
+              {ativa === "configuracoes" && <ConfiguracoesSection />}
+              {ativa === "minha-conta" && <MinhaContaSection />}
+            </>
+          )}
         </AdminContent>
       </div>
 
@@ -185,6 +212,7 @@ function PainelAdmin() {
         onCancelar={cancelarSaida}
       />
     </AdminContainer>
+    </PapelProvider>
   );
 }
 
