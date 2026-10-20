@@ -7,9 +7,8 @@
  * - Troca de senha: confirma a senha atual (signInWithPassword) antes
  *   de chamar supabase.auth.updateUser.
  * - Mostra o último acesso registrado.
- * A troca de e-mail não é feita aqui de propósito: o acesso ao painel é
- * ligado ao e-mail, e trocar só de um lado bloquearia a conta. O deus
- * pode ajustar pelo Supabase (Auth + tabela admins) se precisar.
+ * - Bloco "Segurança": trocar e-mail (pela rota do servidor), link de
+ *   redefinição, sair dos outros aparelhos e verificação em 2 etapas.
  */
 
 import { useCallback, useEffect, useState } from "react";
@@ -17,7 +16,9 @@ import { Camera, KeyRound, Loader2, Save } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { mascaraTelefone } from "@/lib/validacao";
 import { ToastArea, useToast } from "@/components/ui/Toast";
-import { RegrasSenha, dataHora, senhaValida } from "./AdministradoresSection";
+import { dataHora } from "./AdministradoresSection";
+import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
+import SegurancaConta from "@/components/admin/conta/SegurancaConta";
 import { ROTULO_PAPEL, papelDe } from "@/lib/permissions";
 
 interface Conta {
@@ -28,6 +29,7 @@ interface Conta {
   telefone: string | null;
   avatar_url: string | null;
   ultimo_login: string | null;
+  created_at?: string | null;
 }
 
 const campo =
@@ -53,7 +55,7 @@ export default function MinhaContaSection() {
     // "telefone" só existe após a migration; sem ela, tenta sem a coluna
     let r = await supabase
       .from("admins")
-      .select("id, nome, email, role, telefone, avatar_url, ultimo_login")
+      .select("id, nome, email, role, telefone, avatar_url, ultimo_login, created_at")
       .eq("email", email)
       .maybeSingle();
     if (r.error) {
@@ -172,6 +174,7 @@ export default function MinhaContaSection() {
           <p>E-mail: <span className="font-semibold text-zinc-700 break-all">{conta.email}</span></p>
           <p>Papel: <span className="font-semibold text-zinc-700">{ROTULO_PAPEL[papelDe(conta.role)]}</span></p>
           <p>Último acesso: <span className="font-semibold text-zinc-700">{dataHora(conta.ultimo_login)}</span></p>
+          <p>Conta criada em: <span className="font-semibold text-zinc-700">{dataHora(conta.created_at ?? null)}</span></p>
         </div>
 
         <button type="submit" disabled={salvando}
@@ -205,11 +208,9 @@ export default function MinhaContaSection() {
           {trocandoSenha ? <Loader2 size={18} className="animate-spin" /> : <KeyRound size={18} aria-hidden="true" />}
           Alterar senha
         </button>
-        <p className="text-xs text-zinc-400 text-justify hyphens-auto" lang="pt-BR">
-          Para trocar o e-mail de acesso, fale com o ADM DEUS: o e-mail precisa
-          mudar ao mesmo tempo no login e no cadastro de administradores.
-        </p>
       </form>
+
+      <SegurancaConta email={conta.email} mostrar={mostrar} onEmailTrocado={carregar} />
 
       <ToastArea toasts={toasts} onFechar={fechar} />
     </div>

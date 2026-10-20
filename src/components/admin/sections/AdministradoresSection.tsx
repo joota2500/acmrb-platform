@@ -13,6 +13,10 @@ import { Crown, Eye, EyeOff, Loader2, ShieldCheck, Trash2, UserPlus } from "luci
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
+import { chamarApi } from "@/lib/apiAdmin";
+import GerenciarAdmin from "@/components/admin/conta/GerenciarAdmin";
+import AuditoriaLista from "@/components/admin/conta/AuditoriaLista";
 
 interface AdminLinha {
   id: string;
@@ -22,47 +26,14 @@ interface AdminLinha {
   ativo: boolean;
   avatar_url: string | null;
   ultimo_login: string | null;
+  created_at?: string | null;
 }
 
-/** Regras de senha mostradas ao vivo */
-const REGRAS = [
-  { rotulo: "8 ou mais caracteres", ok: (s: string) => s.length >= 8 },
-  { rotulo: "Uma letra maiúscula", ok: (s: string) => /[A-Z]/.test(s) },
-  { rotulo: "Uma letra minúscula", ok: (s: string) => /[a-z]/.test(s) },
-  { rotulo: "Um número", ok: (s: string) => /\d/.test(s) },
-];
-
-export const senhaValida = (s: string) => REGRAS.every((r) => r.ok(s));
-
-export function RegrasSenha({ senha }: { senha: string }) {
-  return (
-    <ul className="mt-2 grid grid-cols-2 gap-1 text-xs">
-      {REGRAS.map((r) => (
-        <li key={r.rotulo} className={r.ok(senha) ? "text-emerald-700" : "text-zinc-400"}>
-          {r.ok(senha) ? "✓" : "•"} {r.rotulo}
-        </li>
-      ))}
-    </ul>
-  );
-}
+// Regras de senha e chamada à API ficam em arquivos compartilhados
+export { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 
 export const dataHora = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "nunca";
-
-/** Chama a API com o token da sessão atual */
-async function chamarApi(metodo: "POST" | "DELETE", url: string, corpo?: unknown) {
-  const { data } = await supabase.auth.getSession();
-  const resp = await fetch(url, {
-    method: metodo,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${data.session?.access_token ?? ""}`,
-    },
-    body: corpo ? JSON.stringify(corpo) : undefined,
-  });
-  const json = await resp.json().catch(() => ({}));
-  if (!resp.ok) throw new Error(json.erro ?? "Erro inesperado no servidor.");
-}
 
 const campo =
   "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-[#2E5E4E]/40";
@@ -75,12 +46,14 @@ export default function AdministradoresSection() {
   const [excluir, setExcluir] = useState<AdminLinha | null>(null);
   const [verSenha, setVerSenha] = useState(false);
   const [form, setForm] = useState({ nome: "", email: "", senha: "" });
+  // Muda a cada ação para recarregar o histórico
+  const [versao, setVersao] = useState(0);
 
   const carregar = useCallback(async () => {
     setCarregando(true);
     const { data, error } = await supabase
       .from("admins")
-      .select("id, nome, email, role, ativo, avatar_url, ultimo_login")
+      .select("id, nome, email, role, ativo, avatar_url, ultimo_login, created_at")
       .order("role", { ascending: false });
     if (error) mostrar("erro", "Não foi possível carregar os administradores.");
     setLista((data as AdminLinha[]) ?? []);
@@ -89,7 +62,9 @@ export default function AdministradoresSection() {
 
   useEffect(() => {
     carregar();
-  }, [carregar]);
+  }, [carregar, versao]);
+
+  const recarregarTudo = () => setVersao((v) => v + 1);
 
   const deus = lista.find((a) => a.role === "deus");
   const normal = lista.find((a) => a.role !== "deus");
@@ -105,7 +80,7 @@ export default function AdministradoresSection() {
       await chamarApi("POST", "/api/admin/administradores", form);
       mostrar("sucesso", "Administrador criado! Envie o e-mail e a senha temporária para ele por um canal seguro.");
       setForm({ nome: "", email: "", senha: "" });
-      carregar();
+      recarregarTudo();
     } catch (err) {
       mostrar("erro", (err as Error).message);
     } finally {
@@ -120,7 +95,7 @@ export default function AdministradoresSection() {
       await chamarApi("DELETE", `/api/admin/administradores?id=${encodeURIComponent(excluir.id)}`);
       mostrar("sucesso", "Administrador excluído e acesso removido.");
       setExcluir(null);
-      carregar();
+      recarregarTudo();
     } catch (err) {
       mostrar("erro", (err as Error).message);
     } finally {
@@ -171,9 +146,17 @@ export default function AdministradoresSection() {
 
           {normal ? (
             <>
-              <h3 className="mt-3 text-lg font-black text-zinc-900 break-words">{normal.nome}</h3>
+              <h3 className="mt-3 text-lg font-black text-zinc-900 break-words">
+                {normal.nome}{" "}
+                {!normal.ativo && (
+                  <span className="align-middle text-xs font-bold px-2 py-0.5 rounded-full bg-zinc-200 text-zinc-600">Desativado</span>
+                )}
+              </h3>
               <p className="text-sm text-zinc-500 break-all">{normal.email}</p>
-              <p className="mt-2 text-xs text-zinc-400">Último acesso: {dataHora(normal.ultimo_login)}</p>
+              <p className="mt-2 text-xs text-zinc-400">
+                Último acesso: {dataHora(normal.ultimo_login)} · Criado em: {dataHora(normal.created_at ?? null)}
+              </p>
+              <GerenciarAdmin alvo={normal} mostrar={mostrar} onAlterado={recarregarTudo} />
               <button
                 type="button"
                 onClick={() => setExcluir(normal)}
@@ -219,6 +202,8 @@ export default function AdministradoresSection() {
           )}
         </article>
       </div>
+
+      <AuditoriaLista atualizar={versao} />
 
       <ConfirmDialog
         aberto={!!excluir}
