@@ -194,3 +194,76 @@
   .contato *, .contato *::before, .contato *::after { transition: none !important; animation: none !important; }
   .contato__canal:hover, .contato__btn:hover { transform: none; }
 }
+
+/* ==================== AJUSTE DE ESPAÇAMENTO (mais compacto) ====================
+ * "Onde estamos" e blocos vizinhos estavam espaçados demais em notebook,
+ * tablet e celular. Reduzimos paddings, margens e alturas.
+ */
+.contato { padding: 3.5rem 0; }
+.contato__header { margin-bottom: 2.25rem; }
+.contato__canais { margin-bottom: 2rem; gap: 1rem; }
+.contato__canal { padding: 1.25rem; }
+.contato__canal-icon { width: 2.5rem; height: 2.5rem; margin-bottom: 0.75rem; }
+.contato__grid { gap: 1.25rem; margin-bottom: 2rem; align-items: start; }
+.contato__painel { padding: 1.5rem; }
+.contato__painel-text { margin-bottom: 1rem; }
+.contato__subtitle { margin-bottom: 0.35rem; }
+/* Endereço: remove margens herdadas de p/strong/span globais */
+.contato__endereco { margin: 0.15rem 0 0.75rem; gap: 0.5rem; line-height: 1.35; }
+.contato__endereco * { margin: 0; }
+.contato__endereco strong { font-size: 0.95rem; }
+.contato__endereco span { margin-top: 0.1rem; }
+/* Mapa com altura fixa (não estica até a altura do formulário) */
+.contato-mapa { flex: none; height: 18rem; min-height: 0; }
+.contato__mapa-acoes { margin-top: 0.75rem; gap: 0.5rem; }
+.contato__cta { padding: 2.25rem 1.75rem; }
+.contato__cta-acoes { margin-top: 1.25rem; }
+
+/* Notebook (telas até 1366px) */
+@media (max-width: 1366px) {
+  .contato { padding: 3rem 0; }
+  .contato__title { font-size: 1.9rem; }
+  .contato__description { font-size: 1rem; line-height: 1.65; margin-top: 0.9rem; }
+  .contato-mapa { height: 16rem; }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .contato { padding: 2.5rem 0; }
+  .contato__header { margin-bottom: 1.75rem; }
+  .contato__canais { margin-bottom: 1.5rem; gap: 0.8rem; }
+  .contato__canal { padding: 1rem; }
+  .contato__grid { gap: 1rem; margin-bottom: 1.5rem; }
+  .contato__painel { padding: 1.25rem; }
+  .contato__title { font-size: 1.6rem; }
+  .contato-mapa { height: 15rem; }
+  .contato__cta { padding: 1.75rem 1.25rem; }
+  .contato__cta-title { font-size: 1.45rem; }
+}
+
+/* Celular */
+@media (max-width: 480px) {
+  .contato { padding: 2rem 0; }
+  .contato__header { margin-bottom: 1.25rem; }
+  .contato__title { font-size: 1.3rem; }
+  .contato__description { font-size: 0.88rem; margin-top: 0.6rem; }
+  .contato__canais { gap: 0.6rem; margin-bottom: 1.25rem; }
+  .contato__canal { padding: 0.9rem; }
+  .contato__canal-icon { width: 2.1rem; height: 2.1rem; margin-bottom: 0.5rem; }
+  .contato__canal-valor { font-size: 0.98rem; }
+  .contato__canal-text { font-size: 0.84rem; margin-top: 0.3rem; }
+  .contato__canal-acoes { margin-top: 0.6rem; }
+  .contato__grid { gap: 0.8rem; margin-bottom: 1.25rem; }
+  .contato__painel { padding: 1rem; border-radius: 1rem; }
+  .contato__subtitle { font-size: 1.02rem; }
+  .contato__painel-text { font-size: 0.84rem; margin-bottom: 0.75rem; }
+  .contato__endereco strong { font-size: 0.88rem; }
+  .contato__endereco span { font-size: 0.78rem; }
+  .contato-mapa { height: 13rem; }
+  .contato__mapa-acoes { margin-top: 0.6rem; }
+  .contato__btn { min-height: 2.4rem; padding: 0.5rem 0.9rem; font-size: 0.84rem; }
+  .contato__cta { padding: 1.4rem 1rem; }
+  .contato__cta-title { font-size: 1.15rem; }
+  .contato__cta-text { font-size: 0.86rem; margin-top: 0.6rem; }
+  .contato__cta-acoes { margin-top: 1rem; gap: 0.5rem; }
+}
