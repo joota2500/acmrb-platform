@@ -30,15 +30,8 @@ export interface QuemSomosBloco {
   icone: string | null;
 }
 
-export interface AssociadoPublico {
-  id: string;
-  nome: string;
-  slug: string | null;
-  cargo: string | null;
-  tipo_associado: string | null;
-  foto_url: string | null;
-  destaque: boolean;
-}
+/** Reexportado de src/types/associados.ts (fonte única do tipo). */
+export type { AssociadoPublico } from "./associados";
 
 export interface ParceiroPublico {
   id: string;

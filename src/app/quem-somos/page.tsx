@@ -11,7 +11,8 @@
  *  4. Missão, visão e valores — missão/visão só aparecem quando forem
  *                   cadastradas no banco (ainda não existe texto oficial)
  *  5. O que fazemos — frentes de atuação
- *  6. Associados  — tabela associados (somente campos públicos)
+ *  6. Diretoria   — só Presidente, Secretário(a) e Tesoureiro(a)
+ *                   (view associados_publicos / tabela associados)
  *  7. Parceiros   — tabela parceiros
  *  8. Próximos passos
  *  9. Vídeo e Instagram (conteúdos que já existiam na página)
@@ -342,13 +343,13 @@ export default function QuemSomosPage() {
           <div className="qs-container">
             <div className="qs-section__header qs-section__header--centro">
               <div>
-                <span className="qs-label">Associados</span>
+                <span className="qs-label">Diretoria</span>
                 <h2 id="qs-associados" className="qs-section__title">
                   Pessoas que fazem a diferença todos os dias
                 </h2>
                 <p className="qs-text" lang="pt-BR">
-                  Conheça alguns dos associados que contribuem diariamente para
-                  o fortalecimento ambiental, social e operacional da ACMRB.
+                  Conheça a diretoria da ACMRB, responsável por conduzir o
+                  fortalecimento ambiental, social e operacional da associação.
                 </p>
               </div>
               {/* Botão centralizado abaixo do título (cabeçalho centralizado) */}
@@ -359,18 +360,19 @@ export default function QuemSomosPage() {
             </div>
 
             {loading ? (
-              <LoadingState text="Carregando associados..." />
+              <LoadingState text="Carregando diretoria..." />
             ) : associados.length === 0 ? (
               <EmptyState
-                title="Associados em breve"
+                title="Diretoria em breve"
                 description={
                   erro
                     ? "Não conseguimos carregar a lista agora. Tente novamente mais tarde."
-                    : "A lista de associados ainda está sendo cadastrada."
+                    : "Os cargos de Presidente, Secretário(a) e Tesoureiro(a) ainda não foram cadastrados."
                 }
               />
             ) : (
-              <ul className="qs-grid qs-grid--4">
+              /* 3 cargos: 1 coluna (cartão horizontal) no celular, 3 colunas a partir de 640px */
+              <ul className="qs-diretoria">
                 {associados.map((a) => (
                   <li key={a.id}>
                     <Link

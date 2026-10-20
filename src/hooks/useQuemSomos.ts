@@ -5,7 +5,8 @@
  * ------------------------------------------------------------
  * Busca no Supabase, em paralelo:
  *  - quem_somos_conteudo → textos institucionais (história, valores...)
- *  - associados          → até 8 ativos, destaques primeiro (campos públicos)
+ *  - associados          → SOMENTE a diretoria: Presidente, Secretário(a) e
+ *                           Tesoureiro(a), nessa ordem (src/lib/associados.ts)
  *  - parceiros           → ativos, destaques primeiro
  *
  * Segurança contra falhas:
@@ -19,8 +20,9 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { QUEM_SOMOS_FALLBACK } from "@/lib/quemSomosFallback";
+import { filtrarDiretoria, listarAssociadosPublicos } from "@/lib/associados";
+import type { AssociadoPublico } from "@/types/associados";
 import type {
-  AssociadoPublico,
   OrigemConteudo,
   ParceiroPublico,
   QuemSomosBloco,
@@ -66,15 +68,8 @@ export function useQuemSomos() {
             .order("secao")
             .order("ordem"),
         ),
-        comLimite(
-          supabase
-            .from("associados")
-            .select("id, nome, slug, cargo, tipo_associado, foto_url, destaque")
-            .eq("ativo", true)
-            .order("destaque", { ascending: false })
-            .order("nome")
-            .limit(8),
-        ),
+        // Diretoria: view pública (ou tabela, antes da migration)
+        listarAssociadosPublicos(),
         comLimite(
           supabase
             .from("parceiros")
@@ -93,16 +88,18 @@ export function useQuemSomos() {
         setOrigem("banco");
       }
 
-      if (assoc.status === "fulfilled" && !assoc.value.error) {
-        setAssociados((assoc.value.data ?? []) as AssociadoPublico[]);
+      if (assoc.status === "fulfilled" && !assoc.value.erro) {
+        setAssociados(filtrarDiretoria(assoc.value.data));
       }
       if (parc.status === "fulfilled" && !parc.value.error) {
         setParceiros((parc.value.data ?? []) as ParceiroPublico[]);
       }
 
-      const falhou = [assoc, parc].some(
-        (r) => r.status === "rejected" || r.value.error,
-      );
+      const falhou =
+        assoc.status === "rejected" ||
+        Boolean(assoc.value.erro) ||
+        parc.status === "rejected" ||
+        Boolean(parc.value.error);
       if (falhou) {
         setErro("Não foi possível conectar ao banco de dados no momento.");
       }

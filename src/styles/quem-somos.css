@@ -775,3 +775,33 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+/* ==========================================================
+   DIRETORIA (Presidente, Secretário(a), Tesoureiro(a))
+   - Celular: 1 coluna, cartão horizontal (foto à esquerda)
+   - 640px+:  3 colunas, cartão vertical
+   ========================================================== */
+.qs-diretoria {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 64rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.qs-diretoria .qs-associado { flex-direction: row; }
+.qs-diretoria .qs-associado__foto { width: 104px; flex-shrink: 0; aspect-ratio: auto; min-height: 120px; font-size: 2rem; }
+.qs-diretoria .qs-associado__corpo { padding: 0.85rem 1rem; }
+
+@media (min-width: 640px) {
+  .qs-diretoria { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .qs-diretoria .qs-associado { flex-direction: column; }
+  .qs-diretoria .qs-associado__foto { width: auto; aspect-ratio: 4 / 3; min-height: 0; font-size: 2.5rem; }
+  .qs-diretoria .qs-associado__corpo { padding: 1rem 1.15rem 1.25rem; }
+}
+
+@media (min-width: 1024px) {
+  .qs-diretoria { gap: 1.75rem; }
+}
