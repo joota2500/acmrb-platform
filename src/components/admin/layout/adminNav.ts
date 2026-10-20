@@ -63,7 +63,7 @@ export const GRUPOS_NAV: GrupoNav[] = [
   {
     titulo: "Conteúdo",
     itens: [
-      { id: "noticias", rotulo: "Notícias", icone: Newspaper, pronto: true, rapido: true, descricao: "Publicações do site" },
+      { id: "noticias", rotulo: "Notícias", icone: Newspaper, pronto: true, rapido: true, descricao: "Publicações do site (somente ADM DEUS)" },
       { id: "projetos", rotulo: "Projetos", icone: FolderKanban, pronto: false, descricao: "Projetos e campanhas" },
       { id: "parceiros", rotulo: "Parceiros", icone: Handshake, pronto: true, descricao: "Empresas e instituições parceiras" },
     ],

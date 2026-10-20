@@ -8,7 +8,8 @@
  * Esta matriz controla o que aparece no menu e o que cada seção
  * permite. O banco reforça as regras críticas por RLS
  * (migration 20261020180000_admins_papeis.sql): tabela admins,
- * dashboard_metricas (escrita só deus) e fotos.
+ * dashboard_metricas (escrita só deus) e fotos; notícias pela
+ * migration 20261020220000_noticias_completo.sql (escrita só deus).
  */
 
 import type { SecaoId } from "@/components/admin/layout/adminNav";
@@ -20,7 +21,7 @@ export type Acesso = "nenhum" | "ver" | "total";
 
 const MATRIZ: Record<SecaoId, Record<PapelAdmin, Acesso>> = {
   dashboard:       { deus: "total", admin: "ver" },   // métricas manuais: só deus edita
-  noticias:        { deus: "total", admin: "total" },
+  noticias:        { deus: "total", admin: "nenhum" }, // só o deus publica notícias (RLS is_deus)
   projetos:        { deus: "total", admin: "ver" },   // admin: somente leitura
   parceiros:       { deus: "total", admin: "total" },
   associados:      { deus: "total", admin: "total" },
