@@ -1,6 +1,10 @@
 -- ==========================================================
 -- Associados v2 — novos campos, unicidade e privacidade
 -- ----------------------------------------------------------
+-- ATENÇÃO: SUBSTITUÍDO por 20261020170000_banco_completo.sql.
+-- Rode aquele arquivo (ele já contém tudo deste). Este foi mantido só
+-- como histórico, com a correção da função set_updated_at().
+-- ----------------------------------------------------------
 -- Rode UMA vez no Supabase (SQL Editor). Pode ser repetido sem erro.
 -- Rodar DEPOIS de 20261020150000_quem_somos.sql.
 --
@@ -18,6 +22,17 @@
 --     para administradores ativos (is_active_admin()).
 -- Nenhum dado fictício é inserido.
 -- ==========================================================
+
+-- 0. Função do gatilho updated_at (faltava no banco ao vivo: erro 42883)
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
 
 -- 1. Colunas novas (as que já existem são ignoradas)
 alter table public.associados add column if not exists cpf text;
@@ -48,7 +63,7 @@ alter table public.associados add constraint associados_cpf_formato_check
 
 alter table public.associados drop constraint if exists associados_nome_check;
 alter table public.associados add constraint associados_nome_check
-  check (length(trim(nome)) >= 3);
+  check (length(trim(nome)) >= 3) not valid;
 
 -- Cargo: obrigatório, mas texto livre (os cargos atuais variam; o painel
 -- oferece uma lista padrão: Presidente, Secretário(a), Tesoureiro(a)...).

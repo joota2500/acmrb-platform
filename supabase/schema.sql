@@ -13,19 +13,8 @@ begin
 end;
 $$;
 
-create or replace function public.is_active_admin()
-returns boolean
-language sql
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1
-    from public.admins
-    where email = auth.email()
-      and ativo = true
-  );
-$$;
+-- is_active_admin() é criada logo após a tabela admins (precisa dela).
+
 
 create table if not exists public.admins (
   id uuid primary key default gen_random_uuid(),
@@ -38,6 +27,22 @@ create table if not exists public.admins (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+-- true se o usuário logado for administrador ativo (usada nas políticas RLS)
+create or replace function public.is_active_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1
+    from public.admins
+    where email = auth.email()
+      and ativo = true
+  );
+$$;
 
 create table if not exists public.visitantes (
   id uuid primary key default gen_random_uuid(),
@@ -523,6 +528,10 @@ on conflict (secao, ordem) do nothing;
 -- ==========================================================
 -- Associados v2 — novos campos, unicidade e privacidade
 -- ----------------------------------------------------------
+-- ATENÇÃO: SUBSTITUÍDO por 20261020170000_banco_completo.sql.
+-- Rode aquele arquivo (ele já contém tudo deste). Este foi mantido só
+-- como histórico, com a correção da função set_updated_at().
+-- ----------------------------------------------------------
 -- Rode UMA vez no Supabase (SQL Editor). Pode ser repetido sem erro.
 -- Rodar DEPOIS de 20261020150000_quem_somos.sql.
 --
@@ -540,6 +549,17 @@ on conflict (secao, ordem) do nothing;
 --     para administradores ativos (is_active_admin()).
 -- Nenhum dado fictício é inserido.
 -- ==========================================================
+
+-- 0. Função do gatilho updated_at (faltava no banco ao vivo: erro 42883)
+create or replace function public.set_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
 
 -- 1. Colunas novas (as que já existem são ignoradas)
 alter table public.associados add column if not exists cpf text;
@@ -570,7 +590,7 @@ alter table public.associados add constraint associados_cpf_formato_check
 
 alter table public.associados drop constraint if exists associados_nome_check;
 alter table public.associados add constraint associados_nome_check
-  check (length(trim(nome)) >= 3);
+  check (length(trim(nome)) >= 3) not valid;
 
 -- Cargo: obrigatório, mas texto livre (os cargos atuais variam; o painel
 -- oferece uma lista padrão: Presidente, Secretário(a), Tesoureiro(a)...).
