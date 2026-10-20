@@ -21,10 +21,10 @@ import Footer from "@/components/layout/Footer";
 
 // ---------- Seções da página inicial ----------
 import HeroSection from "@/components/home/HeroSection"; // Banner principal com título, botões e números
-import StatsSection from "@/components/home/StatsSection"; // Números de impacto
+// StatsSection e ESGMetrics não são mais usados na home (substituídos por TransparencySummarySection)
+import TransparencySummarySection from "@/components/home/TransparencySummarySection"; // Resumo de transparência + indicadores
 import AboutSection from "@/components/home/AboutSection"; // Quem somos (âncora #quem-somos)
 import OperationsSection from "@/components/home/OperationsSection"; // Como a associação opera
-import ESGMetrics from "@/components/home/ESGMetrics"; // Indicadores ESG (dados do Supabase)
 import ReverseLogisticsSection from "@/components/home/ReverseLogisticsSection"; // Logística reversa
 import NewsSection from "@/components/home/NewsSection"; // Últimas notícias (dados do Supabase)
 import DenunciasSection from "@/components/home/DenunciasSection"; // Formulário de denúncias
@@ -56,13 +56,8 @@ export default function Home() {
         {/* 2. Como funciona o trabalho dos catadores */}
         <OperationsSection />
 
-        {/* 3. Números de impacto */}
-        <StatsSection />
-
-        {/* 4. Indicadores ESG (carrega dados do banco) */}
-        <Suspense fallback={<Loading />}>
-          <ESGMetrics />
-        </Suspense>
+        {/* 3 e 4. Resumo de transparência com indicadores do banco */}
+        <TransparencySummarySection />
 
         {/* 5. Materiais recicláveis aceitos */}
         <MaterialsPublicSection />

@@ -1,3 +1,4 @@
+// NÃO UTILIZADO: substituído por TransparencySummarySection na home. Mantido para uso futuro.
 "use client";
 
 import { motion } from "framer-motion";
