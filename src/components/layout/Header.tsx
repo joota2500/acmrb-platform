@@ -1,43 +1,127 @@
 "use client";
 
-import { useEffect, useState } from "react";
+/**
+ * Header (cabeçalho fixo do site)
+ * ------------------------------------------------------------
+ * O que faz:
+ *  - Mostra a logo, o menu de navegação e o botão "Acessar Plataforma"
+ *    (ou os dados do usuário logado, via UserMenu).
+ *  - Abre o MobileMenu (gaveta lateral) em telas menores.
+ *  - Mantém o recurso secreto: 5 cliques rápidos na logo abrem o
+ *    AdminModal (hook useSecretUnlock).
+ *
+ * De onde vêm os dados:
+ *  - useAuth() (AuthContext) → user, perfil, logout, loading (Supabase Auth).
+ *  - navItems.ts → lista de links do menu.
+ *
+ * Responsividade:
+ *  - Celular (<640px): altura ~64px, logo menor, subtítulo escondido,
+ *    só logo + botão hambúrguer.
+ *  - Tablet (640–1023px): altura ~72px, logo com subtítulo, hambúrguer.
+ *    O menu horizontal NÃO aparece aqui para não quebrar linha/estourar.
+ *  - Desktop (>=1024px): menu horizontal + botão "Acessar Plataforma".
+ *    Entre 1024 e 1279px o espaçamento do menu é reduzido para caber.
+ *
+ * Mudanças desta versão (feat(header)):
+ *  - Clique na logo agora também leva ao topo / página inicial,
+ *    sem atrapalhar a contagem dos 5 cliques secretos.
+ *  - Links "#âncora" funcionam também fora da página inicial
+ *    (redirecionam para "/#secao").
+ *  - "Início" rola suavemente ao topo quando já estamos em "/".
+ *  - Altura do header não "pula" mais ao rolar (antes o padding somava).
+ */
+
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { usePathname, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 import { useSecretUnlock } from "@/hooks/useSecretUnlock";
 import { useAuth } from "@/contexts/AuthContext";
 
 import { navigation } from "./navItems";
 import UserMenu from "./UserMenu";
+import MobileMenu from "./MobileMenu";
 import AdminModal from "@/components/admin/AdminModal";
 import "@/styles/header.css";
 
 import { smoothScrollTo } from "@/lib/scroll";
-import MobileMenu from "./MobileMenu";
+
+/** ID usado pelo aria-controls do botão hambúrguer. */
+const MOBILE_MENU_ID = "menu-mobile";
 
 export default function Header() {
+  // true quando a página foi rolada mais de 40px (header fica mais compacto)
   const [scrolled, setScrolled] = useState(false);
+  // controla a abertura do menu mobile (gaveta lateral)
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Função estável (useCallback) para o MobileMenu não refazer seus efeitos
+  // (Esc / trava de rolagem) a cada renderização do Header.
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Recurso secreto: conta cliques na logo e abre o AdminModal no 5º clique
   const { unlocked, handleSecretClick, closeAdmin } = useSecretUnlock();
+  // Dados de autenticação vindos do Supabase (AuthContext)
   const { user, perfil, logout, loading } = useAuth();
 
+  // Observa a rolagem para aplicar a classe "scrolled".
+  // passive: true melhora o desempenho da rolagem no celular.
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // aplica o estado correto se a página já abrir rolada
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Função de navegação com scroll suave
-  const handleNavClick = (href: string) => {
+  /**
+   * Navegação dos links do menu (usada no desktop e no mobile).
+   *  - "#secao" na home → rolagem suave até a seção.
+   *  - "#secao" em outra página → vai para "/#secao".
+   *  - "/" estando na home → rolagem suave até o topo.
+   * Retorna true quando tratou o clique (para o Link não navegar sozinho).
+   */
+  const navigateTo = (href: string): boolean => {
+    setMenuOpen(false); // sempre fecha o menu mobile ao clicar num link
+    const isHome = pathname === "/";
+
     if (href.startsWith("#")) {
-      const id = href.replace("#", "");
-      smoothScrollTo(id);
+      if (isHome) {
+        smoothScrollTo(href.slice(1));
+      } else {
+        router.push(`/${href}`);
+      }
+      return true;
     }
-    setMenuOpen(false); // fecha o menu mobile após clicar
+
+    if (href === "/" && isHome) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return true;
+    }
+
+    return false; // deixa o <Link> navegar normalmente
   };
 
-  const closeMenu = () => setMenuOpen(false);
+  /**
+   * Clique na logo:
+   *  1. Conta o clique secreto (5 cliques → AdminModal). Chamado primeiro
+   *     e sempre, então o contador continua funcionando.
+   *  2. Comportamento normal: topo da página (na home) ou ir para "/".
+   * Observação: fora da home, o 1º clique navega para "/" e o Header é
+   * montado de novo, então o contador recomeça lá — o atalho secreto
+   * deve ser feito na página inicial.
+   */
+  const handleLogoClick = () => {
+    handleSecretClick();
+    if (pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      router.push("/");
+    }
+  };
 
   return (
     <>
@@ -46,35 +130,34 @@ export default function Header() {
         animate={{ y: 0 }}
         className={`header ${scrolled ? "scrolled" : ""}`}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5 flex items-center justify-between">
-          {/* Logo */}
+        {/* Container central: altura controlada no header.css (.header__inner) */}
+        <div className="header__inner">
+          {/* ===== Logo (clique = topo/home + contador secreto) ===== */}
           <button
-            onClick={handleSecretClick}
-            className="logo"
-            aria-label="Logo ACMRB"
+            type="button"
+            onClick={handleLogoClick}
+            className="logo header__logo"
+            aria-label="ACMRB - voltar ao início"
           >
-            <div className="logoIcon">♻</div>
-            <div className="leading-none text-left">
-              <div className="font-black text-3xl tracking-[-2.5px] text-white">
-                ACMRB
-              </div>
-              <div className="text-sm text-emerald-200 font-medium tracking-wide">
+            <span className="logoIcon" aria-hidden="true">
+              ♻
+            </span>
+            <span className="header__brand">
+              <span className="header__brand-title">ACMRB</span>
+              <span className="header__brand-subtitle">
                 Associação dos Catadores
-              </div>
-            </div>
+              </span>
+            </span>
           </button>
 
-          {/* Desktop Navigation */}
-          <nav className="desktopNav">
+          {/* ===== Menu horizontal (somente desktop >=1024px) ===== */}
+          <nav className="desktopNav" aria-label="Menu principal">
             {navigation.map((link) => (
               <Link
                 key={link.id}
                 href={link.href}
                 onClick={(e) => {
-                  if (link.href.startsWith("#")) {
-                    e.preventDefault(); // impede o comportamento padrão
-                    handleNavClick(link.href);
-                  }
+                  if (navigateTo(link.href)) e.preventDefault();
                 }}
                 className="navLink"
               >
@@ -83,6 +166,7 @@ export default function Header() {
             ))}
           </nav>
 
+          {/* ===== Área do usuário: login/perfil + botão hambúrguer ===== */}
           <UserMenu
             loading={loading}
             user={user}
@@ -90,19 +174,23 @@ export default function Header() {
             logout={logout}
             menuOpen={menuOpen}
             setMenuOpen={setMenuOpen}
+            menuId={MOBILE_MENU_ID}
           />
         </div>
       </motion.header>
 
-      {/* Mobile Menu - Slide da Esquerda */}
+      {/* ===== Menu mobile (gaveta que desliza da esquerda) ===== */}
       <MobileMenu
+        id={MOBILE_MENU_ID}
         isOpen={menuOpen}
-        onClose={() => setMenuOpen(false)}
+        onClose={closeMenu}
+        onNavigate={navigateTo}
         user={user}
         perfil={perfil}
         logout={logout}
       />
 
+      {/* Modal secreto do admin (aberto pelos 5 cliques na logo) */}
       <AdminModal open={unlocked} onClose={closeAdmin} />
     </>
   );

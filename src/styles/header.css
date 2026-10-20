@@ -1,4 +1,13 @@
-/* header.css - Versão profissional com paleta esmeralda */
+/* ==========================================================
+   header.css - Cabeçalho fixo (paleta esmeralda)
+   ----------------------------------------------------------
+   Breakpoints usados no Header:
+   - Celular  (<640px):     altura 64px, logo compacta, sem subtítulo
+   - Tablet   (640–1023px): altura 72px, logo com subtítulo, hambúrguer
+   - Desktop  (>=1024px):   altura 80px, menu horizontal + botão login
+     (1024–1279px: espaçamento do menu reduzido para não estourar)
+   Ao rolar (.scrolled) a altura diminui um pouco, sem "pular".
+   ========================================================== */
 
 .header {
   position: fixed;
@@ -10,12 +19,14 @@
   backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(16, 185, 129, 0.25);
   box-shadow: 0 4px 30px rgba(6, 78, 59, 0.25);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
+/* Antes o .scrolled somava padding ao py-5 interno e o header ficava
+   MAIOR ao rolar. Agora só muda o fundo; a altura é tratada no __inner. */
 .header.scrolled {
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
   background: rgba(6, 78, 59, 0.98);
 }
 
@@ -24,40 +35,141 @@
   border-bottom-color: rgba(16, 185, 129, 0.3);
 }
 
-/* Logo */
-.logo {
+/* Container central: logo | menu | ações, todos centralizados na vertical */
+.header__inner {
+  max-width: 80rem; /* = max-w-7xl */
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 64px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
+  transition: height 0.3s ease;
+}
+
+@media (min-width: 640px) {
+  .header__inner {
+    padding: 0 1.5rem;
+    height: 72px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header__inner {
+    padding: 0 2rem;
+    height: 80px;
+  }
+  .header.scrolled .header__inner {
+    height: 68px;
+  }
+}
+
+/* ===== Logo do header =====
+   (.logo também existe no logo.css global; aqui usamos .header__logo
+   para os ajustes específicos do cabeçalho) */
+.header .header__logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 44px; /* alvo de toque mínimo */
+  padding: 0;
+  border-radius: 12px;
+  flex-shrink: 0;
   transition: transform 0.3s ease;
 }
 
-.logo:hover {
+.header .header__logo:hover {
   transform: scale(1.03);
 }
 
+.header .header__logo:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 4px;
+}
+
 .logoIcon {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   border-radius: 9999px;
   background: linear-gradient(135deg, #10b981, #047857);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.25rem;
+  font-size: 1.6rem;
+  line-height: 1;
   color: white;
+  flex-shrink: 0;
   box-shadow:
     0 8px 20px rgba(16, 185, 129, 0.4),
     inset 0 2px 4px rgba(255, 255, 255, 0.25);
 }
 
-/* Desktop Navigation */
+.header__brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  text-align: left;
+}
+
+.header__brand-title {
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: -1.5px;
+  color: #ffffff;
+}
+
+/* Subtítulo escondido no celular para não apertar o hambúrguer */
+.header__brand-subtitle {
+  display: none;
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #a7f3d0; /* emerald-200 */
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .header .header__logo {
+    gap: 0.85rem;
+  }
+  .logoIcon {
+    width: 46px;
+    height: 46px;
+    font-size: 1.9rem;
+  }
+  .header__brand-title {
+    font-size: 1.75rem;
+    letter-spacing: -2px;
+  }
+  .header__brand-subtitle {
+    display: block;
+  }
+}
+
+@media (min-width: 1280px) {
+  .logoIcon {
+    width: 52px;
+    height: 52px;
+    font-size: 2.25rem;
+  }
+  .header__brand-title {
+    font-size: 1.875rem; /* = text-3xl original */
+    letter-spacing: -2.5px;
+  }
+  .header__brand-subtitle {
+    font-size: 0.875rem;
+  }
+}
+
+/* ===== Menu horizontal (desktop) ===== */
 .desktopNav {
   display: none;
   align-items: center;
-  gap: 2.5rem;
+  gap: 1.25rem;
   font-weight: 500;
-  font-size: 15.5px;
+  font-size: 15px;
 }
 
 @media (min-width: 1024px) {
@@ -66,10 +178,21 @@
   }
 }
 
+@media (min-width: 1280px) {
+  .desktopNav {
+    gap: 2.25rem;
+    font-size: 15.5px;
+  }
+}
+
 .navLink {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* alvo de toque/clique confortável */
   color: #ecfdf5; /* texto claro */
-  padding-bottom: 4px;
+  white-space: nowrap; /* evita quebrar "Nossas Ações" em 2 linhas */
+  border-radius: 6px;
   transition: color 0.3s ease;
 }
 
@@ -77,10 +200,17 @@
   color: #a7f3d0;
 }
 
+.navLink:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 2px;
+  color: #a7f3d0;
+}
+
+/* Sublinhado animado no hover */
 .navLink::after {
   content: "";
   position: absolute;
-  bottom: -2px;
+  bottom: 8px;
   left: 0;
   width: 0;
   height: 2.5px;
@@ -88,10 +218,17 @@
   transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.navLink:hover::after {
+.navLink:hover::after,
+.navLink:focus-visible::after {
   width: 100%;
 }
 
 .dark .navLink {
   color: #ecfdf5;
+}
+
+/* O conteúdo âncora não fica escondido atrás do header fixo
+   quando se usa #link direto (ex.: "/#contato" vindo de outra página) */
+html {
+  scroll-padding-top: 88px;
 }

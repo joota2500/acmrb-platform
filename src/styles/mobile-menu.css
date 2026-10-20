@@ -15,6 +15,8 @@
   width: 100%;
   max-width: 380px;
   height: 100vh;
+  height: 100dvh; /* altura real no celular (ignora a barra do navegador) */
+  overscroll-behavior: contain; /* rolar o menu não rola a página */
   background: #064e3b; /* verde esmeralda escuro */
   z-index: 60;
   box-shadow: 8px 0 40px rgba(0, 0, 0, 0.4);
@@ -29,7 +31,8 @@
 .mobileMenu__header {
   padding: 1.25rem 1.5rem;
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
   border-bottom: 1px solid rgba(16, 185, 129, 0.25);
 }
 
@@ -38,7 +41,7 @@
   height: 50px;
   border: none;
   background: none;
-  font-size: 1.8rem;
+  border-radius: 12px;
   color: #a7f3d0;
   cursor: pointer;
   display: flex;
@@ -49,6 +52,25 @@
 
 .mobileMenu__close:hover {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Nome no topo da gaveta */
+.mobileMenu__title {
+  font-weight: 900;
+  font-size: 1.4rem;
+  letter-spacing: -1px;
+  color: #ffffff;
+}
+
+/* Foco visível (teclado) em todos os itens clicáveis do menu */
+.mobileMenu__close:focus-visible,
+.mobileNavLink:focus-visible,
+.mobileMenu__login-btn:focus-visible,
+.mobileMenu__admin-btn:focus-visible,
+.mobileMenu__logout-btn:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 2px;
 }
 
 /* Conteúdo */
@@ -60,8 +82,11 @@
 }
 
 .mobileNavLink {
-  padding: 1.15rem 1.5rem;
-  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  min-height: 52px; /* alvo de toque confortável (>=44px) */
+  padding: 0.75rem 1.25rem;
+  font-size: 1.15rem;
   font-weight: 500;
   color: #ecfdf5;
   text-decoration: none;
@@ -72,12 +97,12 @@
 .mobileNavLink:hover {
   background: rgba(16, 185, 129, 0.2);
   color: #a7f3d0;
-  transform: translateX(12px);
+  transform: translateX(8px);
 }
 
 /* Seção do Usuário / Login */
 .mobileMenu__user-section {
-  margin-top: 2rem;
+  margin-top: 2rem; /* substitui o antigo <div className="h-8"> */
   padding: 1.75rem;
   background: rgba(16, 185, 129, 0.15);
   border-radius: 16px;
@@ -122,9 +147,16 @@
   margin-top: 8px;
   text-decoration: none;
   transition: all 0.3s;
+  border: none;
+  cursor: pointer;
 }
 
 .mobileMenu__login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 2rem; /* afasta o botão da lista de links */
   background: #10b981;
   color: white;
   font-size: 1.15rem;
@@ -135,6 +167,7 @@
 }
 
 .mobileMenu__admin-btn {
+  display: block;
   background: #10b981;
   color: white;
 }

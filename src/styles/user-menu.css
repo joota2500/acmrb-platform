@@ -76,6 +76,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem; /* espaço entre o ícone e o texto */
+  white-space: nowrap; /* o texto nunca quebra em 2 linhas */
+  flex-shrink: 0;
   transition: all 0.3s;
 }
 
@@ -83,6 +86,16 @@
 .user-menu__login:hover {
   background: #059669;
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+}
+
+/* Foco visível para quem navega pelo teclado (Tab) */
+.user-menu__button:focus-visible,
+.user-menu__login:focus-visible,
+.user-menu__logout:focus-visible,
+.user-menu__hamburger:focus-visible {
+  outline: 2px solid #a7f3d0;
+  outline-offset: 2px;
 }
 
 .user-menu__logout {
@@ -110,6 +123,8 @@
   height: 48px;
   border: none;
   background: transparent;
+  align-items: center;
+  justify-content: center;
   color: #ffffff; /* agora branco */
   cursor: pointer;
   border-radius: 12px;
@@ -120,8 +135,12 @@
   background: rgba(255, 255, 255, 0.15);
 }
 
-/* Responsivo */
-@media (max-width: 1024px) {
+/* Responsivo
+   Antes: max-width 1024px, e o menu desktop usava min-width 1024px →
+   exatamente em 1024px apareciam os DOIS (menu + hambúrguer).
+   Agora o corte é 1023.98px: abaixo disso só hambúrguer, e o botão
+   "Acessar Plataforma" passa a ficar dentro do MobileMenu. */
+@media (max-width: 1023.98px) {
   .user-menu__desktop,
   .user-menu__login {
     display: none;
@@ -129,13 +148,21 @@
 
   .user-menu__hamburger {
     display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 639.98px) {
   .user-menu {
     gap: 0.6rem;
+  }
+}
+
+/* Desktop menor (1024–1279px): botão um pouco mais compacto para caber
+   ao lado dos 6 links do menu sem estourar a largura */
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  .user-menu__login {
+    height: 44px;
+    padding: 0 1.1rem;
+    font-size: 0.9rem;
   }
 }

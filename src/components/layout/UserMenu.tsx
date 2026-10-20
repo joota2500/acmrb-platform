@@ -1,7 +1,20 @@
 "use client";
 
+/**
+ * UserMenu (lado direito do Header)
+ * ------------------------------------------------------------
+ *  - Deslogado: botão "Acessar Plataforma" → /login (só desktop >=1024px;
+ *    em telas menores o mesmo botão aparece dentro do MobileMenu).
+ *  - Logado: nome, tipo de perfil, avatar, "Painel Admin" (se admin) e Sair.
+ *  - Botão hambúrguer: aparece abaixo de 1024px e abre/fecha o MobileMenu.
+ *
+ * Dados: recebidos do Header (vindos do AuthContext / Supabase).
+ * Acessibilidade: hambúrguer com aria-expanded / aria-controls,
+ * alvos de toque de 48px e foco visível (user-menu.css).
+ */
+
 import Link from "next/link";
-import { Menu, LogOut } from "lucide-react";
+import { Menu, X, LogOut, LogIn } from "lucide-react";
 
 import "@/styles/user-menu.css";
 
@@ -18,6 +31,8 @@ interface Props {
   logout: () => void;
   menuOpen: boolean;
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  /** id do MobileMenu, usado no aria-controls */
+  menuId?: string;
 }
 
 export default function UserMenu({
@@ -27,10 +42,11 @@ export default function UserMenu({
   logout,
   menuOpen,
   setMenuOpen,
+  menuId,
 }: Props) {
   return (
     <div className="user-menu">
-      {/* Desktop Version */}
+      {/* ===== Usuário logado (desktop) ===== */}
       {!loading && user && perfil ? (
         <div className="user-menu__desktop">
           <div className="user-menu__profile">
@@ -58,24 +74,38 @@ export default function UserMenu({
             </Link>
           )}
 
-          <button onClick={logout} className="user-menu__logout" title="Sair">
+          <button
+            type="button"
+            onClick={logout}
+            className="user-menu__logout"
+            title="Sair"
+            aria-label="Sair da conta"
+          >
             <LogOut size={20} />
           </button>
         </div>
       ) : (
-        /* Botão Acessar Plataforma - Mantido original */
+        /* ===== Botão "Acessar Plataforma" (desktop) — mesmo destino: /login ===== */
         <Link href="/login" className="user-menu__login">
-          Acessar Plataforma
+          <LogIn size={18} aria-hidden="true" />
+          <span>Acessar Plataforma</span>
         </Link>
       )}
 
-      {/* Hambúrguer - Só aparece em mobile/tablet */}
+      {/* ===== Hambúrguer (abaixo de 1024px) — alterna abrir/fechar ===== */}
       <button
+        type="button"
         className="user-menu__hamburger"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Abrir menu"
+        onClick={() => setMenuOpen((aberto) => !aberto)}
+        aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+        aria-expanded={menuOpen}
+        aria-controls={menuId}
       >
-        <Menu size={28} strokeWidth={2.5} />
+        {menuOpen ? (
+          <X size={26} strokeWidth={2.5} />
+        ) : (
+          <Menu size={26} strokeWidth={2.5} />
+        )}
       </button>
     </div>
   );
