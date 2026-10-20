@@ -14,7 +14,7 @@
  */
 
 import Link from "next/link";
-import { Menu, X, LogOut, LogIn } from "lucide-react";
+import { Menu, X, LogOut, LogIn, LayoutDashboard } from "lucide-react";
 
 import "@/styles/user-menu.css";
 
@@ -49,7 +49,8 @@ export default function UserMenu({
       {/* ===== Usuário logado (desktop) ===== */}
       {!loading && user && perfil ? (
         <div className="user-menu__desktop">
-          <div className="user-menu__profile">
+          {/* Perfil compacto: só o avatar; nome e papel aparecem ao passar o mouse */}
+          <div className="user-menu__profile" title={`${perfil.nome ?? "Usuário"} • ${perfil.tipo ?? "Associado"}`}>
             <div className="user-menu__info">
               <span className="user-menu__name">
                 {perfil.nome ?? "Usuário"}
@@ -69,8 +70,9 @@ export default function UserMenu({
           </div>
 
           {perfil.tipo === "admin" && (
-            <Link href="/admin" className="user-menu__button">
-              Painel Admin
+            <Link href="/admin" className="user-menu__button" title="Painel Admin">
+              <LayoutDashboard size={16} aria-hidden="true" />
+              <span>Painel</span>
             </Link>
           )}
 
@@ -81,14 +83,14 @@ export default function UserMenu({
             title="Sair"
             aria-label="Sair da conta"
           >
-            <LogOut size={20} />
+            <LogOut size={17} />
           </button>
         </div>
       ) : (
         /* ===== Botão "Acessar Plataforma" (desktop) — mesmo destino: /login ===== */
         <Link href="/login" className="user-menu__login">
-          <LogIn size={18} aria-hidden="true" />
-          <span>Acessar Plataforma</span>
+          <LogIn size={16} aria-hidden="true" />
+          <span>Entrar</span>
         </Link>
       )}
 
