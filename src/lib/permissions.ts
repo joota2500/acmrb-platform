@@ -23,9 +23,9 @@ const MATRIZ: Record<SecaoId, Record<PapelAdmin, Acesso>> = {
   dashboard:       { deus: "total", admin: "ver" },   // métricas manuais: só deus edita
   noticias:        { deus: "total", admin: "nenhum" }, // só o deus publica notícias (RLS is_deus)
   projetos:        { deus: "total", admin: "ver" },   // admin: somente leitura
-  parceiros:       { deus: "total", admin: "total" },
   apoiadores:      { deus: "total", admin: "nenhum" }, // mapa de apoiadores (RLS is_deus)
   logistica:       { deus: "total", admin: "nenhum" }, // logística reversa e repasses (RLS is_deus)
+  "visao-mapa":    { deus: "total", admin: "nenhum" }, // mapa geral + localização em lote (substitui "parceiros")
   associados:      { deus: "total", admin: "total" },
   denuncias:       { deus: "total", admin: "total" }, // ver + responder
   materiais:       { deus: "total", admin: "total" },

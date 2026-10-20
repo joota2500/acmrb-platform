@@ -11,8 +11,8 @@ import {
   CalendarDays,
   FileText,
   FolderKanban,
-  Handshake,
   LayoutDashboard,
+  Map as MapaIcone,
   MapPinned,
   Leaf,
   Newspaper,
@@ -30,7 +30,7 @@ export type SecaoId =
   | "dashboard"
   | "noticias"
   | "projetos"
-  | "parceiros"
+  | "visao-mapa"
   | "apoiadores"
   | "logistica"
   | "associados"
@@ -69,9 +69,10 @@ export const GRUPOS_NAV: GrupoNav[] = [
     itens: [
       { id: "noticias", rotulo: "Notícias", icone: Newspaper, pronto: true, rapido: true, descricao: "Publicações do site (somente ADM DEUS)" },
       { id: "projetos", rotulo: "Projetos", icone: FolderKanban, pronto: false, descricao: "Projetos e campanhas" },
-      { id: "parceiros", rotulo: "Parceiros", icone: Handshake, pronto: true, descricao: "Empresas e instituições parceiras" },
       { id: "apoiadores", rotulo: "Apoiadores e Mapa", icone: MapPinned, pronto: true, descricao: "Apoiadores e pontos no mapa de Baturité (somente ADM DEUS)" },
       { id: "logistica", rotulo: "Logística Reversa", icone: Truck, pronto: true, descricao: "Empresas parceiras e repasses de material (somente ADM DEUS)" },
+      // substitui a antiga tela "Parceiros" (redundante com Apoiadores)
+      { id: "visao-mapa", rotulo: "Visão do Mapa", icone: MapaIcone, pronto: true, descricao: "Mapa geral, estatísticas, pendentes de localização e exportação (somente ADM DEUS)" },
     ],
   },
   {

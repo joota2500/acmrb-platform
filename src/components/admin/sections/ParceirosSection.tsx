@@ -1,4 +1,6 @@
 "use client";
+// NÃO UTILIZADO — tela antiga "Parceiros" (tabela parceiros). Substituída no menu
+// pela "Visão do Mapa" (VisaoMapaSection). A tabela parceiros NÃO foi apagada.
 
 import { useState } from "react";
 

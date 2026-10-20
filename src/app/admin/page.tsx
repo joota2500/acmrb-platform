@@ -41,7 +41,8 @@ import { itemPorId, secaoValida, type SecaoId } from "@/components/admin/layout/
 import DashboardSection from "@/components/admin/sections/DashboardSection";
 import AssociadosSection from "@/components/admin/sections/AssociadosSection";
 import DenunciasSection from "@/components/admin/sections/DenunciasSection";
-import ParceirosSection from "@/components/admin/sections/ParceirosSection";
+// ParceirosSection: NÃO UTILIZADO (substituída por VisaoMapaSection)
+import VisaoMapaSection from "@/components/admin/sections/VisaoMapaSection";
 import ApoiadoresSection from "@/components/admin/sections/ApoiadoresSection";
 import LogisticaSection from "@/components/admin/sections/LogisticaSection";
 import ProjetosSection from "@/components/admin/sections/ProjetosSection";
@@ -195,9 +196,9 @@ function PainelAdmin() {
               {ativa === "dashboard" && <DashboardSection podeEditar={podeEditar(papel, "dashboard")} />}
               {ativa === "noticias" && <NoticiasSection />}
               {ativa === "projetos" && <ProjetosSection />}
-              {ativa === "parceiros" && <ParceirosSection />}
               {ativa === "apoiadores" && <ApoiadoresSection />}
               {ativa === "logistica" && <LogisticaSection />}
+              {ativa === "visao-mapa" && <VisaoMapaSection />}
               {ativa === "associados" && <AssociadosSection />}
               {ativa === "denuncias" && <DenunciasSection />}
               {ativa === "materiais" && <MaterialsSection />}
