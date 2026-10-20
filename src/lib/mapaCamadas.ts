@@ -20,6 +20,8 @@ export const ROTULO_CAMADA: Record<CamadaId, string> = {
 };
 
 const ATR_OSM = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
+// NÃO UTILIZADO: atribuição do CARTO (camada substituída pelo OSM)
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ATR_CARTO = `${ATR_OSM} &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>`;
 const ATR_ESRI =
   'Imagens &copy; <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>, Maxar, Earthstar Geographics e comunidade de usuários GIS';
@@ -34,10 +36,11 @@ function criar(id: CamadaId): L.Layer {
   const satelite = () =>
     L.tileLayer(URL_ESRI_IMG, { maxZoom: ZOOM_MAXIMO, maxNativeZoom: 19, attribution: ATR_ESRI });
   if (id === "mapa") {
-    return L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    // OpenStreetMap padrão (gratuito, sem chave). O CARTO passou a exigir chave de API.
+    return L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: ZOOM_MAXIMO,
-      subdomains: "abcd",
-      attribution: ATR_CARTO,
+      maxNativeZoom: 19,
+      attribution: ATR_OSM,
     });
   }
   if (id === "satelite") return satelite();
