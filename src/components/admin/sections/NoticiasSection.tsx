@@ -1,1335 +1,315 @@
 "use client";
 
+/**
+ * NoticiasSection — gestão de notícias no painel (SOMENTE ADM DEUS)
+ * ------------------------------------------------------------
+ * - Indicadores: total, publicadas, agendadas, rascunhos, destaques
+ * - Lista com busca e filtros por situação e categoria
+ * - Ações rápidas: editar, publicar/despublicar, destacar (posição
+ *   1–3), duplicar, ver no site e excluir (com confirmação)
+ * - Editor completo em NoticiaEditor
+ * O banco reforça a regra pela RLS (is_deus) — migration
+ * 20261020220000_noticias_completo.sql.
+ *
+ * A versão antiga (NoticiasForm, NoticiasList, NoticiasStats,
+ * NoticiasCard) continua no projeto, marcada como NÃO UTILIZADO.
+ */
+
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-
+  Copy, ExternalLink, EyeOff, FileText, Loader2, Lock, Pencil, Plus, RefreshCw, Search, Send, Star, Trash2,
+  CalendarClock, Newspaper,
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
+import { podeEditar } from "@/lib/permissions";
+import { useToast, ToastArea } from "@/components/ui/Toast";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import NoticiaEditor from "@/components/admin/news/NoticiaEditor";
+import { atualizarCampos, salvarNoticia, type DadosNoticia } from "@/lib/noticiasAdmin";
+import {
+  CATEGORIAS_NOTICIA, ROTULO_STATUS, formatarData, normalizarNoticia, ordenarRecentes, visivelAoPublico,
+  type Noticia, type StatusNoticia,
+} from "@/lib/noticias";
 
-import NoticiasForm from "@/components/admin/news/NoticiasForm";
+import "@/styles/admin-noticias.css";
 
-import NoticiasList, {
-  Noticia,
-} from "@/components/admin/news/NoticiasList";
-
-import NoticiasStats from "@/components/admin/news/NoticiasStats";
+type Editor = { modo: "nova" } | { modo: "editar"; noticia: Noticia } | { modo: "duplicar"; noticia: Noticia } | null;
 
 export default function NoticiasSection() {
+  const papel = usePapelAdmin();
+  const permitido = podeEditar(papel, "noticias");
+  const { toasts, mostrar, fechar } = useToast();
 
-  /*
-  STATES
-  */
+  const [noticias, setNoticias] = useState<Noticia[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erroCarga, setErroCarga] = useState<string | null>(null);
+  const [salvando, setSalvando] = useState(false);
+  const [ocupado, setOcupado] = useState<string | null>(null);
+  const [editor, setEditor] = useState<Editor>(null);
+  const [excluir, setExcluir] = useState<Noticia | null>(null);
 
-  const [
-    noticias,
-    setNoticias,
-  ] = useState<
-    Noticia[]
-  >([]);
+  const [busca, setBusca] = useState("");
+  const [fStatus, setFStatus] = useState<"" | StatusNoticia | "destaque">("");
+  const [fCategoria, setFCategoria] = useState("");
 
-  const [
-    loading,
-    setLoading,
-  ] = useState(false);
-
-  const [
-    salvando,
-    setSalvando,
-  ] = useState(false);
-
-  const [
-    editing,
-    setEditing,
-  ] = useState(false);
-
-  const [
-    editingId,
-    setEditingId,
-  ] = useState<
-    string | null
-  >(null);
-
-  const [
-    erro,
-    setErro,
-  ] = useState("");
-
-  /*
-  FORM
-  */
-
-  const [
-    titulo,
-    setTitulo,
-  ] = useState("");
-
-  const [
-    resumo,
-    setResumo,
-  ] = useState("");
-
-  const [
-    conteudo,
-    setConteudo,
-  ] = useState("");
-
-  const [
-    categoria,
-    setCategoria,
-  ] = useState("");
-
-  const [
-    destaque,
-    setDestaque,
-  ] = useState(false);
-
-  const [
-    publicado,
-    setPublicado,
-  ] = useState(true);
-
-  const [
-    fixada,
-    setFixada,
-  ] = useState(false);
-
-  const [
-    imagem,
-    setImagem,
-  ] = useState<
-    File | null
-  >(null);
-
-  const [
-    previewImagem,
-    setPreviewImagem,
-  ] = useState("");
-
-  const [
-    seoTitle,
-    setSeoTitle,
-  ] = useState("");
-
-  const [
-    seoDescription,
-    setSeoDescription,
-  ] = useState("");
-
-  const [
-    seoKeywords,
-    setSeoKeywords,
-  ] = useState("");
-
-  const [
-    autorNome,
-    setAutorNome,
-  ] = useState("ACMRB");
-
-  const [
-    bannerAlt,
-    setBannerAlt,
-  ] = useState("");
-
-  /*
-  INIT
-  */
-
-  useEffect(() => {
-
-    carregarNoticias();
-
+  const carregar = useCallback(async () => {
+    setCarregando(true);
+    setErroCarga(null);
+    const { data, error } = await supabase.from("noticias").select("*").order("created_at", { ascending: false });
+    if (error) setErroCarga(error.message);
+    else setNoticias(ordenarRecentes((data ?? []).map(normalizarNoticia)));
+    setCarregando(false);
   }, []);
 
-  /*
-  HELPERS
-  */
+  useEffect(() => {
+    if (permitido) carregar();
+  }, [permitido, carregar]);
 
-  const gerarSlug =
-    useCallback(
-      (
-        texto: string,
-      ) => {
+  /* ---------- Indicadores ---------- */
+  const stats = useMemo(() => {
+    const agora = Date.now();
+    return {
+      total: noticias.length,
+      noAr: noticias.filter((n) => visivelAoPublico(n, agora)).length,
+      agendadas: noticias.filter((n) => n.status === "agendado" && !visivelAoPublico(n, agora)).length,
+      rascunhos: noticias.filter((n) => n.status === "rascunho").length,
+      destaques: noticias.filter((n) => n.destaque).length,
+      visualizacoes: noticias.reduce((s, n) => s + n.visualizacoes, 0),
+    };
+  }, [noticias]);
 
-        return (
-          texto
-            .normalize(
-              "NFD",
-            )
-            .replace(
-              /[\u0300-\u036f]/g,
-              "",
-            )
-            .toLowerCase()
-            .trim()
-            .replace(
-              /[^\w\s-]/g,
-              "",
-            )
-            .replace(
-              /\s+/g,
-              "-",
-            ) +
-          "-" +
-          Date.now()
-        );
+  const categorias = useMemo(
+    () => Array.from(new Set([...CATEGORIAS_NOTICIA, ...noticias.map((n) => n.categoria).filter(Boolean)])),
+    [noticias],
+  );
 
-      },
-      [],
-    );
-
-  const calcularTempoLeitura =
-    useCallback(
-      (
-        texto: string,
-      ) => {
-
-        const palavras =
-          texto
-            .trim()
-            .split(
-              /\s+/,
-            )
-            .filter(
-              Boolean,
-            ).length;
-
-        return Math.max(
-          1,
-          Math.ceil(
-            palavras / 200,
-          ),
-        );
-
-      },
-      [],
-    );
-
-  /*
-  SANITIZE HTML
-  */
-
-  function limparConteudo(
-    html: string,
-  ) {
-
-    return html
-
-      /*
-      REMOVE SCRIPT
-      */
-
-      .replace(
-        /<script[\s\S]*?>[\s\S]*?<\/script>/gi,
-        "",
-      )
-
-      /*
-      REMOVE IFRAMES
-      */
-
-      .replace(
-        /<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi,
-        "",
-      )
-
-      .trim();
-
-  }
-
-  /*
-  TIMEOUT
-  */
-
- async function withTimeout<T>(
-  promise: Promise<T>,
-  ms = 30000,
-): Promise<T> {
-
-  const timeout =
-    new Promise<never>(
-      (
-        _,
-        reject,
-      ) => {
-
-        setTimeout(
-          () => {
-
-            reject(
-              new Error(
-                "Tempo limite excedido.",
-              ),
-            );
-
-          },
-          ms,
-        );
-
-      },
-    );
-
-  return await Promise.race([
-    promise,
-    timeout,
-  ]) as T;
-
-}
-
-  /*
-  AUTH
-  */
-
-  async function verificarSessao() {
-
-    try {
-
-      console.log("AUTH START");
-
-      const response =
-        await supabase.auth.getSession();
-
-      console.log("AUTH RESPONSE", response);
-
-      if (
-        response.error
-      ) {
-
-        console.error(
-          "AUTH ERROR:",
-          response.error,
-        );
-
-        return false;
-
-      }
-
-      if (
-        !response.data
-          ?.session
-      ) {
-
-        console.error(
-          "SEM SESSÃO",
-        );
-
-        return false;
-
-      }
-
+  const filtradas = useMemo(() => {
+    const t = busca.trim().toLowerCase();
+    return noticias.filter((n) => {
+      if (fStatus === "destaque" ? !n.destaque : fStatus && n.status !== fStatus) return false;
+      if (fCategoria && n.categoria !== fCategoria) return false;
+      if (t && !`${n.titulo} ${n.resumo} ${n.tags.join(" ")}`.toLowerCase().includes(t)) return false;
       return true;
+    });
+  }, [noticias, busca, fStatus, fCategoria]);
 
-    } catch (
-      err
-    ) {
-
-      console.error(
-        "AUTH CATCH:",
-        err,
-      );
-
-      return false;
-
+  /* ---------- Salvar (editor) ---------- */
+  async function salvar(dados: DadosNoticia) {
+    setSalvando(true);
+    const id = editor?.modo === "editar" ? editor.noticia.id : null;
+    const { error, semColunasNovas } = await salvarNoticia(dados, id);
+    setSalvando(false);
+    if (error) {
+      const msg = /duplicate|unique/i.test(error.message)
+        ? "Já existe uma notícia com esse endereço (slug)."
+        : /row-level|permission|policy/i.test(error.message)
+          ? "O banco recusou: só o ADM DEUS pode salvar notícias."
+          : error.message;
+      return mostrar("erro", `Não foi possível salvar: ${msg}`);
     }
-
+    if (semColunasNovas) {
+      mostrar("aviso", "Salvo, mas sem tags, galeria, legenda e agendamento: rode a migration 20261020220000_noticias_completo.sql no Supabase.");
+    } else {
+      mostrar("sucesso", dados.status === "rascunho" ? "Rascunho salvo." : dados.status === "agendado" ? "Notícia agendada." : "Notícia salva.");
+    }
+    setEditor(null);
+    carregar();
   }
 
-  /*
-  LOAD NEWS
-  */
-
-  async function carregarNoticias() {
-
-    try {
-
-      setLoading(true);
-
-      //const ok =
-        //await verificarSessao();
-
-     // if (!ok) {
-
-       // throw new Error(
-         // "Sessão inválida.",
-        //);
-
-      //}
-
-      const {
-        data,
-        error,
-      } = await supabase
-        .from("noticias")
-        .select(`
-          id,
-          titulo,
-          resumo,
-          categoria,
-          imagem_url,
-          destaque,
-          publicado,
-          fixada,
-          visualizacoes,
-          created_at
-        `)
-        .order(
-          "fixada",
-          {
-            ascending: false,
-          },
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false,
-          },
-        )
-        .limit(50);
-
-      if (error) {
-
-        throw error;
-
-      }
-
-      setNoticias(
-
-        (
-          data ||
-          []
-        ).map(
-          (
-            item,
-          ) => ({
-
-            id:
-              item.id,
-
-            titulo:
-              item.titulo ||
-              "",
-
-            resumo:
-              item.resumo ||
-              "",
-
-            conteudo:
-              "",
-
-            categoria:
-              item.categoria ||
-              "",
-
-            imagem_url:
-              item.imagem_url ||
-              null,
-
-            destaque:
-              !!item.destaque,
-
-            publicado:
-              !!item.publicado,
-
-            fixada:
-              !!item.fixada,
-
-            visualizacoes:
-              item.visualizacoes ||
-              0,
-
-            created_at:
-              item.created_at,
-          }),
-        ),
-
-      );
-
-    } catch (
-      err: any
-    ) {
-
-      console.error(
-        err,
-      );
-
-      setErro(
-        err.message ||
-        "Erro ao carregar notícias.",
-      );
-
-    } finally {
-
-      setLoading(false);
-
-    }
-
+  /* ---------- Ações rápidas ---------- */
+  async function acao(n: Noticia, campos: Record<string, unknown>, msg: string) {
+    setOcupado(n.id);
+    const error = await atualizarCampos(n.id, campos);
+    setOcupado(null);
+    if (error) return mostrar("erro", `Não foi possível concluir: ${error.message}`);
+    mostrar("sucesso", msg);
+    carregar();
   }
 
-  /*
-  RESET
-  */
+  const publicar = (n: Noticia) =>
+    acao(n, { status: "publicado", publicado: true, published_at: visivelAoPublico(n) ? n.publicado_em : new Date().toISOString() }, "Notícia publicada no site.");
+  const despublicar = (n: Noticia) => acao(n, { status: "rascunho", publicado: false }, "Notícia retirada do site (virou rascunho).");
+  const destacar = (n: Noticia, ordem: number | null) =>
+    acao(n, { destaque: ordem !== null, ordem_destaque: ordem }, ordem ? `Destaque na posição ${ordem}.` : "Destaque removido.");
 
-  function resetForm() {
+  async function confirmarExclusao() {
+    if (!excluir) return;
+    setOcupado(excluir.id);
+    const { error } = await supabase.from("noticias").delete().eq("id", excluir.id);
+    setOcupado(null);
+    setExcluir(null);
+    if (error) return mostrar("erro", `Não foi possível excluir: ${error.message}`);
+    mostrar("sucesso", "Notícia excluída.");
+    carregar();
+  }
 
-    setTitulo("");
-
-    setResumo("");
-
-    setConteudo("");
-
-    setCategoria("");
-
-    setDestaque(false);
-
-    setPublicado(true);
-
-    setFixada(false);
-
-    setImagem(null);
-
-    setPreviewImagem("");
-
-    setSeoTitle("");
-
-    setSeoDescription("");
-
-    setSeoKeywords("");
-
-    setAutorNome(
-      "ACMRB",
+  /* ---------- Sem permissão ---------- */
+  if (!permitido) {
+    return (
+      <div className="an__bloqueio">
+        <Lock size={28} aria-hidden="true" />
+        <h2>Somente o ADM DEUS gerencia notícias</h2>
+        <p>Peça ao responsável pela plataforma para publicar ou alterar notícias.</p>
+      </div>
     );
-
-    setBannerAlt("");
-
-    setEditing(false);
-
-    setEditingId(null);
-
-    setErro("");
-
   }
 
-  /*
-  UPLOAD
-  */
-
-async function uploadImagem(file: File) {
-
-  try {
-
-    if (!file) {
-
-      throw new Error(
-        "Arquivo inválido.",
-      );
-
+  /* ---------- Editor aberto ---------- */
+  if (editor) {
+    let inicial: Noticia | null = null;
+    if (editor.modo === "editar") inicial = editor.noticia;
+    if (editor.modo === "duplicar") {
+      const base = editor.noticia;
+      inicial = { ...base, titulo: `${base.titulo} (cópia)`, slug: `${base.slug}-copia`, status: "rascunho", destaque: false, ordem_destaque: null, visualizacoes: 0 };
     }
-
-    if (
-      file.size >
-      10 * 1024 * 1024
-    ) {
-
-      throw new Error(
-        "Imagem muito grande.",
-      );
-
-    }
-
-    const extensao =
-      file.name
-        .split(".")
-        .pop();
-
-    const fileName =
-      `noticia-${Date.now()}.${extensao}`;
-
-    console.log(
-      "UPLOAD INICIADO:",
-      fileName,
+    return (
+      <>
+        <NoticiaEditor
+          key={editor.modo === "nova" ? "nova" : `${editor.modo}-${editor.noticia.id}`}
+          inicial={inicial}
+          editandoId={editor.modo === "editar" ? editor.noticia.id : null}
+          salvando={salvando}
+          onSalvar={salvar}
+          onCancelar={() => setEditor(null)}
+          onAviso={mostrar}
+        />
+        <ToastArea toasts={toasts} onFechar={fechar} />
+      </>
     );
-    console.log(
-      "TAMANHO IMAGEM KB:",
-       file.size,
-    );
-
-  const response =
-  await withTimeout(
-
-    supabase.storage
-      .from("noticias")
-      .upload(
-        fileName,
-        file,
-        {
-          cacheControl: "3600",
-          upsert: true,
-        },
-      ),
-
-    15000,
-  );
-
-    console.log(
-      "UPLOAD RESPONSE:",
-      response,
-    );
-
-    if (
-      response.error
-    ) {
-
-      throw response.error;
-
-    }
-
-    const { data } =
-      supabase.storage
-        .from("noticias")
-        .getPublicUrl(
-          fileName,
-        );
-
-    return data.publicUrl;
-
-  } catch (
-    err: any
-  ) {
-
-    throw new Error(
-      err.message ||
-      "Erro upload imagem.",
-    );
-
   }
 
-}
-
-  /*
-  SAVE
-  */
-
-  async function handleSubmit() {
-
-    if (salvando) {
-
-      console.log(
-        "PUBLICAÇÃO EM ANDAMENTO",
-      );
-
-      return;
-
-    }
-
-    try {
-
-      setErro("");
-
-      setSalvando(true);
-      console.log(
-        "INICIANDO PUBLICAÇÃO",
-      );
-
-      /*
-      AUTH
-      */
-
-    //  const authOk =
-       // await verificarSessao();
-      //console.log("1 seccao verificada");
-
-      //if (!authOk) {
-
-        //throw new Error(
-          //"Sessão inválida.",
-        //);
-
-      //}
-      //console.log("2 sessão verificada passou auth");
-
-      /*
-      VALIDATION
-      */
-      console.log("3 iniciando validação");
-      if (!titulo.trim()) {
-
-        throw new Error(
-          "Título obrigatório.",
-        );
-
-      }
-
-      if (!conteudo.trim()) {
-
-        throw new Error(
-          "Conteúdo obrigatório.",
-        );
-
-      }
-
-      /*
-      DETECTA BASE64
-      */
-
-      if (
-        conteudo.includes(
-          "data:image",
-        )
-      ) {
-
-        throw new Error(
-          "O editor inseriu imagens em base64 dentro do conteúdo. Isso pode travar publicações.",
-        );
-
-      }
-
-      /*
-      SANITIZA HTML
-      */
-      console.log("4 - antes de limpar conteúdo:", conteudo);
-      const conteudoLimpo =
-        limparConteudo(
-          conteudo,
-        );
-        console.log(
-          "CONTEÚDO LIMPO:",
-          conteudoLimpo,
-        );
-
-      /*
-      TAMANHO REAL
-      */
-
-      const tamanhoBytes =
-        new Blob([
-          conteudoLimpo,
-        ]).size;
-
-      console.log(
-        "TAMANHO KB:",
-        (
-          tamanhoBytes /
-          1024
-        ).toFixed(2),
-      );
-
-      /*
-      LIMITE 5MB
-      */
-
-      if (
-        tamanhoBytes >
-        5 * 1024 * 1024
-      ) {
-
-        throw new Error(
-          "Conteúdo extremamente grande.",
-        );
-
-      }
-
-      /* 
-      UPLOAD
-      */
-
-     let imagem_url = "";
-
-      if (imagem) {
-
-        console.log(
-          "4 - iniciando upload",
-        );
-
-        imagem_url =
-          await uploadImagem(
-            imagem,
-          );
-
-        console.log(
-          "4.1 - upload concluído",
-        );
-
-}
-
-      console.log(
-        "IMAGEM URL: upload concluído:",
-        imagem_url,
-      );
-
-      /*
-      PAYLOAD
-      */
-      console.log(
-        "GERANDO PAYLOAD",
-      );
-
-      const conteudoFinal =
-        conteudoLimpo.slice(0, 50000);
-const payload = {
-
-  titulo:
-    titulo.trim(),
-
-  resumo:
-    resumo.trim(),
-
-  conteudo:
-    conteudoFinal.trim(),
-
-  categoria:
-    categoria.trim(),
-
-  imagem_url:
-    imagem_url || "",
-
-  destaque,
-
-  publicado,
-
-  fixada,
-
-  slug:
-    gerarSlug(
-      titulo,
-    ),
-
-  seo_title:
-    seoTitle.trim() ||
-    titulo.trim(),
-
-  seo_description:
-    seoDescription.trim() ||
-    resumo.trim(),
-
-  seo_keywords:
-    seoKeywords.trim(),
-
-  autor_nome:
-    autorNome.trim(),
-
-  banner_alt:
-    bannerAlt.trim(),
-
-  tempo_leitura:
-    calcularTempoLeitura(
-      conteudoLimpo,
-    ),
-
-  updated_at:
-    new Date().toISOString(),
-
-    created_at:
-       new Date().toISOString(),
-};
-
-      /*
-      UPDATE
-      */
-
-      if (
-        editing &&
-        editingId
-      ) {
-
-       const response =
-
-
-        await withTimeout(
-          (async () => {
-
-            return await supabase
-              .from("noticias")
-              .update(payload)
-              .eq("id", editingId);
-
-          })(),
-        );
-
-
-
-        if (
-          response.error
-        ) {
-
-          throw response.error;
-
-        }
-
-      }
-
-      /*
-      INSERT
-      */
-
-      else {
-    console.log("5 - iniciando insert");
-
-        const response =
-          await withTimeout(
-            (async () => {
-              return await supabase
-                .from("noticias")
-                .insert(payload);
-            })(),
-
-          15000,
-          );
-
-
-  console.log(
-    "INSERT RESPONSE:",
-    response,
-  );
-
-      if (
-        response.error
-      ) {
-
-        console.error(
-          "INSERT ERROR:",
-          response.error,
-        );
-
-        throw response.error;
-      }
-          console.log("6 - insert concluído");
-      }
-
-      /*
-      RELOAD
-      */
-      console.log(
-        " 7 - RECARREGANDO NOTÍCIAS",
-      );
-      try {
-        await carregarNoticias();
-      } catch (e) {
-        console.error("Erro ao recarregar notícias:", e);
-      }
-
-      /*
-      RESET
-      */
-      console.log(
-        "8 - RESETANDO FORMULÁRIO",
-      );
-      resetForm();
-
-      /*
-      SUCCESS
-      */
-      console.log(
-        "8.1 - PUBLICAÇÃO CONCLUÍDA",
-      );
-      console.log(
-        "9 - SUCESSO",
-        editing
-          ? "NOTÍCIA ATUALIZADA"
-          : "NOTÍCIA PUBLICADA",
-      );
-
-    } catch (
-      err: any
-    ) {
-
-      console.error(
-        "ERRO PUBLICAÇÃO:",
-        err,
-      );
-
-      setErro(
-
-        err.message ||
-
-        "Erro ao publicar notícia.",
-
-      );
-
-    } finally {
-
-      setSalvando(
-        false,
-      );
-
-    }
-
-  }
-
-  /*
-  EDIT
-  */
-
-  async function handleEdit(
-    noticia: Noticia,
-  ) {
-
-    try {
-      if(loading) return;
-      setLoading(
-        true,
-      );
-
-      const {
-        data,
-        error,
-      } = await supabase
-        .from(
-          "noticias",
-        )
-        .select("*")
-        .eq(
-          "id",
-          noticia.id,
-        )
-        .single();
-
-      if (
-        error ||
-        !data
-      ) {
-
-        throw new Error(
-          "Erro carregar notícia.",
-        );
-
-      }
-
-      setEditing(
-        true,
-      );
-
-      setEditingId(
-        data.id,
-      );
-
-      setTitulo(
-        data.titulo ||
-        "",
-      );
-
-      setResumo(
-        data.resumo ||
-        "",
-      );
-
-      setConteudo(
-        data.conteudo ||
-        "",
-      );
-
-      setCategoria(
-        data.categoria ||
-        "",
-      );
-
-      setDestaque(
-        !!data.destaque,
-      );
-
-      setPublicado(
-        !!data.publicado,
-      );
-
-      setFixada(
-        !!data.fixada,
-      );
-
-      setPreviewImagem(
-        data.imagem_url ||
-        "",
-      );
-
-      setSeoTitle(
-        data.seo_title ||
-        "",
-      );
-
-      setSeoDescription(
-        data.seo_description ||
-        "",
-      );
-
-      setSeoKeywords(
-        data.seo_keywords ||
-        "",
-      );
-
-      setAutorNome(
-        data.autor_nome ||
-        "ACMRB",
-      );
-
-      setBannerAlt(
-        data.banner_alt ||
-        "",
-      );
-
-    } catch (
-      err: any
-    ) {
-
-      console.error(
-        err,
-      );
-
-      setErro(
-        err.message ||
-        "Erro ao editar notícia.",
-      );
-
-    } finally {
-
-      setLoading(
-        false,
-      );
-
-    }
-
-  }
-
-  /*
-  DELETE
-  */
-
-  async function handleDelete(
-    id: string,
-  ) {
-
-    const confirmar =
-      confirm(
-        "Excluir notícia?",
-      );
-
-    if (!confirmar)
-      return;
-
-    try {
-
-      const {
-        error,
-      } = await supabase
-        .from(
-          "noticias",
-        )
-        .delete()
-        .eq(
-          "id",
-          id,
-        );
-
-      if (error) {
-
-        throw error;
-
-      }
-
-      setNoticias(
-        (
-          prev,
-        ) =>
-
-          prev.filter(
-            (
-              item,
-            ) =>
-              item.id !==
-              id,
-          ),
-      );
-
-    } catch (
-      err: any
-    ) {
-
-      console.error(
-        err,
-      );
-
-      setErro(
-        err.message ||
-        "Erro ao excluir notícia.",
-      );
-
-    }
-
-  }
+  /* ---------- Lista ---------- */
+  const cartoes = [
+    { rotulo: "Total", valor: stats.total, Icone: Newspaper },
+    { rotulo: "No ar", valor: stats.noAr, Icone: Send },
+    { rotulo: "Agendadas", valor: stats.agendadas, Icone: CalendarClock },
+    { rotulo: "Rascunhos", valor: stats.rascunhos, Icone: FileText },
+    { rotulo: "Destaques", valor: stats.destaques, Icone: Star },
+  ];
 
   return (
+    <div className="an">
+      <div className="an__cabecalho">
+        <div>
+          <h2>Notícias</h2>
+          <p>Publique e organize as notícias do site. Os destaques aparecem na página inicial (máximo 3).</p>
+        </div>
+        <button type="button" className="an__btn" onClick={() => setEditor({ modo: "nova" })}>
+          <Plus size={16} /> Nova notícia
+        </button>
+      </div>
 
-    <div
-      className="
-        space-y-8
-      "
-    >
-
-      {
-        erro && (
-
-          <div
-            className="
-              bg-red-100
-              border
-              border-red-300
-              text-red-700
-              rounded-xl
-              p-4
-              font-medium
-            "
-          >
-            {erro}
+      <div className="an__stats">
+        {cartoes.map(({ rotulo, valor, Icone }) => (
+          <div key={rotulo} className="an__stat">
+            <Icone size={18} aria-hidden="true" />
+            <strong>{valor}</strong>
+            <span>{rotulo}</span>
           </div>
+        ))}
+      </div>
+      <p className="an__dica">{stats.visualizacoes} visualizações no total.</p>
 
-        )
-      }
+      <div className="an__filtros">
+        <label className="an__busca">
+          <Search size={16} aria-hidden="true" />
+          <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar por título, resumo ou tag" aria-label="Buscar notícias" />
+        </label>
+        <select value={fStatus} onChange={(e) => setFStatus(e.target.value as typeof fStatus)} aria-label="Filtrar por situação">
+          <option value="">Todas as situações</option>
+          {(Object.keys(ROTULO_STATUS) as StatusNoticia[]).map((s) => <option key={s} value={s}>{ROTULO_STATUS[s]}</option>)}
+          <option value="destaque">Somente destaques</option>
+        </select>
+        <select value={fCategoria} onChange={(e) => setFCategoria(e.target.value)} aria-label="Filtrar por categoria">
+          <option value="">Todas as categorias</option>
+          {categorias.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
+        <button type="button" className="an__btn an__btn--claro" onClick={carregar} aria-label="Atualizar lista">
+          <RefreshCw size={16} />
+        </button>
+      </div>
 
-      <NoticiasStats
-        total={
-          noticias.length
-        }
-        publicadas={
-          noticias.filter(
-            (
-              n,
-            ) =>
-              n.publicado,
-          ).length
-        }
-        destaques={
-          noticias.filter(
-            (
-              n,
-            ) =>
-              n.destaque,
-          ).length
-        }
-        visualizacoes={
-          noticias.reduce(
-            (
-              acc,
-              item,
-            ) =>
+      {carregando && <div className="an__vazio"><Loader2 className="an__girando" /> Carregando notícias...</div>}
+      {!carregando && erroCarga && (
+        <div className="an__vazio an__vazio--erro" role="alert">
+          Erro ao carregar: {erroCarga}
+          <button type="button" className="an__btn an__btn--claro" onClick={carregar}>Tentar de novo</button>
+        </div>
+      )}
+      {!carregando && !erroCarga && filtradas.length === 0 && (
+        <div className="an__vazio">
+          {noticias.length ? "Nenhuma notícia com esses filtros." : "Nenhuma notícia cadastrada. Clique em “Nova notícia”."}
+        </div>
+      )}
 
-              acc +
-              (
-                item.visualizacoes ||
-                0
-              ),
+      <ul className="an__lista">
+        {!carregando && filtradas.map((n) => {
+          const noAr = visivelAoPublico(n);
+          const agendada = n.status === "agendado" && !noAr;
+          const rotulo = agendada ? "Agendada" : noAr ? "No ar" : ROTULO_STATUS[n.status];
+          const cls = agendada ? "agendado" : noAr ? "publicado" : n.status;
+          return (
+            <li key={n.id} className="an__item">
+              <div className="an__thumb">
+                {n.imagem_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={n.imagem_url} alt="" />
+                ) : <Newspaper size={22} aria-hidden="true" />}
+              </div>
+              <div className="an__info">
+                <div className="an__selos">
+                  <span className={`an__status an__status--${cls}`}>{rotulo}</span>
+                  {n.destaque && <span className="an__status an__status--destaque"><Star size={11} /> Destaque {n.ordem_destaque ?? ""}</span>}
+                  {n.categoria && <span className="an__cat">{n.categoria}</span>}
+                </div>
+                <h3>{n.titulo}</h3>
+                <small>
+                  {agendada ? "Entra no ar em " : ""}{formatarData(n.publicado_em)} • {n.visualizacoes} visualizações • {n.tempo_leitura} min
+                </small>
+              </div>
+              <div className="an__acoes">
+                {ocupado === n.id && <Loader2 size={16} className="an__girando" />}
+                <button type="button" onClick={() => setEditor({ modo: "editar", noticia: n })} title="Editar"><Pencil size={15} /><span>Editar</span></button>
+                {noAr || agendada ? (
+                  <button type="button" onClick={() => despublicar(n)} title="Despublicar"><EyeOff size={15} /><span>Despublicar</span></button>
+                ) : (
+                  <button type="button" onClick={() => publicar(n)} title="Publicar agora"><Send size={15} /><span>Publicar</span></button>
+                )}
+                <select
+                  value={n.destaque ? String(n.ordem_destaque ?? 1) : ""}
+                  onChange={(e) => destacar(n, e.target.value ? Number(e.target.value) : null)}
+                  aria-label="Destaque na página inicial"
+                  title="Destaque na página inicial"
+                >
+                  <option value="">Sem destaque</option>
+                  <option value="1">Destaque 1</option>
+                  <option value="2">Destaque 2</option>
+                  <option value="3">Destaque 3</option>
+                </select>
+                <button type="button" onClick={() => setEditor({ modo: "duplicar", noticia: n })} title="Duplicar"><Copy size={15} /><span>Duplicar</span></button>
+                {noAr && (
+                  <a href={`/noticias/${n.slug}`} target="_blank" rel="noopener noreferrer" title="Ver no site"><ExternalLink size={15} /><span>Ver</span></a>
+                )}
+                <button type="button" className="an__perigo" onClick={() => setExcluir(n)} title="Excluir"><Trash2 size={15} /><span>Excluir</span></button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
 
-            0,
-          )
-        }
+      <ConfirmDialog
+        aberto={!!excluir}
+        titulo="Excluir notícia?"
+        mensagem={`“${excluir?.titulo ?? ""}” será apagada de vez. Se quiser só tirar do site, use “Despublicar”.`}
+        textoConfirmar="Excluir"
+        perigo
+        carregando={!!excluir && ocupado === excluir.id}
+        onConfirmar={confirmarExclusao}
+        onCancelar={() => setExcluir(null)}
       />
-
-      <NoticiasForm
-        titulo={titulo}
-        setTitulo={
-          setTitulo
-        }
-        resumo={resumo}
-        setResumo={
-          setResumo
-        }
-        categoria={
-          categoria
-        }
-        setCategoria={
-          setCategoria
-        }
-        conteudo={
-          conteudo
-        }
-        setConteudo={
-          setConteudo
-        }
-        destaque={
-          destaque
-        }
-        setDestaque={
-          setDestaque
-        }
-        publicado={
-          publicado
-        }
-        setPublicado={
-          setPublicado
-        }
-        previewImagem={
-          previewImagem
-        }
-        setImagem={
-          setImagem
-        }
-        setPreviewImagem={
-          setPreviewImagem
-        }
-        onSubmit={
-          handleSubmit
-        }
-        onCancel={
-          resetForm
-        }
-        loading={
-          salvando
-        }
-        editing={
-          editing
-        }
-        fixada={
-          fixada
-        }
-        setFixada={
-          setFixada
-        }
-        seoTitle={
-          seoTitle
-        }
-        setSeoTitle={
-          setSeoTitle
-        }
-        seoDescription={
-          seoDescription
-        }
-        setSeoDescription={
-          setSeoDescription
-        }
-        seoKeywords={
-          seoKeywords
-        }
-        setSeoKeywords={
-          setSeoKeywords
-        }
-        autorNome={
-          autorNome
-        }
-        setAutorNome={
-          setAutorNome
-        }
-        bannerAlt={
-          bannerAlt
-        }
-        setBannerAlt={
-          setBannerAlt
-        }
-      />
-
-      <NoticiasList
-        noticias={
-          noticias
-        }
-        loading={
-          loading
-        }
-        onEdit={
-          handleEdit
-        }
-        onDelete={
-          handleDelete
-        }
-      />
-
+      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
-
   );
-
 }
+

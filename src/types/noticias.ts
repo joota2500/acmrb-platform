@@ -1,3 +1,4 @@
+// NÃO UTILIZADO — substituído pela nova gestão de notícias (NoticiasSection + NoticiaEditor, out/2026)
 export type NoticiaDB = {
 
   id: string;
