@@ -1,162 +1,102 @@
 "use client";
 
-import { useEffect, useState } from "react";
+/**
+ * NewsSection — "Notícias e Atualizações" (home)
+ * ------------------------------------------------------------
+ * Mostra no máximo 3 notícias:
+ *   1. as marcadas como destaque pelo ADM DEUS (ordem_destaque);
+ *   2. se não houver destaque, as 3 mais recentes publicadas.
+ * Desktop: 1 cartão grande + 2 menores ao lado. Tablet: grande em
+ * cima + 2 lado a lado. Celular: uma coluna.
+ * Estados: carregando (esqueleto), vazio e erro com "Tentar de novo".
+ */
+
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowRight, CalendarDays, Newspaper } from "lucide-react";
-import { supabase } from "@/lib/supabase";
+import { motion, useReducedMotion } from "framer-motion";
+import { AlertTriangle, ArrowRight, Newspaper, RefreshCw } from "lucide-react";
+import NoticiaCard from "@/components/noticias/NoticiaCard";
+import { useNoticiasPublicas } from "@/hooks/useNoticiasPublicas";
+import { selecionarHome } from "@/lib/noticias";
 
 import "@/styles/news-section.css";
 
-type Noticia = {
-  id: string;
-  titulo: string;
-  resumo: string;
-  categoria: string;
-  imagem_url: string;
-  slug: string;
-  destaque: boolean;
-  created_at: string;
-};
-
 export default function NewsSection() {
-  const [news, setNews] = useState<Noticia[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { noticias, carregando, erro, recarregar } = useNoticiasPublicas(60);
+  const reduzir = useReducedMotion();
+  const lista = selecionarHome(noticias, 3);
+  const [principal, ...outras] = lista;
 
-  async function carregarNoticias() {
-    try {
-      setLoading(true);
-
-      const { data, error } = await supabase
-        .from("noticias")
-        .select(
-          `
-          id,
-          titulo,
-          resumo,
-          categoria,
-          imagem_url,
-          slug,
-          destaque,
-          created_at
-        `,
-        )
-        .eq("publicado", true)
-        .order("destaque", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(3);
-
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      setNews(data || []);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    carregarNoticias();
-  }, []);
+  const anim = (atraso = 0) =>
+    reduzir
+      ? {}
+      : {
+          initial: { opacity: 0, y: 24 },
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: "-60px" },
+          transition: { duration: 0.5, delay: atraso },
+        };
 
   return (
-    <section id="noticias" className="news">
-      <div className="news__bg" />
-
+    <section id="noticias" className="news" aria-labelledby="news-titulo" lang="pt-BR">
       <div className="news__container">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="news__header"
-        >
-          <div>
-            <span className="news__tag">Notícias e Atualizações</span>
-            <h2 className="news__title">
-              Transparência, impacto ambiental e ações sociais.
-            </h2>
-            <p className="news__description">
-              Acompanhe projetos, iniciativas ambientais, ações sociais,
-              educação ambiental e parcerias ESG desenvolvidas pela ACMRB.
-            </p>
-          </div>
+        <motion.header className="news__header" {...anim()}>
+          <span className="news__tag">
+            <Newspaper size={14} aria-hidden="true" /> Notícias e Atualizações
+          </span>
+          <h2 id="news-titulo" className="news__title">
+            O que está acontecendo <span>na ACMRB</span>
+          </h2>
+          <p className="news__description">
+            Projetos, ações sociais, educação ambiental, parcerias e resultados da coleta seletiva em
+            Baturité e no Maciço. Informação oficial da associação, publicada para a comunidade, os
+            parceiros e o poder público acompanharem de perto o nosso trabalho.
+          </p>
+        </motion.header>
 
-          <Link href="/noticias" className="news__btn-all">
-            Ver todas
-            <ArrowRight size={18} />
-          </Link>
-        </motion.div>
-
-        {/* Loading */}
-        {loading && (
-          <div className="news__grid">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="news__skeleton" />
-            ))}
+        {carregando && (
+          <div className="news__grid" aria-busy="true" aria-label="Carregando notícias">
+            <div className="news__skeleton news__skeleton--grande" />
+            <div className="news__skeleton" />
+            <div className="news__skeleton" />
           </div>
         )}
 
-        {/* Empty */}
-        {!loading && news.length === 0 && (
-          <div className="news__empty">
-            <Newspaper size={32} />
+        {!carregando && erro && (
+          <div className="news__aviso" role="alert">
+            <AlertTriangle size={28} aria-hidden="true" />
+            <p>{erro}</p>
+            <button type="button" onClick={recarregar} className="news__btn news__btn--claro">
+              <RefreshCw size={16} aria-hidden="true" /> Tentar de novo
+            </button>
+          </div>
+        )}
+
+        {!carregando && !erro && lista.length === 0 && (
+          <div className="news__aviso">
+            <Newspaper size={28} aria-hidden="true" />
             <h3>Nenhuma notícia publicada ainda</h3>
-            <p>Em breve você encontrará aqui as atualizações da ACMRB.</p>
+            <p>Em breve você vai encontrar aqui as novidades e ações da ACMRB.</p>
           </div>
         )}
 
-        {/* Grid */}
-        {!loading && news.length > 0 && (
-          <div className="news__grid">
-            {news.map((item, index) => (
-              <motion.article
-                key={item.id}
-                initial={{ opacity: 0, y: 25 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
-                className="news__card"
-              >
-                <div className="news__image">
-                  {item.imagem_url ? (
-                    <img src={item.imagem_url} alt={item.titulo} />
-                  ) : (
-                    <div className="news__image-fallback" />
-                  )}
-
-                  <div className="news__badges">
-                    <span className="news__category">{item.categoria}</span>
-                    {item.destaque && (
-                      <span className="news__destaque">Destaque</span>
-                    )}
-                  </div>
-                </div>
-
-                <div className="news__body">
-                  <div className="news__date">
-                    <CalendarDays size={14} />
-                    <span>
-                      {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                    </span>
-                  </div>
-
-                  <h3>{item.titulo}</h3>
-                  <p>{item.resumo}</p>
-
-                  <Link href={`/noticias/${item.slug}`} className="news__read">
-                    Ler mais
-                    <ArrowRight size={16} />
-                  </Link>
-                </div>
-              </motion.article>
+        {!carregando && !erro && principal && (
+          <div className={`news__grid news__grid--${lista.length}`}>
+            <motion.div className="news__principal" {...anim(0.05)}>
+              <NoticiaCard noticia={principal} variante="grande" />
+            </motion.div>
+            {outras.map((n, i) => (
+              <motion.div key={n.id} className="news__secundaria" {...anim(0.12 + i * 0.08)}>
+                <NoticiaCard noticia={n} />
+              </motion.div>
             ))}
           </div>
         )}
+
+        <div className="news__acoes">
+          <Link href="/noticias" className="news__btn">
+            Ver todas as notícias <ArrowRight size={18} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </section>
   );
