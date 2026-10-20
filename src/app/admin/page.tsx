@@ -40,6 +40,7 @@ import { itemPorId, secaoValida, type SecaoId } from "@/components/admin/layout/
 /* Seções */
 import DashboardSection from "@/components/admin/sections/DashboardSection";
 import AssociadosSection from "@/components/admin/sections/AssociadosSection";
+import VisitantesSection from "@/components/admin/sections/VisitantesSection";
 import DenunciasSection from "@/components/admin/sections/DenunciasSection";
 // ParceirosSection: NÃO UTILIZADO (substituída por VisaoMapaSection)
 import VisaoMapaSection from "@/components/admin/sections/VisaoMapaSection";
@@ -200,6 +201,7 @@ function PainelAdmin() {
               {ativa === "logistica" && <LogisticaSection />}
               {ativa === "visao-mapa" && <VisaoMapaSection />}
               {ativa === "associados" && <AssociadosSection />}
+              {ativa === "visitantes" && papel === "deus" && <VisitantesSection />}
               {ativa === "denuncias" && <DenunciasSection />}
               {ativa === "materiais" && <MaterialsSection />}
               {ativa === "coletas" && <EmBreve titulo="Coletas" descricao={item.descricao} />}

@@ -22,6 +22,7 @@ import {
   ShieldAlert,
   UserCog,
   UserRound,
+  UserSearch,
   Users,
   type LucideIcon,
 } from "lucide-react";
@@ -34,6 +35,7 @@ export type SecaoId =
   | "apoiadores"
   | "logistica"
   | "associados"
+  | "visitantes"
   | "denuncias"
   | "materiais"
   | "coletas"
@@ -79,6 +81,7 @@ export const GRUPOS_NAV: GrupoNav[] = [
     titulo: "Pessoas",
     itens: [
       { id: "associados", rotulo: "Associados", icone: Users, pronto: true, rapido: true, descricao: "Cadastro e gestão de associados" },
+      { id: "visitantes", rotulo: "Usuários / Visitantes", icone: UserSearch, pronto: true, descricao: "Visitantes cadastrados, atividade e gestão (somente ADM DEUS)" },
       { id: "denuncias", rotulo: "Denúncias", icone: ShieldAlert, pronto: false, descricao: "Denúncias ambientais recebidas" },
     ],
   },

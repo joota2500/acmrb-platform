@@ -27,6 +27,7 @@ const MATRIZ: Record<SecaoId, Record<PapelAdmin, Acesso>> = {
   logistica:       { deus: "total", admin: "nenhum" }, // logística reversa e repasses (RLS is_deus)
   "visao-mapa":    { deus: "total", admin: "nenhum" }, // mapa geral + localização em lote (substitui "parceiros")
   associados:      { deus: "total", admin: "total" },
+  visitantes:      { deus: "total", admin: "nenhum" }, // contas de visitantes + atividade (RLS is_deus)
   denuncias:       { deus: "total", admin: "total" }, // ver + responder
   materiais:       { deus: "total", admin: "total" },
   coletas:         { deus: "total", admin: "nenhum" },
