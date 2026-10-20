@@ -1,564 +1,540 @@
 "use client";
 
+/**
+ * Página /quem-somos — apresentação institucional da ACMRB
+ * ------------------------------------------------------------
+ * Ordem das seções:
+ *  1. Hero        — breadcrumb, selo, título, textos, botões e citação
+ *  2. Impacto     — números do useESGMetrics (materiais_registros +
+ *                   dashboard_metricas), mesma formatação do Hero da home
+ *  3. História    — introdução + linha do tempo (datas reais do conteúdo)
+ *  4. Missão, visão e valores — missão/visão só aparecem quando forem
+ *                   cadastradas no banco (ainda não existe texto oficial)
+ *  5. O que fazemos — frentes de atuação
+ *  6. Associados  — tabela associados (somente campos públicos)
+ *  7. Parceiros   — tabela parceiros
+ *  8. Próximos passos
+ *  9. Vídeo e Instagram (conteúdos que já existiam na página)
+ * 10. Chamada final — contato / associados
+ *
+ * De onde vêm os textos: tabela quem_somos_conteudo (hook useQuemSomos).
+ * Sem banco, a página usa os textos reais de src/lib/quemSomosFallback.ts.
+ *
+ * Responsividade (src/styles/quem-somos.css, mobile-first):
+ *  - Celular (<640px): textos menores, 1 coluna, botões h-12 empilhados
+ *    com largura total, números de impacto em 2 colunas.
+ *  - Tablet (640–1023px): grades em 2 colunas, botões lado a lado.
+ *  - Desktop (>=1024px): hero em 2 colunas (texto + foto), grades em 3–4
+ *    colunas, linha do tempo com mais respiro.
+ *  - Parágrafos justificados com hifenização (pedido do Artur); títulos não.
+ */
+
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Footer from "@/components/layout/Footer";
-import InstitutionalSection from "@/components/home/InstitutionalSection";
-
 import {
-  ArrowLeft,
   ArrowRight,
-  Recycle,
-  Users,
-  HeartHandshake,
-  Globe,
-  PlayCircle,
-  ShieldCheck,
   Building2,
-  Leaf,
-  Award,
-  BadgeCheck,
-  Sparkles,
-  Clock3,
   ChevronRight,
+  Eye,
   Handshake,
   Heart,
+  HeartHandshake,
+  Leaf,
+  PlayCircle,
+  Recycle,
   Scale,
+  Sparkles,
   Sun,
+  Target,
+  Users,
+  type LucideIcon,
 } from "lucide-react";
 
-import { supabase } from "@/lib/supabase";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import LoadingState from "@/components/ui/LoadingState";
+import EmptyState from "@/components/ui/EmptyState";
+
+import { useQuemSomos } from "@/hooks/useQuemSomos";
+import { useESGMetrics } from "@/hooks/useESGMetrics";
+import { formatarNumero, formatarPeso } from "@/lib/formatadores";
+
 import "@/styles/quem-somos.css";
 
-type Associado = {
-  id: string;
-  nome: string;
-  cargo: string;
-  tipo_associado: string;
-  foto_url?: string;
-  bio?: string;
-  telefone?: string;
-  email?: string;
-  endereco?: string;
-  instagram?: string;
-  facebook?: string;
-  linkedin?: string;
-  ativo?: boolean;
-  destaque?: boolean;
-  slug?: string;
+/** Ícones que podem ser escolhidos pelo campo "icone" no banco. */
+const ICONES: Record<string, LucideIcon> = {
+  Building2,
+  Handshake,
+  Heart,
+  HeartHandshake,
+  Leaf,
+  Recycle,
+  Scale,
+  Sun,
+  Users,
+};
+const icone = (nome: string | null): LucideIcon =>
+  (nome && ICONES[nome]) || Leaf;
+
+/** Animação padrão de entrada (sutil, só uma vez). */
+const surgir = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.5 },
 };
 
 export default function QuemSomosPage() {
-  const [associados, setAssociados] = useState<Associado[]>([]);
-  const [totalAssociados, setTotalAssociados] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const { secao, associados, parceiros, loading, erro } = useQuemSomos();
+  const esg = useESGMetrics();
 
-  async function carregarAssociados() {
-    try {
-      setLoading(true);
+  // Blocos de conteúdo de cada seção (banco ou fallback)
+  const hero = secao("hero");
+  const citacao = secao("citacao")[0];
+  const historia = secao("historia")[0];
+  const timeline = secao("timeline");
+  const missao = secao("missao")[0];
+  const visao = secao("visao")[0];
+  const valores = secao("valor");
+  const atuacao = secao("atuacao");
+  const futuro = secao("futuro")[0];
 
-      const { data } = await supabase
-        .from("associados")
-        .select("*")
-        .eq("ativo", true)
-        .order("destaque", { ascending: false })
-        .limit(4);
-
-      setAssociados((data as Associado[]) || []);
-
-      const { count } = await supabase
-        .from("associados")
-        .select("*", { count: "exact", head: true });
-
-      setTotalAssociados(count || 0);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    carregarAssociados();
-  }, []);
+  // Números de impacto: "—" enquanto carrega, 0 se o banco não responder
+  const impacto = [
+    { Icone: Recycle, valor: esg.loading ? "—" : formatarPeso(esg.totalPeso), rotulo: "Resíduos reciclados" },
+    { Icone: HeartHandshake, valor: esg.loading ? "—" : formatarNumero(esg.familiasImpactadas), rotulo: "Famílias beneficiadas" },
+    { Icone: Leaf, valor: esg.loading ? "—" : `${formatarNumero(esg.co2)} t`, rotulo: "CO₂ evitado" },
+    { Icone: Sparkles, valor: "2025", rotulo: "Ano de fundação" },
+  ];
 
   return (
-    <main className="qs-page">
-      {/* ==================== HERO ==================== */}
-      <section className="qs-hero">
-        <div className="qs-hero-bg" />
-        <div className="qs-hero-blob" />
+    <>
+      <Header />
 
-        <div className="qs-container">
-          <Link href="/" className="qs-back">
-            <ArrowLeft size={18} />
-            Voltar para início
-          </Link>
+      <main className="qs-page">
+        {/* ==================== 1. HERO ==================== */}
+        <section className="qs-hero" aria-labelledby="qs-titulo">
+          <div className="qs-container qs-hero__grid">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="qs-hero__content"
+            >
+              {/* Breadcrumb (trilha de navegação) */}
+              <nav aria-label="Você está em" className="qs-breadcrumb">
+                <ol>
+                  <li>
+                    <Link href="/">Início</Link>
+                  </li>
+                  <li aria-hidden="true">
+                    <ChevronRight size={14} />
+                  </li>
+                  <li aria-current="page">Quem somos</li>
+                </ol>
+              </nav>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="qs-hero-card"
-          >
-            <div className="qs-hero-grid">
-              <div className="qs-hero-content">
-                <div className="qs-badge">
-                  <Recycle size={18} />
-                  Associação Reciclaê • ACMRB
-                </div>
+              {hero[0]?.subtitulo && (
+                <span className="qs-badge">
+                  <Recycle size={16} aria-hidden="true" />
+                  {hero[0].subtitulo}
+                </span>
+              )}
 
-                <h1 className="qs-title">
-                  Transformando vidas através da reciclagem, dignidade e
-                  inclusão social.
-                </h1>
+              <h1 id="qs-titulo" className="qs-hero__title">
+                {hero[0]?.titulo}
+              </h1>
 
-                <p className="qs-text">
-                  A Associação dos Catadores de Materiais Recicláveis de
-                  Baturité nasceu da luta diária de trabalhadores que
-                  sobreviveram durante anos em condições extremamente difíceis
-                  no antigo lixão municipal.
-                </p>
-
-                <p className="qs-text" style={{ marginTop: "1.25rem" }}>
-                  Hoje a ACMRB representa uma nova oportunidade para dezenas de
-                  famílias que buscam renda, reconhecimento, estrutura, inclusão
-                  social e valorização do trabalho ambiental.
-                </p>
-
-                <div className="qs-tags">
-                  <div className="qs-tag">
-                    <ShieldCheck size={16} />
-                    Projeto ESG
-                  </div>
-                  <div className="qs-tag">
-                    <Sparkles size={16} />
-                    Inclusão social
-                  </div>
-                  <div className="qs-tag">
-                    <Leaf size={16} />
-                    Sustentabilidade
-                  </div>
-                </div>
-
-                {/* Contadores - dados do banco */}
-                <div className="qs-stats">
-                  <div className="qs-stat">
-                    <Users size={24} />
-                    <h3>{totalAssociados}+</h3>
-                    <p>Associados</p>
-                  </div>
-                  <div className="qs-stat">
-                    <HeartHandshake size={24} />
-                    <h3>30+</h3>
-                    <p>Famílias impactadas</p>
-                  </div>
-                  <div className="qs-stat">
-                    <Recycle size={24} />
-                    <h3>ESG</h3>
-                    <p>Sustentabilidade</p>
-                  </div>
-                  <div className="qs-stat">
-                    <Leaf size={24} />
-                    <h3>2025</h3>
-                    <p>Fundação</p>
-                  </div>
-                </div>
-
-                <div className="qs-actions">
-                  <a href="#associados" className="qs-btn-primary">
-                    Conhecer associados
-                    <ArrowRight size={18} />
-                  </a>
-                  <Link href="/#contato" className="qs-btn-secondary">
-                    Seja parceiro
-                  </Link>
-                </div>
-              </div>
-
-              <div className="qs-hero-image">
-                <Image
-                  src="/images/acmrb-hero.jpg"
-                  alt="ACMRB"
-                  fill
-                  priority
-                  className="object-cover"
-                />
-                <div className="qs-hero-overlay" />
-                <div className="qs-quote">
-                  <p>
-                    “A reciclagem mudou não apenas o meio ambiente, mas também a
-                    história de dezenas de famílias em Baturité.”
+              {hero.map((b) =>
+                b.texto ? (
+                  <p key={b.ordem} className="qs-text qs-text--light" lang="pt-BR">
+                    {b.texto}
                   </p>
-                </div>
+                ) : null,
+              )}
+
+              <div className="qs-actions">
+                <a href="#historia" className="qs-btn qs-btn--primary">
+                  Conheça nossa história
+                  <ArrowRight size={18} aria-hidden="true" />
+                </a>
+                <Link href="/#contato" className="qs-btn qs-btn--ghost">
+                  Seja parceiro
+                </Link>
               </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+            </motion.div>
 
-      {/* ==================== NOSSA HISTÓRIA (TIMELINE) ==================== */}
-      <section className="qs-section">
-        <div className="qs-section-header">
-          <span className="qs-section-label">Nossa História</span>
-          <h2 className="qs-section-title">
-            Da luta no lixão à construção de um futuro digno
-          </h2>
-          <p className="qs-section-desc">
-            Uma trajetória marcada pela resistência, organização e esperança dos
-            catadores de Baturité.
-          </p>
-        </div>
-
-        <div className="qs-timeline">
-          {/* Item 1 */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="qs-timeline-item"
-          >
-            <div className="qs-timeline-dot" />
-            <div className="qs-timeline-content">
-              <span className="qs-timeline-year">Décadas anteriores</span>
-              <h3>Trabalho no lixão a céu aberto</h3>
-              <p>
-                Por muitos anos, dezenas de famílias sobreviveram coletando
-                materiais recicláveis no antigo lixão municipal de Baturité,
-                enfrentando condições precárias, riscos à saúde e falta de
-                estrutura.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Item 2 */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="qs-timeline-item"
-          >
-            <div className="qs-timeline-dot" />
-            <div className="qs-timeline-content">
-              <span className="qs-timeline-year">Processo de organização</span>
-              <h3>A união dos catadores</h3>
-              <p>
-                Com o apoio da Secretaria de Meio Ambiente, Autarquia Municipal
-                e parceiros, os catadores começaram a se organizar, buscando
-                reconhecimento, dignidade e melhores condições de trabalho.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Item 3 */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="qs-timeline-item"
-          >
-            <div className="qs-timeline-dot" />
-            <div className="qs-timeline-content">
-              <span className="qs-timeline-year">2024 – 2025</span>
-              <h3>Fechamento do lixão e transição</h3>
-              <p>
-                Com a inauguração do Aterro Sanitário Regional do Maciço de
-                Baturité (2024) e o processo de desativação do antigo lixão, os
-                catadores iniciaram a transição para um modelo mais organizado e
-                sustentável de coleta e triagem.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Item 4 */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="qs-timeline-item"
-          >
-            <div className="qs-timeline-dot qs-timeline-dot--active" />
-            <div className="qs-timeline-content">
-              <span className="qs-timeline-year">10 de julho de 2025</span>
-              <h3>Fundação oficial da ACMRB</h3>
-              <p>
-                Nasce formalmente a Associação dos Catadores de Materiais
-                Recicláveis de Baturité (ACMRB – Reciclaê), consolidando a luta
-                por inclusão social, renda digna e valorização do trabalho
-                ambiental.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Item 5 */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="qs-timeline-item"
-          >
-            <div className="qs-timeline-dot" />
-            <div className="qs-timeline-content">
-              <span className="qs-timeline-year">Hoje e amanhã</span>
-              <h3>Construindo o futuro</h3>
-              <p>
-                A ACMRB segue fortalecendo a coleta seletiva, a educação
-                ambiental, as parcerias ESG e a geração de renda para as
-                famílias associadas, transformando a realidade de Baturité.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ==================== NOSSOS VALORES ==================== */}
-      <section className="qs-section">
-        <div className="qs-section-header">
-          <span className="qs-section-label">Nossos Valores</span>
-          <h2 className="qs-section-title">O que nos guia todos os dias</h2>
-        </div>
-
-        <div className="qs-valores-grid">
-          <Link href="/valores" className="qs-valor-card">
-            <div className="qs-valor-icon">
-              <Heart size={28} />
-            </div>
-            <h3>Dignidade</h3>
-            <p>Valorizamos cada trabalhador e sua história de vida.</p>
-          </Link>
-
-          <Link href="/valores" className="qs-valor-card">
-            <div className="qs-valor-icon">
-              <Leaf size={28} />
-            </div>
-            <h3>Sustentabilidade</h3>
-            <p>Cuidamos do meio ambiente e do futuro das próximas gerações.</p>
-          </Link>
-
-          <Link href="/valores" className="qs-valor-card">
-            <div className="qs-valor-icon">
-              <Handshake size={28} />
-            </div>
-            <h3>Inclusão</h3>
-            <p>Promovemos oportunidades reais de renda e reconhecimento.</p>
-          </Link>
-
-          <Link href="/valores" className="qs-valor-card">
-            <div className="qs-valor-icon">
-              <Scale size={28} />
-            </div>
-            <h3>Transparência</h3>
-            <p>Atuamos com clareza, ética e responsabilidade social.</p>
-          </Link>
-
-          <Link href="/valores" className="qs-valor-card">
-            <div className="qs-valor-icon">
-              <Users size={28} />
-            </div>
-            <h3>Trabalho Coletivo</h3>
-            <p>A união dos catadores é a base de toda a nossa força.</p>
-          </Link>
-
-          <Link href="/valores" className="qs-valor-card">
-            <div className="qs-valor-icon">
-              <Sun size={28} />
-            </div>
-            <h3>Educação Ambiental</h3>
-            <p>
-              Conscientizamos a comunidade sobre a importância da reciclagem.
-            </p>
-          </Link>
-        </div>
-      </section>
-
-      {/* ==================== ASSOCIADOS ==================== */}
-      <section id="associados" className="qs-section">
-        <div className="qs-associados-header">
-          <div>
-            <span className="qs-section-label">Associados</span>
-            <h2 className="qs-section-title">
-              Pessoas que fazem a diferença todos os dias.
-            </h2>
-            <p className="qs-section-desc">
-              Conheça alguns dos associados que contribuem diariamente para o
-              fortalecimento ambiental, social e operacional da ACMRB.
-            </p>
+            {/* Foto + citação (a foto some no celular para encurtar a página) */}
+            <motion.figure
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="qs-hero__media"
+            >
+              <Image
+                src="/images/acmrb-hero.jpg"
+                alt="Catadores da ACMRB em atividade"
+                fill
+                priority
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="qs-hero__img"
+              />
+              {citacao?.texto && (
+                <figcaption className="qs-quote">“{citacao.texto}”</figcaption>
+              )}
+            </motion.figure>
           </div>
+        </section>
 
-          <Link href="/associados" className="qs-btn-primary">
-            Ver todos os associados
-            <ChevronRight size={18} />
-          </Link>
-        </div>
-
-        {loading ? (
-          <div className="qs-loading">Carregando associados...</div>
-        ) : (
-          <div className="qs-associados-grid">
-            {associados.map((item) => (
-              <Link
-                key={item.id}
-                href={`/associados/${item.slug}`}
-                className="qs-associado-card"
-              >
-                <div className="qs-associado-image">
-                  <img src={item.foto_url} alt={item.nome} />
-                  {item.destaque && (
-                    <span className="qs-destaque">Destaque</span>
-                  )}
-                </div>
-                <div className="qs-associado-body">
-                  <h3>{item.nome}</h3>
-                  <p className="qs-cargo">{item.cargo}</p>
-                  <p className="qs-tipo">{item.tipo_associado}</p>
-                  <span className="qs-ver-perfil">
-                    Ver perfil completo
-                    <ArrowRight size={15} />
-                  </span>
-                </div>
-              </Link>
-            ))}
+        {/* ==================== 2. IMPACTO ==================== */}
+        <section className="qs-impacto" aria-label="Nosso impacto em números">
+          <div className="qs-container">
+            <ul className="qs-impacto__grid" aria-busy={esg.loading}>
+              {impacto.map(({ Icone, valor, rotulo }) => (
+                <li key={rotulo} className="qs-impacto__item">
+                  <Icone size={22} aria-hidden="true" className="qs-impacto__icon" />
+                  <span className="qs-impacto__valor">{valor}</span>
+                  <span className="qs-impacto__rotulo">{rotulo}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-        )}
-      </section>
+        </section>
 
-      {/* ==================== IMPACTO ESG ==================== */}
-      <section className="qs-section">
-        <div className="qs-esg-wrapper">
-          <div className="qs-esg-header">
-            <div>
-              <span className="qs-section-label">Impacto ESG</span>
-              <h2 className="qs-section-title">
-                Resultados ambientais e sociais.
+        {/* ==================== 3. HISTÓRIA ==================== */}
+        <section id="historia" className="qs-section" aria-labelledby="qs-historia">
+          <div className="qs-container">
+            <motion.header {...surgir} className="qs-section__header">
+              <span className="qs-label">Nossa história</span>
+              <h2 id="qs-historia" className="qs-section__title">
+                {historia?.titulo}
               </h2>
-            </div>
-            <p className="qs-section-desc">
-              A ACMRB atua diretamente na valorização humana, reciclagem,
-              logística reversa, educação ambiental e redução de impactos
-              ambientais no município de Baturité.
-            </p>
+              {historia?.texto && (
+                <p className="qs-text" lang="pt-BR">
+                  {historia.texto}
+                </p>
+              )}
+            </motion.header>
+
+            {/* Linha do tempo: lista ordenada (semântica de sequência) */}
+            <ol className="qs-timeline">
+              {timeline.map((item, i) => (
+                <motion.li
+                  key={item.ordem}
+                  {...surgir}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  // O marco da fundação recebe destaque visual
+                  className={`qs-timeline__item ${
+                    /funda/i.test(item.titulo ?? "") ? "qs-timeline__item--marco" : ""
+                  }`}
+                >
+                  <span className="qs-timeline__dot" aria-hidden="true" />
+                  <div className="qs-card qs-timeline__card">
+                    {item.rotulo && (
+                      <span className="qs-timeline__rotulo">{item.rotulo}</span>
+                    )}
+                    <h3 className="qs-card__title">{item.titulo}</h3>
+                    <p className="qs-text" lang="pt-BR">
+                      {item.texto}
+                    </p>
+                  </div>
+                </motion.li>
+              ))}
+            </ol>
           </div>
+        </section>
 
-          <div className="qs-esg-grid">
-            <div className="qs-esg-card">
-              <Recycle size={28} />
-              <h3>+12T</h3>
-              <p>Materiais recicláveis destinados corretamente.</p>
+        {/* ==================== 4. MISSÃO, VISÃO E VALORES ==================== */}
+        <section id="valores" className="qs-section qs-section--alt" aria-labelledby="qs-valores">
+          <div className="qs-container">
+            <motion.header {...surgir} className="qs-section__header">
+              <span className="qs-label">
+                {missao || visao ? "Missão, visão e valores" : "Nossos valores"}
+              </span>
+              <h2 id="qs-valores" className="qs-section__title">
+                O que nos guia todos os dias
+              </h2>
+            </motion.header>
+
+            {/* Missão e visão: aparecem só quando cadastradas no banco */}
+            {(missao || visao) && (
+              <div className="qs-mv">
+                {[
+                  { bloco: missao, nome: "Missão", Icone: Target },
+                  { bloco: visao, nome: "Visão", Icone: Eye },
+                ].map(({ bloco, nome, Icone }) =>
+                  bloco?.texto ? (
+                    <motion.article key={nome} {...surgir} className="qs-card qs-mv__card">
+                      <Icone size={26} aria-hidden="true" className="qs-mv__icon" />
+                      <h3 className="qs-card__title">{bloco.titulo || nome}</h3>
+                      <p className="qs-text" lang="pt-BR">
+                        {bloco.texto}
+                      </p>
+                    </motion.article>
+                  ) : null,
+                )}
+              </div>
+            )}
+
+            <ul className="qs-grid qs-grid--3">
+              {valores.map((v, i) => {
+                const Icone = icone(v.icone);
+                return (
+                  <motion.li
+                    key={v.ordem}
+                    {...surgir}
+                    transition={{ duration: 0.5, delay: i * 0.05 }}
+                    className="qs-card"
+                  >
+                    <span className="qs-card__icon" aria-hidden="true">
+                      <Icone size={24} />
+                    </span>
+                    <h3 className="qs-card__title">{v.titulo}</h3>
+                    <p className="qs-text" lang="pt-BR">
+                      {v.texto}
+                    </p>
+                  </motion.li>
+                );
+              })}
+            </ul>
+          </div>
+        </section>
+
+        {/* ==================== 5. O QUE FAZEMOS ==================== */}
+        {atuacao.length > 0 && (
+          <section id="atuacao" className="qs-section" aria-labelledby="qs-atuacao">
+            <div className="qs-container">
+              <motion.header {...surgir} className="qs-section__header">
+                <span className="qs-label">O que fazemos</span>
+                <h2 id="qs-atuacao" className="qs-section__title">
+                  Nossas frentes de atuação
+                </h2>
+              </motion.header>
+
+              <ul className="qs-grid qs-grid--4">
+                {atuacao.map((a, i) => {
+                  const Icone = icone(a.icone);
+                  return (
+                    <motion.li
+                      key={a.ordem}
+                      {...surgir}
+                      transition={{ duration: 0.5, delay: i * 0.05 }}
+                      className="qs-card qs-card--destaque"
+                    >
+                      <span className="qs-card__icon" aria-hidden="true">
+                        <Icone size={24} />
+                      </span>
+                      <h3 className="qs-card__title">{a.titulo}</h3>
+                      <p className="qs-text" lang="pt-BR">
+                        {a.texto}
+                      </p>
+                    </motion.li>
+                  );
+                })}
+              </ul>
             </div>
-            <div className="qs-esg-card">
-              <Users size={28} />
-              <h3>30+</h3>
-              <p>Famílias impactadas diretamente pela associação.</p>
+          </section>
+        )}
+
+        {/* ==================== 6. ASSOCIADOS ==================== */}
+        <section id="associados" className="qs-section qs-section--alt" aria-labelledby="qs-associados">
+          <div className="qs-container">
+            <div className="qs-section__header qs-section__header--row">
+              <div>
+                <span className="qs-label">Associados</span>
+                <h2 id="qs-associados" className="qs-section__title">
+                  Pessoas que fazem a diferença todos os dias
+                </h2>
+                <p className="qs-text" lang="pt-BR">
+                  Conheça alguns dos associados que contribuem diariamente para
+                  o fortalecimento ambiental, social e operacional da ACMRB.
+                </p>
+              </div>
+              <Link href="/associados" className="qs-btn qs-btn--primary">
+                Ver todos os associados
+                <ChevronRight size={18} aria-hidden="true" />
+              </Link>
             </div>
-            <div className="qs-esg-card">
-              <Leaf size={28} />
-              <h3>ESG</h3>
-              <p>
-                Sustentabilidade, inclusão social e responsabilidade ambiental.
-              </p>
+
+            {loading ? (
+              <LoadingState text="Carregando associados..." />
+            ) : associados.length === 0 ? (
+              <EmptyState
+                title="Associados em breve"
+                description={
+                  erro
+                    ? "Não conseguimos carregar a lista agora. Tente novamente mais tarde."
+                    : "A lista de associados ainda está sendo cadastrada."
+                }
+              />
+            ) : (
+              <ul className="qs-grid qs-grid--4">
+                {associados.map((a) => (
+                  <li key={a.id}>
+                    <Link
+                      href={a.slug ? `/associados/${a.slug}` : "/associados"}
+                      className="qs-associado"
+                    >
+                      <div className="qs-associado__foto">
+                        {a.foto_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={a.foto_url} alt={a.nome} loading="lazy" />
+                        ) : (
+                          <span aria-hidden="true">{a.nome.charAt(0).toUpperCase()}</span>
+                        )}
+                        {a.destaque && <span className="qs-associado__selo">Destaque</span>}
+                      </div>
+                      <div className="qs-associado__corpo">
+                        <h3>{a.nome}</h3>
+                        {a.cargo && <p className="qs-associado__cargo">{a.cargo}</p>}
+                        {a.tipo_associado && (
+                          <p className="qs-associado__tipo">{a.tipo_associado}</p>
+                        )}
+                        <span className="qs-associado__link">
+                          Ver perfil <ArrowRight size={15} aria-hidden="true" />
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </section>
+
+        {/* ==================== 7. PARCEIROS ==================== */}
+        <section id="parceiros" className="qs-section" aria-labelledby="qs-parceiros">
+          <div className="qs-container">
+            <motion.header {...surgir} className="qs-section__header">
+              <span className="qs-label">Parceiros</span>
+              <h2 id="qs-parceiros" className="qs-section__title">
+                Quem caminha conosco
+              </h2>
+            </motion.header>
+
+            {loading ? (
+              <LoadingState text="Carregando parceiros..." />
+            ) : parceiros.length === 0 ? (
+              <EmptyState
+                title="Seja o primeiro parceiro"
+                description="Empresas, instituições e órgãos públicos podem apoiar a ACMRB. Fale com a gente pela página de contato."
+              />
+            ) : (
+              <ul className="qs-parceiros">
+                {parceiros.map((p) => {
+                  const conteudo = p.logo_url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={p.logo_url} alt={p.nome} loading="lazy" />
+                  ) : (
+                    <span>{p.nome}</span>
+                  );
+                  return (
+                    <li key={p.id} className="qs-parceiro" title={p.categoria ?? p.nome}>
+                      {p.site_url ? (
+                        <a href={p.site_url} target="_blank" rel="noopener noreferrer">
+                          {conteudo}
+                        </a>
+                      ) : (
+                        conteudo
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </section>
+
+        {/* ==================== 8. PRÓXIMOS PASSOS ==================== */}
+        {futuro && (
+          <section className="qs-section qs-section--alt" aria-labelledby="qs-futuro">
+            <div className="qs-container">
+              <motion.div {...surgir} className="qs-futuro">
+                <span className="qs-badge">
+                  <Sparkles size={16} aria-hidden="true" />
+                  {futuro.rotulo}
+                </span>
+                <h2 id="qs-futuro" className="qs-futuro__title">
+                  {futuro.titulo}
+                </h2>
+                <p className="qs-text qs-text--light" lang="pt-BR">
+                  {futuro.texto}
+                </p>
+              </motion.div>
             </div>
-            <div className="qs-esg-card">
-              <Award size={28} />
-              <h3>2026</h3>
-              <p>Expansão institucional, parcerias e novos projetos.</p>
+          </section>
+        )}
+
+        {/* ==================== 9. VÍDEO E INSTAGRAM ==================== */}
+        <section className="qs-section" aria-labelledby="qs-midia">
+          <div className="qs-container">
+            <motion.header {...surgir} className="qs-section__header">
+              <span className="qs-label">
+                <PlayCircle size={16} aria-hidden="true" /> Vídeo institucional
+              </span>
+              <h2 id="qs-midia" className="qs-section__title">
+                Conheça mais sobre a ACMRB
+              </h2>
+            </motion.header>
+
+            <div className="qs-video">
+              <iframe
+                src="https://www.youtube.com/embed/ITur0JNJZos"
+                title="Vídeo institucional da ACMRB"
+                loading="lazy"
+                allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+
+            <h3 className="qs-subtitle">Acompanhe nossas ações no Instagram</h3>
+            <div className="qs-instagram">
+              {[
+                "https://www.instagram.com/p/DYcEwegMSmg/embed",
+                "https://www.instagram.com/reel/DX4O5DgtuE3/embed",
+                "https://www.instagram.com/p/DW90q-MF38J/embed",
+              ].map((src, i) => (
+                <iframe
+                  key={src}
+                  src={src}
+                  title={`Publicação ${i + 1} da ACMRB no Instagram`}
+                  loading="lazy"
+                />
+              ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ==================== AÇÕES FUTURAS ==================== */}
-      <section className="qs-section">
-        <div className="qs-future">
-          <span className="qs-future-badge">
-            <Sparkles size={16} />
-            Próximos passos
-          </span>
-
-          <h2>Expansão institucional e novas ações ambientais.</h2>
-
-          <p>
-            A ACMRB busca ampliar sua atuação com educação ambiental, coleta
-            seletiva, novas parcerias ESG, capacitações técnicas,
-            profissionalização operacional e fortalecimento da economia circular
-            em Baturité.
-          </p>
-
-          <div className="qs-future-grid">
-            <div className="qs-future-item">
-              <BadgeCheck size={22} />
-              <h3>Educação ambiental</h3>
-            </div>
-            <div className="qs-future-item">
-              <ShieldCheck size={22} />
-              <h3>Projetos ESG</h3>
-            </div>
-            <div className="qs-future-item">
-              <Recycle size={22} />
-              <h3>Coleta seletiva</h3>
-            </div>
-            <div className="qs-future-item">
-              <Building2 size={22} />
-              <h3>Novas parcerias</h3>
-            </div>
+        {/* ==================== 10. CHAMADA FINAL ==================== */}
+        <section className="qs-section" aria-labelledby="qs-cta">
+          <div className="qs-container">
+            <motion.div {...surgir} className="qs-cta">
+              <div>
+                <h2 id="qs-cta" className="qs-cta__title">
+                  Faça parte dessa transformação
+                </h2>
+                <p className="qs-text qs-text--light" lang="pt-BR">
+                  Seja parceiro, voluntário, doador ou apoiador. Juntos, podemos
+                  construir uma Baturité mais limpa, justa e sustentável.
+                </p>
+              </div>
+              <div className="qs-actions qs-actions--cta">
+                <Link href="/#contato" className="qs-btn qs-btn--light">
+                  Fale conosco
+                  <ArrowRight size={18} aria-hidden="true" />
+                </Link>
+                <Link href="/associados" className="qs-btn qs-btn--ghost">
+                  <Users size={18} aria-hidden="true" />
+                  Conheça os associados
+                </Link>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
-      {/* ==================== VÍDEO ==================== */}
-      <section className="qs-section">
-        <div className="qs-video-wrapper">
-          <div className="qs-video-header">
-            <div className="qs-video-label">
-              <PlayCircle size={20} />
-              Vídeo institucional
-            </div>
-            <h2>Conheça mais sobre a ACMRB.</h2>
-          </div>
-          <div className="qs-video">
-            <iframe
-              src="https://www.youtube.com/embed/ITur0JNJZos"
-              title="Vídeo ACMRB"
-              allowFullScreen
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== INSTAGRAM ==================== */}
-      <section className="qs-section">
-        <div className="qs-instagram-header">
-          <div>
-            <span className="qs-section-label">Instagram</span>
-            <h2 className="qs-section-title">
-              Acompanhe nossas ações ambientais.
-            </h2>
-          </div>
-          <a
-            href="https://instagram.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="qs-btn-dark"
-          >
-            <Globe size={18} />
-            Ver Instagram
-          </a>
-        </div>
-
-        <div className="qs-instagram-grid">
-          <iframe src="https://www.instagram.com/p/DYcEwegMSmg/embed" />
-          <iframe src="https://www.instagram.com/reel/DX4O5DgtuE3/embed" />
-          <iframe src="https://www.instagram.com/p/DW90q-MF38J/embed" />
-        </div>
-      </section>
-
-      {/* ==================== FOOTER ==================== */}
       <Footer />
-    </main>
+    </>
   );
 }
