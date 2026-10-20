@@ -1,0 +1,53 @@
+============================================
+ACMRB PLATFORM - COMO RODAR O PROJETO
+============================================
+
+Este arquivo registra o que foi necessário instalar e os comandos para rodar o projeto no Linux (Ubuntu).
+
+--------------------------------------------
+1. O QUE FOI INSTALADO (uma vez só)
+--------------------------------------------
+- curl
+- nvm (Node Version Manager)
+- Node.js LTS (versão v24.22.0 na época)
+- npm (vem junto com o Node)
+
+Comandos usados para instalar (só precisa rodar se for outro computador ou formatar):
+
+sudo apt update
+sudo apt install -y curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+
+--------------------------------------------
+2. COMANDOS PARA RODAR O PROJETO (sempre)
+--------------------------------------------
+cd ~/Documentos/1\ -\ Meus\ Projetos\ Programação/acmrb-platform
+npm install          # só se ainda não tiver node_modules ou se der erro de dependência
+npm run dev
+
+Depois abra no navegador: http://localhost:3000
+
+--------------------------------------------
+3. SE DER ERRO DE lightningcss OU DEPENDÊNCIAS
+--------------------------------------------
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
+
+--------------------------------------------
+4. BRANCH ATUAL DE TRABALHO
+--------------------------------------------
+Estamos trabalhando na branch: melhorias-acmrb
+A branch main continua intacta.
+
+Para trocar de branch no terminal:
+git checkout melhorias-acmrb
+
+--------------------------------------------
+5. OBSERVAÇÕES
+--------------------------------------------
+- Node e nvm ficam instalados permanentemente no computador.
+- Não precisa reinstalar toda vez que for rodar o projeto.
+- Se o terminal não reconhecer o nvm depois de reiniciar o PC, rode: source ~/.bashrc
