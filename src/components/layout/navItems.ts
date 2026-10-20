@@ -7,7 +7,7 @@ export interface NavItem {
 export const navigation: NavItem[] = [
   { id: "inicio", name: "Início", href: "/" },
   { id: "quem-somos", name: "Quem Somos", href: "#quem-somos" },
-  { id: "acoes", name: "Nossas Ações", href: "#projetos" },
+  // "Nossas Ações" removido: não levava a nenhuma seção existente
   { id: "transparencia", name: "Transparência", href: "#transparencia" },
   { id: "noticias", name: "Notícias", href: "#noticias" },
   { id: "denuncias", name: "Denúncias", href: "#denuncias" }, // rola até a seção de denúncia ambiental
