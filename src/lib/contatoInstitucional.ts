@@ -10,17 +10,17 @@ export const CONTATO = {
   /** Número no formato internacional, só dígitos (wa.me / tel:) */
   whatsappNumero: "5585989214864",
   instagramUsuario: "reciclaae",
-  email: "contato@acmrb.org",
+  email: "reciclae25@gmail.com",
   cnpj: "62.166.052/0001-90",
-  endereco: "Rua Kaolim, 252 – Mangá, Baturité/CE",
+  endereco: "Rua Kaolim, 252 – Manga, Baturité/CE",
   /** Endereço em texto simples para buscas no Google Maps */
-  enderecoBusca: "Rua Kaolim, 252, Mangá, Baturité, CE",
+  enderecoBusca: "Rua Kaolim, 252, Manga, Baturité, CE",
   fundacao: "10/07/2025",
 } as const;
 
 /**
  * Coordenada da sede no mapa institucional.
- * ATENÇÃO: valor aproximado (nível do bairro Mangá, obtido pela busca de
+ * ATENÇÃO: valor aproximado (nível do bairro Manga, obtido pela busca de
  * endereço). Para ajustar, abra o Google Maps no local exato, clique com o
  * botão direito e copie "latitude, longitude" para cá.
  */

@@ -28,7 +28,7 @@ export interface ResultadoGeo {
 }
 
 export interface ConsultaGeo {
-  /** texto livre (ex.: "Rua Kaolim, 252, Mangá") */
+  /** texto livre (ex.: "Rua Kaolim, 252, Manga") */
   q?: string;
   logradouro?: string;
   numero?: string;
