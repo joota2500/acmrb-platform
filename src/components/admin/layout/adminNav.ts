@@ -1,0 +1,100 @@
+/**
+ * Navegação do painel admin (fonte única)
+ * ------------------------------------------------------------
+ * Cada item tem um "id" que vai na URL (?secao=associados), o rótulo,
+ * o ícone (lucide) e se a seção já está implementada. Itens com
+ * pronto = false mostram o selo "em breve".
+ * "rapido" = aparece na barra inferior do celular.
+ */
+
+import {
+  CalendarDays,
+  FileText,
+  FolderKanban,
+  Handshake,
+  LayoutDashboard,
+  Leaf,
+  Newspaper,
+  PackageSearch,
+  Settings,
+  ShieldAlert,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+
+export type SecaoId =
+  | "dashboard"
+  | "noticias"
+  | "projetos"
+  | "parceiros"
+  | "associados"
+  | "denuncias"
+  | "materiais"
+  | "coletas"
+  | "esg"
+  | "relatorios"
+  | "configuracoes";
+
+export interface ItemNav {
+  id: SecaoId;
+  rotulo: string;
+  icone: LucideIcon;
+  pronto: boolean;
+  rapido?: boolean;
+  descricao: string;
+}
+
+export interface GrupoNav {
+  titulo: string;
+  itens: ItemNav[];
+}
+
+export const GRUPOS_NAV: GrupoNav[] = [
+  {
+    titulo: "Visão geral",
+    itens: [
+      { id: "dashboard", rotulo: "Dashboard", icone: LayoutDashboard, pronto: true, rapido: true, descricao: "Resumo da operação e indicadores" },
+    ],
+  },
+  {
+    titulo: "Conteúdo",
+    itens: [
+      { id: "noticias", rotulo: "Notícias", icone: Newspaper, pronto: true, rapido: true, descricao: "Publicações do site" },
+      { id: "projetos", rotulo: "Projetos", icone: FolderKanban, pronto: false, descricao: "Projetos e campanhas" },
+      { id: "parceiros", rotulo: "Parceiros", icone: Handshake, pronto: true, descricao: "Empresas e instituições parceiras" },
+    ],
+  },
+  {
+    titulo: "Pessoas",
+    itens: [
+      { id: "associados", rotulo: "Associados", icone: Users, pronto: true, rapido: true, descricao: "Cadastro e gestão de associados" },
+      { id: "denuncias", rotulo: "Denúncias", icone: ShieldAlert, pronto: false, descricao: "Denúncias ambientais recebidas" },
+    ],
+  },
+  {
+    titulo: "Operação",
+    itens: [
+      { id: "materiais", rotulo: "Materiais", icone: PackageSearch, pronto: true, rapido: true, descricao: "Registros de materiais recicláveis" },
+      { id: "coletas", rotulo: "Coletas", icone: CalendarDays, pronto: false, descricao: "Agenda de coletas" },
+      { id: "esg", rotulo: "Indicadores ESG", icone: Leaf, pronto: true, descricao: "Métricas ambientais e sociais" },
+    ],
+  },
+  {
+    titulo: "Sistema",
+    itens: [
+      { id: "relatorios", rotulo: "Relatórios", icone: FileText, pronto: false, descricao: "Relatórios e exportações" },
+      { id: "configuracoes", rotulo: "Configurações", icone: Settings, pronto: false, descricao: "Preferências do painel" },
+    ],
+  },
+];
+
+export const ITENS_NAV: ItemNav[] = GRUPOS_NAV.flatMap((g) => g.itens);
+
+export const SECAO_PADRAO: SecaoId = "dashboard";
+
+/** Converte o valor da URL em uma seção válida (ou a padrão). */
+export function secaoValida(valor: string | null): SecaoId {
+  return (ITENS_NAV.find((i) => i.id === valor)?.id ?? SECAO_PADRAO) as SecaoId;
+}
+
+export const itemPorId = (id: SecaoId) => ITENS_NAV.find((i) => i.id === id)!;

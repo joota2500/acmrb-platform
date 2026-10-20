@@ -1,120 +1,198 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+/**
+ * Página /admin — painel administrativo
+ * ------------------------------------------------------------
+ * Permissões (INALTERADAS): enquanto carrega mostra "Validando
+ * permissões"; sem login ou com perfil diferente de "admin" volta para
+ * "/". O papel exibido vem de isGod (ADM DEUS) do AuthContext.
+ *
+ * Navegação:
+ *  - Seção ativa na URL (?secao=associados): recarregar e o botão
+ *    "voltar" do celular funcionam.
+ *  - Barra lateral recolhível no desktop (salva no localStorage).
+ *  - Gaveta no tablet/celular e barra rápida inferior no celular.
+ *  - Sair pede confirmação.
+ *
+ * Responsividade: ver src/styles/admin-shell.css.
+ */
+
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Clock3, ShieldCheck } from "lucide-react";
+
 import { useAuth } from "@/contexts/AuthContext";
-import { LogOut, ShieldCheck } from "lucide-react";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 import AdminSidebar from "@/components/admin/layout/AdminSidebar";
 import AdminContainer from "@/components/admin/layout/AdminContainer";
 import AdminContent from "@/components/admin/layout/AdminContent";
 import AdminHeader from "@/components/admin/layout/AdminHeader";
+import AdminBottomNav from "@/components/admin/layout/AdminBottomNav";
+import { itemPorId, secaoValida, type SecaoId } from "@/components/admin/layout/adminNav";
 
-/* Sections */
+/* Seções */
 import DashboardSection from "@/components/admin/sections/DashboardSection";
 import AssociadosSection from "@/components/admin/sections/AssociadosSection";
 import DenunciasSection from "@/components/admin/sections/DenunciasSection";
 import ParceirosSection from "@/components/admin/sections/ParceirosSection";
 import ProjetosSection from "@/components/admin/sections/ProjetosSection";
 import ESGSection from "@/components/admin/sections/ESGSection";
-import ContatoSection from "@/components/admin/sections/ContatoSection";
 import ConfiguracoesSection from "@/components/admin/sections/ConfiguracoesSection";
 import NoticiasSection from "@/components/admin/sections/NoticiasSection";
 import MaterialsSection from "@/components/admin/materials/MaterialsSection";
 
-export default function AdminPage() {
+const CHAVE_RECOLHIDA = "acmrb-admin-menu-recolhido";
+
+/** Tela de espera (mesma mensagem de antes) */
+function Validando() {
+  return (
+    <div className="min-h-dvh flex items-center justify-center bg-[#F5F7F4] p-4">
+      <div className="bg-white rounded-3xl border border-black/5 px-8 py-7 shadow-sm text-center max-w-md w-full">
+        <div className="w-14 h-14 rounded-2xl bg-[#E8F3EE] text-[#2E5E4E] flex items-center justify-center mx-auto mb-5">
+          <ShieldCheck size={24} />
+        </div>
+        <h2 className="text-2xl font-black text-[#111827]">Carregando painel</h2>
+        <p className="text-zinc-500 mt-3 text-sm leading-7">Validando permissões administrativas...</p>
+      </div>
+    </div>
+  );
+}
+
+/** Aviso para seções ainda sem tela própria (Coletas, Relatórios) */
+function EmBreve({ titulo, descricao }: { titulo: string; descricao: string }) {
+  return (
+    <div className="bg-white rounded-3xl border border-black/5 p-6 sm:p-10 text-center">
+      <span className="w-14 h-14 rounded-2xl bg-[#DDF5EC] text-[#2E5E4E] flex items-center justify-center mx-auto">
+        <Clock3 size={26} aria-hidden="true" />
+      </span>
+      <h2 className="mt-4 text-xl sm:text-2xl font-black text-zinc-900">{titulo}: em breve</h2>
+      <p className="mt-2 text-zinc-500 max-w-md mx-auto">{descricao}. Esta seção ainda está em desenvolvimento.</p>
+    </div>
+  );
+}
+
+function PainelAdmin() {
   const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
   const { user, perfil, loading, logout, isGod } = useAuth();
 
-  const [activeSection, setActiveSection] = useState("Dashboard");
+  const ativa = secaoValida(params.get("secao"));
+  const item = itemPorId(ativa);
 
+  const [recolhida, setRecolhida] = useState(false);
+  const [gaveta, setGaveta] = useState(false);
+  const [confirmarSaida, setConfirmarSaida] = useState(false);
+
+  // Permissões: mesma regra da versão anterior
   useEffect(() => {
     if (loading) return;
-
     if (!user) {
       router.push("/");
       return;
     }
-
     if (perfil?.tipo !== "admin") {
       router.push("/");
       return;
     }
   }, [user, perfil, loading, router]);
 
-  if (loading || !perfil) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F7F4]">
-        <div className="bg-white rounded-4xl border border-black/5 px-8 py-7 shadow-sm text-center max-w-md w-full">
-          <div className="w-14 h-14 rounded-2xl bg-[#E8F3EE] text-[#2E5E4E] flex items-center justify-center mx-auto mb-5">
-            <ShieldCheck size={24} />
-          </div>
-          <h2 className="text-2xl font-black text-[#111827]">
-            Carregando painel
-          </h2>
-          <p className="text-zinc-500 mt-3 text-sm leading-7">
-            Validando permissões administrativas...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Preferência da barra recolhida (lida só no navegador)
+  useEffect(() => {
+    setRecolhida(localStorage.getItem(CHAVE_RECOLHIDA) === "1");
+  }, []);
+
+  const alternarRecolhida = () => {
+    setRecolhida((v) => {
+      localStorage.setItem(CHAVE_RECOLHIDA, v ? "0" : "1");
+      return !v;
+    });
+  };
+
+  // Troca de seção: grava na URL (push → o "voltar" volta à seção anterior)
+  const selecionar = useCallback(
+    (id: SecaoId) => {
+      if (id === ativa) return;
+      router.push(`${pathname}?secao=${id}`, { scroll: false });
+      window.scrollTo({ top: 0 });
+    },
+    [ativa, pathname, router],
+  );
+
+  const fecharGaveta = useCallback(() => setGaveta(false), []);
+  const cancelarSaida = useCallback(() => setConfirmarSaida(false), []);
+
+  if (loading || !perfil) return <Validando />;
+
+  const usuario = {
+    nome: perfil.nome ?? "Administrador",
+    email: user?.email ?? "",
+    papel: isGod ? "ADM DEUS" : "Administrador",
+  };
 
   return (
-    <AdminContainer>
+    <AdminContainer recolhida={recolhida}>
       <AdminSidebar
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
+        ativa={ativa}
+        onSelecionar={selecionar}
+        recolhida={recolhida}
+        onAlternarRecolhida={alternarRecolhida}
+        gavetaAberta={gaveta}
+        onFecharGaveta={fecharGaveta}
+        usuario={usuario}
+        onSair={() => setConfirmarSaida(true)}
       />
 
-      <AdminContent>
-        <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-8 mb-10">
-          {/* Header */}
-          <div className="flex-1 min-w-0">
-            <AdminHeader
-              title="Painel Administrativo"
-              description="Gestão completa da ACMRB - Transparência, Operações e Impacto ESG"
-            />
+      <div className="admin-coluna">
+        <AdminHeader
+          titulo={item.rotulo}
+          descricao={item.descricao}
+          emBreve={!item.pronto}
+          onAbrirGaveta={() => setGaveta(true)}
+          gavetaAberta={gaveta}
+          usuario={usuario}
+          onSair={() => setConfirmarSaida(true)}
+        />
 
-            {/* User Info */}
-            <div className="mt-6 bg-white border border-black/5 rounded-4xl px-6 py-6 flex items-center gap-5">
-              <div className="w-14 h-14 rounded-3xl bg-linear-to-br from-emerald-700 to-teal-600 text-white flex items-center justify-center font-black text-2xl shadow-lg">
-                {perfil.nome?.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-wider text-emerald-600 font-bold">
-                  {isGod ? "ADM DEUS" : "ADMINISTRADOR"}
-                </p>
-                <p className="font-black text-zinc-900 mt-1">{perfil.nome}</p>
-                <p className="text-sm text-zinc-500">{user?.email}</p>
-              </div>
-            </div>
-          </div>
+        <AdminContent>
+          {ativa === "dashboard" && <DashboardSection />}
+          {ativa === "noticias" && <NoticiasSection />}
+          {ativa === "projetos" && <ProjetosSection />}
+          {ativa === "parceiros" && <ParceirosSection />}
+          {ativa === "associados" && <AssociadosSection />}
+          {ativa === "denuncias" && <DenunciasSection />}
+          {ativa === "materiais" && <MaterialsSection />}
+          {ativa === "coletas" && <EmBreve titulo="Coletas" descricao={item.descricao} />}
+          {ativa === "esg" && <ESGSection />}
+          {ativa === "relatorios" && <EmBreve titulo="Relatórios" descricao={item.descricao} />}
+          {ativa === "configuracoes" && <ConfiguracoesSection />}
+        </AdminContent>
+      </div>
 
-          {/* Logout */}
-          <button
-            onClick={logout}
-            className="h-14 px-8 rounded-3xl bg-red-500 hover:bg-red-600 text-white font-bold flex items-center gap-3 transition-all active:scale-95"
-          >
-            <LogOut size={20} />
-            Sair do Painel
-          </button>
-        </div>
+      <AdminBottomNav ativa={ativa} onSelecionar={selecionar} onMais={() => setGaveta(true)} />
 
-        {/* Content */}
-        <div className="pb-10">
-          {activeSection === "Dashboard" && <DashboardSection />}
-          {activeSection === "Associados" && <AssociadosSection />}
-          {activeSection === "Notícias" && <NoticiasSection />}
-          {activeSection === "Denúncias" && <DenunciasSection />}
-          {activeSection === "Parceiros" && <ParceirosSection />}
-          {activeSection === "Projetos" && <ProjetosSection />}
-          {activeSection === "Indicadores ESG" && <ESGSection />}
-          {activeSection === "Materiais" && <MaterialsSection />}
-          {activeSection === "Contato" && <ContatoSection />}
-          {activeSection === "Configurações" && <ConfiguracoesSection />}
-        </div>
-      </AdminContent>
+      <ConfirmDialog
+        aberto={confirmarSaida}
+        titulo="Sair do painel?"
+        mensagem="Você precisará entrar novamente para acessar o painel administrativo."
+        textoConfirmar="Sair"
+        perigo
+        onConfirmar={() => {
+          setConfirmarSaida(false);
+          logout();
+        }}
+        onCancelar={cancelarSaida}
+      />
     </AdminContainer>
+  );
+}
+
+// useSearchParams exige Suspense no Next 15
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<Validando />}>
+      <PainelAdmin />
+    </Suspense>
   );
 }

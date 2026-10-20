@@ -1,697 +1,279 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-} from "react";
+/**
+ * AdminSidebar — navegação do painel
+ * ------------------------------------------------------------
+ * - Desktop (>=1024px): barra fixa à esquerda, 260px, que pode ser
+ *   recolhida para só ícones (80px). A preferência fica salva no
+ *   localStorage (controlado pela página).
+ * - Tablet e celular (<1024px): gaveta lateral (off-canvas) com fundo
+ *   escuro. Fecha com Esc, clique fora ou ao escolher um item; trava a
+ *   rolagem da página e devolve o foco ao botão que abriu.
+ * Itens agrupados (adminNav.ts), com estado ativo, foco visível e selo
+ * "em breve" nas seções ainda não implementadas.
+ */
 
-import {
-  LayoutDashboard,
-  Users,
-  ShieldAlert,
-  Handshake,
-  FolderKanban,
-  Leaf,
-  CalendarDays,
-  FileText,
-  Newspaper,
-  Settings,
-  ChevronRight,
-  PackageSearch,
-  Menu,
-  X,
-} from "lucide-react";
+import { useEffect, useRef } from "react";
+import { ChevronsLeft, ChevronsRight, LogOut, X } from "lucide-react";
 
-const items = [
+import { GRUPOS_NAV, type SecaoId } from "./adminNav";
 
-  {
-    icon: LayoutDashboard,
-    label: "Dashboard",
-  },
-
-  {
-    icon: Newspaper,
-    label: "Notícias",
-  },
-
-  {
-    icon: Users,
-    label: "Associados",
-  },
-
-  {
-    icon: ShieldAlert,
-    label: "Denúncias",
-  },
-
-  {
-    icon: Handshake,
-    label: "Parceiros",
-  },
-
-  {
-    icon: PackageSearch,
-    label: "Materiais",
-  },
-
-  {
-    icon: FolderKanban,
-    label: "Projetos",
-  },
-
-  {
-    icon: Leaf,
-    label: "Indicadores ESG",
-  },
-
-  {
-    icon: CalendarDays,
-    label: "Coletas",
-  },
-
-  {
-    icon: FileText,
-    label: "Relatórios",
-  },
-
-  {
-    icon: Settings,
-    label: "Configurações",
-  },
-
-];
+interface Usuario {
+  nome: string;
+  email: string;
+  papel: string;
+}
 
 type Props = {
-
-  activeSection: string;
-
-  setActiveSection: (
-    value: string,
-  ) => void;
-
+  ativa: SecaoId;
+  onSelecionar: (id: SecaoId) => void;
+  recolhida: boolean;
+  onAlternarRecolhida: () => void;
+  gavetaAberta: boolean;
+  onFecharGaveta: () => void;
+  usuario: Usuario;
+  onSair: () => void;
 };
 
-export default function AdminSidebar({
-
-  activeSection,
-
-  setActiveSection,
-
-}: Props) {
-
-  const [
-    mobileOpen,
-    setMobileOpen,
-  ] = useState(false);
-
-  /* =========================
-     LOCK BODY SCROLL
-  ========================= */
-
-  useEffect(() => {
-
-    if (mobileOpen) {
-
-      document.body.style.overflow =
-        "hidden";
-
-    } else {
-
-      document.body.style.overflow =
-        "auto";
-
-    }
-
-    return () => {
-
-      document.body.style.overflow =
-        "auto";
-
-    };
-
-  }, [mobileOpen]);
-
-  function handleChangeSection(
-    section: string,
-  ) {
-
-    setActiveSection(
-      section,
-    );
-
-    setMobileOpen(
-      false,
-    );
-
-  }
-
-  function renderMenu() {
-
-    return (
-
-      <div
-        className="
-          flex
-          flex-col
-          gap-2
-        "
+/** Marca + nome do painel */
+function Marca({ compacta }: { compacta?: boolean }) {
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <span
+        className="w-11 h-11 shrink-0 rounded-2xl bg-linear-to-br from-emerald-500 to-[#2E5E4E] text-white flex items-center justify-center text-2xl shadow-lg"
+        aria-hidden="true"
       >
+        ♻
+      </span>
+      {!compacta && (
+        <span className="min-w-0 leading-tight">
+          <span className="block font-black text-white text-lg tracking-tight">ACMRB</span>
+          <span className="block text-xs text-emerald-200/80 truncate">Painel administrativo</span>
+        </span>
+      )}
+    </div>
+  );
+}
 
-        {items.map((item) => {
+/** Lista agrupada de itens (usada na barra fixa e na gaveta) */
+function Menu({
+  ativa,
+  onSelecionar,
+  compacta,
+}: {
+  ativa: SecaoId;
+  onSelecionar: (id: SecaoId) => void;
+  compacta?: boolean;
+}) {
+  return (
+    <nav aria-label="Seções do painel" className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+      {GRUPOS_NAV.map((grupo) => (
+        <div key={grupo.titulo}>
+          {compacta ? (
+            <div className="mx-3 mb-2 h-px bg-white/10" aria-hidden="true" />
+          ) : (
+            <p className="px-3 mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-200/60">
+              {grupo.titulo}
+            </p>
+          )}
+          <ul className="space-y-1">
+            {grupo.itens.map((item) => {
+              const Icone = item.icone;
+              const ativo = item.id === ativa;
+              return (
+                <li key={item.id}>
+                  <button
+                    type="button"
+                    onClick={() => onSelecionar(item.id)}
+                    aria-current={ativo ? "page" : undefined}
+                    title={compacta ? item.rotulo : undefined}
+                    aria-label={compacta ? item.rotulo : undefined}
+                    className={`group w-full min-h-11 rounded-xl flex items-center gap-3 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
+                      compacta ? "justify-center px-0" : "px-3"
+                    } ${
+                      ativo
+                        ? "bg-white text-[#21463A] shadow-md"
+                        : "text-emerald-50/85 hover:bg-white/10 hover:text-white"
+                    }`}
+                  >
+                    <Icone size={20} aria-hidden="true" className="shrink-0" />
+                    {!compacta && (
+                      <>
+                        <span className="flex-1 text-left text-sm font-semibold truncate">
+                          {item.rotulo}
+                        </span>
+                        {!item.pronto && (
+                          <span
+                            className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
+                              ativo ? "bg-[#DDF5EC] text-[#2E5E4E]" : "bg-white/10 text-emerald-200"
+                            }`}
+                          >
+                            em breve
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
+    </nav>
+  );
+}
 
-          const Icon =
-            item.icon;
-
-          const active =
-            activeSection ===
-            item.label;
-
-          return (
-
-            <button
-              key={item.label}
-              onClick={() =>
-                handleChangeSection(
-                  item.label,
-                )
-              }
-              className={`
-                group
-                min-h-15
-                rounded-2xl
-                px-5
-                flex
-                items-center
-                justify-between
-                transition-all
-                duration-300
-                text-left
-
-                ${
-                  active
-                    ? `
-                      bg-[#2E5E4E]
-                      text-white
-                      shadow-xl
-                      shadow-emerald-900/10
-                    `
-                    : `
-                      text-[#374151]
-                      hover:bg-[#F3F6F4]
-                      hover:text-[#2E5E4E]
-                    `
-                }
-              `}
-            >
-
-              <div
-                className="
-                  flex
-                  items-center
-                  gap-4
-                  min-w-0
-                "
-              >
-
-                <Icon
-                  size={21}
-                  className="
-                    shrink-0
-                  "
-                />
-
-                <span
-                  className="
-                    font-semibold
-                    text-[15px]
-                    truncate
-                  "
-                >
-
-                  {item.label}
-
-                </span>
-
-              </div>
-
-              <ChevronRight
-                size={18}
-                className={`
-                  shrink-0
-                  transition-all
-
-                  ${
-                    active
-                      ? `
-                        opacity-100
-                        translate-x-0
-                      `
-                      : `
-                        opacity-0
-                        -translate-x-2
-                        group-hover:opacity-100
-                        group-hover:translate-x-0
-                      `
-                  }
-                `}
-              />
-
-            </button>
-
-          );
-
-        })}
-
+/** Cartão do usuário + sair */
+function CartaoUsuario({
+  usuario,
+  onSair,
+  compacta,
+}: {
+  usuario: Usuario;
+  onSair: () => void;
+  compacta?: boolean;
+}) {
+  const inicial = (usuario.nome || "A").charAt(0).toUpperCase();
+  if (compacta) {
+    return (
+      <div className="p-3 border-t border-white/10 flex flex-col items-center gap-2">
+        <span className="w-11 h-11 rounded-2xl bg-emerald-500 text-white font-black flex items-center justify-center" title={usuario.nome}>
+          {inicial}
+        </span>
+        <button
+          type="button"
+          onClick={onSair}
+          aria-label="Sair do painel"
+          title="Sair do painel"
+          className="w-11 h-11 rounded-xl text-red-200 hover:bg-red-500/20 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-red-300"
+        >
+          <LogOut size={20} />
+        </button>
       </div>
-
     );
-
   }
+  return (
+    <div className="p-3 border-t border-white/10">
+      <div className="rounded-2xl bg-white/5 p-3 flex items-center gap-3">
+        <span className="w-11 h-11 shrink-0 rounded-2xl bg-emerald-500 text-white font-black flex items-center justify-center text-lg">
+          {inicial}
+        </span>
+        <div className="min-w-0 flex-1">
+          <span className="inline-block text-[10px] font-black uppercase tracking-wider bg-amber-400 text-[#111827] px-2 py-0.5 rounded-full">
+            {usuario.papel}
+          </span>
+          <p className="mt-1 text-sm font-bold text-white truncate">{usuario.nome}</p>
+          <p className="text-xs text-emerald-200/70 truncate" title={usuario.email}>
+            {usuario.email}
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={onSair}
+        className="mt-2 w-full min-h-11 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-red-100 bg-red-500/15 hover:bg-red-500/30 focus-visible:outline-2 focus-visible:outline-red-300"
+      >
+        <LogOut size={18} aria-hidden="true" /> Sair do painel
+      </button>
+    </div>
+  );
+}
+
+export default function AdminSidebar({
+  ativa,
+  onSelecionar,
+  recolhida,
+  onAlternarRecolhida,
+  gavetaAberta,
+  onFecharGaveta,
+  usuario,
+  onSair,
+}: Props) {
+  const fecharRef = useRef<HTMLButtonElement>(null);
+
+  // Gaveta: Esc fecha, trava rolagem, foco no botão fechar (e volta ao sair)
+  useEffect(() => {
+    if (!gavetaAberta) return;
+    const anterior = document.activeElement as HTMLElement | null;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    fecharRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onFecharGaveta();
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = overflow;
+      anterior?.focus?.();
+    };
+  }, [gavetaAberta, onFecharGaveta]);
+
+  const escolherNaGaveta = (id: SecaoId) => {
+    onSelecionar(id);
+    onFecharGaveta();
+  };
 
   return (
-
     <>
-
-      {/* MOBILE TOPBAR */}
-
-      <div
-        className="
-          lg:hidden
-          sticky
-          top-0
-          z-50
-          bg-white/95
-          backdrop-blur-xl
-          border-b
-          border-black/5
-          px-5
-          py-4
-          flex
-          items-center
-          justify-between
-        "
-      >
-
-        <div
-          className="
-            flex
-            items-center
-            gap-3
-            min-w-0
-          "
-        >
-
-          <div
-            className="
-              w-11
-              h-11
-              rounded-2xl
-              bg-linear-to-br
-              from-[#2E5E4E]
-              to-[#4F8A73]
-              flex
-              items-center
-              justify-center
-              text-white
-              font-black
-              shrink-0
-            "
+      {/* ===== Desktop: barra fixa (some abaixo de 1024px) ===== */}
+      <aside className="admin-sidebar" aria-label="Menu do painel">
+        <div className={`h-20 flex items-center border-b border-white/10 ${recolhida ? "justify-center px-2" : "justify-between px-4"}`}>
+          <Marca compacta={recolhida} />
+          {!recolhida && (
+            <button
+              type="button"
+              onClick={onAlternarRecolhida}
+              aria-label="Recolher menu"
+              title="Recolher menu"
+              className="w-10 h-10 rounded-xl text-emerald-100 hover:bg-white/10 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-emerald-300"
+            >
+              <ChevronsLeft size={20} />
+            </button>
+          )}
+        </div>
+        {recolhida && (
+          <button
+            type="button"
+            onClick={onAlternarRecolhida}
+            aria-label="Expandir menu"
+            title="Expandir menu"
+            className="mx-auto mt-3 w-11 h-11 rounded-xl text-emerald-100 hover:bg-white/10 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-emerald-300"
           >
-
-            ♻
-
-          </div>
-
-          <div className="min-w-0">
-
-            <h2
-              className="
-                font-black
-                text-[#1F2937]
-                truncate
-              "
-            >
-
-              ACMRB
-
-            </h2>
-
-            <p
-              className="
-                text-xs
-                text-zinc-500
-                truncate
-              "
-            >
-
-              Plataforma ESG
-
-            </p>
-
-          </div>
-
-        </div>
-
-        <button
-          onClick={() =>
-            setMobileOpen(
-              !mobileOpen,
-            )
-          }
-          className="
-            w-12
-            h-12
-            rounded-2xl
-            bg-[#F3F6F4]
-            hover:bg-[#E8EFEB]
-            transition
-            flex
-            items-center
-            justify-center
-            shrink-0
-          "
-        >
-
-          {mobileOpen
-            ? <X size={22} />
-            : <Menu size={22} />}
-
-        </button>
-
-      </div>
-
-      {/* MOBILE SIDEBAR */}
-
-      {mobileOpen && (
-
-        <div
-          className="
-            lg:hidden
-            fixed
-            inset-0
-            z-50
-            bg-black/40
-            backdrop-blur-sm
-          "
-        >
-
-          {/* OVERLAY */}
-
-          <div
-            onClick={() =>
-              setMobileOpen(
-                false,
-              )
-            }
-            className="
-              absolute
-              inset-0
-            "
-          />
-
-          {/* SIDEBAR */}
-
-          <aside
-            className="
-              relative
-              w-[85%]
-              max-w-85
-              h-full
-              bg-white
-              shadow-2xl
-              overflow-y-auto
-              flex
-              flex-col
-            "
-          >
-
-            {/* HEADER */}
-
-            <div
-              className="
-                p-6
-                border-b
-                border-black/5
-                flex
-                items-center
-                justify-between
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  items-center
-                  gap-4
-                "
-              >
-
-                <div
-                  className="
-                    w-14
-                    h-14
-                    rounded-3xl
-                    bg-linear-to-br
-                    from-[#2E5E4E]
-                    to-[#4F8A73]
-                    flex
-                    items-center
-                    justify-center
-                    text-white
-                    text-xl
-                    font-black
-                  "
-                >
-
-                  ♻
-
-                </div>
-
-                <div>
-
-                  <h2
-                    className="
-                      text-xl
-                      font-black
-                      text-[#111827]
-                    "
-                  >
-
-                    ACMRB
-
-                  </h2>
-
-                  <p
-                    className="
-                      text-sm
-                      text-zinc-500
-                    "
-                  >
-
-                    Painel Admin
-
-                  </p>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* MENU */}
-
-            <div
-              className="
-                flex-1
-                p-5
-              "
-            >
-
-              {renderMenu()}
-
-            </div>
-
-          </aside>
-
-        </div>
-
-      )}
-
-      {/* DESKTOP SIDEBAR */}
-
-      <aside
-        className="
-          hidden
-          lg:flex
-          flex-col
-          w-80
-          min-h-screen
-          bg-white
-          border-r
-          border-black/5
-          sticky
-          top-0
-        "
-      >
-
-        {/* HEADER */}
-
-        <div
-          className="
-            px-7
-            py-8
-            border-b
-            border-black/5
-          "
-        >
-
-          <div
-            className="
-              flex
-              items-center
-              gap-4
-            "
-          >
-
-            <div
-              className="
-                w-15
-                h-15
-                rounded-3xl
-                bg-linear-to-br
-                from-[#2E5E4E]
-                to-[#4F8A73]
-                flex
-                items-center
-                justify-center
-                text-white
-                text-2xl
-                shadow-lg
-              "
-            >
-
-              ♻
-
-            </div>
-
-            <div>
-
-              <h1
-                className="
-                  text-2xl
-                  font-black
-                  text-[#1F2937]
-                "
-              >
-
-                ACMRB
-
-              </h1>
-
-              <p
-                className="
-                  text-sm
-                  text-zinc-500
-                  mt-1
-                "
-              >
-
-                Painel Administrativo
-
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* MENU */}
-
-        <div
-          className="
-            flex-1
-            overflow-y-auto
-            px-5
-            py-6
-          "
-        >
-
-          {renderMenu()}
-
-        </div>
-
-        {/* FOOTER */}
-
-        <div
-          className="
-            p-5
-            border-t
-            border-black/5
-          "
-        >
-
-          <div
-            className="
-              rounded-3xl
-              bg-[#F7FAF8]
-              border
-              border-black/5
-              p-5
-            "
-          >
-
-            <p
-              className="
-                text-xs
-                uppercase
-                tracking-wider
-                text-zinc-400
-                font-bold
-              "
-            >
-
-              Sistema ESG
-
-            </p>
-
-            <h3
-              className="
-                text-lg
-                font-black
-                text-[#1F2937]
-                mt-2
-              "
-            >
-
-              Plataforma Operacional
-
-            </h3>
-
-            <p
-              className="
-                text-sm
-                text-zinc-500
-                leading-6
-                mt-2
-              "
-            >
-
-              Gestão ambiental,
-              indicadores ESG,
-              transparência pública
-              e logística reversa.
-
-            </p>
-
-          </div>
-
-        </div>
-
+            <ChevronsRight size={20} />
+          </button>
+        )}
+        <Menu ativa={ativa} onSelecionar={onSelecionar} compacta={recolhida} />
+        <CartaoUsuario usuario={usuario} onSair={onSair} compacta={recolhida} />
       </aside>
 
+      {/* ===== Tablet/celular: gaveta ===== */}
+      {gavetaAberta && (
+        <div className="admin-gaveta lg:hidden">
+          <div className="admin-gaveta__fundo" onClick={onFecharGaveta} aria-hidden="true" />
+          <div
+            id="admin-gaveta"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu do painel"
+            className="admin-gaveta__painel"
+          >
+            <div className="h-16 flex items-center justify-between px-4 border-b border-white/10">
+              <Marca />
+              <button
+                ref={fecharRef}
+                type="button"
+                onClick={onFecharGaveta}
+                aria-label="Fechar menu"
+                className="w-11 h-11 rounded-xl text-emerald-100 hover:bg-white/10 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-emerald-300"
+              >
+                <X size={22} />
+              </button>
+            </div>
+            <Menu ativa={ativa} onSelecionar={escolherNaGaveta} />
+            <CartaoUsuario usuario={usuario} onSair={() => { onFecharGaveta(); onSair(); }} />
+          </div>
+        </div>
+      )}
     </>
-
   );
-
 }
