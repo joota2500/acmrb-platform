@@ -40,6 +40,7 @@ import {
 } from "lucide-react";
 
 import "@/styles/contact-section.css";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   CONTATO,
   SEDE_COORDENADA,
@@ -80,6 +81,9 @@ export default function ContactSection() {
   const [canal, setCanal] = useState<"whatsapp" | "email">("whatsapp");
   const [erros, setErros] = useState<Erros>({});
   const [enviado, setEnviado] = useState(false);
+  // Só quem tem conta (visitante ou admin) envia mensagem pelo formulário
+  const { user } = useAuth();
+  const [precisaLogin, setPrecisaLogin] = useState(false);
 
   const anim = (atraso = 0) =>
     reduzir
@@ -112,6 +116,10 @@ export default function ContactSection() {
 
   function enviar(ev: FormEvent) {
     ev.preventDefault();
+    if (!user) {
+      setPrecisaLogin(true);
+      return;
+    }
     const e = validar();
     setErros(e);
     if (Object.keys(e).length) {
@@ -311,6 +319,12 @@ export default function ContactSection() {
                 <Send size={17} aria-hidden="true" />
                 {canal === "whatsapp" ? "Abrir no WhatsApp" : "Abrir no e-mail"}
               </button>
+              {precisaLogin && !user && (
+                <p className="contato__login-aviso" role="alert">
+                  Para enviar mensagens pelo site é preciso ter uma conta de visitante.{" "}
+                  <Link href="/login">Entre ou crie sua conta grátis</Link>.
+                </p>
+              )}
               <p className="contato__sr" aria-live="polite">
                 {enviado ? `Mensagem aberta no ${canal === "whatsapp" ? "WhatsApp" : "e-mail"}. Finalize o envio por lá.` : ""}
               </p>
