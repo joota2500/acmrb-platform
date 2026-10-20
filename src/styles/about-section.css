@@ -83,27 +83,54 @@
   font-size: 0.95rem;
   line-height: 1.7;
   color: #4b5563;
-  text-align: justify;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .about__description {
-    font-size: 1.05rem;
-    text-align: center;
+    font-size: 1rem;
   }
 }
 
-/* Grid de cards */
-/* Grid de cards */
-.about__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+@media (min-width: 1024px) {
+  .about__description {
+    font-size: 1.1rem;
+  }
 }
 
-/* O 3º card (Impacto Local) ocupa as 2 colunas */
-.about__card:nth-child(3) {
-  grid-column: 1 / -1;
+/* Texto justificado em TODAS as telas (pedido do Artur).
+   hyphens: auto + lang="pt-BR" quebra palavras longas com hífen,
+   evitando os "buracos" entre palavras típicos do justificado.
+   Títulos (h2/h3) ficam fora desta regra. */
+.about__description,
+.about__card p,
+.about__cta-text p {
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* Grid de cards (mobile-first)
+   - Celular: 1 coluna (antes eram 2 colunas apertadas já no celular)
+   - Tablet (640px+): 2 colunas, o 3º card ocupa a linha inteira
+   - Desktop (1024px+): 3 colunas
+   Os cards da mesma linha ficam com a mesma altura (stretch do grid). */
+.about__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+@media (min-width: 640px) {
+  .about__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  /* O 3º card (Impacto Local) ocupa as 2 colunas */
+  .about__card:nth-child(3) {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Desktop: 3 colunas iguais */
@@ -123,6 +150,9 @@
   border: 1px solid #e2e8f0;
   border-radius: 1.25rem;
   padding: 1.25rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   transition: all 0.3s;
 }
 
@@ -152,7 +182,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.25rem;
+  flex-shrink: 0;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .about__icon {
+    margin-bottom: 1.25rem;
+  }
 }
 
 .about__icon--green {
@@ -166,10 +203,16 @@
 }
 
 .about__card h3 {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: #111827;
   margin-bottom: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .about__card h3 {
+    font-size: 1.2rem;
+  }
 }
 
 @media (min-width: 1024px) {
@@ -195,11 +238,18 @@
   margin-top: 2.5rem;
   background: #f0fdf4;
   border: 1px solid #a7f3d0;
-  border-radius: 1.75rem;
-  padding: 1.75rem;
+  border-radius: 1.25rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .about__cta {
+    border-radius: 1.75rem;
+    padding: 1.75rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -217,7 +267,7 @@
 }
 
 .about__cta-text h3 {
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   font-weight: 900;
   color: #111827;
   line-height: 1.3;
@@ -237,7 +287,7 @@
 
 .about__cta-text p {
   margin-top: 0.75rem;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   line-height: 1.65;
   color: #4b5563;
 }
@@ -253,17 +303,23 @@
   .about__cta-buttons {
     flex-direction: row;
     width: auto;
+    flex-shrink: 0;
   }
 }
 
+/* Botões: h-12 (3rem) e text-sm no celular, com largura total;
+   texto maior a partir de 640px. white-space: nowrap evita quebra. */
+
 .about__btn-primary {
   height: 3rem;
-  padding: 0 1.5rem;
+  width: 100%;
+  white-space: nowrap;
+  padding: 0 1.25rem;
   border-radius: 0.9rem;
   background: #059669;
   color: white;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -277,12 +333,14 @@
 
 .about__btn-secondary {
   height: 3rem;
-  padding: 0 1.5rem;
+  width: 100%;
+  white-space: nowrap;
+  padding: 0 1.25rem;
   border-radius: 0.9rem;
   border: 1px solid #a7f3d0;
   color: #047857;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -293,4 +351,20 @@
 
 .about__btn-secondary:hover {
   background: #ecfdf5;
+}
+
+@media (min-width: 640px) {
+  .about__btn-primary,
+  .about__btn-secondary {
+    width: auto;
+    padding: 0 1.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Foco visível para navegação por teclado */
+.about__btn-primary:focus-visible,
+.about__btn-secondary:focus-visible {
+  outline: 2px solid #059669;
+  outline-offset: 3px;
 }
