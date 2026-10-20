@@ -1,0 +1,196 @@
+/* ==================== CONTACT SECTION ("Contato Institucional") ====================
+ * CSS próprio (não depende de #sections.css / components.css, que não são
+ * importados em lugar nenhum — causa das partes sem formatação).
+ * Paleta: verdes do projeto (#047857, #059669, #10b981, #a7f3d0, #d1fae5,
+ * #ecfdf5) + cinzas (#111827, #374151, #4b5563).
+ * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
+ */
+
+.contato {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 55%, #ffffff 100%);
+  padding: 4.5rem 0;
+  scroll-margin-top: 5rem;
+}
+.contato__container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
+
+/* Parágrafos justificados; títulos não */
+.contato p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+
+.contato__sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- Cabeçalho ---------- */
+.contato__header { max-width: 48rem; margin: 0 auto 3rem; text-align: center; }
+.contato__tag {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.4rem 1rem; border-radius: 9999px;
+  background: #ecfdf5; color: #059669;
+  font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem;
+}
+.contato__title { font-size: 2.1rem; font-weight: 900; color: #111827; line-height: 1.25; text-align: center; }
+.contato__title span { color: #047857; }
+.contato__description { margin-top: 1.25rem; font-size: 1.05rem; line-height: 1.75; color: #4b5563; }
+
+.contato__subtitle { font-size: 1.3rem; font-weight: 800; color: #111827; margin: 0 0 0.5rem; }
+
+/* ---------- Canais ---------- */
+.contato__canais {
+  list-style: none; padding: 0; margin: 0 0 3rem;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem;
+}
+.contato__canal {
+  display: flex; flex-direction: column;
+  background: #fff; border: 1px solid #d1fae5; border-radius: 1.25rem;
+  padding: 1.5rem; box-shadow: 0 4px 18px rgba(4, 120, 87, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.contato__canal:hover { transform: translateY(-4px); border-color: #a7f3d0; box-shadow: 0 10px 28px rgba(4, 120, 87, 0.12); }
+.contato__canal-icon {
+  width: 2.9rem; height: 2.9rem; border-radius: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #059669, #10b981); color: #fff; margin-bottom: 1rem;
+}
+.contato__canal-title { font-size: 0.85rem; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.04em; }
+.contato__canal-valor { display: block; margin-top: 0.25rem; font-size: 1.08rem; font-weight: 800; color: #111827; word-break: break-word; }
+.contato__canal-text { margin-top: 0.5rem; font-size: 0.92rem; line-height: 1.6; color: #4b5563; flex: 1; }
+.contato__canal-acoes { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.contato__canal-acoes .contato__btn--soft { flex: 1; }
+
+/* ---------- Botões ---------- */
+.contato__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
+  min-height: 2.75rem; padding: 0.65rem 1.2rem; border-radius: 0.85rem;
+  font-size: 0.93rem; font-weight: 700; text-decoration: none; cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.contato__btn:focus-visible,
+.contato__chip:focus-visible,
+.contato__opcao:focus-within,
+.contato__form input:focus-visible,
+.contato__form textarea:focus-visible { outline: 3px solid #10b981; outline-offset: 2px; }
+.contato__btn--primary { background: linear-gradient(135deg, #047857, #059669); color: #fff; box-shadow: 0 6px 18px rgba(4, 120, 87, 0.25); }
+.contato__btn--primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(4, 120, 87, 0.32); }
+.contato__btn--soft { background: #ecfdf5; color: #047857; border-color: #d1fae5; }
+.contato__btn--soft:hover { background: #d1fae5; }
+.contato__btn--icon { width: 2.75rem; padding: 0; background: #fff; color: #047857; border-color: #d1fae5; }
+.contato__btn--icon:hover { background: #ecfdf5; }
+.contato__btn--ghost { background: #fff; color: #047857; border-color: #a7f3d0; }
+.contato__btn--ghost:hover { background: #ecfdf5; }
+.contato__btn--light { background: #fff; color: #047857; }
+.contato__btn--light:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15); }
+.contato__btn--outline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); }
+.contato__btn--outline:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* ---------- Formulário + mapa ---------- */
+.contato__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 3rem; }
+.contato__painel {
+  background: #fff; border: 1px solid #d1fae5; border-radius: 1.5rem;
+  padding: 2rem; box-shadow: 0 4px 18px rgba(4, 120, 87, 0.06);
+  display: flex; flex-direction: column; min-width: 0;
+}
+.contato__painel-text { font-size: 0.92rem; line-height: 1.6; color: #4b5563; margin-bottom: 1.25rem; }
+
+.contato__form { display: flex; flex-direction: column; gap: 1.1rem; }
+.contato__campo { display: flex; flex-direction: column; gap: 0.4rem; border: 0; padding: 0; margin: 0; min-width: 0; }
+.contato__campo label,
+.contato__campo legend { font-size: 0.88rem; font-weight: 700; color: #374151; padding: 0; margin-bottom: 0.4rem; }
+.contato__form input[type="text"],
+.contato__form textarea {
+  width: 100%; border: 1px solid #d1d5db; border-radius: 0.85rem;
+  padding: 0.75rem 0.95rem; font-size: 0.95rem; color: #111827; background: #f9fafb;
+  font-family: inherit; resize: vertical;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.contato__form input[type="text"]:focus,
+.contato__form textarea:focus { border-color: #10b981; background: #fff; }
+.contato__form [aria-invalid="true"] { border-color: #dc2626; }
+.contato__erro { font-size: 0.8rem; color: #b91c1c; font-weight: 600; }
+.contato__contador { font-size: 0.78rem; color: #6b7280; text-align: right; }
+
+.contato__chips { display: flex; flex-wrap: wrap; gap: 0.5rem; outline: none; }
+.contato__chip {
+  padding: 0.5rem 0.9rem; border-radius: 9999px; cursor: pointer;
+  border: 1px solid #d1fae5; background: #f0fdf4; color: #047857;
+  font-size: 0.85rem; font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.contato__chip:hover { border-color: #a7f3d0; background: #ecfdf5; }
+.contato__chip--ativo { background: #047857; border-color: #047857; color: #fff; }
+.contato__chips[aria-invalid="true"] .contato__chip { border-color: #fca5a5; }
+
+.contato__canal-escolha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.contato__opcao {
+  display: flex; align-items: center; justify-content: center; gap: 0.45rem;
+  padding: 0.7rem; border-radius: 0.85rem; cursor: pointer;
+  border: 1px solid #d1d5db; color: #374151; font-weight: 600; font-size: 0.9rem; margin: 0 !important;
+}
+.contato__opcao input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.contato__opcao--ativa { border-color: #10b981; background: #ecfdf5; color: #047857; }
+.contato__enviar { width: 100%; margin-top: 0.25rem; }
+
+.contato__endereco { display: flex; gap: 0.6rem; align-items: flex-start; color: #047857; margin: 0.25rem 0 1rem; }
+.contato__endereco strong { display: block; color: #111827; font-size: 0.98rem; }
+.contato__endereco span { display: block; color: #4b5563; font-size: 0.82rem; margin-top: 0.15rem; }
+
+.contato-mapa { flex: 1; min-height: 20rem; border-radius: 1.1rem; overflow: hidden; border: 1px solid #d1fae5; position: relative; }
+.contato-mapa__wrap, .contato-mapa__leaflet { position: absolute; inset: 0; }
+.contato-mapa__leaflet { z-index: 0; }
+.contato-mapa__loading {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: #ecfdf5; color: #047857; font-weight: 600; font-size: 0.9rem;
+}
+.contato-mapa__ativar {
+  position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 500;
+  padding: 0.55rem 1rem; border-radius: 9999px; border: 0; cursor: pointer;
+  background: rgba(17, 24, 39, 0.82); color: #fff; font-size: 0.85rem; font-weight: 600;
+}
+.contato__mapa-acoes { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+
+/* ---------- CTA ---------- */
+.contato__cta {
+  text-align: center; border-radius: 1.75rem; padding: 3rem 2rem;
+  background: linear-gradient(135deg, #047857 0%, #059669 55%, #10b981 100%);
+  color: #fff; box-shadow: 0 16px 40px rgba(4, 120, 87, 0.25);
+}
+.contato__cta-title { font-size: 1.8rem; font-weight: 900; line-height: 1.25; }
+.contato__cta-text { max-width: 40rem; margin: 0.9rem auto 0; color: #d1fae5; line-height: 1.7; text-align: center !important; }
+.contato__cta-acoes { display: flex; justify-content: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+  .contato__canais { grid-template-columns: repeat(2, 1fr); }
+  .contato__grid { grid-template-columns: 1fr; }
+  .contato-mapa { min-height: 22rem; }
+  .contato__title { font-size: 1.85rem; }
+}
+
+/* ---------- Celular ---------- */
+@media (max-width: 480px) {
+  .contato { padding: 3rem 0; }
+  .contato__container { padding: 0 1rem; }
+  .contato__header { margin-bottom: 2rem; }
+  .contato__title { font-size: 1.45rem; }
+  .contato__description { font-size: 0.95rem; }
+  .contato__canais { grid-template-columns: 1fr; gap: 0.9rem; margin-bottom: 2rem; }
+  .contato__canal { padding: 1.15rem; }
+  .contato__painel { padding: 1.25rem; border-radius: 1.15rem; }
+  .contato__subtitle { font-size: 1.1rem; }
+  .contato__chip { font-size: 0.8rem; padding: 0.45rem 0.75rem; }
+  .contato-mapa { min-height: 16rem; }
+  .contato__mapa-acoes .contato__btn,
+  .contato__cta-acoes .contato__btn { width: 100%; }
+  .contato__cta { padding: 2rem 1.15rem; border-radius: 1.25rem; }
+  .contato__cta-title { font-size: 1.3rem; }
+  .contato__btn { font-size: 0.88rem; }
+}
+
+/* ---------- Reduzir movimento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .contato *, .contato *::before, .contato *::after { transition: none !important; animation: none !important; }
+  .contato__canal:hover, .contato__btn:hover { transform: none; }
+}
