@@ -398,8 +398,10 @@ export default function RelatorioPage() {
         .from(
           "associados",
         )
+        // Só "id": após a migration associados_v2 o público não lê
+        // colunas sensíveis, e "*" passaria a dar erro de permissão.
         .select(
-          "*",
+          "id",
           {
             count:
               "exact",
