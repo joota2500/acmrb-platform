@@ -1,131 +1,141 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowUp, AtSign, Globe, Mail, MapPin, Phone } from "lucide-react";
+/**
+ * Rodapé institucional da ACMRB
+ * ------------------------------------------------------------
+ * Compacto, no padrão das seções recentes. Dados de contato vêm de
+ * src/lib/contatoInstitucional.ts. No celular, as colunas de links
+ * viram acordeão (<details>) para economizar espaço.
+ * CSS em src/styles/footer.css (prefixo "footer__").
+ */
 
-import { CONTATO } from "@/lib/contatoInstitucional";
+import Link from "next/link";
+import { ArrowUp, AtSign, FileText, Mail, MapPin, MessageCircle } from "lucide-react";
+
+import {
+  CONTATO,
+  linkEmail,
+  linkInstagram,
+  linkMapaBusca,
+  linkWhatsApp,
+} from "@/lib/contatoInstitucional";
 import "@/styles/footer.css";
 
+type Item = { rotulo: string; href: string };
+
+const COLUNAS: { titulo: string; itens: Item[] }[] = [
+  {
+    titulo: "Institucional",
+    itens: [
+      { rotulo: "Quem Somos", href: "/quem-somos" },
+      { rotulo: "Associados", href: "/associados" },
+      { rotulo: "Projetos", href: "/projetos" },
+      { rotulo: "Notícias", href: "/noticias" },
+      { rotulo: "Transparência", href: "/transparencia" },
+    ],
+  },
+  {
+    titulo: "Sustentabilidade",
+    itens: [
+      { rotulo: "Logística Reversa", href: "/#logistica-reversa" },
+      { rotulo: "Educação Ambiental", href: "/#operacao" },
+      { rotulo: "Economia Circular", href: "/#logistica-reversa" },
+      { rotulo: "Indicadores ESG", href: "/transparencia#indicadores" },
+    ],
+  },
+  {
+    titulo: "Participe",
+    itens: [
+      { rotulo: "Parceiros", href: "/parceiros" },
+      { rotulo: "Denúncia ambiental", href: "/#denuncias" },
+      { rotulo: "Contato", href: "/#contato" },
+    ],
+  },
+];
+
 export default function Footer() {
+  const ano = new Date().getFullYear();
+
   return (
-    <footer className="footer">
-      <div className="footer__bg" />
-
+    <footer className="footer" lang="pt-BR">
       <div className="footer__container">
-        {/* TOP */}
         <div className="footer__top">
-          {/* BRAND */}
+          {/* Marca */}
           <div className="footer__brand">
-            <div className="footer__logo">
-              <div className="footer__logo-icon">♻</div>
-              <div>
-                <h3>ACMRB</h3>
-                <p>Plataforma ESG Institucional</p>
-              </div>
-            </div>
-
+            <Link href="/" className="footer__logo" aria-label="ACMRB — página inicial">
+              <span className="footer__logo-icon" aria-hidden>♻</span>
+              <span>
+                <strong className="footer__logo-title">ACMRB</strong>
+                <span className="footer__logo-sub">Associação dos Catadores</span>
+              </span>
+            </Link>
             <p className="footer__description">
-              Associação dos Catadores de Materiais Recicláveis de Baturité
-              atuando em sustentabilidade, inclusão social e logística reversa.
+              Associação dos Catadores de Materiais Recicláveis de Baturité, atuando em
+              sustentabilidade, inclusão social e logística reversa.
             </p>
-          </div>
-
-          {/* INSTITUCIONAL */}
-          <div className="footer__column">
-            <h4>Institucional</h4>
-            <div className="footer__links">
-              <Link href="/quem-somos">Quem Somos</Link>
-              <Link href="/#projetos">Projetos</Link>
-              <Link href="/#transparencia">Transparência</Link>
-              <Link href="/noticias">Notícias</Link>
+            <div className="footer__social">
+              <a href={linkInstagram()} target="_blank" rel="noopener noreferrer"
+                aria-label={`Instagram @${CONTATO.instagramUsuario} (abre em nova aba)`}>
+                <AtSign size={16} aria-hidden />
+              </a>
+              <a href={linkWhatsApp()} target="_blank" rel="noopener noreferrer"
+                aria-label="WhatsApp (abre em nova aba)">
+                <MessageCircle size={16} aria-hidden />
+              </a>
+              <a href={linkEmail()} aria-label={`E-mail ${CONTATO.email}`}>
+                <Mail size={16} aria-hidden />
+              </a>
             </div>
           </div>
 
-          {/* SUSTENTABILIDADE */}
-          <div className="footer__column">
-            <h4>Sustentabilidade</h4>
-            <div className="footer__links">
-              <Link href="/#projetos">Logística Reversa</Link>
-              <Link href="/#projetos">Educação Ambiental</Link>
-              <Link href="/#projetos">Economia Circular</Link>
-              <Link href="/#transparencia">Indicadores ESG</Link>
-            </div>
-          </div>
+          {/* Colunas de links */}
+          <nav className="footer__nav" aria-label="Links do rodapé">
+            {COLUNAS.map((col) => (
+              <details key={col.titulo} className="footer__column" open>
+                <summary className="footer__column-title">{col.titulo}</summary>
+                <ul className="footer__links">
+                  {col.itens.map((i) => (
+                    <li key={i.rotulo}><Link href={i.href}>{i.rotulo}</Link></li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </nav>
 
-          {/* CONTATO */}
-          <div className="footer__column">
-            <h4>Contato</h4>
-            <div className="footer__contact">
-              <div className="footer__contact-item">
-                <Phone size={20} />
-                <div>
-                  <span>WhatsApp</span>
-                  <p>{CONTATO.whatsappExibicao}</p>
-                </div>
-              </div>
-
-              <div className="footer__contact-item">
-                <Mail size={20} />
-                <div>
-                  <span>E-mail</span>
-                  <p>reciclae25@gmail.com</p>
-                </div>
-              </div>
-
-              <div className="footer__contact-item">
-                <MapPin size={20} />
-                <div>
-                  <span>Localização</span>
-                  <p>Rua Kaolim, 252 – Manga, Baturité/CE</p>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Contato */}
+          <address className="footer__contact">
+            <span className="footer__column-title">Contato</span>
+            <a href={linkWhatsApp()} target="_blank" rel="noopener noreferrer" className="footer__contact-item">
+              <MessageCircle size={15} aria-hidden /> {CONTATO.whatsappExibicao}
+            </a>
+            <a href={linkEmail()} className="footer__contact-item">
+              <Mail size={15} aria-hidden /> {CONTATO.email}
+            </a>
+            <a href={linkMapaBusca()} target="_blank" rel="noopener noreferrer" className="footer__contact-item">
+              <MapPin size={15} aria-hidden /> {CONTATO.endereco}
+            </a>
+            <span className="footer__contact-item">
+              <FileText size={15} aria-hidden /> CNPJ {CONTATO.cnpj}
+            </span>
+          </address>
         </div>
 
-        {/* BOTTOM */}
         <div className="footer__bottom">
           <p className="footer__copyright">
-            © {new Date().getFullYear()} ACMRB — Associação dos Catadores de Materiais Recicláveis de
-            Baturité. Todos os direitos reservados.
+            © {ano} ACMRB — Associação dos Catadores de Materiais Recicláveis de Baturité.
+            Todos os direitos reservados.
           </p>
-
-          <div className="footer__dev">
-            <p>
-              Desenvolvido por <span>DevJ-2500</span>
-            </p>
-
-            <div className="footer__social">
-              <a
-                href="https://www.instagram.com/devjunior2500"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-              >
-                <AtSign size={18} />
-              </a>
-              <a
-                href="https://github.com/joota2500"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-              >
-                <Globe size={18} />
-              </a>
-            </div>
-          </div>
+          <p className="footer__dev">
+            Desenvolvido por{" "}
+            <a href="https://github.com/joota2500" target="_blank" rel="noopener noreferrer">DevJ-2500</a>
+          </p>
+          <button type="button" className="footer__topo"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            aria-label="Voltar ao topo da página">
+            <ArrowUp size={15} aria-hidden />
+            <span>Topo</span>
+          </button>
         </div>
-
-        {/* Botão voltar ao topo */}
-        <button
-          type="button"
-          className="footer__topo"
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          aria-label="Voltar ao topo da página"
-        >
-          <ArrowUp size={18} aria-hidden />
-          <span>Voltar ao topo</span>
-        </button>
       </div>
     </footer>
   );
