@@ -7,31 +7,44 @@
  * materiais aceitos, status, observações internas) e, para cada uma,
  * o sub-CRUD de repasses (data, material, peso, valor, documento, público).
  * Os repasses públicos aparecem na página /parceiros.
+ * CNPJ com "Buscar dados" (preenche e já localiza no mapa), endereço e
+ * marcador no mapa (migration 20261020250000_logistica_localizacao.sql).
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, Edit3, Eye, EyeOff, FileText, Loader2, Plus, RefreshCw, Search, ShieldAlert, Trash2, Truck } from "lucide-react";
+import dynamic from "next/dynamic";
+import { ChevronDown, Edit3, Eye, EyeOff, FileText, Loader2, MapPin, Plus, RefreshCw, Search, ShieldAlert, Trash2, Truck } from "lucide-react";
 
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import PainelLateral from "@/components/admin/apoiadores/PainelLateral";
 import LogoUpload from "@/components/admin/apoiadores/LogoUpload";
-import { STATUS_LOGISTICA, cnpjValido, formatarData, formatarKg, formatarReais, mascaraCnpj } from "@/lib/apoiadores";
+import { STATUS_LOGISTICA, cnpjValido, formatarData, formatarKg, formatarReais, mascaraCnpj, soDigitos } from "@/lib/apoiadores";
+import ResultadosGeo from "@/components/admin/apoiadores/ResultadosGeo";
 import {
+  buscarCnpj, buscarEndereco, consultaDoCnpj, enderecoDoCnpj, geocodificar, type ResultadoGeo,
   empresaSchema, excluirEmpresa, excluirRepasse, listarEmpresas, listarRepasses, primeiroErro, repasseSchema, salvarEmpresa, salvarRepasse,
   type EmpresaLogistica, type Repasse,
 } from "@/lib/apoiadoresAdmin";
 import "@/styles/admin-apoiadores.css";
 
+const MapaSeletor = dynamic(() => import("@/components/mapa/MapaSeletor"), {
+  ssr: false,
+  loading: () => <div className="admap-map-loading">Carregando mapa…</div>,
+});
+
 interface FormEmpresa {
   nome: string; cnpj: string; logo_url: string; responsavel_nome: string; responsavel_cargo: string; telefone_publico: string;
   email_publico: string; site: string; descricao: string; materiais: string; parceria_desde: string; status: string;
   exibir_publicamente: boolean; observacoes_internas: string; ordem: string;
+  // localização (migration 20261020250000)
+  endereco: string; bairro: string; cep: string; latitude: number | null; longitude: number | null; mostrar_no_mapa: boolean;
 }
 const EMP_VAZIA: FormEmpresa = {
   nome: "", cnpj: "", logo_url: "", responsavel_nome: "", responsavel_cargo: "", telefone_publico: "", email_publico: "", site: "",
   descricao: "", materiais: "", parceria_desde: "", status: "ativa", exibir_publicamente: true, observacoes_internas: "", ordem: "0",
+  endereco: "", bairro: "", cep: "", latitude: null, longitude: null, mostrar_no_mapa: false,
 };
 
 interface FormRepasse { data: string; material: string; peso_kg: string; valor: string; documento_url: string; observacao: string; publico: boolean }
@@ -57,6 +70,12 @@ export default function LogisticaSection() {
   const [fr, setFr] = useState<FormRepasse>(REP_VAZIO());
   const [excluir, setExcluir] = useState<{ tipo: "empresa" | "repasse"; id: string; empresa?: string; nome: string } | null>(null);
   const [excluindo, setExcluindo] = useState(false);
+  const [buscandoCnpj, setBuscandoCnpj] = useState(false);
+  const [buscaEnd, setBuscaEnd] = useState("");
+  const [buscandoEnd, setBuscandoEnd] = useState(false);
+  const [resultadosGeo, setResultadosGeo] = useState<ResultadoGeo[]>([]);
+  const [escolhidoGeo, setEscolhidoGeo] = useState<number | null>(null);
+  const [avisoGeo, setAvisoGeo] = useState<string | null>(null);
 
   const carregar = useCallback(async () => {
     setCarregando(true);
@@ -94,6 +113,8 @@ export default function LogisticaSection() {
   function novaEmpresa() {
     setEditEmp(undefined);
     setFe(EMP_VAZIA);
+    limparGeo();
+    setBuscaEnd("");
     setPainelEmp(true);
   }
   function editarEmpresa(e: EmpresaLogistica) {
@@ -103,8 +124,71 @@ export default function LogisticaSection() {
       responsavel_cargo: e.responsavel_cargo ?? "", telefone_publico: e.telefone_publico ?? "", email_publico: e.email_publico ?? "",
       site: e.site ?? "", descricao: e.descricao ?? "", materiais: (e.materiais_aceitos ?? []).join(", "), parceria_desde: e.parceria_desde ?? "",
       status: e.status, exibir_publicamente: e.exibir_publicamente, observacoes_internas: e.observacoes_internas ?? "", ordem: String(e.ordem ?? 0),
+      endereco: e.endereco ?? "", bairro: e.bairro ?? "", cep: e.cep ?? "", latitude: e.latitude ?? null, longitude: e.longitude ?? null,
+      mostrar_no_mapa: !!e.mostrar_no_mapa,
     });
+    limparGeo();
+    setBuscaEnd([e.endereco, e.bairro].filter(Boolean).join(", "));
     setPainelEmp(true);
+  }
+
+  function limparGeo() {
+    setResultadosGeo([]);
+    setEscolhidoGeo(null);
+    setAvisoGeo(null);
+  }
+
+  function aplicarGeo(r: ResultadoGeo, i: number) {
+    setEscolhidoGeo(i);
+    setFe((f) => ({ ...f, latitude: r.lat, longitude: r.lng }));
+  }
+
+  /** CNPJ → preenche os dados e já posiciona o marcador no endereço */
+  async function preencherCnpj() {
+    setBuscandoCnpj(true);
+    limparGeo();
+    try {
+      const d = await buscarCnpj(fe.cnpj);
+      const end = enderecoDoCnpj(d);
+      setFe((f) => ({
+        ...f,
+        nome: f.nome || d.nome_fantasia || d.razao_social,
+        endereco: end || f.endereco,
+        bairro: d.bairro || f.bairro,
+        cep: d.cep || f.cep,
+        email_publico: f.email_publico || (d.email ?? "").toLowerCase(),
+      }));
+      if (end) setBuscaEnd([d.logradouro, d.numero, d.bairro, d.municipio, d.uf].filter(Boolean).join(", "));
+      mostrar("sucesso", `Dados da Receita preenchidos (${d.fonte}). Procurando o local no mapa…`);
+      if (!d.logradouro && !d.cep) return;
+      const r = await geocodificar(consultaDoCnpj(d));
+      setResultadosGeo(r);
+      if (r.length) {
+        aplicarGeo(r[0], 0);
+        setAvisoGeo("Local encontrado automaticamente — confira e ajuste se necessário.");
+      } else mostrar("aviso", "Não achamos o endereço no mapa. Marque o ponto clicando no mapa.");
+    } catch (e) {
+      mostrar("erro", e instanceof Error ? e.message : "Erro na consulta");
+    } finally {
+      setBuscandoCnpj(false);
+    }
+  }
+
+  async function procurarEndereco() {
+    setBuscandoEnd(true);
+    limparGeo();
+    try {
+      const r = await buscarEndereco(buscaEnd);
+      setResultadosGeo(r);
+      if (r.length) {
+        aplicarGeo(r[0], 0);
+        setAvisoGeo("Melhor resultado posicionado no mapa — confira e arraste se precisar.");
+      } else mostrar("aviso", "Endereço não encontrado. Marque o ponto clicando no mapa.");
+    } catch (e) {
+      mostrar("erro", e instanceof Error ? e.message : "Erro na busca");
+    } finally {
+      setBuscandoEnd(false);
+    }
   }
 
   async function salvarEmp() {
@@ -132,7 +216,9 @@ export default function LogisticaSection() {
     const r = empresaSchema.safeParse({ ...e, cnpj: e.cnpj ?? "", exibir_publicamente: !e.exibir_publicamente, ordem: e.ordem ?? 0,
       logo_url: e.logo_url ?? "", responsavel_nome: e.responsavel_nome ?? "", responsavel_cargo: e.responsavel_cargo ?? "",
       telefone_publico: e.telefone_publico ?? "", email_publico: e.email_publico ?? "", site: e.site ?? "", descricao: e.descricao ?? "",
-      parceria_desde: e.parceria_desde ?? "", observacoes_internas: e.observacoes_internas ?? "" });
+      parceria_desde: e.parceria_desde ?? "", observacoes_internas: e.observacoes_internas ?? "",
+      endereco: e.endereco ?? "", bairro: e.bairro ?? "", cep: e.cep ?? "", latitude: e.latitude ?? null, longitude: e.longitude ?? null,
+      mostrar_no_mapa: !!e.mostrar_no_mapa });
     if (!r.success) return mostrar("erro", primeiroErro(r.error));
     try {
       await salvarEmpresa(r.data, e.id);
@@ -250,6 +336,7 @@ export default function LogisticaSection() {
                       {STATUS_LOGISTICA[e.status] ?? e.status}
                       {e.responsavel_nome ? ` · ${e.responsavel_nome}` : ""}
                       {e.parceria_desde ? ` · desde ${formatarData(e.parceria_desde)}` : ""}
+                      {e.mostrar_no_mapa && e.latitude != null ? <> · <MapPin size={12} aria-label="No mapa" /> no mapa</> : ""}
                     </span>
                   </div>
                   <div className="admap-row__actions">
@@ -314,11 +401,19 @@ export default function LogisticaSection() {
           <legend>Empresa</legend>
           <div className="admap-grid2">
             <label className="admap-field"><span>Nome *</span><input className="admap-input" value={fe.nome} onChange={(e) => setFe({ ...fe, nome: e.target.value })} /></label>
-            <label className="admap-field">
-              <span>CNPJ</span>
+          </div>
+          <label className="admap-field">
+            <span>CNPJ</span>
+            <div className="admap-inline">
               <input className="admap-input" inputMode="numeric" value={fe.cnpj} onChange={(e) => setFe({ ...fe, cnpj: mascaraCnpj(e.target.value) })} placeholder="00.000.000/0000-00" aria-invalid={!cnpjOk} />
-              {!cnpjOk && <small className="admap-err">CNPJ inválido</small>}
-            </label>
+              <button type="button" className="admap-btn admap-btn--soft" onClick={preencherCnpj} disabled={buscandoCnpj || soDigitos(fe.cnpj).length !== 14}>
+                {buscandoCnpj ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Search size={16} aria-hidden="true" />} Buscar dados
+              </button>
+            </div>
+            {!cnpjOk && <small className="admap-err">CNPJ inválido</small>}
+            <small>Opcional. Preenche pela Receita (BrasilAPI/CNPJ.ws) e já localiza o endereço no mapa.</small>
+          </label>
+          <div className="admap-grid2">
             <label className="admap-field"><span>Responsável</span><input className="admap-input" value={fe.responsavel_nome} onChange={(e) => setFe({ ...fe, responsavel_nome: e.target.value })} /></label>
             <label className="admap-field"><span>Cargo do responsável</span><input className="admap-input" value={fe.responsavel_cargo} onChange={(e) => setFe({ ...fe, responsavel_cargo: e.target.value })} /></label>
             <label className="admap-field"><span>Parceria desde</span><input type="date" className="admap-input" value={fe.parceria_desde} onChange={(e) => setFe({ ...fe, parceria_desde: e.target.value })} /></label>
@@ -331,6 +426,32 @@ export default function LogisticaSection() {
           </div>
           <label className="admap-field"><span>Materiais aceitos (separados por vírgula)</span><input className="admap-input" value={fe.materiais} onChange={(e) => setFe({ ...fe, materiais: e.target.value })} placeholder="Papelão, Vidro, PET" /></label>
           <label className="admap-field"><span>Descrição pública</span><textarea className="admap-input" rows={3} value={fe.descricao} onChange={(e) => setFe({ ...fe, descricao: e.target.value })} /></label>
+        </fieldset>
+        <fieldset className="admap-fs">
+          <legend>Localização</legend>
+          <div className="admap-grid2">
+            <label className="admap-field"><span>Endereço</span><input className="admap-input" value={fe.endereco} onChange={(e) => setFe({ ...fe, endereco: e.target.value })} /></label>
+            <label className="admap-field"><span>Bairro</span><input className="admap-input" value={fe.bairro} onChange={(e) => setFe({ ...fe, bairro: e.target.value })} /></label>
+            <label className="admap-field"><span>CEP</span><input className="admap-input" inputMode="numeric" value={fe.cep} onChange={(e) => setFe({ ...fe, cep: soDigitos(e.target.value).slice(0, 8) })} placeholder="62760000" /></label>
+          </div>
+          <div className="admap-field">
+            <span>Buscar endereço no mapa (OpenStreetMap, Photon, Esri e CEP)</span>
+            <div className="admap-inline">
+              <input className="admap-input" value={buscaEnd} onChange={(e) => setBuscaEnd(e.target.value)} placeholder="Rua, número, bairro, cidade" onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), procurarEndereco())} />
+              <button type="button" className="admap-btn admap-btn--soft" onClick={procurarEndereco} disabled={buscandoEnd}>
+                {buscandoEnd ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Search size={16} aria-hidden="true" />} Buscar
+              </button>
+            </div>
+            <ResultadosGeo resultados={resultadosGeo} escolhido={escolhidoGeo} onEscolher={aplicarGeo} aviso={avisoGeo} />
+          </div>
+          <MapaSeletor latitude={fe.latitude} longitude={fe.longitude} categoria="Logística reversa" onChange={(lat, lng) => setFe((f) => ({ ...f, latitude: lat, longitude: lng }))} />
+          <div className="admap-coords">
+            <span>{fe.latitude != null ? `Ponto: ${fe.latitude}, ${fe.longitude}` : "Clique no mapa para marcar o ponto (depois arraste para ajustar)."}</span>
+            {fe.latitude != null && (
+              <div><button type="button" className="admap-btn admap-btn--ghost" onClick={() => setFe((f) => ({ ...f, latitude: null, longitude: null, mostrar_no_mapa: false }))}>Limpar ponto</button></div>
+            )}
+          </div>
+          <label className="admap-toggle"><input type="checkbox" checked={fe.mostrar_no_mapa} onChange={(e) => setFe({ ...fe, mostrar_no_mapa: e.target.checked })} /> Mostrar no mapa público (cor de logística reversa)</label>
         </fieldset>
         <fieldset className="admap-fs">
           <legend>Logo</legend>
