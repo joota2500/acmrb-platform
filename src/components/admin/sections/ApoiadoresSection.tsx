@@ -7,7 +7,9 @@
  * Formulário: pessoa jurídica (CNPJ + busca na BrasilAPI) ou física
  * (CPF, nunca exibido no site), categoria, tipos de apoio, contatos
  * públicos, logo, e o MAPA para clicar/arrastar e marcar o ponto
- * (também "usar minha localização" e busca de endereço no Nominatim).
+ * (também "usar minha localização" e busca de endereço em cadeia:
+ * Nominatim → Photon → Esri → CEP, pela rota /api/geocodificar).
+ * "Buscar dados" do CNPJ preenche e já posiciona o marcador.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -25,8 +27,10 @@ import {
   CATEGORIAS, TIPOS_APOIO, corCategoria, mascaraCnpj, mascaraCpf, soDigitos, cnpjValido, cpfValido,
 } from "@/lib/apoiadores";
 import {
-  apoiadorSchema, buscarCnpj, buscarEndereco, excluirApoiador, listarApoiadores, primeiroErro, salvarApoiador, type Apoiador,
+  apoiadorSchema, buscarCnpj, buscarEndereco, consultaDoCnpj, enderecoDoCnpj, excluirApoiador, geocodificar, listarApoiadores, primeiroErro,
+  salvarApoiador, type Apoiador, type ResultadoGeo,
 } from "@/lib/apoiadoresAdmin";
+import ResultadosGeo from "@/components/admin/apoiadores/ResultadosGeo";
 import "@/styles/admin-apoiadores.css";
 
 const MapaSeletor = dynamic(() => import("@/components/mapa/MapaSeletor"), {
@@ -98,7 +102,9 @@ export default function ApoiadoresSection() {
   const [excluindo, setExcluindo] = useState(false);
   const [buscandoCnpj, setBuscandoCnpj] = useState(false);
   const [buscaEnd, setBuscaEnd] = useState("");
-  const [resultadosEnd, setResultadosEnd] = useState<{ lat: number; lng: number; nome: string }[]>([]);
+  const [resultadosEnd, setResultadosEnd] = useState<ResultadoGeo[]>([]);
+  const [escolhidoGeo, setEscolhidoGeo] = useState<number | null>(null);
+  const [avisoGeo, setAvisoGeo] = useState<string | null>(null);
   const [buscandoEnd, setBuscandoEnd] = useState(false);
   const [localizando, setLocalizando] = useState(false);
 
@@ -131,17 +137,30 @@ export default function ApoiadoresSection() {
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setForm((f) => ({ ...f, [k]: v }));
   const fecharPainel = useCallback(() => setAberto(false), []);
 
+  /** Limpa a lista de sugestões e o aviso de localização automática */
+  function limparGeo() {
+    setResultadosEnd([]);
+    setEscolhidoGeo(null);
+    setAvisoGeo(null);
+  }
+
+  /** Posiciona o marcador no resultado escolhido */
+  function aplicarGeo(r: ResultadoGeo, i: number) {
+    setEscolhidoGeo(i);
+    setForm((f) => ({ ...f, latitude: r.lat, longitude: r.lng }));
+  }
+
   function novo() {
     setEditId(undefined);
     setForm(VAZIO);
-    setResultadosEnd([]);
+    limparGeo();
     setBuscaEnd("");
     setAberto(true);
   }
   function editar(a: Apoiador) {
     setEditId(a.id);
     setForm(paraForm(a));
-    setResultadosEnd([]);
+    limparGeo();
     setBuscaEnd(a.endereco ?? "");
     setAberto(true);
   }
@@ -190,21 +209,31 @@ export default function ApoiadoresSection() {
     }
   }
 
+  /** Busca o CNPJ, preenche os dados e já localiza o endereço no mapa */
   async function preencherCnpj() {
     setBuscandoCnpj(true);
+    limparGeo();
     try {
       const d = await buscarCnpj(form.cnpj);
-      const end = [d.logradouro, d.numero, d.complemento].filter(Boolean).join(", ");
+      const end = enderecoDoCnpj(d);
       setForm((f) => ({
         ...f,
         nome: d.razao_social || f.nome,
         nome_fantasia: d.nome_fantasia || f.nome_fantasia,
-        endereco: end ? `${end}${d.municipio ? ` – ${d.municipio}/${d.uf}` : ""}` : f.endereco,
+        endereco: end || f.endereco,
         bairro: d.bairro || f.bairro,
-        desde: f.desde,
       }));
-      if (end) setBuscaEnd(`${end}, ${d.bairro ?? ""}, ${d.municipio ?? ""}`);
-      mostrar("sucesso", "Dados da Receita preenchidos. Confira antes de salvar.");
+      if (end) setBuscaEnd([d.logradouro, d.numero, d.bairro, d.municipio].filter(Boolean).join(", "));
+      mostrar("sucesso", `Dados da Receita preenchidos (${d.fonte}). Procurando o local no mapa…`);
+      if (!d.logradouro && !d.cep) return;
+      const r = await geocodificar(consultaDoCnpj(d));
+      setResultadosEnd(r);
+      if (r.length) {
+        aplicarGeo(r[0], 0);
+        setAvisoGeo("Local encontrado automaticamente — confira e ajuste se necessário.");
+      } else {
+        mostrar("aviso", "Não achamos o endereço no mapa. Marque o ponto clicando no mapa.");
+      }
     } catch (e) {
       mostrar("erro", e instanceof Error ? e.message : "Erro na consulta");
     } finally {
@@ -215,9 +244,13 @@ export default function ApoiadoresSection() {
   async function procurarEndereco() {
     setBuscandoEnd(true);
     try {
+      limparGeo();
       const r = await buscarEndereco(buscaEnd);
       setResultadosEnd(r);
-      if (!r.length) mostrar("aviso", "Endereço não encontrado. Marque o ponto clicando no mapa.");
+      if (r.length) {
+        aplicarGeo(r[0], 0);
+        setAvisoGeo("Melhor resultado posicionado no mapa — confira e arraste se precisar.");
+      } else mostrar("aviso", "Endereço não encontrado. Marque o ponto clicando no mapa.");
     } catch (e) {
       mostrar("erro", e instanceof Error ? e.message : "Erro na busca");
     } finally {
@@ -353,7 +386,7 @@ export default function ApoiadoresSection() {
                 </button>
               </div>
               {!docOk && <small className="admap-err">CNPJ inválido</small>}
-              <small>Opcional. A busca usa a BrasilAPI (dados públicos da Receita).</small>
+              <small>Opcional. “Buscar dados” preenche pela Receita (BrasilAPI/CNPJ.ws) e já localiza o endereço no mapa.</small>
             </label>
           ) : (
             <label className="admap-field">
@@ -424,24 +457,14 @@ export default function ApoiadoresSection() {
             <label className="admap-field"><span>Bairro</span><input className="admap-input" value={form.bairro} onChange={(e) => set("bairro", e.target.value)} /></label>
           </div>
           <div className="admap-field">
-            <span>Buscar endereço no mapa (OpenStreetMap)</span>
+            <span>Buscar endereço no mapa (OpenStreetMap, Photon, Esri e CEP)</span>
             <div className="admap-inline">
               <input className="admap-input" value={buscaEnd} onChange={(e) => setBuscaEnd(e.target.value)} placeholder="Rua, número, bairro" onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), procurarEndereco())} />
               <button type="button" className="admap-btn admap-btn--soft" onClick={procurarEndereco} disabled={buscandoEnd}>
                 {buscandoEnd ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Search size={16} aria-hidden="true" />} Buscar
               </button>
             </div>
-            {resultadosEnd.length > 0 && (
-              <ul className="admap-results">
-                {resultadosEnd.map((r) => (
-                  <li key={`${r.lat},${r.lng}`}>
-                    <button type="button" onClick={() => { setForm((f) => ({ ...f, latitude: Math.round(r.lat * 1e6) / 1e6, longitude: Math.round(r.lng * 1e6) / 1e6 })); setResultadosEnd([]); }}>
-                      <MapPin size={14} aria-hidden="true" /> {r.nome}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ResultadosGeo resultados={resultadosEnd} escolhido={escolhidoGeo} onEscolher={aplicarGeo} aviso={avisoGeo} />
           </div>
 
           <MapaSeletor latitude={form.latitude} longitude={form.longitude} categoria={form.categoria} onChange={(lat, lng) => setForm((f) => ({ ...f, latitude: lat, longitude: lng }))} />
