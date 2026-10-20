@@ -142,6 +142,11 @@ export function useESGMetrics() {
 
   async function carregar() {
 
+    // Trava de segurança: se o Supabase não responder (projeto pausado,
+    // sem internet, renovação de sessão travada), encerra o "carregando"
+    // em 10s e os componentes mostram os valores padrão (0).
+    const limite = setTimeout(() => setLoading(false), 10000);
+
     try {
 
       setLoading(true);
@@ -401,6 +406,8 @@ export function useESGMetrics() {
       );
 
     } finally {
+
+      clearTimeout(limite);
 
       setLoading(false);
 
