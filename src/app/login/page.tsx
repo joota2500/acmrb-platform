@@ -57,6 +57,26 @@ const TITULOS: Record<Modo, { titulo: string; sub: string }> = {
   recuperar: { titulo: "Recuperar senha", sub: "Enviaremos um link para você criar uma nova senha." },
 };
 
+/** Traduz os erros do Supabase Auth no cadastro para mensagens claras */
+function mensagemErroCadastro(error: { status?: number; code?: string; message: string }): string {
+  const cod = error.code ?? "";
+  const msg = error.message ?? "";
+  if (cod === "user_already_exists" || cod === "email_exists" || /already|registered|exists/i.test(msg))
+    return "Este e-mail já tem cadastro. Tente entrar ou recuperar a senha.";
+  if (cod.includes("rate_limit") || error.status === 429 || /rate|limit/i.test(msg))
+    return "Muitas tentativas em pouco tempo. Aguarde alguns minutos e tente de novo.";
+  if (cod === "signup_disabled" || cod === "email_provider_disabled" || /signups? not allowed|disabled/i.test(msg))
+    return "O cadastro de novas contas está temporariamente desativado. Fale com a ACMRB pelo contato do site.";
+  if (cod === "weak_password" || /password/i.test(msg))
+    return "Senha fraca. Use pelo menos 8 caracteres, misturando letras e números.";
+  if (cod === "email_address_invalid" || /invalid.*email|email.*invalid/i.test(msg))
+    return "Este endereço de e-mail não foi aceito. Confira se está correto ou use outro e-mail.";
+  if (cod === "unexpected_failure" || /database error/i.test(msg))
+    return "Erro no servidor ao salvar o cadastro. A equipe já pode verificar; tente novamente mais tarde.";
+  if (/fetch|network/i.test(msg)) return "Sem conexão com o servidor. Verifique sua internet e tente de novo.";
+  return "Não foi possível criar a conta agora. Tente novamente.";
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const reduzir = useReducedMotion();
@@ -166,9 +186,9 @@ export default function LoginPage() {
     });
 
     if (error) {
-      if (/rate|limit/i.test(error.message)) return setAviso({ tipo: "erro", texto: "Muitas tentativas. Aguarde alguns minutos." });
-      if (/already|registered|exists/i.test(error.message)) return setAviso({ tipo: "erro", texto: "Este e-mail já tem cadastro. Tente entrar ou recuperar a senha." });
-      return setAviso({ tipo: "erro", texto: "Não foi possível criar a conta agora. Tente novamente." });
+      // Mostra no console o erro real (ajuda no suporte) e traduz para o visitante
+      console.error("[cadastro] signUp falhou:", error.status, error.code, error.message);
+      return setAviso({ tipo: "erro", texto: mensagemErroCadastro(error) });
     }
 
     // Com confirmação de e-mail ligada o Supabase não devolve sessão
