@@ -278,3 +278,8 @@
   .as-card { transition: none; }
   .as-card:hover { transform: none; }
 }
+
+/* Celular: rótulos longos quebram em vez de sair do botão */
+@media (max-width: 480px) {
+  .as-btn { height: auto; min-height: 3rem; padding: 0.6rem 1rem; white-space: normal; text-align: center; }
+}

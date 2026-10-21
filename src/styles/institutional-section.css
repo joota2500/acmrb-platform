@@ -282,3 +282,9 @@
 @media (prefers-reduced-motion: reduce) {
   .inst * { transition: none !important; }
 }
+
+/* Celular: o link "ver todos" (nowrap) desce para a linha de baixo */
+.inst__docs-head > div { min-width: 0; }
+@media (max-width: 480px) {
+  .inst__docs-head { flex-wrap: wrap; }
+}

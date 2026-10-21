@@ -364,3 +364,9 @@
   .nd__galeria-item img, .nd__social, .nd__nav-item { transition: none; }
   .nd__galeria-item:hover img { transform: none; }
 }
+
+/* Breadcrumb: título atual encolhe com reticências em vez de passar da tela */
+.nd__breadcrumb > * { min-width: 0; }
+@media (max-width: 480px) {
+  .nd__breadcrumb [aria-current] { max-width: 100%; }
+}

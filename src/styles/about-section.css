@@ -368,3 +368,9 @@
   outline: 2px solid #059669;
   outline-offset: 3px;
 }
+
+/* Celular estreito: o nowrap fazia o texto do botão vazar em telas de 320–360px */
+@media (max-width: 480px) {
+  .about__btn-primary,
+  .about__btn-secondary { height: auto; min-height: 3rem; padding: 0.6rem 1rem; white-space: normal; text-align: center; }
+}

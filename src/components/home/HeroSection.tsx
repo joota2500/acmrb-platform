@@ -139,7 +139,7 @@ export default function HeroSection() {
                 <dt className="text-emerald-100/80 text-[11px] sm:text-sm mt-1 sm:mt-2 uppercase tracking-wide">
                   {s.rotulo}
                 </dt>
-                <dd className="text-3xl sm:text-4xl lg:text-5xl font-black text-emerald-300 whitespace-nowrap">
+                <dd className="text-2xl sm:text-4xl lg:text-5xl font-black text-emerald-300 break-words sm:whitespace-nowrap">
                   {s.valor}
                 </dd>
               </div>

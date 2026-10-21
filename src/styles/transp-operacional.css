@@ -174,3 +174,6 @@
 @media (prefers-reduced-motion: reduce) {
   .to-item__barra span { transition: none; }
 }
+
+/* O título (flex) precisa de min-width: 0 para as reticências funcionarem */
+.to-item__topo > * { min-width: 0; }

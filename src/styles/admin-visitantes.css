@@ -72,3 +72,9 @@
   .advis-paginacao { gap: 0.4rem; font-size: 0.8rem; }
   .advis-paginacao .advis-btn { padding: 0.5rem 0.7rem; }
 }
+
+/* O admin-shell força min-width: 720px nas tabelas do painel no celular;
+   aqui a tabela vira cartões, então essa largura mínima não vale. */
+@media (max-width: 720px) {
+  .advis-tabela { min-width: 0 !important; }
+}

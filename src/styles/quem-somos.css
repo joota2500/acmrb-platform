@@ -805,3 +805,9 @@
 @media (min-width: 1024px) {
   .qs-diretoria { gap: 1.75rem; }
 }
+
+/* Celular: botões e números grandes não vazam (antes: nowrap + altura fixa) */
+@media (max-width: 480px) {
+  .qs-btn { height: auto; min-height: 3rem; padding: 0.6rem 1rem; white-space: normal; text-align: center; }
+  .qs-impacto__valor { white-space: normal; overflow-wrap: anywhere; font-size: clamp(1.2rem, 6vw, 1.6rem); }
+}
