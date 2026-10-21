@@ -140,7 +140,7 @@ export default function LogisticaSection() {
 
   function aplicarGeo(r: ResultadoGeo, i: number) {
     setEscolhidoGeo(i);
-    setFe((f) => ({ ...f, latitude: r.lat, longitude: r.lng }));
+    setFe((f) => ({ ...f, latitude: r.lat, longitude: r.lng, mostrar_no_mapa: f.latitude == null ? true : f.mostrar_no_mapa }));
   }
 
   /** CNPJ → preenche os dados e já posiciona o marcador no endereço */
@@ -444,7 +444,7 @@ export default function LogisticaSection() {
             </div>
             <ResultadosGeo resultados={resultadosGeo} escolhido={escolhidoGeo} onEscolher={aplicarGeo} aviso={avisoGeo} />
           </div>
-          <MapaSeletor latitude={fe.latitude} longitude={fe.longitude} categoria="Logística reversa" onChange={(lat, lng) => setFe((f) => ({ ...f, latitude: lat, longitude: lng }))} />
+          <MapaSeletor latitude={fe.latitude} longitude={fe.longitude} categoria="Logística reversa" onChange={(lat, lng) => setFe((f) => ({ ...f, latitude: lat, longitude: lng, mostrar_no_mapa: f.latitude == null ? true : f.mostrar_no_mapa }))} />
           <div className="admap-coords">
             <span>{fe.latitude != null ? `Ponto: ${fe.latitude}, ${fe.longitude}` : "Clique no mapa para marcar o ponto (depois arraste para ajustar)."}</span>
             {fe.latitude != null && (

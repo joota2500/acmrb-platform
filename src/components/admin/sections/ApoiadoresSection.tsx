@@ -147,7 +147,7 @@ export default function ApoiadoresSection() {
   /** Posiciona o marcador no resultado escolhido */
   function aplicarGeo(r: ResultadoGeo, i: number) {
     setEscolhidoGeo(i);
-    setForm((f) => ({ ...f, latitude: r.lat, longitude: r.lng }));
+    setForm((f) => ({ ...f, latitude: r.lat, longitude: r.lng, mostrar_no_mapa: f.latitude == null ? true : f.mostrar_no_mapa }));
   }
 
   function novo() {
@@ -263,7 +263,7 @@ export default function ApoiadoresSection() {
     setLocalizando(true);
     navigator.geolocation.getCurrentPosition(
       (p) => {
-        setForm((f) => ({ ...f, latitude: Math.round(p.coords.latitude * 1e6) / 1e6, longitude: Math.round(p.coords.longitude * 1e6) / 1e6 }));
+        setForm((f) => ({ ...f, latitude: Math.round(p.coords.latitude * 1e6) / 1e6, longitude: Math.round(p.coords.longitude * 1e6) / 1e6, mostrar_no_mapa: f.latitude == null ? true : f.mostrar_no_mapa }));
         setLocalizando(false);
       },
       () => {
@@ -467,7 +467,7 @@ export default function ApoiadoresSection() {
             <ResultadosGeo resultados={resultadosEnd} escolhido={escolhidoGeo} onEscolher={aplicarGeo} aviso={avisoGeo} />
           </div>
 
-          <MapaSeletor latitude={form.latitude} longitude={form.longitude} categoria={form.categoria} onChange={(lat, lng) => setForm((f) => ({ ...f, latitude: lat, longitude: lng }))} />
+          <MapaSeletor latitude={form.latitude} longitude={form.longitude} categoria={form.categoria} onChange={(lat, lng) => setForm((f) => ({ ...f, latitude: lat, longitude: lng, mostrar_no_mapa: f.latitude == null ? true : f.mostrar_no_mapa }))} />
           <div className="admap-coords">
             <span>{form.latitude != null ? `Ponto: ${form.latitude}, ${form.longitude}` : "Clique no mapa para marcar o ponto (depois arraste para ajustar)."}</span>
             <div>
@@ -484,6 +484,10 @@ export default function ApoiadoresSection() {
         <fieldset className="admap-fs">
           <legend>Exibição</legend>
           <label className="admap-toggle"><input type="checkbox" checked={form.mostrar_no_mapa} onChange={(e) => set("mostrar_no_mapa", e.target.checked)} /> Mostrar no mapa da página inicial</label>
+          {/* Aviso: ponto marcado mas fora do mapa (causa de "cadastrei e não aparece") */}
+          {form.latitude != null && !form.mostrar_no_mapa && (
+            <p className="admap-hint" role="note">Este apoiador tem ponto marcado, mas só aparece no mapa da home com esta opção ligada.</p>
+          )}
           <label className="admap-toggle"><input type="checkbox" checked={form.exibir_publicamente} onChange={(e) => set("exibir_publicamente", e.target.checked)} /> Exibir publicamente (home e /parceiros)</label>
           {form.tipo_pessoa === "fisica" && (
             <label className="admap-toggle"><input type="checkbox" checked={form.anonimo} onChange={(e) => set("anonimo", e.target.checked)} /> Aparecer como “Apoiador anônimo”</label>
