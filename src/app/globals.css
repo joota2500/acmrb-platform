@@ -31,7 +31,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Inter", system_ui, sans-serif;
-  overflow-x: hidden;
   font-size: 1rem;
 }
 
@@ -41,4 +40,65 @@ body {
   margin: 0 auto;
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+/* ==========================================================
+   PROTEÇÕES GLOBAIS CONTRA TEXTO SAINDO DA TELA (celular)
+   ----------------------------------------------------------
+   Causas encontradas na auditoria: e-mails/URLs/nomes longos sem
+   quebra, filhos de grid/flex com min-width automático, imagens e
+   SVGs com largura fixa e parágrafos justificados em colunas
+   estreitas. Regras com :where() têm especificidade zero, então
+   qualquer CSS de componente continua mandando.
+   ========================================================== */
+
+/* overflow-x: clip corta o vazamento lateral sem quebrar position: sticky */
+html,
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* Palavras/e-mails/URLs longos quebram em vez de vazar */
+:where(p, li, a, td, th, dd, dt, blockquote, figcaption, label, legend, address) {
+  overflow-wrap: anywhere;
+}
+:where(h1, h2, h3, h4, h5, h6) {
+  overflow-wrap: break-word;
+}
+
+/* Parágrafos justificados: hifenização em português */
+:where(p, li, dd, blockquote) {
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+/* Mídia nunca maior que o contêiner */
+:where(img, svg, video, canvas, iframe) {
+  max-width: 100%;
+}
+:where(img, video) {
+  height: auto;
+}
+
+/* Filhos de grid (utilitário Tailwind "grid") podem encolher */
+:where(.grid) > * {
+  min-width: 0;
+}
+
+/* Tabelas fora do painel: rolagem própria em vez de vazar */
+:where(main) :where(table) {
+  max-width: 100%;
+}
+
+/* Telas muito estreitas (≤360px): o justificado abre "rios" de espaço
+   e empurra palavras longas; volta para alinhamento à esquerda.
+   Os CSS dos componentes usam text-align: var(--texto-justificado, justify). */
+@media (max-width: 360px) {
+  :root {
+    --texto-justificado: left;
+  }
+  .text-justify {
+    text-align: left !important;
+  }
 }
