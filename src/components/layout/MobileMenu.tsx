@@ -19,7 +19,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ClipboardList, LogOut, LogIn, X } from "lucide-react";
+import { ChevronDown, ClipboardList, LogOut, LogIn, MessageCircle, UserRound, X } from "lucide-react";
+import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
 import { hrefReal, navigation } from "./navItems";
 import { smoothScrollTo } from "@/lib/scroll";
@@ -52,6 +53,8 @@ export default function MobileMenu({
 }: MobileMenuProps) {
   // Referência do botão fechar, para receber o foco quando o menu abre
   const closeBtnRef = useRef<HTMLButtonElement>(null);
+  // Respostas da equipe ainda não lidas (só visitante logado)
+  const naoLidas = useChatNaoLidas(!!user && perfil?.tipo === "visitante");
 
   // Esc fecha o menu + trava a rolagem do body enquanto estiver aberto
   useEffect(() => {
@@ -197,9 +200,18 @@ export default function MobileMenu({
                   </div>
 
                   {perfil.tipo === "visitante" && (
-                    <Link href="/minhas-coletas" className="mobileMenu__admin-btn" onClick={onClose}>
-                      <ClipboardList size={18} aria-hidden="true" /> Minhas coletas
-                    </Link>
+                    <>
+                      <Link href="/minha-conta" className="mobileMenu__admin-btn" onClick={onClose}>
+                        <UserRound size={18} aria-hidden="true" /> Minha conta
+                      </Link>
+                      <Link href="/mensagens" className="mobileMenu__admin-btn" onClick={onClose}>
+                        <MessageCircle size={18} aria-hidden="true" /> Mensagens
+                        {naoLidas > 0 && <span className="mobileMenu__selo" aria-label={`${naoLidas} não lidas`}>{naoLidas > 9 ? "9+" : naoLidas}</span>}
+                      </Link>
+                      <Link href="/minhas-coletas" className="mobileMenu__admin-btn" onClick={onClose}>
+                        <ClipboardList size={18} aria-hidden="true" /> Minhas coletas
+                      </Link>
+                    </>
                   )}
 
                   {perfil.tipo === "admin" && (

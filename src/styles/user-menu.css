@@ -181,3 +181,22 @@
 .user-menu__login {
   padding: 0.45rem 0.95rem; font-size: 0.85rem; gap: 0.35rem; min-height: 0; border-radius: 9999px;
 }
+
+/* ==================== MENU "MINHA ÁREA" DO VISITANTE ==================== */
+.user-menu__area { position: relative; }
+.user-menu__selo {
+  min-width: 1.2rem; height: 1.2rem; padding: 0 0.3rem; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9999px; background: #dc2626; color: #fff; font-size: 0.68rem; font-weight: 800; line-height: 1;
+}
+.user-menu__seta--aberta { transform: rotate(180deg); }
+.user-menu__dropdown {
+  position: absolute; right: 0; top: calc(100% + 0.5rem); z-index: 60; min-width: 13rem;
+  display: flex; flex-direction: column; padding: 0.4rem; background: #fff; border: 1px solid #DDF5EC;
+  border-radius: 0.9rem; box-shadow: 0 16px 36px rgba(33, 70, 58, 0.22);
+}
+.user-menu__dropdown a {
+  display: flex; align-items: center; gap: 0.55rem; padding: 0.6rem 0.75rem; border-radius: 0.6rem;
+  color: #21463A; font-size: 0.88rem; font-weight: 700; text-decoration: none;
+}
+.user-menu__dropdown a .user-menu__selo { margin-left: auto; }
+.user-menu__dropdown a:hover, .user-menu__dropdown a:focus-visible { background: #E8F3EE; outline: 0; }

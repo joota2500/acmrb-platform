@@ -13,8 +13,10 @@
  * alvos de toque de 48px e foco visível (user-menu.css).
  */
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Menu, X, LogOut, LogIn, LayoutDashboard, ClipboardList } from "lucide-react";
+import { Menu, X, LogOut, LogIn, LayoutDashboard, ClipboardList, ChevronDown, MessageCircle, UserRound } from "lucide-react";
+import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
 import "@/styles/user-menu.css";
 
@@ -69,12 +71,7 @@ export default function UserMenu({
             </div>
           </div>
 
-          {perfil.tipo === "visitante" && (
-            <Link href="/minhas-coletas" className="user-menu__button" title="Minhas coletas">
-              <ClipboardList size={16} aria-hidden="true" />
-              <span>Minhas coletas</span>
-            </Link>
-          )}
+          {perfil.tipo === "visitante" && <MenuVisitante />}
 
           {perfil.tipo === "admin" && (
             <Link href="/admin" className="user-menu__button" title="Painel Admin">
@@ -116,6 +113,64 @@ export default function UserMenu({
           <Menu size={26} strokeWidth={2.5} />
         )}
       </button>
+    </div>
+  );
+}
+
+/**
+ * Menu "Minha área" do visitante (desktop): Minha conta, Mensagens
+ * (com selo de respostas não lidas) e Minhas coletas.
+ * Abre por clique/Enter, fecha com Esc ou clique fora.
+ */
+function MenuVisitante() {
+  const [aberto, setAberto] = useState(false);
+  const naoLidas = useChatNaoLidas(true);
+  const caixaRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!aberto) return;
+    const fora = (e: MouseEvent) => {
+      if (!caixaRef.current?.contains(e.target as Node)) setAberto(false);
+    };
+    const esc = (e: KeyboardEvent) => e.key === "Escape" && setAberto(false);
+    document.addEventListener("mousedown", fora);
+    document.addEventListener("keydown", esc);
+    return () => {
+      document.removeEventListener("mousedown", fora);
+      document.removeEventListener("keydown", esc);
+    };
+  }, [aberto]);
+
+  const fechar = () => setAberto(false);
+
+  return (
+    <div className="user-menu__area" ref={caixaRef}>
+      <button
+        type="button"
+        className="user-menu__button"
+        aria-haspopup="menu"
+        aria-expanded={aberto}
+        onClick={() => setAberto((a) => !a)}
+      >
+        <UserRound size={16} aria-hidden="true" />
+        <span>Minha área</span>
+        {naoLidas > 0 && <span className="user-menu__selo" aria-label={`${naoLidas} mensagens não lidas`}>{naoLidas > 9 ? "9+" : naoLidas}</span>}
+        <ChevronDown size={14} aria-hidden="true" className={aberto ? "user-menu__seta--aberta" : undefined} />
+      </button>
+      {aberto && (
+        <div className="user-menu__dropdown" role="menu">
+          <Link href="/minha-conta" role="menuitem" onClick={fechar}>
+            <UserRound size={16} aria-hidden="true" /> Minha conta
+          </Link>
+          <Link href="/mensagens" role="menuitem" onClick={fechar}>
+            <MessageCircle size={16} aria-hidden="true" /> Mensagens
+            {naoLidas > 0 && <span className="user-menu__selo">{naoLidas > 9 ? "9+" : naoLidas}</span>}
+          </Link>
+          <Link href="/minhas-coletas" role="menuitem" onClick={fechar}>
+            <ClipboardList size={16} aria-hidden="true" /> Minhas coletas
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

@@ -195,3 +195,9 @@
 .mobileSub__link:hover, .mobileSub__link:focus-visible { background: rgba(16, 185, 129, 0.2); color: #a7f3d0; outline: none; }
 .mobileMenu__admin-btn svg { flex-shrink: 0; }
 @media (prefers-reduced-motion: reduce) { .mobileSub__seta { transition: none; } }
+
+/* Selo de mensagens não lidas (visitante) */
+.mobileMenu__selo {
+  margin-left: auto; min-width: 1.35rem; height: 1.35rem; padding: 0 0.35rem; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9999px; background: #dc2626; color: #fff; font-size: 0.72rem; font-weight: 800;
+}
