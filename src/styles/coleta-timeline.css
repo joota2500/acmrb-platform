@@ -1,0 +1,22 @@
+/* ==================== LINHA DO TEMPO DO PEDIDO (prefixo "ctl") ==================== */
+
+.ctl { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.5rem; }
+.ctl__etapa { position: relative; flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.35rem; }
+/* trilho entre as etapas */
+.ctl__etapa:not(:last-child)::after { content: ""; position: absolute; top: 0.8rem; left: calc(50% + 0.95rem); right: calc(-50% + 0.95rem); height: 2px; background: #e4e4e7; }
+.ctl__etapa--feita:not(:last-child)::after { background: #2E5E4E; }
+.ctl__ponto { width: 1.6rem; height: 1.6rem; flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid #d4d4d8; background: #fff; color: #fff; }
+.ctl__etapa--feita .ctl__ponto { background: #2E5E4E; border-color: #2E5E4E; }
+.ctl__etapa--cancelada .ctl__ponto { background: #dc2626; border-color: #dc2626; }
+.ctl__texto { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.ctl__texto strong { font-size: 0.82rem; font-weight: 800; color: #18181b; }
+.ctl__etapa:not(.ctl__etapa--feita):not(.ctl__etapa--cancelada) .ctl__texto strong { color: #a1a1aa; }
+.ctl__texto span { font-size: 0.72rem; color: #71717a; }
+.ctl__extra { font-weight: 700; color: #2E5E4E !important; }
+
+/* Celular: vira lista vertical */
+@media (max-width: 560px) {
+  .ctl { flex-direction: column; gap: 0.75rem; }
+  .ctl__etapa { flex-direction: row; align-items: flex-start; text-align: left; gap: 0.7rem; }
+  .ctl__etapa:not(:last-child)::after { top: 1.7rem; bottom: -0.75rem; left: 0.75rem; right: auto; width: 2px; height: auto; }
+}

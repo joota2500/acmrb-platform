@@ -76,6 +76,11 @@ export default function LoginPage() {
   const [senha, setSenha] = useState("");
   const [confirmar, setConfirmar] = useState("");
 
+  // /login?modo=cadastro abre direto em "Criar conta"
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("modo") === "cadastro") setModo("cadastro");
+  }, []);
+
   // Contagem regressiva entre envios de e-mail de recuperação
   useEffect(() => {
     if (espera <= 0) return;
