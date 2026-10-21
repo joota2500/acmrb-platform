@@ -39,7 +39,8 @@ import { motion } from "framer-motion";
 import { useSecretUnlock } from "@/hooks/useSecretUnlock";
 import { useAuth } from "@/contexts/AuthContext";
 
-import { navigation } from "./navItems";
+import { hrefReal, navigation } from "./navItems";
+import NavDropdown from "./NavDropdown";
 import UserMenu from "./UserMenu";
 import MobileMenu from "./MobileMenu";
 import AdminModal from "@/components/admin/AdminModal";
@@ -152,19 +153,23 @@ export default function Header() {
 
           {/* ===== Menu horizontal (somente desktop >=1024px) ===== */}
           <nav className="desktopNav" aria-label="Menu principal">
-            {navigation.map((link) => (
-              <Link
-                key={link.id}
-                // Âncoras viram "/#id" para funcionar em qualquer página (e no clique do meio)
-                href={link.href.startsWith("#") ? `/${link.href}` : link.href}
-                onClick={(e) => {
-                  if (navigateTo(link.href)) e.preventDefault();
-                }}
-                className="navLink"
-              >
-                {link.name}
-              </Link>
-            ))}
+            {navigation.map((link) =>
+              link.children?.length ? (
+                // Item com submenu (Coleta, Contato)
+                <NavDropdown key={link.id} item={link} onNavigate={navigateTo} />
+              ) : (
+                <Link
+                  key={link.id}
+                  href={hrefReal(link.href)}
+                  onClick={(e) => {
+                    if (navigateTo(link.href)) e.preventDefault();
+                  }}
+                  className="navLink"
+                >
+                  {link.name}
+                </Link>
+              ),
+            )}
           </nav>
 
           {/* ===== Área do usuário: login/perfil + botão hambúrguer ===== */}

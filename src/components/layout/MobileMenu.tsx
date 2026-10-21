@@ -16,12 +16,12 @@
  * fechar ao abrir, alvos de toque >=48px e foco visível (mobile-menu.css).
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogOut, LogIn, X } from "lucide-react";
+import { ChevronDown, ClipboardList, LogOut, LogIn, X } from "lucide-react";
 
-import { navigation } from "./navItems";
+import { hrefReal, navigation } from "./navItems";
 import { smoothScrollTo } from "@/lib/scroll";
 
 import "@/styles/mobile-menu.css";
@@ -74,6 +74,9 @@ export default function MobileMenu({
 
   // Clique num link: usa a navegação do Header; se não houver, faz o
   // comportamento antigo (rolagem suave para âncoras) e fecha o menu.
+  // Submenu aberto no celular (id do item pai) — um por vez
+  const [subAberto, setSubAberto] = useState<string | null>(null);
+
   const handleNavClick = (e: React.MouseEvent, href: string) => {
     if (onNavigate) {
       if (onNavigate(href)) e.preventDefault();
@@ -136,14 +139,41 @@ export default function MobileMenu({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.05 }}
                 >
-                  <Link
-                    // Âncoras viram "/#id" para funcionar em qualquer página (e no clique do meio)
-                href={link.href.startsWith("#") ? `/${link.href}` : link.href}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    className="mobileNavLink"
-                  >
-                    {link.name}
-                  </Link>
+                  {link.children?.length ? (
+                    /* Submenu: toque no item para expandir (Coleta, Contato) */
+                    <div className={`mobileSub${subAberto === link.id ? " mobileSub--aberto" : ""}`}>
+                      <button
+                        type="button"
+                        className="mobileNavLink mobileSub__botao"
+                        aria-expanded={subAberto === link.id}
+                        aria-controls={`mobile-sub-${link.id}`}
+                        onClick={() => setSubAberto((v) => (v === link.id ? null : link.id))}
+                      >
+                        {link.name}
+                        <ChevronDown size={18} className="mobileSub__seta" aria-hidden="true" />
+                      </button>
+                      <div id={`mobile-sub-${link.id}`} className="mobileSub__lista" hidden={subAberto !== link.id}>
+                        {link.children.map((f) => (
+                          <Link
+                            key={f.id}
+                            href={hrefReal(f.href)}
+                            onClick={(e) => handleNavClick(e, f.href)}
+                            className="mobileSub__link"
+                          >
+                            {f.name}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <Link
+                      href={hrefReal(link.href)}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      className="mobileNavLink"
+                    >
+                      {link.name}
+                    </Link>
+                  )}
                 </motion.div>
               ))}
 
@@ -165,6 +195,12 @@ export default function MobileMenu({
                       <p className="text-sm text-emerald-300">{perfil.tipo}</p>
                     </div>
                   </div>
+
+                  {perfil.tipo === "visitante" && (
+                    <Link href="/minhas-coletas" className="mobileMenu__admin-btn" onClick={onClose}>
+                      <ClipboardList size={18} aria-hidden="true" /> Minhas coletas
+                    </Link>
+                  )}
 
                   {perfil.tipo === "admin" && (
                     <Link

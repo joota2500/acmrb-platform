@@ -184,3 +184,14 @@
 .mobileMenu__logout-btn:hover {
   background: rgba(239, 68, 68, 0.35);
 }
+
+/* ===== Submenu expansível (Coleta, Contato) ===== */
+.mobileSub__botao { width: 100%; justify-content: space-between; background: none; border: 0; cursor: pointer; font: inherit; text-align: left; }
+.mobileSub__seta { transition: transform 0.2s ease; opacity: 0.8; }
+.mobileSub--aberto .mobileSub__seta { transform: rotate(180deg); }
+.mobileSub__lista { display: flex; flex-direction: column; gap: 0.15rem; margin: 0.1rem 0 0.4rem 1.1rem; padding-left: 0.8rem; border-left: 2px solid rgba(167, 243, 208, 0.25); }
+.mobileSub__lista[hidden] { display: none; }
+.mobileSub__link { display: flex; align-items: center; min-height: 44px; padding: 0.5rem 0.9rem; border-radius: 12px; color: #d1fae5; font-size: 0.95rem; text-decoration: none; transition: background 0.25s, color 0.25s; }
+.mobileSub__link:hover, .mobileSub__link:focus-visible { background: rgba(16, 185, 129, 0.2); color: #a7f3d0; outline: none; }
+.mobileMenu__admin-btn svg { flex-shrink: 0; }
+@media (prefers-reduced-motion: reduce) { .mobileSub__seta { transition: none; } }

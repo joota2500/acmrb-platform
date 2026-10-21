@@ -14,7 +14,7 @@
  */
 
 import Link from "next/link";
-import { Menu, X, LogOut, LogIn, LayoutDashboard } from "lucide-react";
+import { Menu, X, LogOut, LogIn, LayoutDashboard, ClipboardList } from "lucide-react";
 
 import "@/styles/user-menu.css";
 
@@ -68,6 +68,13 @@ export default function UserMenu({
               )}
             </div>
           </div>
+
+          {perfil.tipo === "visitante" && (
+            <Link href="/minhas-coletas" className="user-menu__button" title="Minhas coletas">
+              <ClipboardList size={16} aria-hidden="true" />
+              <span>Minhas coletas</span>
+            </Link>
+          )}
 
           {perfil.tipo === "admin" && (
             <Link href="/admin" className="user-menu__button" title="Painel Admin">
