@@ -1,0 +1,45 @@
+/* ==================== EXTRAS DO VISITANTE (aviso de contato + botão de chat, prefixo "xvis") ==================== */
+
+/* Botão flutuante de chat */
+.xvis-fab {
+  position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 900;
+  width: 3.6rem; height: 3.6rem; display: flex; align-items: center; justify-content: center;
+  border-radius: 9999px; background: #2E5E4E; color: #fff; text-decoration: none;
+  box-shadow: 0 10px 25px rgba(33, 70, 58, 0.35); transition: transform 0.15s, background 0.15s;
+}
+.xvis-fab:hover { background: #21463A; transform: translateY(-2px); }
+.xvis-fab:focus-visible { outline: 3px solid #DDF5EC; outline-offset: 3px; }
+.xvis-fab__selo {
+  position: absolute; top: -0.2rem; right: -0.2rem; min-width: 1.35rem; height: 1.35rem; padding: 0 0.3rem;
+  display: flex; align-items: center; justify-content: center; border-radius: 9999px;
+  background: #dc2626; color: #fff; font-size: 0.72rem; font-weight: 800; border: 2px solid #fff;
+}
+
+/* Aviso de contato (cartão no canto) */
+.xvis-aviso {
+  position: fixed; right: 1.25rem; bottom: 5.6rem; z-index: 901;
+  width: min(22rem, calc(100vw - 2rem)); display: flex; gap: 0.75rem;
+  padding: 1rem 1rem 1rem 0.9rem; background: #fff; border: 1px solid #DDF5EC; border-radius: 1rem;
+  box-shadow: 0 16px 40px rgba(33, 70, 58, 0.2); animation: xvis-entrar 0.25s ease-out;
+}
+.xvis-aviso__fechar { position: absolute; top: 0.45rem; right: 0.45rem; width: 1.9rem; height: 1.9rem; display: flex; align-items: center; justify-content: center; border-radius: 9999px; color: #71717a; }
+.xvis-aviso__fechar:hover { background: #f4f4f5; }
+.xvis-aviso__icone { flex: 0 0 2.4rem; width: 2.4rem; height: 2.4rem; display: flex; align-items: center; justify-content: center; border-radius: 0.8rem; background: #E8F3EE; color: #2E5E4E; }
+.xvis-aviso__corpo { min-width: 0; display: flex; flex-direction: column; gap: 0.35rem; padding-right: 1.2rem; }
+.xvis-aviso__titulo { margin: 0; font-size: 0.95rem; font-weight: 800; color: #21463A; text-align: left; }
+.xvis-aviso__texto { margin: 0; font-size: 0.84rem; line-height: 1.45; color: #52525b; text-align: left; hyphens: none; }
+.xvis-aviso__acoes { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.9rem; margin-top: 0.2rem; }
+.xvis-aviso__btn { display: inline-flex; align-items: center; min-height: 2.4rem; padding: 0.4rem 0.95rem; border-radius: 0.75rem; background: #2E5E4E; color: #fff; font-weight: 800; font-size: 0.85rem; text-decoration: none; }
+.xvis-aviso__btn:hover { background: #21463A; }
+.xvis-aviso__depois { font-size: 0.82rem; font-weight: 700; color: #52525b; min-height: 2.4rem; }
+.xvis-aviso__depois:hover { color: #21463A; text-decoration: underline; }
+@keyframes xvis-entrar { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 480px) {
+  .xvis-fab { right: 1rem; bottom: 1rem; width: 3.3rem; height: 3.3rem; }
+  .xvis-aviso { right: 1rem; left: 1rem; width: auto; bottom: 5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xvis-aviso { animation: none; }
+  .xvis-fab { transition: none; }
+}

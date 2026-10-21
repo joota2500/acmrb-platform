@@ -6,6 +6,7 @@ import "@/styles/user-menu.css";
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import RastreadorVisitante from "@/components/rastreio/RastreadorVisitante";
+import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
@@ -58,6 +59,8 @@ export default function RootLayout({
           {children}
           {/* Atividade de visitantes logados (só para o painel do deus) */}
           <RastreadorVisitante />
+          {/* Visitante logado: aviso de contato + botão flutuante de chat */}
+          <ExtrasVisitante />
         </AuthProvider>
       </body>
     </html>
