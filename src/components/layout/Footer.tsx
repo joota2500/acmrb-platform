@@ -46,6 +46,8 @@ const COLUNAS: { titulo: string; itens: Item[] }[] = [
   {
     titulo: "Participe",
     itens: [
+      { rotulo: "Agendar coleta", href: "/agendar-coleta" },
+      { rotulo: "Calendário de coleta", href: "/calendario-coleta" },
       { rotulo: "Mapa de apoiadores", href: "/#parceiros" },
       { rotulo: "Parceiros", href: "/parceiros" },
       { rotulo: "Denúncia ambiental", href: "/#denuncias" },
@@ -129,6 +131,9 @@ export default function Footer() {
           <p className="footer__dev">
             Desenvolvido por{" "}
             <a href="https://github.com/joota2500" target="_blank" rel="noopener noreferrer">DevJ-2500</a>
+            {/* Link discreto para a página de recursos planejados */}
+            <span aria-hidden="true"> · </span>
+            <Link href="/em-breve" className="footer__embreve">Em breve</Link>
           </p>
           <button type="button" className="footer__topo"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

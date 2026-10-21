@@ -222,3 +222,7 @@ a.footer__contact-item:hover,
   .footer .footer__copyright,
   .footer .footer__dev { text-align: center; text-align-last: center; line-height: 1.45; }
 }
+
+/* Link discreto "Em breve" ao lado do crédito */
+.footer__embreve { opacity: 0.75; text-decoration: none; }
+.footer__embreve:hover, .footer__embreve:focus-visible { opacity: 1; text-decoration: underline; }
