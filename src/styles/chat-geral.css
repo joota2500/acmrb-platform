@@ -1,0 +1,48 @@
+/* ==================== CHAT GERAL (estilo WhatsApp, prefixo "cg-") ==================== */
+
+.cg { display: flex; flex-direction: column; min-height: 0; border: 1px solid #DDF5EC; border-radius: 1.1rem; overflow: hidden; background: #E8F3EE; }
+.cg-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+.cg-lista {
+  display: flex; flex-direction: column; gap: 0.3rem; padding: 1rem 0.9rem;
+  height: clamp(320px, 60dvh, 560px); overflow-y: auto; overscroll-behavior: contain;
+  background-color: #E8F3EE;
+  background-image: radial-gradient(rgba(46, 94, 78, 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+.cg-vazio { margin: auto; display: flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; color: #52525b; text-align: center; }
+.cg-vazio--grande { flex-direction: column; gap: 0.6rem; max-width: 18rem; color: #2E5E4E; }
+.cg-vazio--grande p { margin: 0; color: #52525b; text-align: center; }
+
+/* Separador de data */
+.cg-dia { display: flex; justify-content: center; margin: 0.6rem 0 0.3rem; }
+.cg-dia span { font-size: 0.72rem; font-weight: 700; color: #21463A; background: #fff; padding: 0.2rem 0.7rem; border-radius: 0.5rem; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06); }
+
+/* Balões */
+.cg-msg { position: relative; max-width: min(78%, 34rem); display: flex; flex-direction: column; padding: 0.4rem 0.65rem 0.3rem; border-radius: 0.85rem; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08); }
+.cg-msg--minha { align-self: flex-end; background: #DDF5EC; color: #18181b; border-top-right-radius: 0.2rem; }
+.cg-msg--outro { align-self: flex-start; background: #fff; color: #18181b; border-top-left-radius: 0.2rem; }
+.cg-msg__autor { font-size: 0.72rem; font-weight: 800; color: #2E5E4E; margin-bottom: 0.1rem; }
+.cg-msg__texto { margin: 0; font-size: 0.92rem; line-height: 1.4; white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; text-align: left; hyphens: none; }
+.cg-msg__meta { align-self: flex-end; display: inline-flex; align-items: center; gap: 0.2rem; margin-top: 0.1rem; font-size: 0.66rem; color: #71717a; }
+.cg-msg__lida { color: #34B7F1; }
+.cg-visto { margin: 0.1rem 0.2rem 0 0; align-self: flex-end; font-size: 0.7rem; color: #71717a; }
+
+.cg-erro { margin: 0; padding: 0.5rem 1rem; font-size: 0.8rem; color: #b91c1c; background: #fef2f2; }
+
+/* Caixa de envio */
+.cg-form { display: flex; align-items: flex-end; gap: 0.5rem; padding: 0.55rem; background: #f4f4f5; border-top: 1px solid #e4e4e7; }
+.cg-form textarea { flex: 1; min-width: 0; min-height: 2.6rem; max-height: 8rem; resize: none; field-sizing: content; padding: 0.6rem 0.9rem; border-radius: 1.3rem; border: 1px solid #e4e4e7; background: #fff; font: inherit; font-size: 0.92rem; outline: 0; }
+.cg-form textarea:focus { border-color: #2E5E4E; box-shadow: 0 0 0 3px rgba(46, 94, 78, 0.15); }
+.cg-enviar { flex-shrink: 0; width: 2.75rem; height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 9999px; background: #2E5E4E; color: #fff; transition: background 0.15s; }
+.cg-enviar:hover:not(:disabled) { background: #21463A; }
+.cg-enviar:disabled { opacity: 0.45; cursor: not-allowed; }
+.cg-giro { animation: cg-giro 0.9s linear infinite; }
+@keyframes cg-giro { to { transform: rotate(360deg); } }
+
+@media (max-width: 480px) {
+  .cg-lista { padding: 0.75rem 0.55rem; height: clamp(300px, 62dvh, 520px); }
+  .cg-msg { max-width: 86%; }
+  .cg-form textarea { font-size: 16px; } /* evita zoom no iOS */
+}
+@media (prefers-reduced-motion: reduce) { .cg-giro { animation: none; } }
