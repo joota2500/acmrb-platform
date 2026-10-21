@@ -16,8 +16,9 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
+import { cartaoPopup, linkRotaGoogle, linkWhatsapp } from "@/lib/mapaPopup";
 import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/lib/mapaCamadas";
-import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, escaparHtml, linkExterno, type ApoiadorPublico } from "@/lib/apoiadores";
+import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, linkExterno, linkInstagram, type ApoiadorPublico } from "@/lib/apoiadores";
 
 interface Props {
   pontos: ApoiadorPublico[];
@@ -39,23 +40,22 @@ export function iconeCategoria(categoria: string, destaque = false) {
 }
 
 function popupHtml(p: ApoiadorPublico) {
-  const cor = corCategoria(p.categoria);
-  const logo = p.logo_url
-    ? `<img class="mapa-pop__logo" src="${escaparHtml(p.logo_url)}" alt="" loading="lazy" />`
-    : `<span class="mapa-pop__inicial" style="background:${cor}">${escaparHtml(p.nome_exibicao.charAt(0).toUpperCase())}</span>`;
-  const apoios = p.tipos_apoio.length
-    ? `<ul class="mapa-pop__apoios">${p.tipos_apoio.map((t) => `<li>${escaparHtml(t)}</li>`).join("")}</ul>`
-    : "";
-  const site = linkExterno(p.site);
-  const link = site
-    ? `<a class="mapa-pop__link" href="${escaparHtml(site)}" target="_blank" rel="noopener noreferrer">Visitar site ↗</a>`
-    : "";
-  const aprox = p.localizacao_aproximada ? `<p class="mapa-pop__aprox">Localização aproximada</p>` : "";
-  const bairro = p.bairro ? `<p class="mapa-pop__bairro">${escaparHtml(p.bairro)}</p>` : "";
-  return `<div class="mapa-pop">
-    <div class="mapa-pop__topo">${logo}<div><strong class="mapa-pop__nome">${escaparHtml(p.nome_exibicao)}</strong>
-    <span class="mapa-pop__cat" style="color:${cor}">${escaparHtml(p.categoria)}</span></div></div>
-    ${bairro}${apoios}${aprox}${link}</div>`;
+  // Cartão compacto compartilhado (src/lib/mapaPopup.ts)
+  return cartaoPopup({
+    nome: p.nome_exibicao,
+    categoria: p.categoria,
+    cor: corCategoria(p.categoria),
+    logoUrl: p.logo_url,
+    info: [p.tipos_apoio.slice(0, 2).join(", "), p.bairro],
+    descricao: p.descricao,
+    nota: p.localizacao_aproximada ? "Localização aproximada" : null,
+    acoes: [
+      (() => { const h = linkWhatsapp(p.telefone_publico); return h ? { tipo: "whatsapp" as const, href: h } : null; })(),
+      p.instagram ? { tipo: "instagram" as const, href: linkInstagram(p.instagram)! } : null,
+      !p.localizacao_aproximada && linkRotaGoogle(p.latitude, p.longitude) ? { tipo: "rota" as const, href: linkRotaGoogle(p.latitude, p.longitude)! } : null,
+      !p.instagram && linkExterno(p.site) ? { tipo: "site" as const, href: linkExterno(p.site)! } : null,
+    ],
+  });
 }
 
 export default function MapaPontos({ pontos, selecionado, onSelecionar, rotulo = "Mapa de apoiadores em Baturité" }: Props) {

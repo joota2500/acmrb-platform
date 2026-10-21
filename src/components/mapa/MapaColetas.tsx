@@ -11,7 +11,8 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
 import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
-import { BATURITE_CENTRO, BATURITE_ZOOM, escaparHtml } from "@/lib/apoiadores";
+import { cartaoPopup, linkRotaGoogle } from "@/lib/mapaPopup";
+import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/lib/apoiadores";
 import { ROTULO_STATUS, type Solicitacao, type StatusColeta } from "@/lib/coletas";
 
 export const COR_STATUS: Record<StatusColeta, string> = {
@@ -64,10 +65,14 @@ export default function MapaColetas({ pedidos, onSelecionar }: Props) {
     camada.clearLayers();
     const com = pedidos.filter((p) => p.latitude != null && p.longitude != null);
     com.forEach((p) => {
-      const html = `<div class="mapa-pop"><strong class="mapa-pop__nome">${escaparHtml(p.bairro)}</strong>
-        <span class="mapa-pop__cat" style="color:${COR_STATUS[p.status]}">${ROTULO_STATUS[p.status]}</span>
-        <p class="mapa-pop__bairro">${escaparHtml(p.endereco)}</p>
-        <p class="mapa-pop__aprox">${escaparHtml(p.materiais.join(", "))}</p></div>`;
+      const html = cartaoPopup({
+        nome: p.bairro,
+        categoria: ROTULO_STATUS[p.status],
+        cor: COR_STATUS[p.status],
+        info: [p.endereco],
+        descricao: p.materiais.join(", "),
+        acoes: [linkRotaGoogle(p.latitude, p.longitude) ? { tipo: "rota", href: linkRotaGoogle(p.latitude, p.longitude)! } : null],
+      });
       L.marker([p.latitude!, p.longitude!], { icon: icone(COR_STATUS[p.status]), title: `${p.bairro} – ${ROTULO_STATUS[p.status]}`, keyboard: true })
         .bindPopup(html, opcoesPopup(240))
         .on("click", () => selRef.current?.(p.id))

@@ -13,7 +13,8 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, escaparHtml } from "@/lib/apoiadores";
+import { cartaoPopup, linkRotaGoogle } from "@/lib/mapaPopup";
+import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria } from "@/lib/apoiadores";
 import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/lib/mapaCamadas";
 
 export interface PontoVisao {
@@ -81,10 +82,14 @@ export default function MapaVisao({ pontos, selecionado, onSelecionar, sugestao,
     camada.clearLayers();
     marcadores.current.clear();
     pontos.forEach((p) => {
-      const html = `<div class="mapa-pop"><strong class="mapa-pop__nome">${escaparHtml(p.nome)}</strong>
-        <span class="mapa-pop__cat" style="color:${corCategoria(p.categoria)}">${escaparHtml(p.tipo === "Logística" ? "Logística reversa" : p.categoria)}</span>
-        ${p.bairro ? `<p class="mapa-pop__bairro">${escaparHtml(p.bairro)}</p>` : ""}
-        ${p.oculto ? `<p class="mapa-pop__aprox">Oculto no site</p>` : ""}</div>`;
+      const html = cartaoPopup({
+        nome: p.nome,
+        categoria: p.tipo === "Logística" ? "Logística reversa" : p.categoria,
+        cor: corCategoria(p.categoria),
+        info: [p.bairro],
+        nota: p.oculto ? "Oculto no site" : null,
+        acoes: [linkRotaGoogle(p.lat, p.lng) ? { tipo: "rota", href: linkRotaGoogle(p.lat, p.lng)! } : null],
+      });
       const mk = L.marker([p.lat, p.lng], { icon: icone(corCategoria(p.categoria), p.oculto), title: p.nome, keyboard: true })
         .bindPopup(html, opcoesPopup(240))
         .on("click", () => onSelecionar?.(p.id))

@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
+import { cartaoPopup, linkRotaGoogle } from "@/lib/mapaPopup";
 import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
 
 interface Props {
@@ -51,18 +52,15 @@ export default function MapaSede({ posicao, titulo, endereco, aproximada }: Prop
       iconAnchor: [15, 38],
       popupAnchor: [0, -34],
     });
-    const el = document.createElement("div");
-    const t = document.createElement("strong");
-    t.textContent = titulo;
-    const e = document.createElement("p");
-    e.textContent = endereco;
-    el.append(t, e);
-    if (aproximada) {
-      const a = document.createElement("p");
-      a.className = "mapa-pop__aprox";
-      a.textContent = "Localização aproximada";
-      el.append(a);
-    }
+    // Cartão compacto compartilhado (src/lib/mapaPopup.ts)
+    const [lat, lng] = posicao;
+    const el = cartaoPopup({
+      nome: titulo,
+      categoria: "Sede",
+      info: [endereco],
+      nota: aproximada ? "Localização aproximada" : null,
+      acoes: [linkRotaGoogle(lat, lng) ? { tipo: "rota", href: linkRotaGoogle(lat, lng)! } : null],
+    });
     L.marker(posicao, { icon: icone, title: titulo, alt: titulo, keyboard: true }).addTo(mapa).bindPopup(el, opcoesPopup()).openPopup();
 
     mapaRef.current = mapa;

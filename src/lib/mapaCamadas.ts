@@ -88,15 +88,16 @@ export function adicionarCamadas(mapa: L.Map, chave: string, padrao: CamadaId = 
 }
 
 /**
- * Opções padrão dos popups (celular/tablet): largura máxima de
- * min(260px, 80% da tela) e folga no autoPan para o popup nunca ficar
- * embaixo do header fixo nem cortado nas bordas do mapa.
+ * Opções padrão dos popups. A largura real vem do CSS
+ * (.mapa-popup .leaflet-popup-content: min(240px, 75vw)); aqui só
+ * damos limites coerentes para o Leaflet calcular a posição, e folga
+ * no autoPan para o popup não ficar embaixo do header fixo.
  */
-export function opcoesPopup(maximo = 260): L.PopupOptions {
-  const largura = typeof window === "undefined" ? maximo : Math.min(maximo, Math.round(window.innerWidth * 0.8));
+export function opcoesPopup(maximo = 240): L.PopupOptions {
+  const largura = typeof window === "undefined" ? maximo : Math.min(maximo, Math.round(window.innerWidth * 0.75));
   return {
     maxWidth: largura,
-    minWidth: Math.min(180, largura),
+    minWidth: largura,
     autoPan: true,
     autoPanPaddingTopLeft: L.point(16, 72),
     autoPanPaddingBottomRight: L.point(16, 16),
