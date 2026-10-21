@@ -155,7 +155,8 @@ export default function Header() {
             {navigation.map((link) => (
               <Link
                 key={link.id}
-                href={link.href}
+                // Âncoras viram "/#id" para funcionar em qualquer página (e no clique do meio)
+                href={link.href.startsWith("#") ? `/${link.href}` : link.href}
                 onClick={(e) => {
                   if (navigateTo(link.href)) e.preventDefault();
                 }}

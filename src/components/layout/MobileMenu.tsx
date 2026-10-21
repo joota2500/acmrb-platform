@@ -137,7 +137,8 @@ export default function MobileMenu({
                   transition={{ delay: i * 0.05 }}
                 >
                   <Link
-                    href={link.href}
+                    // Âncoras viram "/#id" para funcionar em qualquer página (e no clique do meio)
+                href={link.href.startsWith("#") ? `/${link.href}` : link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
                     className="mobileNavLink"
                   >

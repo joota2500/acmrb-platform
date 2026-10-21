@@ -46,6 +46,7 @@ const COLUNAS: { titulo: string; itens: Item[] }[] = [
   {
     titulo: "Participe",
     itens: [
+      { rotulo: "Mapa de apoiadores", href: "/#parceiros" },
       { rotulo: "Parceiros", href: "/parceiros" },
       { rotulo: "Denúncia ambiental", href: "/#denuncias" },
       { rotulo: "Contato", href: "/#contato" },
