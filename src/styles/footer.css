@@ -185,3 +185,22 @@ a.footer__contact-item:hover,
   .footer * { transition: none !important; }
   .footer__social a:hover { transform: none; }
 }
+
+/* Correção: no celular/tablet o flex-basis de 320px virava ALTURA em coluna,
+ * criando um espaço enorme entre o copyright e o "Desenvolvido por". */
+@media (max-width: 768px) {
+  .footer__bottom {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.35rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  .footer__copyright { flex: 0 0 auto; line-height: 1.5; max-width: 34rem; }
+  .footer__dev { flex: 0 0 auto; }
+}
+@media (max-width: 480px) {
+  .footer__bottom { font-size: 0.72rem; gap: 0.25rem; }
+}
