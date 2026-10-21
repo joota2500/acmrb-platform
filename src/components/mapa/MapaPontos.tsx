@@ -85,7 +85,15 @@ export default function MapaPontos({ pontos, selecionado, onSelecionar, rotulo =
     adicionarCamadas(mapa, "acmrb-mapa-camada-publico", "mapa");
     camadaRef.current = L.layerGroup().addTo(mapa);
     mapaRef.current = mapa;
+    // Recalcula o tamanho sempre que o contêiner mudar (altura em dvh,
+    // rotação do celular, grid que muda de colunas). Sem isso o Leaflet
+    // pode ficar com tamanho 0 e não desenhar mapa nem marcadores.
+    const obs = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => mapa.invalidateSize()) : null;
+    obs?.observe(divRef.current);
+    const t = window.setTimeout(() => mapa.invalidateSize(), 300);
     return () => {
+      obs?.disconnect();
+      window.clearTimeout(t);
       mapa.remove();
       mapaRef.current = null;
     };

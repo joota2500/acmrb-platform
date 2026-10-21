@@ -176,7 +176,11 @@ export default function ApoiadoresMapaSection() {
         )}
 
         {/* Mapa + lista */}
-        <motion.div className="apmapa__board" {...fade(0.15)}>
+        {/* Mapa + lista: SEM animação "whileInView". Antes ficava com opacity 0
+            até o IntersectionObserver disparar; quando ele não dispara (pulo por
+            âncora /#parceiros, navegadores sem overflow-x: clip, aba em segundo
+            plano) o mapa ficava invisível. Agora sempre aparece. */}
+        <div className="apmapa__board">
           <div className="apmapa__map">
             <MapaPontos pontos={noMapa} selecionado={selecionado} onSelecionar={selecionar} />
             {!carregando && noMapa.length === 0 && (
@@ -232,7 +236,7 @@ export default function ApoiadoresMapaSection() {
               </ul>
             )}
           </aside>
-        </motion.div>
+        </div>
 
         {/* CTAs */}
         <motion.div className="apmapa__cta" {...fade(0.2)}>
