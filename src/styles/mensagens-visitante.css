@@ -1,0 +1,20 @@
+/* ==================== /mensagens — conversa do visitante (prefixo "mvis") ==================== */
+
+.mvis { max-width: 46rem; margin: 0 auto; background: #fff; border: 1px solid #DDF5EC; border-radius: 1.25rem; overflow: hidden; box-shadow: 0 10px 30px rgba(33, 70, 58, 0.08); }
+.mvis-topo { display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem 1rem; background: #2E5E4E; color: #fff; }
+.mvis-avatar { width: 2.6rem; height: 2.6rem; flex: 0 0 2.6rem; display: flex; align-items: center; justify-content: center; border-radius: 9999px; background: #DDF5EC; color: #2E5E4E; font-size: 1.3rem; }
+.mvis-topo__texto { display: flex; flex-direction: column; min-width: 0; flex: 1; line-height: 1.25; }
+.mvis-topo__texto strong { font-size: 1rem; }
+.mvis-topo__texto span { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; color: #DDF5EC; }
+.mvis-link { flex-shrink: 0; font-size: 0.8rem; font-weight: 700; color: #fff; padding: 0.35rem 0.75rem; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 9999px; text-decoration: none; }
+.mvis-link:hover { background: rgba(255, 255, 255, 0.12); }
+.mvis-chat { border: 0; border-radius: 0; }
+.mvis-erro { margin: 0; padding: 1.5rem; color: #b91c1c; text-align: center; }
+.mvis-giro { animation: mvis-giro 0.9s linear infinite; }
+@keyframes mvis-giro { to { transform: rotate(360deg); } }
+
+@media (max-width: 480px) {
+  .mvis { border-radius: 1rem; margin: 0 -0.25rem; }
+  .mvis-topo { padding: 0.65rem 0.75rem; }
+}
+@media (prefers-reduced-motion: reduce) { .mvis-giro { animation: none; } }
