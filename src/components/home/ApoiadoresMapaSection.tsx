@@ -86,6 +86,15 @@ export default function ApoiadoresMapaSection() {
   const totalNoMapa = lista.filter((a) => a.no_mapa).length;
 
   const selecionar = useCallback((id: string) => setSelecionado(id), []);
+
+  // Clique na lista: no celular/tablet a lista fica ABAIXO do mapa, então
+  // rola até o mapa para o popup aberto ficar visível.
+  const selecionarDaLista = (id: string) => {
+    setSelecionado(id);
+    if (window.matchMedia("(max-width: 1024px)").matches) {
+      document.querySelector(".apmapa__map")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
   const limpar = () => {
     setCategoria(null);
     setApoio(null);
@@ -199,7 +208,7 @@ export default function ApoiadoresMapaSection() {
                       aria-current={selecionado === a.id}
                       disabled={!a.no_mapa}
                       title={a.no_mapa ? "Ver no mapa" : "Ainda sem ponto no mapa"}
-                      onClick={() => setSelecionado(a.id)}
+                      onClick={() => selecionarDaLista(a.id)}
                     >
                       {a.logo_url ? (
                         // eslint-disable-next-line @next/next/no-img-element

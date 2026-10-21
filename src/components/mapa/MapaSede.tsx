@@ -13,7 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { adicionarCamadas, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
+import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
 
 interface Props {
   posicao: [number, number];
@@ -63,7 +63,7 @@ export default function MapaSede({ posicao, titulo, endereco, aproximada }: Prop
       a.textContent = "Localização aproximada";
       el.append(a);
     }
-    L.marker(posicao, { icon: icone, title: titulo, alt: titulo, keyboard: true }).addTo(mapa).bindPopup(el).openPopup();
+    L.marker(posicao, { icon: icone, title: titulo, alt: titulo, keyboard: true }).addTo(mapa).bindPopup(el, opcoesPopup()).openPopup();
 
     mapaRef.current = mapa;
     return () => {

@@ -97,3 +97,9 @@
   .avm-spin { animation: none; }
   .avm-bars__trilho span { transition: none; }
 }
+
+/* Celular/tablet: mapa do painel com altura da tela e lista abaixo */
+.avm-grid > * { min-width: 0; }
+@media (max-width: 1024px) {
+  .avm-map .mapa-wrap, .avm-map-loading { height: clamp(300px, 60dvh, 480px); }
+}

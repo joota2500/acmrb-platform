@@ -16,7 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { adicionarCamadas, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
+import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/lib/mapaCamadas";
 import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, escaparHtml, linkExterno, type ApoiadorPublico } from "@/lib/apoiadores";
 
 interface Props {
@@ -116,7 +116,7 @@ export default function MapaPontos({ pontos, selecionado, onSelecionar, rotulo =
         alt: `${p.nome_exibicao} – ${p.categoria}`,
         keyboard: true,
       })
-        .bindPopup(popupHtml(p), { maxWidth: 260, closeButton: true })
+        .bindPopup(popupHtml(p), opcoesPopup())
         .on("click", () => onSelecionar?.(p.id));
       mk.addTo(camada);
       marcadoresRef.current.set(p.id, mk);

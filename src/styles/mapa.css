@@ -72,3 +72,16 @@
 
 /* Marcador de item oculto do site (visão do painel) */
 .mapa-pin__gota--oculto { opacity: 0.55; outline: 2px dashed #fff; outline-offset: -4px; filter: grayscale(0.4); }
+
+/* ---------- Popups responsivos (celular/tablet) ----------
+ * Causa do corte: maxWidth fixo de 260px + .mapa-pop com min-width 190px
+ * + nomes longos sem quebra em mapas de ~300px de largura.
+ */
+.mapa-popup .leaflet-popup-content { max-width: min(260px, 80vw); width: auto !important; overflow-wrap: anywhere; word-break: break-word; }
+.mapa-popup .mapa-pop { min-width: 0; }
+.mapa-pop__nome, .mapa-pop__bairro { overflow-wrap: anywhere; }
+.mapa-pop__topo > div, .mapa-pop__topo > span:last-child { min-width: 0; }
+@media (max-width: 480px) {
+  .mapa-popup .leaflet-popup-content { margin: 0.7rem 0.8rem; font-size: 0.85rem; }
+  .mapa-pop__logo, .mapa-pop__inicial { width: 36px; height: 36px; }
+}

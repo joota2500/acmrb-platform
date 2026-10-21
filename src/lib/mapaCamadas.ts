@@ -86,3 +86,21 @@ export function adicionarCamadas(mapa: L.Map, chave: string, padrao: CamadaId = 
   });
   return camadas;
 }
+
+/**
+ * Opções padrão dos popups (celular/tablet): largura máxima de
+ * min(260px, 80% da tela) e folga no autoPan para o popup nunca ficar
+ * embaixo do header fixo nem cortado nas bordas do mapa.
+ */
+export function opcoesPopup(maximo = 260): L.PopupOptions {
+  const largura = typeof window === "undefined" ? maximo : Math.min(maximo, Math.round(window.innerWidth * 0.8));
+  return {
+    maxWidth: largura,
+    minWidth: Math.min(180, largura),
+    autoPan: true,
+    autoPanPaddingTopLeft: L.point(16, 72),
+    autoPanPaddingBottomRight: L.point(16, 16),
+    closeButton: true,
+    className: "mapa-popup",
+  };
+}

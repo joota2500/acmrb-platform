@@ -14,7 +14,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
 import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, escaparHtml } from "@/lib/apoiadores";
-import { adicionarCamadas, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
+import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/lib/mapaCamadas";
 
 export interface PontoVisao {
   id: string;
@@ -86,7 +86,7 @@ export default function MapaVisao({ pontos, selecionado, onSelecionar, sugestao,
         ${p.bairro ? `<p class="mapa-pop__bairro">${escaparHtml(p.bairro)}</p>` : ""}
         ${p.oculto ? `<p class="mapa-pop__aprox">Oculto no site</p>` : ""}</div>`;
       const mk = L.marker([p.lat, p.lng], { icon: icone(corCategoria(p.categoria), p.oculto), title: p.nome, keyboard: true })
-        .bindPopup(html, { maxWidth: 240 })
+        .bindPopup(html, opcoesPopup(240))
         .on("click", () => onSelecionar?.(p.id))
         .addTo(camada);
       marcadores.current.set(p.id, mk);
