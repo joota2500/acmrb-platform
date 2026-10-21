@@ -16,7 +16,7 @@
 import Link from "next/link";
 import {
   AlertTriangle, ArrowDownRight, ArrowRight, ArrowUpRight, Building2, CircleAlert, Coins, Info,
-  MapPinned, Newspaper, RefreshCw, Scale, ShieldAlert, Truck, UserSearch, Users, History, type LucideIcon,
+  MapPinned, MessagesSquare, Newspaper, RefreshCw, Scale, ShieldAlert, Truck, UserSearch, Users, History, type LucideIcon,
 } from "lucide-react";
 
 import "@/styles/admin-visao-geral.css";
@@ -185,6 +185,7 @@ export default function VisaoGeral({ papel, nome }: Props) {
         <Kpi icone={Newspaper} rotulo="Notícias publicadas" valor={v(r.noticiasPublicadas)} detalhe={r.noticiasMes !== null ? `${inteiro(r.noticiasMes)} neste mês` : undefined} />
         {ehDeus && <Kpi icone={UserSearch} rotulo="Visitantes cadastrados" valor={v(r.visitantes)} detalhe={r.visitantesMes !== null ? `${inteiro(r.visitantesMes)} novos neste mês` : undefined} />}
         <Kpi icone={ShieldAlert} rotulo="Denúncias em aberto" valor={v(r.denunciasAbertas)} />
+        <Kpi icone={MessagesSquare} rotulo="Mensagens não lidas" valor={v(r.mensagensNaoLidas)} detalhe="chat com visitantes" />
       </section>
 
       {/* 3. Gráficos */}

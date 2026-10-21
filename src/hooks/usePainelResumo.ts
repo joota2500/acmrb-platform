@@ -37,6 +37,7 @@ export interface Resumo {
   visitantes: number | null;
   visitantesMes: number | null;
   denunciasAbertas: number | null;
+  mensagensNaoLidas: number | null;
   atividades: Atividade[] | null;
   pendencias: Pendencia[];
   atualizadoEm: Date;
@@ -90,6 +91,10 @@ export function usePainelResumo(ehDeus: boolean) {
         ? seguro(supabase.from("admin_auditoria").select("id, ator_email, acao, alvo_email, created_at").order("created_at", { ascending: false }).limit(8))
         : Promise.resolve(null),
     ]);
+
+    // Chat geral: mensagens de visitantes ainda não lidas
+    const chat = await seguro(supabase.rpc("chat_nao_lidas") as unknown as PromiseLike<Res<number>>);
+    const mensagensNaoLidas = chat.error ? null : Number(chat.data) || 0;
 
     const n = (r: Res<unknown> | null) => (r && !r.error ? r.count ?? 0 : null);
 
@@ -145,6 +150,9 @@ export function usePainelResumo(ehDeus: boolean) {
     if (ehDeus && vis?.error && faltaEstrutura(vis.error)) pend.push({ nivel: "erro", texto: "Tabela de visitantes não encontrada: rode a migration 20261020260000_visitantes_perfil.sql.", secao: "visitantes" });
     if (ehDeus && aud?.error && faltaEstrutura(aud.error)) pend.push({ nivel: "info", texto: "Auditoria do painel indisponível (migration admin_auditoria pendente)." });
 
+    if (mensagensNaoLidas) pend.push({ nivel: "aviso", texto: `${mensagensNaoLidas} mensagem(ns) de visitantes sem resposta lida.`, secao: "mensagens" });
+    if (chat.error && /chat_nao_lidas|function|schema cache/i.test(chat.error.message ?? "")) pend.push({ nivel: "info", texto: "Chat com visitantes indisponível: rode a migration 20261021230000_chat_geral.sql.", secao: "mensagens" });
+
     const abertas = n(den);
     if (abertas) pend.push({ nivel: "aviso", texto: `${abertas} denúncia(s) aguardando atendimento.`, secao: "denuncias" });
 
@@ -165,6 +173,7 @@ export function usePainelResumo(ehDeus: boolean) {
       visitantes: n(vis),
       visitantesMes: n(visMes),
       denunciasAbertas: abertas,
+      mensagensNaoLidas,
       atividades: aud && !aud.error ? ((aud.data as Atividade[] | null) ?? []) : null,
       pendencias: pend,
       atualizadoEm: new Date(),

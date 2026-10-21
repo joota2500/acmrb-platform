@@ -10,6 +10,7 @@
 import {
   CalendarDays,
   ClipboardList,
+  MessagesSquare,
   FileText,
   FolderKanban,
   LayoutDashboard,
@@ -37,6 +38,7 @@ export type SecaoId =
   | "logistica"
   | "associados"
   | "visitantes"
+  | "mensagens"
   | "denuncias"
   | "materiais"
   | "coletas"
@@ -83,6 +85,7 @@ export const GRUPOS_NAV: GrupoNav[] = [
     titulo: "Pessoas",
     itens: [
       { id: "associados", rotulo: "Associados", icone: Users, pronto: true, rapido: true, descricao: "Cadastro e gestão de associados" },
+      { id: "mensagens", rotulo: "Mensagens", icone: MessagesSquare, pronto: true, descricao: "Chat com os visitantes: conversas, contato e respostas" },
       { id: "visitantes", rotulo: "Usuários / Visitantes", icone: UserSearch, pronto: true, descricao: "Visitantes cadastrados, atividade e gestão (somente ADM DEUS)" },
       { id: "denuncias", rotulo: "Denúncias", icone: ShieldAlert, pronto: false, descricao: "Denúncias ambientais recebidas" },
     ],

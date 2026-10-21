@@ -19,6 +19,7 @@ import { ChevronsLeft, ChevronsRight, LogOut, X } from "lucide-react";
 import { GRUPOS_NAV, type SecaoId } from "./adminNav";
 import { usePapelAdmin } from "./PapelAdmin";
 import { podeVer } from "@/lib/permissions";
+import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
 interface Usuario {
   nome: string;
@@ -69,6 +70,8 @@ function Menu({
 }) {
   // Esconde as seções sem permissão para o papel logado
   const papel = usePapelAdmin();
+  // Total de mensagens de visitantes ainda não lidas (selo em "Mensagens")
+  const naoLidas = useChatNaoLidas(podeVer(papel, "mensagens"));
   const grupos = GRUPOS_NAV.map((g) => ({ ...g, itens: g.itens.filter((i) => podeVer(papel, i.id)) })).filter(
     (g) => g.itens.length > 0,
   );
@@ -104,12 +107,26 @@ function Menu({
                         : "text-emerald-50/85 hover:bg-white/10 hover:text-white"
                     }`}
                   >
-                    <Icone size={20} aria-hidden="true" className="shrink-0" />
+                    <span className="relative shrink-0">
+                      <Icone size={20} aria-hidden="true" />
+                      {/* Bolinha de não lidas no modo recolhido */}
+                      {compacta && item.id === "mensagens" && naoLidas > 0 && (
+                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-[#21463A]" aria-hidden="true" />
+                      )}
+                    </span>
                     {!compacta && (
                       <>
                         <span className="flex-1 text-left text-sm font-semibold truncate">
                           {item.rotulo}
                         </span>
+                        {item.id === "mensagens" && naoLidas > 0 && (
+                          <span
+                            className="min-w-5 h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center"
+                            aria-label={`${naoLidas} não lidas`}
+                          >
+                            {naoLidas > 99 ? "99+" : naoLidas}
+                          </span>
+                        )}
                         {!item.pronto && (
                           <span
                             className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${

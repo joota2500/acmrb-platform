@@ -30,6 +30,7 @@ const MATRIZ: Record<SecaoId, Record<PapelAdmin, Acesso>> = {
   visitantes:      { deus: "total", admin: "nenhum" }, // contas de visitantes + atividade (RLS is_deus)
   denuncias:       { deus: "total", admin: "total" }, // ver + responder
   materiais:       { deus: "total", admin: "total" },
+  mensagens:       { deus: "total", admin: "total" }, // chat geral com visitantes (RLS is_active_admin)
   coletas:         { deus: "total", admin: "total" }, // pedidos de coleta + chat (RLS is_active_admin)
   calendario:      { deus: "total", admin: "total" }, // calendário de coleta por bairro
   esg:             { deus: "total", admin: "nenhum" },

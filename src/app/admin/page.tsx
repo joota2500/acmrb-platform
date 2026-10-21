@@ -48,6 +48,7 @@ import VisaoMapaSection from "@/components/admin/sections/VisaoMapaSection";
 import ApoiadoresSection from "@/components/admin/sections/ApoiadoresSection";
 import LogisticaSection from "@/components/admin/sections/LogisticaSection";
 import ProjetosSection from "@/components/admin/sections/ProjetosSection";
+import MensagensSection from "@/components/admin/sections/MensagensSection";
 import ColetasSection from "@/components/admin/sections/ColetasSection";
 import CalendarioSection from "@/components/admin/sections/CalendarioSection";
 import ESGSection from "@/components/admin/sections/ESGSection";
@@ -74,6 +75,8 @@ function Validando() {
 }
 
 /** Aviso para seções ainda sem tela própria (Coletas, Relatórios) */
+// NÃO UTILIZADO no momento (todas as seções estão prontas); mantido para seções futuras
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function EmBreve({ titulo, descricao }: { titulo: string; descricao: string }) {
   return (
     <div className="bg-white rounded-3xl border border-black/5 p-6 sm:p-10 text-center">
@@ -205,9 +208,9 @@ function PainelAdmin() {
               {ativa === "visao-mapa" && <VisaoMapaSection />}
               {ativa === "associados" && <AssociadosSection />}
               {ativa === "visitantes" && papel === "deus" && <VisitantesSection />}
+              {ativa === "mensagens" && <MensagensSection />}
               {ativa === "denuncias" && <DenunciasSection />}
               {ativa === "materiais" && <MaterialsSection />}
-              {ativa === "coletas" && <EmBreve titulo="Coletas" descricao={item.descricao} />}
               {ativa === "coletas" && <ColetasSection />}
               {ativa === "calendario" && <CalendarioSection />}
               {ativa === "esg" && <ESGSection />}
