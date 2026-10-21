@@ -18,7 +18,7 @@
 
 /* Parágrafos justificados; títulos não */
 .tsum p {
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }

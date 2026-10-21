@@ -18,7 +18,7 @@
   font-size: 0.95rem;
   line-height: 1.7;
   color: #4b5563;
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }

@@ -104,7 +104,7 @@
 .about__description,
 .about__card p,
 .about__cta-text p {
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }

@@ -19,7 +19,7 @@
 
 /* Parágrafos justificados; títulos não */
 .inst p {
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }

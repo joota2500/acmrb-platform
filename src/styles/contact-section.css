@@ -16,7 +16,7 @@
 .contato__container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
 
 /* Parágrafos justificados; títulos não */
-.contato p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+.contato p { text-align: var(--texto-justificado, justify); hyphens: auto; -webkit-hyphens: auto; }
 
 .contato__sr {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -277,7 +277,7 @@
   color: #1f4a3c;
   font-size: 0.86rem;
   line-height: 1.45;
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
 }
 .contato__login-aviso a { font-weight: 800; color: #2e5e4e; text-decoration: underline; }
 @media (max-width: 480px) {

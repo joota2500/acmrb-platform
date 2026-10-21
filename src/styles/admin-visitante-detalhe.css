@@ -62,7 +62,7 @@
 
 .advd-perigo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; border-radius: 1rem; background: #fff; border: 1px solid rgba(0, 0, 0, 0.05); }
 .advd-perigo h3 { font-size: 0.9rem; font-weight: 800; color: #18181b; }
-.advd-perigo p { font-size: 0.8rem; color: #71717a; text-align: justify; }
+.advd-perigo p { font-size: 0.8rem; color: #71717a; text-align: var(--texto-justificado, justify); }
 .advd-perigo--vermelho { border-color: #fecaca; background: #fffafa; }
 
 /* Tablet */

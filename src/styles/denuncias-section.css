@@ -15,7 +15,7 @@
 .denun__container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
 
 /* Parágrafos justificados; títulos sem justificar */
-.denun p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+.denun p { text-align: var(--texto-justificado, justify); hyphens: auto; -webkit-hyphens: auto; }
 
 /* ---------- Cabeçalho ---------- */
 .denun__header { max-width: 48rem; margin: 0 auto 3rem; text-align: center; }

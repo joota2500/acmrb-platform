@@ -5,7 +5,7 @@
 
 .apmapa { position: relative; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 55%, #ffffff 100%); padding: 4.5rem 0; }
 .apmapa__container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; }
-.apmapa p { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+.apmapa p { text-align: var(--texto-justificado, justify); hyphens: auto; -webkit-hyphens: auto; }
 
 /* Cabeçalho */
 .apmapa__header { max-width: 48rem; margin: 0 auto 2.25rem; text-align: center; }
@@ -102,7 +102,7 @@
 }
 
 /* ---------- Ajuste do bloco "Empresas parceiras" (CTA) em tablet e celular ---------- */
-.apmapa__cta-text p { text-align: justify; hyphens: auto; }
+.apmapa__cta-text p { text-align: var(--texto-justificado, justify); hyphens: auto; }
 .apmapa__btn { white-space: nowrap; }
 
 /* Tablet: textos e botões mais contidos */

@@ -47,7 +47,7 @@
   margin: 0.7rem 0 0.8rem;
   color: #bbf7d0;
   font-size: 0.82rem;
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }

@@ -33,7 +33,7 @@
   font-size: 0.95rem;
   line-height: 1.7;
   color: #4b5563;
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }
@@ -740,7 +740,7 @@
   margin-top: 0.35rem;
   font-size: 0.8rem;
   line-height: 1.55;
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }

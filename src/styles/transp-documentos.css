@@ -51,7 +51,7 @@
 .td-doc__corpo { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
 .td-doc__meta { font-size: 0.72rem; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.04em; }
 .td-doc__corpo strong { font-size: 1rem; color: #111827; }
-.td-doc__desc { font-size: 0.85rem; line-height: 1.55; color: #4b5563; text-align: justify; hyphens: auto; }
+.td-doc__desc { font-size: 0.85rem; line-height: 1.55; color: #4b5563; text-align: var(--texto-justificado, justify); hyphens: auto; }
 .td-doc__abrir { flex-shrink: 0; color: #9ca3af; }
 
 .td-vazio {

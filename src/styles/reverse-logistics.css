@@ -19,7 +19,7 @@
 
 /* Parágrafos justificados em todas as telas; títulos ficam sem justificar */
 .revlog p {
-  text-align: justify;
+  text-align: var(--texto-justificado, justify);
   hyphens: auto;
   -webkit-hyphens: auto;
 }
