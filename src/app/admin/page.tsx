@@ -48,6 +48,7 @@ import VisaoMapaSection from "@/components/admin/sections/VisaoMapaSection";
 import ApoiadoresSection from "@/components/admin/sections/ApoiadoresSection";
 import LogisticaSection from "@/components/admin/sections/LogisticaSection";
 import ProjetosSection from "@/components/admin/sections/ProjetosSection";
+import CalendarioSection from "@/components/admin/sections/CalendarioSection";
 import ESGSection from "@/components/admin/sections/ESGSection";
 import RelatoriosSection from "@/components/admin/sections/RelatoriosSection";
 import ConfiguracoesSection from "@/components/admin/sections/ConfiguracoesSection";
@@ -206,6 +207,7 @@ function PainelAdmin() {
               {ativa === "denuncias" && <DenunciasSection />}
               {ativa === "materiais" && <MaterialsSection />}
               {ativa === "coletas" && <EmBreve titulo="Coletas" descricao={item.descricao} />}
+              {ativa === "calendario" && <CalendarioSection />}
               {ativa === "esg" && <ESGSection />}
               {ativa === "relatorios" && <RelatoriosSection />}
               {ativa === "administradores" && <AdministradoresSection />}

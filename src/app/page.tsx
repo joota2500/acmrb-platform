@@ -25,6 +25,7 @@ import HeroSection from "@/components/home/HeroSection"; // Banner principal com
 import TransparencySummarySection from "@/components/home/TransparencySummarySection"; // Resumo de transparência + indicadores
 import AboutSection from "@/components/home/AboutSection"; // Quem somos (âncora #quem-somos)
 import OperationsSection from "@/components/home/OperationsSection"; // Como a associação opera
+import ColetaCalendarioSection from "@/components/home/ColetaCalendarioSection"; // Calendário por bairro + "Agende sua coleta"
 import ReverseLogisticsSection from "@/components/home/ReverseLogisticsSection"; // Logística reversa
 import NewsSection from "@/components/home/NewsSection"; // Últimas notícias (dados do Supabase)
 import DenunciasSection from "@/components/home/DenunciasSection"; // Denúncia ambiental (direciona à AMAB)
@@ -56,6 +57,8 @@ export default function Home() {
 
         {/* 2. Como funciona o trabalho dos catadores */}
         <OperationsSection />
+        {/* 2b. Coleta seletiva: calendário por bairro + agendamento */}
+        <ColetaCalendarioSection />
 
         {/* 3 e 4. Resumo de transparência com indicadores do banco */}
         <TransparencySummarySection />

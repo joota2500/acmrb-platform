@@ -1,0 +1,26 @@
+/* ==================== PÁGINAS DE COLETA: estrutura comum (prefixo "pcol") ====================
+ * /calendario-coleta, /agendar-coleta e /minhas-coletas.
+ */
+
+.pcol { min-height: 70vh; padding: 7rem 0 4rem; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 40%); }
+.pcol__container { max-width: 72rem; margin: 0 auto; padding: 0 1.5rem; }
+.pcol__container--estreito { max-width: 46rem; }
+.pcol__topo { margin-bottom: 1.75rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; }
+.pcol__selo { padding: 0.3rem 0.85rem; border-radius: 999px; background: #DDF5EC; color: #2E5E4E; font-size: 0.78rem; font-weight: 800; }
+.pcol__titulo { font-size: 2rem; font-weight: 900; color: #111827; line-height: 1.2; text-align: center; }
+.pcol__sub { max-width: 40rem; font-size: 1rem; line-height: 1.65; color: #4b5563; text-align: var(--texto-justificado, justify); text-align-last: center; }
+.pcol__btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 2.8rem; padding: 0.55rem 1.2rem; border-radius: 0.9rem; background: #2E5E4E; color: #fff; font-weight: 800; font-size: 0.92rem; text-decoration: none; }
+.pcol__btn:hover { background: #21463A; }
+.pcol__carregando { display: flex; justify-content: center; padding: 3rem; color: #2E5E4E; }
+
+@media (max-width: 1024px) {
+  .pcol { padding-top: 6rem; }
+  .pcol__titulo { font-size: 1.7rem; }
+}
+@media (max-width: 480px) {
+  .pcol { padding: 5.5rem 0 2.5rem; }
+  .pcol__container { padding: 0 1rem; }
+  .pcol__titulo { font-size: 1.4rem; }
+  .pcol__sub { font-size: 0.9rem; }
+  .pcol__btn { width: 100%; }
+}

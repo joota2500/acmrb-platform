@@ -1,0 +1,30 @@
+/* ==================== HOME: COLETA SELETIVA (prefixo "colsec") ==================== */
+
+.colsec { padding: 4rem 0; background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%); scroll-margin-top: 5rem; }
+.colsec__container { max-width: 80rem; margin: 0 auto; padding: 0 1.5rem; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 2.5rem; align-items: center; }
+.colsec__selo { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 999px; background: #DDF5EC; color: #2E5E4E; font-size: 0.8rem; font-weight: 800; }
+.colsec__titulo { margin-top: 0.9rem; font-size: 2rem; font-weight: 900; line-height: 1.2; color: #111827; }
+.colsec__titulo span { color: #059669; }
+.colsec__descricao { margin-top: 0.9rem; font-size: 1.02rem; line-height: 1.7; color: #4b5563; text-align: var(--texto-justificado, justify); }
+.colsec__acoes { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.5rem; }
+.colsec__btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem; min-height: 3rem; padding: 0.6rem 1.3rem; border-radius: 0.95rem; border: 1.5px solid #2E5E4E; color: #2E5E4E; font-weight: 800; font-size: 0.95rem; text-decoration: none; transition: background 0.2s, transform 0.2s; }
+.colsec__btn:hover { background: #E8F3EE; transform: translateY(-1px); }
+.colsec__btn--cheio { background: #2E5E4E; color: #fff; }
+.colsec__btn--cheio:hover { background: #21463A; }
+.colsec__painel { padding: 1.4rem; border-radius: 1.5rem; background: rgba(255, 255, 255, 0.85); border: 1px solid #d1fae5; box-shadow: 0 18px 40px -24px rgba(46, 94, 78, 0.45); min-width: 0; }
+
+@media (max-width: 1024px) {
+  .colsec { padding: 3rem 0; }
+  .colsec__container { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+  .colsec__titulo { font-size: 1.7rem; }
+}
+@media (max-width: 480px) {
+  .colsec { padding: 2.25rem 0; }
+  .colsec__container { padding: 0 1rem; }
+  .colsec__titulo { font-size: 1.4rem; }
+  .colsec__descricao { font-size: 0.92rem; }
+  .colsec__acoes { flex-direction: column; }
+  .colsec__btn { width: 100%; }
+  .colsec__painel { padding: 1rem; border-radius: 1.15rem; }
+}
+@media (prefers-reduced-motion: reduce) { .colsec__btn:hover { transform: none; } }

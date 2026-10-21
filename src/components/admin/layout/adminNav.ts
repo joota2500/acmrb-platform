@@ -39,6 +39,7 @@ export type SecaoId =
   | "denuncias"
   | "materiais"
   | "coletas"
+  | "calendario"
   | "esg"
   | "relatorios"
   | "administradores"
@@ -89,7 +90,8 @@ export const GRUPOS_NAV: GrupoNav[] = [
     titulo: "Operação",
     itens: [
       { id: "materiais", rotulo: "Materiais", icone: PackageSearch, pronto: true, rapido: true, descricao: "Registros de materiais recicláveis" },
-      { id: "coletas", rotulo: "Coletas", icone: CalendarDays, pronto: false, descricao: "Agenda de coletas" },
+      { id: "coletas", rotulo: "Coletas", icone: Truck, pronto: false, descricao: "Pedidos de coleta dos visitantes, chat e rota do dia" },
+      { id: "calendario", rotulo: "Calendário de coleta", icone: CalendarDays, pronto: true, descricao: "Dias e horários da coleta seletiva por bairro" },
       { id: "esg", rotulo: "Indicadores ESG", icone: Leaf, pronto: true, descricao: "Métricas ambientais e sociais" },
     ],
   },
