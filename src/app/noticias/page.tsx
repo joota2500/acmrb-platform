@@ -8,26 +8,24 @@
 
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import JsonLd from "@/components/seo/JsonLd";
+import { jsonLdMigalhas, metaPagina } from "@/lib/seo";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import NoticiasJornal from "@/components/noticias/NoticiasJornal";
 
-export const metadata: Metadata = {
-  title: "Notícias",
-  description:
-    "Notícias e atualizações da ACMRB: projetos, ações sociais, educação ambiental, parcerias e coleta seletiva em Baturité – CE.",
-  openGraph: {
-    title: "Notícias | ACMRB",
-    description: "Projetos, ações sociais, educação ambiental e parcerias da ACMRB.",
-    type: "website",
-    locale: "pt_BR",
-  },
-};
+export const metadata: Metadata = metaPagina({
+  titulo: "Notícias da associação de catadores de Baturité",
+  descricao:
+    "Notícias e atualizações da ACMRB (Reciclaê): projetos, ações sociais, educação ambiental, parcerias e coleta seletiva em Baturité – CE.",
+  caminho: "/noticias",
+});
 
 export default function NoticiasPage() {
   return (
     <>
       <Header />
+      <JsonLd dados={jsonLdMigalhas([{ nome: "Notícias", caminho: "/noticias" }])} />
       <Suspense fallback={<main className="nj" aria-busy="true" />}>
         <NoticiasJornal />
       </Suspense>

@@ -4,22 +4,26 @@
  */
 
 import type { Metadata } from "next";
+import JsonLd from "@/components/seo/JsonLd";
+import { jsonLdMigalhas, metaPagina } from "@/lib/seo";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CalendarioBairros from "@/components/calendario/CalendarioBairros";
 import "@/styles/paginas-coleta.css";
 
-export const metadata: Metadata = {
-  title: "Calendário de coleta por bairro",
-  description: "Consulte os dias e horários da coleta seletiva da ACMRB no seu bairro em Baturité – CE.",
-  alternates: { canonical: "/calendario-coleta" },
-};
+export const metadata: Metadata = metaPagina({
+  titulo: "Calendário de coleta seletiva por bairro em Baturité",
+  descricao:
+    "Consulte os dias e horários da coleta seletiva da ACMRB (Reciclaê) no seu bairro em Baturité – CE.",
+  caminho: "/calendario-coleta",
+});
 
 export default function CalendarioColetaPage() {
   return (
     <>
       <Header />
+      <JsonLd dados={jsonLdMigalhas([{ nome: "Calendário de coleta", caminho: "/calendario-coleta" }])} />
       <main className="pcol">
         <div className="pcol__container pcol__container--estreito">
           <header className="pcol__topo">

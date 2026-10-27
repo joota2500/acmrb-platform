@@ -21,7 +21,7 @@ const PAGINAS: { caminho: string; prioridade: number; frequencia: MetadataRoute.
   { caminho: "/agendar-coleta", prioridade: 0.8, frequencia: "monthly" },
   { caminho: "/calendario-coleta", prioridade: 0.8, frequencia: "monthly" },
   { caminho: "/transparencia", prioridade: 0.7, frequencia: "weekly" },
-  { caminho: "/projetos", prioridade: 0.7, frequencia: "monthly" },
+  // /projetos fica fora enquanto a página está "em construção" (pouco conteúdo)
   { caminho: "/parceiros", prioridade: 0.6, frequencia: "monthly" },
   { caminho: "/associados", prioridade: 0.6, frequencia: "monthly" },
   { caminho: "/privacidade", prioridade: 0.2, frequencia: "yearly" },

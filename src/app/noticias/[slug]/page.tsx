@@ -17,6 +17,8 @@ import Footer from "@/components/layout/Footer";
 import NoticiaDetalhe from "@/components/noticias/NoticiaDetalhe";
 import { clientePublico } from "@/lib/supabasePublico";
 import { siteUrl } from "@/lib/siteUrl";
+import JsonLd from "@/components/seo/JsonLd";
+import { IMAGEM_PADRAO, NOME_OFICIAL, SIGLA, NOME_MARCA, jsonLdMigalhas } from "@/lib/seo";
 import {
   normalizarNoticia,
   ordenarRecentes,
@@ -77,7 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const descricao = (n.seo_descricao || n.resumo || textoPuro(n.conteudo)).slice(0, 200);
   const endereco = `${base}/noticias/${n.slug}`;
   // imagem de capa (ou a imagem padrão do site) sempre com endereço absoluto
-  const capa = n.imagem_url ? new URL(n.imagem_url, base).toString() : `${base}/images/acmrb-hero.jpg`;
+  const capa = n.imagem_url ? new URL(n.imagem_url, base).toString() : `${base}${IMAGEM_PADRAO.url}`;
   return {
     metadataBase: new URL(base),
     title: titulo,
@@ -89,7 +91,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: "article",
       url: endereco,
       locale: "pt_BR",
-      siteName: "ACMRB",
+      siteName: `${SIGLA} ${NOME_MARCA}`,
       title: titulo,
       description: descricao,
       publishedTime: n.publicado_em,
@@ -113,9 +115,48 @@ export default async function NoticiaPage({ params }: Props) {
   const r = await carregar(slug);
   if (!r) notFound();
 
+  // ----- Dados estruturados: NewsArticle + trilha de navegação -----
+  const n = r.noticia;
+  const base = siteUrl();
+  const endereco = `${base}/noticias/${n.slug}`;
+  const capa = n.imagem_url ? new URL(n.imagem_url, base).toString() : `${base}${IMAGEM_PADRAO.url}`;
+  const artigo = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    mainEntityOfPage: { "@type": "WebPage", "@id": endereco },
+    headline: (n.seo_titulo || n.titulo).slice(0, 110),
+    description: (n.seo_descricao || n.resumo || textoPuro(n.conteudo)).slice(0, 200),
+    image: [capa],
+    datePublished: n.publicado_em,
+    dateModified: n.updated_at || n.publicado_em,
+    inLanguage: "pt-BR",
+    articleSection: n.categoria || undefined,
+    keywords: n.tags.length ? n.tags.join(", ") : undefined,
+    // autor institucional (ACMRB/Reciclaê) vira Organization; nome de pessoa vira Person
+    author:
+      !n.autor_nome || /acmrb|recicla/i.test(n.autor_nome)
+        ? { "@type": "Organization", name: SIGLA, url: base }
+        : { "@type": "Person", name: n.autor_nome },
+    publisher: {
+      "@type": "Organization",
+      name: NOME_OFICIAL,
+      alternateName: `${SIGLA} ${NOME_MARCA}`,
+      logo: { "@type": "ImageObject", url: `${base}/icons/icon-512.png` },
+    },
+  };
+
   return (
     <>
       <Header />
+      <JsonLd
+        dados={[
+          artigo,
+          jsonLdMigalhas([
+            { nome: "Notícias", caminho: "/noticias" },
+            { nome: n.titulo, caminho: `/noticias/${n.slug}` },
+          ]),
+        ]}
+      />
       <NoticiaDetalhe {...r} />
       <Footer />
     </>
