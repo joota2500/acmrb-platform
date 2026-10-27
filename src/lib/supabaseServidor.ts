@@ -9,6 +9,7 @@
 
 import { NextResponse } from "next/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { hashDoIp, limitar, respostaLimite } from "@/lib/segurancaServidor";
 
 export const MSG_SEM_CHAVE =
   "A chave secreta do servidor (SUPABASE_SERVICE_ROLE_KEY) não está configurada. " +
@@ -50,6 +51,13 @@ type Autorizacao =
 export async function autorizar(req: Request, somenteDeus = false): Promise<Autorizacao> {
   const admin = clienteServidor();
   if (!admin) return { resposta: erro(MSG_SEM_CHAVE, 500) };
+
+  // Limite de uso das rotas do painel: 120 chamadas por minuto por rede
+  const ip = hashDoIp(req);
+  if (ip) {
+    const lim = await limitar(admin, `admin:${ip}`, 120, 60);
+    if (!lim.permitido) return { resposta: respostaLimite(lim.restanteSeg) };
+  }
 
   const token = req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
   if (!token) return { resposta: erro("Sessão ausente. Entre novamente.", 401) };

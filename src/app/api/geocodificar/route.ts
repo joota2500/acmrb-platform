@@ -11,11 +11,15 @@
 
 import { NextResponse } from "next/server";
 import { excedeuLimite, geocodificar, ROTULO_PRECISAO } from "@/lib/geocodificacao";
+import { limitarRota } from "@/lib/segurancaServidor";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  // Limite compartilhado entre todas as instâncias (banco)
+  const bloqueio = await limitarRota(req, "geocodificar", 40, 60);
+  if (bloqueio) return bloqueio;
   const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || req.headers.get("x-real-ip") || "local";
   if (excedeuLimite(ip)) {
     return NextResponse.json({ erro: "Muitas buscas seguidas. Aguarde um minuto e tente de novo." }, { status: 429 });
