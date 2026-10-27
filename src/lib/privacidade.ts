@@ -3,9 +3,9 @@
  * ------------------------------------------------------------
  * "aceito"   → o site conta a visita de forma anônima (id aleatório).
  * "recusado" → nada é medido e o id anônimo é apagado.
- * Sem escolha ainda: a medição anônima funciona e o aviso aparece
- * para o visitante poder recusar. O navegador com "Do Not Track" ligado
- * também desliga a medição.
+ * Sem escolha: a medição anônima funciona normalmente (não há banner;
+ * quem quiser desligar usa o botão em /privacidade). O navegador com
+ * "Do Not Track" ligado também desliga a medição.
  */
 
 export const CHAVE_PRIVACIDADE = "acmrb_privacidade";

@@ -15,7 +15,7 @@ Linguagem simples, passo a passo. Tudo aqui foi feito na branch `acmrb-terceira-
   totais por dia (quantas visitas, aparelhos, origem, cidade), que não identificam ninguém.
 - Quem faz login: os acessos passam a ser da conta e ficam enquanto a conta existir (apagar a conta apaga tudo).
 - Administradores logados **não** são contados.
-- Aviso simples de privacidade na primeira visita + página `/privacidade`. O visitante pode desligar a medição
+- Sem banner de cookies: a explicação fica na página `/privacidade` (link discreto no rodapé). O visitante pode desligar a medição
   (também respeitamos "Do Not Track" do navegador).
 
 ### Tela do ADM DEUS: Admin → Usuários / Visitantes (5 abas)

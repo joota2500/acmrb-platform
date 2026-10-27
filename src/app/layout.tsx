@@ -8,7 +8,6 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import RastreadorVisitante from "@/components/rastreio/RastreadorVisitante";
 import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
 import RastreadorAcessos from "@/components/rastreio/RastreadorAcessos";
-import AvisoPrivacidade from "@/components/privacidade/AvisoPrivacidade";
 import type { Metadata, Viewport } from "next";
 import { siteUrl } from "@/lib/siteUrl";
 import { DESCRICAO_PADRAO, IMAGEM_PADRAO, NOME_MARCA, NOME_OFICIAL, PALAVRAS_CHAVE, SIGLA, TITULO_PADRAO } from "@/lib/seo";
@@ -76,9 +75,8 @@ export default function RootLayout({
           {children}
           {/* Atividade de visitantes logados (só para o painel do deus) */}
           <RastreadorVisitante />
-          {/* Contagem anônima de visitas (todos os acessos) + aviso de privacidade (LGPD) */}
+          {/* Contagem anônima de visitas (todos os acessos). Sem banner: a explicação fica em /privacidade (link no rodapé) */}
           <RastreadorAcessos />
-          <AvisoPrivacidade />
           {/* Visitante logado: aviso de contato + botão flutuante de chat */}
           <ExtrasVisitante />
         </AuthProvider>
