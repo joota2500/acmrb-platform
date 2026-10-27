@@ -16,6 +16,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import NoticiaDetalhe from "@/components/noticias/NoticiaDetalhe";
 import { clientePublico } from "@/lib/supabasePublico";
+import { siteUrl } from "@/lib/siteUrl";
 import {
   normalizarNoticia,
   ordenarRecentes,
@@ -70,30 +71,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const r = await carregar(slug);
   if (!r) return { title: "Notícia não encontrada" };
   const n = r.noticia;
-  const descricao = (n.seo_descricao || n.resumo || textoPuro(n.conteudo)).slice(0, 160);
+  const base = siteUrl();
+  const titulo = n.seo_titulo || n.titulo;
+  // prévia do link (WhatsApp, Facebook, X…): resumo da notícia, sem marcações
+  const descricao = (n.seo_descricao || n.resumo || textoPuro(n.conteudo)).slice(0, 200);
+  const endereco = `${base}/noticias/${n.slug}`;
+  // imagem de capa (ou a imagem padrão do site) sempre com endereço absoluto
+  const capa = n.imagem_url ? new URL(n.imagem_url, base).toString() : `${base}/images/acmrb-hero.jpg`;
   return {
-    title: n.seo_titulo || n.titulo,
+    metadataBase: new URL(base),
+    title: titulo,
     description: descricao,
     keywords: n.tags,
     authors: [{ name: n.autor_nome }],
-    alternates: { canonical: `/noticias/${n.slug}` },
+    alternates: { canonical: endereco },
     openGraph: {
       type: "article",
+      url: endereco,
       locale: "pt_BR",
       siteName: "ACMRB",
-      title: n.seo_titulo || n.titulo,
+      title: titulo,
       description: descricao,
       publishedTime: n.publicado_em,
       modifiedTime: n.updated_at || undefined,
+      authors: [n.autor_nome],
       section: n.categoria || undefined,
       tags: n.tags,
-      images: n.imagem_url ? [{ url: n.imagem_url, alt: n.imagem_alt }] : undefined,
+      images: [{ url: capa, alt: n.imagem_alt || n.titulo }],
     },
     twitter: {
-      card: n.imagem_url ? "summary_large_image" : "summary",
-      title: n.seo_titulo || n.titulo,
+      card: "summary_large_image",
+      title: titulo,
       description: descricao,
-      images: n.imagem_url ? [n.imagem_url] : undefined,
+      images: [capa],
     },
   };
 }
