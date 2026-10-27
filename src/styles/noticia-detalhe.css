@@ -119,25 +119,6 @@
   margin-top: 2.25rem;
 }
 
-.nd__texto { font-size: 1.08rem; line-height: 1.85; color: #1f2937; }
-.nd__texto p { margin: 0 0 1.25rem; }
-.nd__texto h2 { font-size: 1.5rem; font-weight: 800; color: #065f46; margin: 2rem 0 0.9rem; line-height: 1.3; }
-.nd__texto h3 { font-size: 1.2rem; font-weight: 800; color: #065f46; margin: 1.6rem 0 0.75rem; }
-.nd__texto ul { margin: 0 0 1.25rem 1.25rem; list-style: disc; }
-.nd__texto li { margin-bottom: 0.4rem; }
-.nd__texto li::marker { color: #10b981; }
-.nd__texto a { color: #047857; font-weight: 600; text-decoration: underline; }
-.nd__texto blockquote {
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  border-left: 4px solid #10b981;
-  background: #ecfdf5;
-  border-radius: 0 1rem 1rem 0;
-  color: #065f46;
-  font-style: italic;
-}
-.nd__texto blockquote p { margin: 0; }
-
 .nd__subtitulo {
   display: flex;
   align-items: center;
@@ -348,9 +329,6 @@
   .nd__linha-fina { font-size: 0.95rem; }
   .nd__meta { font-size: 0.75rem; gap: 0.45rem 0.9rem; }
   .nd__breadcrumb [aria-current] { max-width: 12rem; }
-  .nd__texto { font-size: 0.95rem; line-height: 1.75; }
-  .nd__texto h2 { font-size: 1.2rem; }
-  .nd__texto h3 { font-size: 1.05rem; }
   .nd__moldura { height: min(55vh, 26rem); min-height: 12rem; }
   .nd__galeria-grade { grid-template-columns: repeat(2, 1fr); }
   .nd__social { flex: 1 1 45%; font-size: 0.78rem; padding: 0 0.6rem; }

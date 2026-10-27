@@ -13,11 +13,12 @@
  * - Validação com zod antes de salvar
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 import {
-  ArrowDown, ArrowUp, Bold, Eye, Heading2, ImagePlus, List, Loader2, Quote, Save, Send, Trash2, Upload, X,
+  ArrowDown, ArrowUp, Eye, ImagePlus, Loader2, Save, Send, Trash2, Upload, X,
 } from "lucide-react";
+import EditorTextoNoticia from "@/components/admin/news/EditorTextoNoticia";
 import ConteudoNoticia from "@/components/noticias/ConteudoNoticia";
 import NoticiaCard from "@/components/noticias/NoticiaCard";
 import {
@@ -103,7 +104,6 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
   const [enviandoCapa, setEnviandoCapa] = useState(false);
   const [enviandoGaleria, setEnviandoGaleria] = useState(false);
   const [previa, setPrevia] = useState(false);
-  const conteudoRef = useRef<HTMLTextAreaElement>(null);
 
   const set = <K extends keyof DadosNoticia>(k: K, v: DadosNoticia[K]) => setD((x) => ({ ...x, [k]: v }));
 
@@ -121,22 +121,6 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
 
   const tempo = useMemo(() => calcularTempoLeitura(d.conteudo), [d.conteudo]);
   const palavras = useMemo(() => d.conteudo.trim().split(/\s+/).filter(Boolean).length, [d.conteudo]);
-
-  /* ---------- Barra de formatação ---------- */
-  function inserir(antes: string, depois = "", inicioDeLinha = false) {
-    const el = conteudoRef.current;
-    if (!el) return;
-    const { selectionStart: s, selectionEnd: e, value } = el;
-    const sel = value.slice(s, e) || (inicioDeLinha ? "Texto" : "texto");
-    const prefixo = inicioDeLinha && s > 0 && value[s - 1] !== "\n" ? "\n\n" : "";
-    const novo = value.slice(0, s) + prefixo + antes + sel + depois + value.slice(e);
-    set("conteudo", novo);
-    requestAnimationFrame(() => {
-      el.focus();
-      const pos = s + prefixo.length + antes.length;
-      el.setSelectionRange(pos, pos + sel.length);
-    });
-  }
 
   /* ---------- Tags ---------- */
   function adicionarTags(texto: string) {
@@ -268,19 +252,10 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
 
           <div className="an__campo">
             <span>Texto da notícia *</span>
-            <div className="an__barra" role="toolbar" aria-label="Formatação">
-              <button type="button" onClick={() => inserir("## ", "", true)} title="Subtítulo"><Heading2 size={16} /> Subtítulo</button>
-              <button type="button" onClick={() => inserir("**", "**")} title="Negrito"><Bold size={16} /> Negrito</button>
-              <button type="button" onClick={() => inserir("- ", "", true)} title="Lista"><List size={16} /> Lista</button>
-              <button type="button" onClick={() => inserir("> ", "", true)} title="Citação"><Quote size={16} /> Citação</button>
-            </div>
-            <textarea
-              ref={conteudoRef}
-              rows={14}
-              value={d.conteudo}
-              onChange={(e) => set("conteudo", e.target.value)}
-              aria-label="Texto da notícia"
-              placeholder={"Deixe uma linha em branco entre os parágrafos.\n\n## Subtítulo\n- item de lista\n> citação\n**negrito** e [link](https://...)"}
+            <EditorTextoNoticia
+              valor={d.conteudo}
+              onChange={(v) => set("conteudo", v)}
+              placeholder={"Escreva aqui. Use a barra acima para títulos, negrito, listas, citações e links.\n\nDeixe uma linha em branco entre os parágrafos."}
             />
             <small className="an__dica">{palavras} palavras • cerca de {tempo} min de leitura</small>
             {erro("conteudo")}

@@ -242,21 +242,6 @@
 
 .an__erro { font-size: 0.78rem; color: #b91c1c; font-weight: 600; }
 
-.an__barra { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.an__barra button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.35rem 0.7rem;
-  border-radius: 0.6rem;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
-  font-size: 0.78rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-.an__barra button:hover { background: #ecfdf5; }
-
 .an__tags {
   display: flex;
   flex-wrap: wrap;

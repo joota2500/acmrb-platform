@@ -179,8 +179,10 @@ export function pareceUuid(v: string): boolean {
 export function textoPuro(conteudo: string): string {
   return conteudo
     .replace(/<[^>]+>/g, " ")
-    .replace(/^\s*(#{1,3}|>|-)\s+/gm, " ")
+    .replace(/^\s*(#{1,6}|>|[-*•+]|\d+[.)])\s+/gm, " ")
+    .replace(/^\s*([-*_])(\s*\1){2,}\s*$/gm, " ")
     .replace(/\*\*/g, "")
+    .replace(/\*([^*\s](?:[^*]*[^*\s])?)\*/g, "$1")
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
     .replace(/\s+/g, " ")
     .trim();

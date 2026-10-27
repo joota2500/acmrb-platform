@@ -1,84 +1,68 @@
 /**
- * ConteudoNoticia — mostra o texto da notícia com formatação simples
+ * ConteudoNoticia — mostra o texto da notícia já formatado
  * ------------------------------------------------------------
- * Sem HTML cru (nada de dangerouslySetInnerHTML): o texto vira
- * elementos React, então não há risco de script injetado.
- * Formatação aceita (escrita no painel):
- *   linha em branco  → novo parágrafo
- *   ## Título        → subtítulo      ### Título → subtítulo menor
- *   - item           → lista
- *   > frase          → citação
- *   **negrito**      e [texto](https://link)
- * Tags HTML antigas (<p>, <br>) são convertidas em quebras de linha.
+ * Usa o interpretador de src/lib/markdownNoticia.ts: o texto vira
+ * elementos React (sem dangerouslySetInnerHTML), então não há risco de
+ * script injetado e nenhum "#", "**" ou "-" cru aparece na leitura.
+ * Usado na página pública e na pré-visualização do editor.
+ * CSS: src/styles/noticia-conteudo.css (prefixo "nc").
  */
 
 import { Fragment, type ReactNode } from "react";
+import { blocos, type Trecho } from "@/lib/markdownNoticia";
 
-function inline(texto: string, chave: string): ReactNode[] {
-  const partes = texto.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\(https?:\/\/[^)\s]+\))/g);
-  return partes.map((p, i) => {
+import "@/styles/noticia-conteudo.css";
+
+function renderizar(lista: Trecho[], chave: string): ReactNode {
+  return lista.map((x, i) => {
     const k = `${chave}-${i}`;
-    if (/^\*\*[^*]+\*\*$/.test(p)) return <strong key={k}>{p.slice(2, -2)}</strong>;
-    const link = p.match(/^\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)$/);
-    if (link) {
-      return (
-        <a key={k} href={link[2]} target="_blank" rel="noopener noreferrer nofollow">
-          {link[1]}
-        </a>
-      );
+    switch (x.t) {
+      case "texto":
+        return <Fragment key={k}>{x.v}</Fragment>;
+      case "br":
+        return <br key={k} />;
+      case "negrito":
+        return <strong key={k}>{renderizar(x.v, k)}</strong>;
+      case "italico":
+        return <em key={k}>{renderizar(x.v, k)}</em>;
+      case "link":
+        return (
+          <a key={k} href={x.href} target="_blank" rel="noopener noreferrer nofollow">
+            {renderizar(x.v, k)}
+          </a>
+        );
     }
-    // quebras simples dentro do parágrafo
-    const linhas = p.split("\n");
-    return (
-      <Fragment key={k}>
-        {linhas.map((l, j) => (
-          <Fragment key={j}>
-            {j > 0 && <br />}
-            {l}
-          </Fragment>
-        ))}
-      </Fragment>
-    );
   });
 }
 
-function limparHtml(texto: string): string {
-  return texto
-    .replace(/\r\n/g, "\n")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/p>\s*<p[^>]*>/gi, "\n\n")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&");
-}
-
 export default function ConteudoNoticia({ texto, className }: { texto: string; className?: string }) {
-  const blocos = limparHtml(texto).split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+  const lista = blocos(texto);
 
   return (
-    <div className={className} lang="pt-BR">
-      {blocos.map((b, i) => {
+    <div className={`nc ${className ?? ""}`} lang="pt-BR">
+      {lista.map((b, i) => {
         const k = `b${i}`;
-        if (b.startsWith("### ")) return <h3 key={k}>{b.slice(4)}</h3>;
-        if (b.startsWith("## ")) return <h2 key={k}>{b.slice(3)}</h2>;
-        const linhas = b.split("\n");
-        if (linhas.every((l) => /^\s*[-•]\s+/.test(l))) {
-          return (
-            <ul key={k}>
-              {linhas.map((l, j) => (
-                <li key={j}>{inline(l.replace(/^\s*[-•]\s+/, ""), `${k}-${j}`)}</li>
-              ))}
-            </ul>
-          );
+        switch (b.t) {
+          case "titulo":
+            // # e ## são subtítulos principais (h2); ### h3; #### h4. O h1 é o título da notícia
+            if (b.nivel === 3) return <h3 key={k} className="nc__h3">{renderizar(b.v, k)}</h3>;
+            if (b.nivel === 4) return <h4 key={k} className="nc__h4">{renderizar(b.v, k)}</h4>;
+            return <h2 key={k} className={b.nivel === 1 ? "nc__h1" : "nc__h2"}>{renderizar(b.v, k)}</h2>;
+          case "lista": {
+            const Tag = b.ordenada ? "ol" : "ul";
+            return (
+              <Tag key={k} className={b.ordenada ? "nc__ol" : "nc__ul"}>
+                {b.itens.map((it, j) => <li key={j}>{renderizar(it, `${k}-${j}`)}</li>)}
+              </Tag>
+            );
+          }
+          case "citacao":
+            return <blockquote key={k} className="nc__citacao"><p>{renderizar(b.v, k)}</p></blockquote>;
+          case "divisor":
+            return <hr key={k} className="nc__divisor" />;
+          default:
+            return <p key={k}>{renderizar(b.v, k)}</p>;
         }
-        if (linhas.every((l) => l.startsWith(">"))) {
-          return (
-            <blockquote key={k}>
-              <p>{inline(linhas.map((l) => l.replace(/^>\s?/, "")).join("\n"), k)}</p>
-            </blockquote>
-          );
-        }
-        return <p key={k}>{inline(b, k)}</p>;
       })}
     </div>
   );
