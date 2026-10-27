@@ -10,36 +10,51 @@ import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
 import RastreadorAcessos from "@/components/rastreio/RastreadorAcessos";
 import AvisoPrivacidade from "@/components/privacidade/AvisoPrivacidade";
 import type { Metadata, Viewport } from "next";
+import { siteUrl } from "@/lib/siteUrl";
+import { DESCRICAO_PADRAO, IMAGEM_PADRAO, NOME_MARCA, NOME_OFICIAL, PALAVRAS_CHAVE, SIGLA, TITULO_PADRAO } from "@/lib/seo";
 
+/**
+ * Metadata global (vale para todas as páginas; cada página pode sobrescrever)
+ * - metadataBase: transforma caminhos como "/quem-somos" em endereços completos
+ * - verification: código do Google Search Console (variável GOOGLE_SITE_VERIFICATION)
+ */
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl()),
   title: {
-    default: "ACMRB | Plataforma de Gestão",
-    template: "%s | ACMRB",
+    default: TITULO_PADRAO,
+    template: `%s | ${SIGLA} ${NOME_MARCA}`,
   },
-  description:
-    "Plataforma institucional da Associação dos Catadores de Materiais Recicláveis de Baturité - Gestão ESG, Transparência e Logística Reversa.",
-  applicationName: "ACMRB Platform",
-  authors: [{ name: "ACMRB" }],
-  keywords: [
-    "ACMRB",
-    "reciclagem",
-    "Baturité",
-    "ESG",
-    "logística reversa",
-    "catadores",
-    "meio ambiente",
-  ],
-  icons: {
-    icon: "/images/acmrb-hero.jpg",
+  description: DESCRICAO_PADRAO,
+  applicationName: `${SIGLA} ${NOME_MARCA}`,
+  authors: [{ name: SIGLA }],
+  creator: NOME_OFICIAL,
+  publisher: NOME_OFICIAL,
+  keywords: PALAVRAS_CHAVE,
+  category: "Meio ambiente e reciclagem",
+  formatDetection: { telephone: true, email: true, address: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
   },
   openGraph: {
-    title: "ACMRB | Plataforma de Gestão",
-    description:
-      "Gestão completa de materiais recicláveis, transparência e impacto social.",
-    locale: "pt_BR",
-    siteName: "ACMRB",
     type: "website",
+    locale: "pt_BR",
+    siteName: `${SIGLA} ${NOME_MARCA}`,
+    title: TITULO_PADRAO,
+    description: DESCRICAO_PADRAO,
+    images: [IMAGEM_PADRAO],
   },
+  twitter: {
+    card: "summary_large_image",
+    title: TITULO_PADRAO,
+    description: DESCRICAO_PADRAO,
+    images: [IMAGEM_PADRAO.url],
+  },
+  // código de verificação do Google Search Console (opcional; defina na Vercel)
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export const viewport: Viewport = {
