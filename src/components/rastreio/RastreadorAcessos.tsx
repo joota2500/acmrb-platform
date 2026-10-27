@@ -22,7 +22,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { EVENTO_PRIVACIDADE, medicaoPermitida } from "@/lib/privacidade";
-import { esquecerAparelho, idDoAparelho } from "@/lib/dispositivoCliente";
+import { idDoAparelho } from "@/lib/dispositivoCliente";
 
 const CHAVE_SESSAO = "acmrb_acesso_sessao";
 const BATIMENTO_MS = 30_000;
@@ -56,18 +56,6 @@ export default function RastreadorAcessos() {
     }
   });
 
-  // Expulsão: sai da conta, apaga o id do aparelho e volta para a página inicial
-  const expulsarAgora = useRef(async () => {
-    sessaoId.current = null;
-    esquecerAparelho();
-    try {
-      await supabase.auth.signOut({ scope: "local" }); // só neste aparelho (a expulsão da conta já encerrou as outras sessões no servidor)
-    } catch {
-      /* já sem sessão */
-    }
-    window.location.replace("/");
-  });
-
   const enviar = useRef(async (t: string, extra: Record<string, unknown> = {}, opcoes: { beacon?: boolean; token?: string | null } = {}) => {
     const a = anonId();
     if (!a || !sessaoId.current || !medicaoPermitida()) return;
@@ -85,17 +73,12 @@ export default function RastreadorAcessos() {
         navigator.sendBeacon(URL_API, new Blob([corpo], { type: "application/json" }));
         return;
       }
-      const resp = await fetch(URL_API, {
+      await fetch(URL_API, {
         method: "POST",
         keepalive: true,
         headers: { "Content-Type": "application/json", ...(opcoes.token ? { Authorization: `Bearer ${opcoes.token}` } : {}) },
         body: corpo,
       });
-      // O ADM DEUS mandou expulsar este aparelho/conta: encerra o login, esquece o id e recomeça
-      if (resp.status === 200) {
-        const j = (await resp.json().catch(() => null)) as { acao?: string } | null;
-        if (j?.acao === "expulsar") await expulsarAgora.current();
-      }
     } catch {
       /* sem rede: ignora */
     }

@@ -7,11 +7,12 @@
  *      - rotas /api → respondem 403.
  *
  * Como fica rápido: a lista de bloqueios ativos (pequena) é buscada no
- * Supabase com a chave do servidor e guardada em memória por 15 s em cada
+ * Supabase com a chave do servidor e guardada em memória por 5 s em cada
  * instância. A checagem de cada visita é só uma consulta em memória (e, se
  * houver bloqueio por rede, um hash). Se o banco não responder, o site
  * continua abrindo (nunca derruba o site por falha de checagem). Por isso
- * um bloqueio novo vale em até ~15 s.
+ * um bloqueio novo vale na próxima navegação (até ~5 s). Quem está com a
+ * página aberta é avisado pela rota /api/dispositivo/estado (~10 s).
  *
  * Nunca bloqueados: o painel (/admin e /api/admin), as rotas de limpeza
  * (/api/cron), aparelhos de administradores (tabela dispositivos_admin) e
@@ -27,6 +28,7 @@ interface Bloqueio {
   dispositivo_id: string | null;
   ip_hash: string | null;
   tipo: "bloqueio" | "suspensao";
+  motivo: string;
   ate: string | null;
 }
 interface Foto {
@@ -35,10 +37,10 @@ interface Foto {
   protegidos: Set<string>;
 }
 
-const VALIDADE_MS = 15_000;
+const VALIDADE_MS = 5_000;
 const ESPERA_MAX_MS = 1_500;
 /** Caminhos que nunca são barrados (a página de aviso precisa abrir para quem está bloqueado) */
-const LIVRES = /^\/(acesso-bloqueado|admin|api\/admin|api\/cron)(\/|$)/;
+const LIVRES = /^\/(acesso-bloqueado|admin|api\/admin|api\/cron|api\/dispositivo\/estado)(\/|$)/;
 
 let foto: Foto | null = null;
 let buscando: Promise<Foto | null> | null = null;
@@ -60,7 +62,7 @@ async function lerTabela<T>(url: string, chave: string, tabela: string, consulta
   }
 }
 
-/** Foto atual dos bloqueios (cache de 15 s; em falha, usa a anterior ou nenhuma) */
+/** Foto atual dos bloqueios (cache de 5 s; em falha, usa a anterior ou nenhuma) */
 async function lerFoto(): Promise<Foto | null> {
   const agora = Date.now();
   if (foto && agora - foto.em < VALIDADE_MS) return foto;
@@ -72,11 +74,11 @@ async function lerFoto(): Promise<Foto | null> {
 
   buscando = (async () => {
     const [b, p] = await Promise.all([
-      lerTabela<Bloqueio>(url, chave, "dispositivos_bloqueios", "select=dispositivo_id,ip_hash,tipo,ate&ativo=eq.true&limit=2000"),
+      lerTabela<Bloqueio>(url, chave, "dispositivos_bloqueios", "select=dispositivo_id,ip_hash,tipo,motivo,ate&ativo=eq.true&limit=2000"),
       lerTabela<{ dispositivo_id: string }>(url, chave, "dispositivos_admin", "select=dispositivo_id&limit=2000"),
     ]);
     if (!b) {
-      // Falhou (ou a migration ainda não foi rodada): mantém a foto anterior e tenta de novo em 15 s
+      // Falhou (ou a migration ainda não foi rodada): mantém a foto anterior e tenta de novo em 5 s
       if (foto) foto = { ...foto, em: Date.now() };
       else foto = { em: Date.now(), bloqueios: [], protegidos: new Set() };
       return foto;
@@ -108,7 +110,8 @@ export async function middleware(req: NextRequest) {
     const f = await lerFoto();
     if (f && f.bloqueios.length && !(did && f.protegidos.has(did))) {
       const agora = Date.now();
-      const efetivos = f.bloqueios.filter((b) => b.tipo === "bloqueio" || (b.ate && Date.parse(b.ate) > agora));
+      // Vale enquanto não tiver prazo (indeterminado) ou o prazo ainda não chegou
+      const efetivos = f.bloqueios.filter((b) => !b.ate || Date.parse(b.ate) > agora);
       if (efetivos.length) {
         const rede = efetivos.some((b) => b.ip_hash) ? ipDe(req) : null;
         const hashRede = rede ? await hashDoIpEdge(rede) : null;
@@ -119,11 +122,15 @@ export async function middleware(req: NextRequest) {
 
   if (bloqueio) {
     if (ehApi) {
-      return NextResponse.json({ erro: "Acesso bloqueado." }, { status: 403, headers: { "Cache-Control": "no-store" } });
+      return NextResponse.json(
+        { erro: "Acesso bloqueado.", bloqueio: { tipo: bloqueio.tipo, motivo: bloqueio.motivo, ate: bloqueio.ate } },
+        { status: 403, headers: { "Cache-Control": "no-store" } },
+      );
     }
     const cabecalhos = new Headers(req.headers);
     cabecalhos.set("x-acmrb-bloqueio-tipo", bloqueio.tipo);
     cabecalhos.set("x-acmrb-bloqueio-ate", bloqueio.ate ?? "");
+    cabecalhos.set("x-acmrb-bloqueio-motivo", encodeURIComponent(bloqueio.motivo ?? "").slice(0, 1200));
     const resp = NextResponse.rewrite(new URL("/acesso-bloqueado", req.url), { status: 403, request: { headers: cabecalhos } });
     resp.headers.set("Cache-Control", "no-store");
     resp.headers.set("X-Robots-Tag", "noindex");

@@ -10,8 +10,7 @@
  * (função acessos_limpar). Administradores nunca são registrados.
  * Também: guarda o "hash" da rede (nunca o IP) para o deus poder bloquear
  * uma rede, registra aparelhos de administradores (nunca bloqueáveis) e
- * avisa o navegador quando o deus mandou "expulsar" (resposta
- * {"acao":"expulsar"}). Grava com a service role (as tabelas não aceitam escrita do navegador).
+ * (a expulsão e o bloqueio são avisados por /api/dispositivo/estado). Grava com a service role (as tabelas não aceitam escrita do navegador).
  * Sem a chave configurada ou sem a migration, responde 204 em silêncio
  * para não atrapalhar o site.
  */
@@ -31,27 +30,6 @@ const IGNORAR = /^\/(admin|api|redefinir-senha|_next)(\/|$)/;
 const MAX_SEG = 6 * 3600;
 
 const vazio = () => new NextResponse(null, { status: 204 });
-
-/**
- * O deus mandou expulsar este aparelho ou esta conta? Se sim, marca o pedido
- * como entregue (vale uma vez) e devolve true. Falha técnica = não expulsa.
- */
-async function expulsaoPendente(admin: SupabaseClient, anonId: string, usuarioId: string | null): Promise<boolean> {
-  try {
-    const filtro = usuarioId ? `dispositivo_id.eq.${anonId},usuario_id.eq.${usuarioId}` : `dispositivo_id.eq.${anonId}`;
-    const { data } = await admin
-      .from("dispositivos_expulsoes")
-      .update({ entregue_em: new Date().toISOString() })
-      .is("entregue_em", null)
-      .or(filtro)
-      .select("id");
-    return (data?.length ?? 0) > 0;
-  } catch {
-    return false;
-  }
-}
-
-const respostaExpulsar = () => NextResponse.json({ acao: "expulsar" }, { status: 200 });
 
 /** Aparelho de administrador: guarda o id para que nunca seja bloqueado */
 async function protegerAparelho(admin: SupabaseClient, anonId: string) {
@@ -158,13 +136,13 @@ export async function POST(req: Request) {
       if (error) return vazio();
       await admin.from("acessos_paginas").insert({ sessao_id: sessaoId, caminho });
       if (quem) await admin.from("acessos_sessoes").update({ auth_user_id: quem.id }).eq("anon_id", anonId).is("auth_user_id", null);
-      return (await expulsaoPendente(admin, anonId, quem?.id ?? null)) ? respostaExpulsar() : vazio();
+      return vazio();
     }
 
     // Os demais avisos só valem para a sessão do próprio navegador (id + anon_id)
     const { data: sessao } = await admin
       .from("acessos_sessoes")
-      .select("id, iniciada_em, encerrada_em, auth_user_id")
+      .select("id, iniciada_em, encerrada_em")
       .eq("id", sessaoId)
       .eq("anon_id", anonId)
       .maybeSingle();
@@ -184,7 +162,7 @@ export async function POST(req: Request) {
         .from("acessos_sessoes")
         .update({ paginas: count ?? 1, ultima_atividade: new Date().toISOString(), duracao_seg: ativo, encerrada_em: null })
         .eq("id", sessaoId);
-      return (await expulsaoPendente(admin, anonId, sessao.auth_user_id)) ? respostaExpulsar() : vazio();
+      return vazio();
     }
 
     // ---------- Batimento / saída ----------
@@ -201,8 +179,6 @@ export async function POST(req: Request) {
           encerrada_em: tipo === "fim" ? new Date().toISOString() : null,
         })
         .eq("id", sessaoId);
-      // Só nos batimentos (não na saída) dá para avisar o navegador
-      if (tipo === "ping" && (await expulsaoPendente(admin, anonId, sessao.auth_user_id))) return respostaExpulsar();
       return vazio();
     }
   } catch {
