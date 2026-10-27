@@ -25,6 +25,8 @@ import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import { podeEditar } from "@/lib/permissions";
 import { useToast, ToastArea } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import CompartilharNoticia from "@/components/noticias/CompartilharNoticia";
+import { resumoCurto } from "@/lib/compartilharNoticia";
 import NoticiaEditor from "@/components/admin/news/NoticiaEditor";
 import { atualizarCampos, salvarNoticia, type DadosNoticia } from "@/lib/noticiasAdmin";
 import {
@@ -288,6 +290,9 @@ export default function NoticiasSection() {
                   <option value="3">Destaque 3</option>
                 </select>
                 <button type="button" onClick={() => setEditor({ modo: "duplicar", noticia: n })} title="Duplicar"><Copy size={15} /><span>Duplicar</span></button>
+                {noAr && (
+                  <CompartilharNoticia variante="botao" rotulo="Compartilhar" titulo={n.titulo} resumo={resumoCurto(n.resumo, 220, n.conteudo)} slug={n.slug} imagemUrl={n.imagem_url} />
+                )}
                 {noAr && (
                   <a href={`/noticias/${n.slug}`} target="_blank" rel="noopener noreferrer" title="Ver no site"><ExternalLink size={15} /><span>Ver</span></a>
                 )}
