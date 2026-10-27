@@ -12,11 +12,12 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2, RefreshCw, Search, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, RefreshCw, Search, Smartphone, X } from "lucide-react";
 
 import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { dataHoraCurta, duracao } from "@/components/admin/visitantes/tipos";
+import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe } from "./tipos";
 
 interface Linha {
@@ -60,6 +61,7 @@ export default function AcessosLista() {
   const [erro, setErro] = useState("");
   const [aberta, setAberta] = useState<Linha | null>(null);
   const [paginas, setPaginas] = useState<Pagina[]>([]);
+  const [aparelhoAberto, setAparelhoAberto] = useState<string | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => { setBuscaAplicada(busca.trim()); setPagina(0); }, 350);
@@ -160,7 +162,10 @@ export default function AcessosLista() {
                   <td data-rotulo="Origem">{origemDe(l)}{l.utm_campaign ? ` · ${l.utm_campaign}` : ""}</td>
                   <td data-rotulo="Páginas">{l.paginas}</td>
                   <td data-rotulo="Tempo">{duracao(l.duracao_seg)}</td>
-                  <td className="advis-acao"><button type="button" className="advis-btn advis-btn--soft" onClick={() => void abrir(l)}>Ver</button></td>
+                  <td className="advis-acao">
+                    <button type="button" className="advis-btn advis-btn--soft" onClick={() => void abrir(l)}>Ver</button>{" "}
+                    <button type="button" className="advis-btn advis-btn--ghost" onClick={() => setAparelhoAberto(l.anon_id)}><Smartphone size={15} aria-hidden="true" /> Aparelho</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -174,6 +179,8 @@ export default function AcessosLista() {
         <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina + 1 >= nTotal} onClick={() => setPagina((p) => p + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></button>
       </nav>
 
+      {aparelhoAberto && <AparelhoDetalhe anonId={aparelhoAberto} onFechar={() => setAparelhoAberto(null)} onAlterado={() => void carregar()} />}
+
       {aberta && (
         <div className="aac-fundo" onClick={() => setAberta(null)} role="presentation">
           <div className="aac-modal" role="dialog" aria-modal="true" aria-labelledby="aac-visita" onClick={(e) => e.stopPropagation()}>
@@ -184,6 +191,7 @@ export default function AcessosLista() {
             <p className="aac-nota">
               {dataHoraCurta(aberta.iniciada_em)} · {localDe(aberta)} · {aparelhoDe(aberta)} · origem: {origemDe(aberta)} · {duracao(aberta.duracao_seg)} no total
             </p>
+            <button type="button" className="advis-btn advis-btn--soft" onClick={() => { setAparelhoAberto(aberta.anon_id); setAberta(null); }}><Smartphone size={15} aria-hidden="true" /> Gerenciar este aparelho (bloquear, suspender, expulsar)</button>
             <ul className="aac-linha-tempo">
               {paginas.length === 0 ? <li>Carregando páginas…</li> : paginas.map((p) => (
                 <li key={p.id}><code className="aac-codigo">{p.caminho}</code><span>{new Date(p.entrou_em).toLocaleTimeString("pt-BR")} · {duracao(p.duracao_seg)}</span></li>

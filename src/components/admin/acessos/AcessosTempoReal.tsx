@@ -11,11 +11,12 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { Activity, Pause, Play, RefreshCw, UserRound } from "lucide-react";
+import { Activity, Pause, Play, RefreshCw, Smartphone, UserRound } from "lucide-react";
 
 import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { duracao } from "@/components/admin/visitantes/tipos";
+import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe, type PainelAcessos, type SessaoOnline } from "./tipos";
 
 export default function AcessosTempoReal() {
@@ -24,6 +25,7 @@ export default function AcessosTempoReal() {
   const [erro, setErro] = useState("");
   const [auto, setAuto] = useState(true);
   const [atualizadoEm, setAtualizadoEm] = useState<Date | null>(null);
+  const [aparelhoAberto, setAparelhoAberto] = useState<string | null>(null);
 
   const carregar = useCallback(async () => {
     const [o, p] = await Promise.all([supabase.rpc("acessos_online"), supabase.rpc("acessos_painel", { p_dias: 1 })]);
@@ -82,7 +84,7 @@ export default function AcessosTempoReal() {
         <div className="advis-tabela-wrap">
           <table className="advis-tabela">
             <thead>
-              <tr><th>Quem</th><th>Onde</th><th>Página atual</th><th>Aparelho</th><th>Origem</th><th>Tempo</th></tr>
+              <tr><th>Quem</th><th>Onde</th><th>Página atual</th><th>Aparelho</th><th>Origem</th><th>Tempo</th><th><span className="advis-sr">Aparelho</span></th></tr>
             </thead>
             <tbody>
               {online.map((s) => (
@@ -96,12 +98,15 @@ export default function AcessosTempoReal() {
                   <td data-rotulo="Aparelho">{aparelhoDe(s)}</td>
                   <td data-rotulo="Origem">{origemDe(s)}</td>
                   <td data-rotulo="Tempo">{duracao(s.duracao_seg)}</td>
+                  <td className="advis-acao"><button type="button" className="advis-btn advis-btn--soft" onClick={() => setAparelhoAberto(s.anon_id)}><Smartphone size={15} aria-hidden="true" /> Gerenciar</button></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
+
+      {aparelhoAberto && <AparelhoDetalhe anonId={aparelhoAberto} onFechar={() => setAparelhoAberto(null)} onAlterado={() => void carregar()} />}
     </div>
   );
 }

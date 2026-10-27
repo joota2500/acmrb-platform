@@ -8,6 +8,8 @@
  *  - Resumo:      números e gráficos por período (visitas, aparelhos,
  *                 origem, cidades, páginas, anônimos x logados x cadastrados).
  *  - Visitas:     lista filtrável de todos os acessos.
+ *  - Aparelhos:   bloquear, suspender (com duração), expulsar e desbloquear
+ *                 aparelhos (anônimos ou de cadastrados), com histórico.
  *  - Cadastrados: CRUD das contas (criar, editar, ativar/desativar,
  *                 redefinir senha, excluir) e histórico de cada pessoa.
  *  - Segurança:   tentativas de login, auditoria do painel e limpeza.
@@ -16,21 +18,23 @@
  */
 
 import { useState } from "react";
-import { Activity, BarChart3, ListChecks, ShieldCheck, Users } from "lucide-react";
+import { Activity, BarChart3, ListChecks, ShieldCheck, Smartphone, Users } from "lucide-react";
 
 import "@/styles/admin-visitantes.css";
 import AcessosTempoReal from "@/components/admin/acessos/AcessosTempoReal";
 import AcessosResumo from "@/components/admin/acessos/AcessosResumo";
 import AcessosLista from "@/components/admin/acessos/AcessosLista";
+import AparelhosPainel from "@/components/admin/aparelhos/AparelhosPainel";
 import SegurancaPainel from "@/components/admin/acessos/SegurancaPainel";
 import VisitantesCadastrados from "@/components/admin/visitantes/VisitantesCadastrados";
 
-type Aba = "tempo-real" | "resumo" | "visitas" | "cadastrados" | "seguranca";
+type Aba = "tempo-real" | "resumo" | "visitas" | "aparelhos" | "cadastrados" | "seguranca";
 
 const ABAS: { id: Aba; rotulo: string; icone: typeof Users }[] = [
   { id: "tempo-real", rotulo: "Tempo real", icone: Activity },
   { id: "resumo", rotulo: "Resumo", icone: BarChart3 },
   { id: "visitas", rotulo: "Visitas", icone: ListChecks },
+  { id: "aparelhos", rotulo: "Aparelhos", icone: Smartphone },
   { id: "cadastrados", rotulo: "Cadastrados", icone: Users },
   { id: "seguranca", rotulo: "Segurança", icone: ShieldCheck },
 ];
@@ -56,6 +60,7 @@ export default function VisitantesSection() {
       {aba === "tempo-real" && <AcessosTempoReal />}
       {aba === "resumo" && <AcessosResumo />}
       {aba === "visitas" && <AcessosLista />}
+      {aba === "aparelhos" && <AparelhosPainel />}
       {aba === "cadastrados" && <VisitantesCadastrados />}
       {aba === "seguranca" && <SegurancaPainel />}
     </div>

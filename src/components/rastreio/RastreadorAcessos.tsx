@@ -61,7 +61,7 @@ export default function RastreadorAcessos() {
     sessaoId.current = null;
     esquecerAparelho();
     try {
-      await supabase.auth.signOut();
+      await supabase.auth.signOut({ scope: "local" }); // só neste aparelho (a expulsão da conta já encerrou as outras sessões no servidor)
     } catch {
       /* já sem sessão */
     }

@@ -1,0 +1,88 @@
+/* ==================== PAINEL: APARELHOS (prefixo "apa-") ====================
+ * Bloquear / suspender / expulsar. Paleta do painel: #2E5E4E, #E8F3EE, #DDF5EC;
+ * vermelho #dc2626 (bloqueio) e âmbar #d97706 (suspensão).
+ * Reaproveita "advis-*" (tabela, botões) e "advd-*" (gaveta).
+ */
+
+/* Gaveta de aparelho abre acima de outras gavetas */
+.apa-gaveta-fundo { z-index: 70; }
+
+/* Filtros */
+.apa-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.apa-filtros { display: grid; grid-template-columns: 1fr 14rem; gap: 0.6rem; }
+
+/* Selos de situação */
+.apa-selo { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.74rem; font-weight: 800; background: #f4f4f5; color: #52525b; }
+.apa-selo + .apa-selo { margin-left: 0.3rem; }
+.apa-selo--ativo { background: #DDF5EC; color: #21463A; }
+.apa-selo--bloqueado { background: #fee2e2; color: #991b1b; }
+.apa-selo--suspenso { background: #fef3c7; color: #92400e; }
+.apa-selo--online { background: #2E5E4E; color: #fff; }
+
+.apa-linha--bloqueado td:first-child { box-shadow: inset 3px 0 0 #dc2626; }
+.apa-linha--suspenso td:first-child { box-shadow: inset 3px 0 0 #d97706; }
+
+/* Botões de ação */
+.apa-btn--perigo { background: #dc2626; color: #fff; }
+.apa-btn--perigo:hover:not(:disabled) { background: #b91c1c; }
+.apa-btn--aviso { background: #fef3c7; color: #92400e; }
+.apa-btn--aviso:hover:not(:disabled) { background: #fde68a; }
+.apa-acoes-linha { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.35rem; }
+.apa-acoes-linha .advis-btn { padding: 0.45rem 0.75rem; font-size: 0.8rem; }
+.apa-link { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0; border: 0; background: none; color: #2E5E4E; font-weight: 700; font-size: inherit; text-decoration: underline; cursor: pointer; }
+
+/* Caixa de situação (gaveta) */
+.apa-situacao { padding: 1rem; border-radius: 1rem; background: #fff; border: 1px solid rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 0.7rem; }
+.apa-situacao--bloqueado { background: #fff5f5; border-color: #fecaca; }
+.apa-situacao--suspenso { background: #fffbeb; border-color: #fde68a; }
+.apa-situacao__topo { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.apa-situacao__texto { font-size: 0.86rem; color: #3f3f46; text-align: var(--texto-justificado, justify); }
+.apa-acoes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.apa-ponto--vermelho { background: #dc2626; }
+
+.apa-dados { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem 1rem; }
+.apa-dados dt { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: #a1a1aa; }
+.apa-dados dd { font-size: 0.88rem; color: #18181b; word-break: break-word; }
+.apa-paginas { display: flex; flex-direction: column; gap: 0.25rem; margin-top: 0.4rem; padding-left: 0.2rem; }
+.apa-paginas li { display: flex; gap: 0.5rem; align-items: center; font-size: 0.78rem; }
+
+/* Janela de confirmação */
+.apa-fundo { position: fixed; inset: 0; z-index: 95; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(24, 24, 27, 0.55); }
+.apa-modal { width: min(32rem, 100%); max-height: 92vh; overflow-y: auto; background: #fff; border-radius: 1.3rem; padding: 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3); }
+.apa-modal__topo { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
+.apa-modal__titulo { display: flex; align-items: center; gap: 0.45rem; font-size: 1.1rem; font-weight: 900; color: #18181b; text-align: left; }
+.apa-modal__titulo--perigo { color: #b91c1c; }
+.apa-modal__alvo { padding: 0.55rem 0.8rem; border-radius: 0.8rem; background: #f4f4f5; font-size: 0.84rem; font-weight: 700; color: #3f3f46; word-break: break-word; }
+.apa-modal__efeito { font-size: 0.86rem; color: #52525b; text-align: var(--texto-justificado, justify); }
+.apa-campo { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.82rem; font-weight: 700; color: #3f3f46; }
+.apa-texto { resize: vertical; min-height: 4.5rem; font-family: inherit; }
+.apa-contador { font-size: 0.72rem; font-weight: 400; color: #a1a1aa; }
+.apa-check { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.7rem 0.8rem; border-radius: 0.9rem; background: #fffbeb; border: 1px solid #fde68a; font-size: 0.84rem; color: #3f3f46; cursor: pointer; }
+.apa-check input { margin-top: 0.25rem; accent-color: #d97706; }
+.apa-check small { display: block; margin-top: 0.15rem; font-size: 0.76rem; color: #92400e; }
+.apa-erro { padding: 0.7rem 0.9rem; border-radius: 0.9rem; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; font-size: 0.84rem; font-weight: 700; }
+.apa-modal__botoes { display: flex; justify-content: flex-end; gap: 0.5rem; }
+
+/* Tablet */
+@media (max-width: 900px) {
+  .apa-filtros { grid-template-columns: 1fr; }
+}
+/* Tabela vira cartões: ações em coluna cheia */
+@media (max-width: 720px) {
+  .apa-acoes-linha { flex-direction: column; align-items: stretch; }
+  .apa-acoes-linha .advis-btn { width: 100%; margin-top: 0; }
+  .advis-tabela td[data-rotulo="Aparelho"] { display: block; padding-bottom: 0.5rem; }
+  .advis-tabela td[data-rotulo="Aparelho"]::before { display: none; }
+  .apa-linha--bloqueado { border-left: 4px solid #dc2626 !important; }
+  .apa-linha--suspenso { border-left: 4px solid #d97706 !important; }
+  .apa-linha td:first-child { box-shadow: none !important; }
+}
+/* Celular */
+@media (max-width: 480px) {
+  .apa-dados { grid-template-columns: 1fr; }
+  .apa-acoes .advis-btn { flex: 1 1 100%; }
+  .apa-modal { padding: 1rem; }
+  .apa-modal__botoes { flex-direction: column-reverse; }
+  .apa-modal__botoes .advis-btn { width: 100%; }
+  .apa-chips { gap: 0.3rem; }
+}
