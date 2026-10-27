@@ -41,6 +41,9 @@ interface Evento {
   criado_em: string;
 }
 
+interface LoginReg { id: number; criado_em: string; dispositivo: string | null; navegador: string | null; cidade: string | null; regiao: string | null; pais: string | null }
+interface AcessoSite { id: string; iniciada_em: string; duracao_seg: number; paginas: number; origem: string | null; referrer_host: string | null; dispositivo: string | null; navegador: string | null; sistema: string | null; cidade: string | null; regiao: string | null; pais: string | null }
+
 interface Props {
   visitante: Visitante;
   onFechar: () => void;
@@ -65,7 +68,9 @@ function ranking(itens: string[], n = 8) {
 }
 
 export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, onErro, onExcluido }: Props) {
-  const [aba, setAba] = useState<"atividade" | "dados">("atividade");
+  const [aba, setAba] = useState<"atividade" | "logins" | "dados">("atividade");
+  const [logins, setLogins] = useState<LoginReg[] | null>(null);
+  const [acessosSite, setAcessosSite] = useState<AcessoSite[]>([]);
   const [sessoes, setSessoes] = useState<Sessao[]>([]);
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -107,6 +112,19 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
     })();
     return () => { vivo = false; };
   }, [v.auth_user_id]);
+
+  // Histórico de logins e acessos ao site (carrega ao abrir a aba)
+  useEffect(() => {
+    if (aba !== "logins" || logins !== null || !v.auth_user_id) return;
+    void (async () => {
+      const [l, a] = await Promise.all([
+        supabase.from("login_tentativas").select("id, criado_em, dispositivo, navegador, cidade, regiao, pais").eq("auth_user_id", v.auth_user_id).eq("sucesso", true).order("criado_em", { ascending: false }).limit(50),
+        supabase.from("acessos_sessoes").select("id, iniciada_em, duracao_seg, paginas, origem, referrer_host, dispositivo, navegador, sistema, cidade, regiao, pais").eq("auth_user_id", v.auth_user_id).order("iniciada_em", { ascending: false }).limit(50),
+      ]);
+      setLogins((l.data ?? []) as LoginReg[]);
+      setAcessosSite((a.data ?? []) as AcessoSite[]);
+    })();
+  }, [aba, logins, v.auth_user_id]);
 
   // Métricas calculadas no navegador (até 500 sessões / 1000 eventos)
   const m = useMemo(() => {
@@ -188,6 +206,7 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
 
         <div className="advd-abas" role="tablist">
           <button type="button" role="tab" aria-selected={aba === "atividade"} className={aba === "atividade" ? "advd-aba advd-aba--ativa" : "advd-aba"} onClick={() => setAba("atividade")}>Atividade</button>
+          <button type="button" role="tab" aria-selected={aba === "logins"} className={aba === "logins" ? "advd-aba advd-aba--ativa" : "advd-aba"} onClick={() => setAba("logins")}>Logins e acessos</button>
           <button type="button" role="tab" aria-selected={aba === "dados"} className={aba === "dados" ? "advd-aba advd-aba--ativa" : "advd-aba"} onClick={() => setAba("dados")}>Dados e conta</button>
         </div>
 
@@ -261,6 +280,35 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
               </section>
             </>
           ))}
+
+          {aba === "logins" && (
+            logins === null ? (
+              <p className="advd-vazio"><Loader2 className="advd-giro" aria-hidden="true" /> Carregando…</p>
+            ) : (
+              <>
+                <section className="advd-bloco">
+                  <h3><LogIn size={16} aria-hidden="true" /> Histórico de logins</h3>
+                  {logins.length === 0 ? <p className="advd-vazio">Nenhum login registrado depois da ativação do registro de segurança.</p> : (
+                    <ul className="advd-linha-tempo">
+                      {logins.map((l) => (
+                        <li key={l.id}><span className="advd-ponto" aria-hidden="true" /><div><strong>{dataHoraCurta(l.criado_em)}</strong><span>{[l.dispositivo, l.navegador].filter(Boolean).join(" · ") || "aparelho não informado"} · {[l.cidade, l.regiao, l.pais].filter(Boolean).join(", ") || "local não informado"}</span></div></li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+                <section className="advd-bloco">
+                  <h3><Activity size={16} aria-hidden="true" /> Visitas ao site (logado)</h3>
+                  {acessosSite.length === 0 ? <p className="advd-vazio">Nenhuma visita registrada.</p> : (
+                    <ul className="advd-linha-tempo">
+                      {acessosSite.map((a) => (
+                        <li key={a.id}><span className="advd-ponto" aria-hidden="true" /><div><strong>{dataHoraCurta(a.iniciada_em)} · {duracao(a.duracao_seg)} · {a.paginas} página(s)</strong><span>{[a.dispositivo, a.navegador, a.sistema].filter(Boolean).join(" · ") || "aparelho não informado"} · {[a.cidade, a.regiao, a.pais].filter(Boolean).join(", ") || "local não informado"} · origem: {a.referrer_host ?? a.origem ?? "direto"}</span></div></li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              </>
+            )
+          )}
 
           {aba === "dados" && (
             <>

@@ -5,6 +5,12 @@
 .advis { display: flex; flex-direction: column; gap: 1rem; }
 .advis-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 
+.advis-abas { display: flex; gap: 0.3rem; overflow-x: auto; padding-bottom: 0.2rem; border-bottom: 1px solid #e4e4e7; scrollbar-width: thin; }
+.advis-aba { display: inline-flex; align-items: center; gap: 0.4rem; flex-shrink: 0; padding: 0.65rem 1rem; font-size: 0.88rem; font-weight: 700; color: #71717a; border: 0; background: transparent; border-bottom: 3px solid transparent; cursor: pointer; }
+.advis-aba:hover { color: #2E5E4E; }
+.advis-aba--ativa { color: #2E5E4E; border-bottom-color: #2E5E4E; }
+@media (max-width: 480px) { .advis-aba { padding: 0.6rem 0.75rem; font-size: 0.82rem; } }
+
 .advis-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
 .advis-titulo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 900; color: #18181b; }
 .advis-titulo svg { color: #2E5E4E; }
