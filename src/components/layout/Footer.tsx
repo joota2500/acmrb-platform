@@ -134,6 +134,8 @@ export default function Footer() {
             {/* Link discreto para a página de recursos planejados */}
             <span aria-hidden="true"> · </span>
             <Link href="/em-breve" className="footer__embreve">Em breve</Link>
+            <span aria-hidden="true"> · </span>
+            <Link href="/privacidade" className="footer__embreve">Privacidade</Link>
           </p>
           <button type="button" className="footer__topo"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

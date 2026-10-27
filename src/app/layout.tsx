@@ -7,6 +7,8 @@ import "@/styles/user-menu.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import RastreadorVisitante from "@/components/rastreio/RastreadorVisitante";
 import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
+import RastreadorAcessos from "@/components/rastreio/RastreadorAcessos";
+import AvisoPrivacidade from "@/components/privacidade/AvisoPrivacidade";
 import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
@@ -59,6 +61,9 @@ export default function RootLayout({
           {children}
           {/* Atividade de visitantes logados (só para o painel do deus) */}
           <RastreadorVisitante />
+          {/* Contagem anônima de visitas (todos os acessos) + aviso de privacidade (LGPD) */}
+          <RastreadorAcessos />
+          <AvisoPrivacidade />
           {/* Visitante logado: aviso de contato + botão flutuante de chat */}
           <ExtrasVisitante />
         </AuthProvider>

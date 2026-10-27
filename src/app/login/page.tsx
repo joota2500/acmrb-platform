@@ -37,6 +37,7 @@ import {
 
 import "@/styles/login.css";
 import { supabase } from "@/lib/supabase";
+import { podeTentar, registrarResultado } from "@/lib/loginSeguro";
 import { mascaraTelefone, somenteDigitos } from "@/lib/validacao";
 import { ESPERA_EMAIL_SEG, urlRedefinir } from "@/lib/apiAdmin";
 import {
@@ -121,8 +122,13 @@ export default function LoginPage() {
     const r = esquemaEntrar.safeParse({ email, senha });
     if (!r.success) return setErros(errosDoZod(r.error));
 
+    // Proteção: bloqueio temporário depois de várias senhas erradas
+    const liberado = await podeTentar("login", r.data.email);
+    if (!liberado.ok) return setAviso({ tipo: "erro", texto: liberado.mensagem ?? "Muitas tentativas. Aguarde." });
+
     const { data, error } = await supabase.auth.signInWithPassword({ email: r.data.email, password: r.data.senha });
     if (error || !data.user) {
+      void registrarResultado("login", r.data.email, false, error && /confirm/i.test(error.message) ? "e-mail não confirmado" : "senha ou conta inválida");
       if (error && /confirm/i.test(error.message)) {
         return setAviso({ tipo: "erro", texto: "Confirme seu e-mail antes de entrar (veja a caixa de entrada e o spam)." });
       }
@@ -132,6 +138,7 @@ export default function LoginPage() {
     // Administrador? Sai na hora e responde como se a conta não existisse
     const { data: ehAdmin } = await supabase.rpc("is_active_admin");
     if (ehAdmin === true) {
+      void registrarResultado("login", r.data.email, false, "conta de administrador no login de visitante");
       await supabase.auth.signOut();
       return setAviso({ tipo: "erro", texto: MSG_CONTA_INVALIDA });
     }
@@ -144,6 +151,7 @@ export default function LoginPage() {
       .maybeSingle();
 
     if (perfil && perfil.ativo === false) {
+      void registrarResultado("login", r.data.email, false, "conta desativada");
       await supabase.auth.signOut();
       return setAviso({ tipo: "erro", texto: "Esta conta está desativada. Fale com a ACMRB pelo contato do site." });
     }
@@ -160,6 +168,7 @@ export default function LoginPage() {
       });
     }
 
+    void registrarResultado("login", r.data.email, true);
     setAviso({ tipo: "sucesso", texto: `Bem-vindo(a)${perfil?.nome ? `, ${perfil.nome.split(" ")[0]}` : ""}! Redirecionando…` });
     setTimeout(() => router.push("/"), 900);
   }
@@ -169,6 +178,10 @@ export default function LoginPage() {
     const r = esquemaCadastro.safeParse({ nome, telefone, cidade, nascimento, email, senha, confirmar });
     if (!r.success) return setErros(errosDoZod(r.error));
     const d = r.data;
+
+    // Proteção: limite de cadastros por rede
+    const liberado = await podeTentar("cadastro", d.email);
+    if (!liberado.ok) return setAviso({ tipo: "erro", texto: liberado.mensagem ?? "Muitos cadastros. Aguarde." });
 
     const { data, error } = await supabase.auth.signUp({
       email: d.email,
@@ -185,6 +198,7 @@ export default function LoginPage() {
       },
     });
 
+    void registrarResultado("cadastro", d.email, !error && !!data.session, error ? "falha no cadastro" : data.session ? undefined : "aguardando confirmação de e-mail");
     if (error) {
       // Mostra no console o erro real (ajuda no suporte) e traduz para o visitante
       console.error("[cadastro] signUp falhou:", error.status, error.code, error.message);
@@ -208,11 +222,14 @@ export default function LoginPage() {
     const r = esquemaRecuperar.safeParse({ email });
     if (!r.success) return setErros(errosDoZod(r.error));
     if (espera > 0) return;
+    const liberado = await podeTentar("recuperar", r.data.email);
+    if (!liberado.ok) return setAviso({ tipo: "erro", texto: liberado.mensagem ?? "Muitos pedidos. Aguarde." });
     setEspera(ESPERA_EMAIL_SEG);
     const { error } = await supabase.auth.resetPasswordForEmail(r.data.email, { redirectTo: urlRedefinir() });
     if (error && /rate|limit/i.test(error.message)) {
       return setAviso({ tipo: "erro", texto: "Muitos envios em pouco tempo. Aguarde alguns minutos." });
     }
+    void registrarResultado("recuperar", r.data.email, !error);
     // Mensagem neutra: não revela se o e-mail existe
     setAviso({ tipo: "sucesso", texto: "Se este e-mail tiver cadastro, você receberá um link para criar uma nova senha." });
   }

@@ -13,6 +13,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { podeTentar, registrarResultado } from "@/lib/loginSeguro";
 
 type Props = {
   open: boolean;
@@ -45,6 +46,11 @@ export default function AdminModal({ open, onClose }: Props) {
       setError("Informe o e-mail administrativo.");
       return;
     }
+    const liberado = await podeTentar("recuperar", alvo);
+    if (!liberado.ok) {
+      setError(liberado.mensagem ?? "Muitos pedidos. Aguarde.");
+      return;
+    }
     setEspera(ESPERA_EMAIL_SEG);
     const { error: erroEnvio } = await supabase.auth.resetPasswordForEmail(alvo, { redirectTo: urlRedefinir() });
     if (erroEnvio && /rate|limit/i.test(erroEnvio.message)) {
@@ -60,6 +66,13 @@ export default function AdminModal({ open, onClose }: Props) {
       setLoading(true);
       setError("");
 
+      // Proteção: bloqueio temporário depois de várias senhas erradas
+      const liberado = await podeTentar("login", email);
+      if (!liberado.ok) {
+        setError(liberado.mensagem ?? "Muitas tentativas. Aguarde.");
+        return;
+      }
+
       const { data, error: loginError } =
         await supabase.auth.signInWithPassword({
           email: email.trim().toLowerCase(),
@@ -67,6 +80,7 @@ export default function AdminModal({ open, onClose }: Props) {
         });
 
       if (loginError || !data.user) {
+        void registrarResultado("login", email, false, "senha ou conta inválida (admin)");
         setError("Email ou senha inválidos.");
         return;
       }
@@ -89,10 +103,13 @@ export default function AdminModal({ open, onClose }: Props) {
         .maybeSingle();
 
       if (!admin) {
+        void registrarResultado("login", email, false, "conta sem permissão de administrador");
         await supabase.auth.signOut();
         setError("Acesso permitido apenas para administradores.");
         return;
       }
+
+      void registrarResultado("login", email, true);
 
       // Atualizar último login
       await supabase

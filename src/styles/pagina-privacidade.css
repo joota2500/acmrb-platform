@@ -1,0 +1,21 @@
+/* ==================== PÁGINA DE PRIVACIDADE (prefixo "pv-") ==================== */
+.pv { background: linear-gradient(180deg, #E8F3EE 0, #fff 22rem); padding: 7.5rem 1.5rem 4rem; }
+.pv__container { max-width: 46rem; margin: 0 auto; }
+.pv__titulo { font-size: 2.2rem; font-weight: 900; line-height: 1.15; color: #21463A; text-align: left; }
+.pv__intro { margin-top: 1rem; color: #3f3f46; line-height: 1.7; text-align: justify; hyphens: auto; }
+.pv h2 { margin: 2rem 0 0.6rem; font-size: 1.25rem; font-weight: 900; color: #2E5E4E; text-align: left; }
+.pv p, .pv li { color: #3f3f46; line-height: 1.7; text-align: justify; hyphens: auto; }
+.pv ul { margin: 0.5rem 0 0 1.2rem; list-style: disc; display: flex; flex-direction: column; gap: 0.35rem; }
+.pv a { color: #2E5E4E; font-weight: 700; text-decoration: underline; }
+.pv__preferencia { margin-top: 1rem; padding: 1.1rem; border-radius: 1.1rem; background: #E8F3EE; border: 1px solid #DDF5EC; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.8rem; }
+.pv__preferencia p { margin: 0; text-align: left; }
+.pv__btn { padding: 0.65rem 1.1rem; border-radius: 0.9rem; border: 0; background: #2E5E4E; color: #fff; font-weight: 800; font-size: 0.88rem; cursor: pointer; }
+.pv__btn:hover { background: #21463A; }
+.pv__data { margin-top: 2rem; font-size: 0.82rem; color: #71717a; }
+
+@media (max-width: 768px) { .pv__titulo { font-size: 1.9rem; } }
+@media (max-width: 480px) {
+  .pv { padding: 5.5rem 1rem 3rem; }
+  .pv__titulo { font-size: 1.55rem; }
+  .pv__btn { width: 100%; }
+}
