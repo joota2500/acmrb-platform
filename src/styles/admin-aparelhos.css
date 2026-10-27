@@ -86,3 +86,14 @@
   .apa-modal__botoes .advis-btn { width: 100%; }
   .apa-chips { gap: 0.3rem; }
 }
+
+/* Lista de aparelhos dentro da gaveta de um cadastrado */
+.apa-lista-aparelhos { display: flex; flex-direction: column; gap: 0.6rem; }
+.apa-item-aparelho { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; padding: 0.7rem 0.8rem; border-radius: 0.9rem; background: #f8faf9; border: 1px solid #eef2f0; }
+.apa-item-aparelho strong { display: block; font-size: 0.86rem; color: #18181b; }
+.apa-item-aparelho__acoes { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.4rem; }
+.advd-btn--aviso { background: #fef3c7; color: #92400e; }
+@media (max-width: 480px) {
+  .apa-item-aparelho { flex-direction: column; align-items: stretch; }
+  .apa-item-aparelho__acoes { justify-content: space-between; }
+}

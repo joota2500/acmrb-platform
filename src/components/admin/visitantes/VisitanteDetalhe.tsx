@@ -14,13 +14,18 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Clock, Copy, KeyRound, Loader2, LogIn, Mail, MousePointerClick, Power, Save, Timer, Trash2, X, FileText } from "lucide-react";
+import { Activity, Clock, Copy, KeyRound, Loader2, LogIn, LogOut, Mail, MousePointerClick, Power, Save, Smartphone, Timer, Trash2, X, FileText } from "lucide-react";
 
 import "@/styles/admin-visitante-detalhe.css";
+import "@/styles/admin-aparelhos.css";
 import { supabase } from "@/lib/supabase";
 import { chamarApi } from "@/lib/apiAdmin";
 import { mascaraTelefone } from "@/lib/validacao";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
+import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
+import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
+import { aparelhoDe, idCurto, localDe } from "@/components/admin/acessos/tipos";
 import { dataHoraCurta, duracao, type Visitante } from "./tipos";
 
 interface Sessao {
@@ -43,6 +48,8 @@ interface Evento {
 
 interface LoginReg { id: number; criado_em: string; dispositivo: string | null; navegador: string | null; cidade: string | null; regiao: string | null; pais: string | null }
 interface AcessoSite { id: string; iniciada_em: string; duracao_seg: number; paginas: number; origem: string | null; referrer_host: string | null; dispositivo: string | null; navegador: string | null; sistema: string | null; cidade: string | null; regiao: string | null; pais: string | null }
+
+interface AparelhoDaConta { anon_id: string; ultima: string; dispositivo: string | null; navegador: string | null; sistema: string | null; cidade: string | null; regiao: string | null; pais: string | null; visitas: number; situacao: "ativo" | "bloqueado" | "suspenso"; ate: string | null }
 
 interface Props {
   visitante: Visitante;
@@ -68,7 +75,11 @@ function ranking(itens: string[], n = 8) {
 }
 
 export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, onErro, onExcluido }: Props) {
-  const [aba, setAba] = useState<"atividade" | "logins" | "dados">("atividade");
+  const [aba, setAba] = useState<"atividade" | "logins" | "aparelhos" | "dados">("atividade");
+  const [aparelhos, setAparelhos] = useState<AparelhoDaConta[] | null>(null);
+  const [aparelhoAberto, setAparelhoAberto] = useState<string | null>(null);
+  const [expulsando, setExpulsando] = useState(false);
+  const [confirmarSituacao, setConfirmarSituacao] = useState(false);
   const [logins, setLogins] = useState<LoginReg[] | null>(null);
   const [acessosSite, setAcessosSite] = useState<AcessoSite[]>([]);
   const [sessoes, setSessoes] = useState<Sessao[]>([]);
@@ -125,6 +136,37 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
       setAcessosSite((a.data ?? []) as AcessoSite[]);
     })();
   }, [aba, logins, v.auth_user_id]);
+
+  // Aparelhos da conta: um por id de navegador, com a situação atual de cada um
+  const carregarAparelhos = async () => {
+    if (!v.auth_user_id) { setAparelhos([]); return; }
+    const { data: ss } = await supabase.from("acessos_sessoes")
+      .select("anon_id, ultima_atividade, dispositivo, navegador, sistema, cidade, regiao, pais")
+      .eq("auth_user_id", v.auth_user_id).order("ultima_atividade", { ascending: false }).limit(500);
+    const mapa = new Map<string, AparelhoDaConta>();
+    for (const s of (ss ?? []) as (Omit<AparelhoDaConta, "ultima" | "visitas" | "situacao" | "ate"> & { ultima_atividade: string })[]) {
+      const atual = mapa.get(s.anon_id);
+      if (atual) atual.visitas += 1;
+      else mapa.set(s.anon_id, { anon_id: s.anon_id, ultima: s.ultima_atividade, dispositivo: s.dispositivo, navegador: s.navegador, sistema: s.sistema, cidade: s.cidade, regiao: s.regiao, pais: s.pais, visitas: 1, situacao: "ativo", ate: null });
+    }
+    const ids = [...mapa.keys()];
+    if (ids.length) {
+      const { data: bl } = await supabase.from("dispositivos_bloqueios").select("dispositivo_id, tipo, ate").in("dispositivo_id", ids).eq("ativo", true);
+      for (const b of (bl ?? []) as { dispositivo_id: string; tipo: "bloqueio" | "suspensao"; ate: string | null }[]) {
+        const a = mapa.get(b.dispositivo_id);
+        if (!a) continue;
+        if (b.tipo === "bloqueio") { a.situacao = "bloqueado"; a.ate = null; }
+        else if (b.ate && new Date(b.ate).getTime() > Date.now() && a.situacao !== "bloqueado") { a.situacao = "suspenso"; a.ate = b.ate; }
+      }
+    }
+    setAparelhos([...mapa.values()]);
+  };
+
+  useEffect(() => {
+    if (aba !== "aparelhos" || aparelhos !== null) return;
+    void carregarAparelhos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aba, aparelhos]);
 
   // Métricas calculadas no navegador (até 500 sessões / 1000 eventos)
   const m = useMemo(() => {
@@ -207,6 +249,7 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
         <div className="advd-abas" role="tablist">
           <button type="button" role="tab" aria-selected={aba === "atividade"} className={aba === "atividade" ? "advd-aba advd-aba--ativa" : "advd-aba"} onClick={() => setAba("atividade")}>Atividade</button>
           <button type="button" role="tab" aria-selected={aba === "logins"} className={aba === "logins" ? "advd-aba advd-aba--ativa" : "advd-aba"} onClick={() => setAba("logins")}>Logins e acessos</button>
+          <button type="button" role="tab" aria-selected={aba === "aparelhos"} className={aba === "aparelhos" ? "advd-aba advd-aba--ativa" : "advd-aba"} onClick={() => setAba("aparelhos")}>Aparelhos</button>
           <button type="button" role="tab" aria-selected={aba === "dados"} className={aba === "dados" ? "advd-aba advd-aba--ativa" : "advd-aba"} onClick={() => setAba("dados")}>Dados e conta</button>
         </div>
 
@@ -310,6 +353,33 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
             )
           )}
 
+          {aba === "aparelhos" && (
+            aparelhos === null ? (
+              <p className="advd-vazio"><Loader2 className="advd-giro" aria-hidden="true" /> Carregando…</p>
+            ) : (
+              <section className="advd-bloco">
+                <h3><Smartphone size={16} aria-hidden="true" /> Aparelhos usados por esta conta</h3>
+                {aparelhos.length === 0 ? <p className="advd-vazio">Nenhum aparelho registrado ainda (a medição de acessos precisa estar ativa neste navegador).</p> : (
+                  <ul className="apa-lista-aparelhos">
+                    {aparelhos.map((a) => (
+                      <li key={a.anon_id} className="apa-item-aparelho">
+                        <div>
+                          <strong>{aparelhoDe(a)} <span className="advis-email" style={{ display: "inline" }}>· id {idCurto(a.anon_id)}</span></strong>
+                          <span className="advis-email">{localDe(a)} · última atividade {dataHoraCurta(a.ultima)} · {a.visitas} visita(s)</span>
+                        </div>
+                        <div className="apa-item-aparelho__acoes">
+                          <SeloSituacao situacao={a.situacao} ate={a.ate} />
+                          <button type="button" className="advd-btn advd-btn--soft" onClick={() => setAparelhoAberto(a.anon_id)}>Gerenciar</button>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <p className="advd-info">Bloquear um aparelho impede aquele navegador de abrir o site (mesmo sem login). Para tirar só a conta, use “Desativar” em Dados e conta.</p>
+              </section>
+            )
+          )}
+
           {aba === "dados" && (
             <>
               <form
@@ -332,8 +402,17 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
                   <h3>Situação: {v.ativo ? "ativo" : "inativo"}</h3>
                   <p>Desativar bloqueia o login do visitante sem apagar o histórico.</p>
                 </div>
-                <button type="button" className="advd-btn advd-btn--soft" disabled={salvando} onClick={() => void salvar({ ativo: !v.ativo }, v.ativo ? "Visitante desativado." : "Visitante reativado.")}>
+                <button type="button" className={v.ativo ? "advd-btn advd-btn--aviso" : "advd-btn advd-btn--soft"} disabled={salvando} onClick={() => setConfirmarSituacao(true)}>
                   <Power size={16} aria-hidden="true" /> {v.ativo ? "Desativar" : "Reativar"}
+                </button>
+              </div>
+              <div className="advd-perigo">
+                <div>
+                  <h3><LogOut size={15} aria-hidden="true" /> Expulsar (sair de todos os aparelhos)</h3>
+                  <p>Encerra o login desta conta em todos os aparelhos agora. A pessoa pode entrar de novo com a senha; para impedir, desative a conta ou bloqueie o aparelho.</p>
+                </div>
+                <button type="button" className="advd-btn advd-btn--soft" disabled={salvando || !v.auth_user_id} onClick={() => setExpulsando(true)}>
+                  <LogOut size={16} aria-hidden="true" /> Expulsar
                 </button>
               </div>
               <div className="advd-senha">
@@ -372,6 +451,27 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
 
       {/* Impede que cliques no diálogo fechem a gaveta */}
       <div onClick={(e) => e.stopPropagation()} role="presentation">
+      <ConfirmDialog
+        aberto={confirmarSituacao}
+        titulo={v.ativo ? "Desativar a conta?" : "Reativar a conta?"}
+        mensagem={v.ativo
+          ? `${v.nome} não conseguirá mais entrar com este e-mail até você reativar. O histórico é mantido.`
+          : `${v.nome} volta a poder entrar com este e-mail.`}
+        textoConfirmar={v.ativo ? "Desativar" : "Reativar"}
+        perigo={v.ativo}
+        carregando={salvando}
+        onConfirmar={async () => { await salvar({ ativo: !v.ativo }, v.ativo ? "Visitante desativado." : "Visitante reativado."); setConfirmarSituacao(false); }}
+        onCancelar={() => setConfirmarSituacao(false)}
+      />
+      {expulsando && v.auth_user_id && (
+        <AcaoAparelhoModal
+          acao="expulsar"
+          alvo={{ usuario_id: v.auth_user_id, descricao: `Conta de ${v.nome} (${v.email}): sair de todos os aparelhos` }}
+          onFechar={() => setExpulsando(false)}
+          onFeito={(msg) => { setExpulsando(false); onAlterado(msg); }}
+        />
+      )}
+      {aparelhoAberto && <AparelhoDetalhe anonId={aparelhoAberto} onFechar={() => setAparelhoAberto(null)} onAlterado={() => setAparelhos(null)} />}
       <ConfirmDialog
         aberto={confirmar}
         titulo="Excluir visitante?"

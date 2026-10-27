@@ -15,11 +15,16 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2, RefreshCw, Search, UserPlus, UserRound, Users } from "lucide-react";
+import { Ban, CheckCircle2, ChevronLeft, ChevronRight, Loader2, LogOut, Power, RefreshCw, Search, UserPlus, UserRound, Users } from "lucide-react";
 
 import "@/styles/admin-visitantes.css";
+import "@/styles/admin-aparelhos.css";
+import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
+import { chamarApi } from "@/lib/apiAdmin";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
 import NovoVisitanteModal from "./NovoVisitanteModal";
 import VisitanteDetalhe from "./VisitanteDetalhe";
 import { dataHoraCurta, duracao, type ResumoAtividade, type Visitante } from "./tipos";
@@ -41,6 +46,9 @@ export default function VisitantesCadastrados() {
   const [carregando, setCarregando] = useState(true);
   const [aberto, setAberto] = useState<Visitante | null>(null);
   const [novo, setNovo] = useState(false);
+  const [expulsar, setExpulsar] = useState<Visitante | null>(null);
+  const [mudarSituacao, setMudarSituacao] = useState<Visitante | null>(null);
+  const [salvando, setSalvando] = useState(false);
 
   // Busca com atraso (evita uma consulta por tecla)
   useEffect(() => {
@@ -107,6 +115,22 @@ export default function VisitantesCadastrados() {
 
   const paginas = Math.max(1, Math.ceil(total / POR_PAGINA));
 
+  // Ativar/desativar direto da lista (depois da confirmação)
+  async function confirmarSituacao() {
+    if (!mudarSituacao) return;
+    setSalvando(true);
+    try {
+      await chamarApi("PATCH", "/api/admin/visitantes", { id: mudarSituacao.id, ativo: !mudarSituacao.ativo });
+      mostrar("sucesso", mudarSituacao.ativo ? "Visitante desativado: não consegue mais entrar." : "Visitante reativado.");
+      setMudarSituacao(null);
+      void carregar();
+    } catch (e) {
+      mostrar("erro", (e as Error).message);
+    } finally {
+      setSalvando(false);
+    }
+  }
+
   return (
     <div className="advis">
       <div className="advis-topo">
@@ -124,20 +148,17 @@ export default function VisitantesCadastrados() {
         </div>
       </div>
 
-      <div className="advis-filtros">
+      <div className="advis-filtros apa-filtros">
         <label className="advis-busca">
           <Search size={16} aria-hidden="true" />
           <span className="advis-sr">Buscar por nome ou e-mail</span>
           <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar por nome ou e-mail" />
         </label>
-        <label>
-          <span className="advis-sr">Situação</span>
-          <select className="advis-select" value={situacao} onChange={(e) => { setSituacao(e.target.value as Situacao); setPagina(0); }}>
-            <option value="todos">Todas as situações</option>
-            <option value="ativos">Ativos</option>
-            <option value="inativos">Inativos</option>
-          </select>
-        </label>
+        <div className="apa-chips" role="group" aria-label="Situação" style={{ gridColumn: "1 / -1" }}>
+          {([["todos", "Todos"], ["ativos", "Ativos"], ["inativos", "Inativos (bloqueados)"]] as [Situacao, string][]).map(([v, r]) => (
+            <button key={v} type="button" className={situacao === v ? "aac-chip aac-chip--ativo" : "aac-chip"} aria-pressed={situacao === v} onClick={() => { setSituacao(v); setPagina(0); }}>{r}</button>
+          ))}
+        </div>
         <label>
           <span className="advis-sr">Cidade</span>
           <select className="advis-select" value={cidade} onChange={(e) => { setCidade(e.target.value); setPagina(0); }}>
@@ -180,12 +201,20 @@ export default function VisitantesCadastrados() {
                     </td>
                     <td data-rotulo="Cidade">{v.cidade ?? "—"}</td>
                     <td data-rotulo="Situação">
-                      <span className={`advis-selo ${v.ativo ? "advis-selo--ativo" : "advis-selo--inativo"}`}>{v.ativo ? "Ativo" : "Inativo"}</span>
+                      <span className={`apa-selo ${v.ativo ? "apa-selo--ativo" : "apa-selo--bloqueado"}`}>
+                        {v.ativo ? <CheckCircle2 size={13} aria-hidden="true" /> : <Ban size={13} aria-hidden="true" />} {v.ativo ? "Ativo" : "Inativo · login bloqueado"}
+                      </span>
                     </td>
                     <td data-rotulo="Logins">{r?.total_logins ?? 0}</td>
                     <td data-rotulo="Tempo total">{duracao(r?.total_seg ?? 0)}</td>
                     <td data-rotulo="Último acesso">{dataHoraCurta(r?.ultimo_acesso)}</td>
-                    <td className="advis-acao">
+                    <td className="advis-acao apa-acoes-linha">
+                      <button type="button" className={v.ativo ? "advis-btn apa-btn--aviso" : "advis-btn"} onClick={() => setMudarSituacao(v)}>
+                        <Power size={15} aria-hidden="true" /> {v.ativo ? "Desativar" : "Reativar"}
+                      </button>
+                      <button type="button" className="advis-btn advis-btn--ghost" disabled={!v.auth_user_id} onClick={() => setExpulsar(v)} title="Encerra o login em todos os aparelhos">
+                        <LogOut size={15} aria-hidden="true" /> Expulsar
+                      </button>
                       <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAberto(v)}>Detalhes</button>
                     </td>
                   </tr>
@@ -220,6 +249,30 @@ export default function VisitantesCadastrados() {
         <NovoVisitanteModal
           onFechar={() => setNovo(false)}
           onCriado={(msg) => { setNovo(false); mostrar("sucesso", msg); void carregar(); void carregarCidades(); }}
+        />
+      )}
+
+      <ConfirmDialog
+        aberto={!!mudarSituacao}
+        titulo={mudarSituacao?.ativo ? "Desativar a conta?" : "Reativar a conta?"}
+        mensagem={mudarSituacao
+          ? mudarSituacao.ativo
+            ? `${mudarSituacao.nome} não conseguirá mais entrar até você reativar. O histórico é mantido.`
+            : `${mudarSituacao.nome} volta a poder entrar com o e-mail e a senha.`
+          : ""}
+        textoConfirmar={mudarSituacao?.ativo ? "Desativar" : "Reativar"}
+        perigo={!!mudarSituacao?.ativo}
+        carregando={salvando}
+        onConfirmar={confirmarSituacao}
+        onCancelar={() => setMudarSituacao(null)}
+      />
+
+      {expulsar?.auth_user_id && (
+        <AcaoAparelhoModal
+          acao="expulsar"
+          alvo={{ usuario_id: expulsar.auth_user_id, descricao: `Conta de ${expulsar.nome} (${expulsar.email}): sair de todos os aparelhos` }}
+          onFechar={() => setExpulsar(null)}
+          onFeito={(msg) => { setExpulsar(null); mostrar("sucesso", msg); }}
         />
       )}
 
