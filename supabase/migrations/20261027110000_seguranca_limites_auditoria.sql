@@ -14,8 +14,8 @@
 -- 4. Auditoria automática (admin_auditoria) de tudo que um administrador
 --    cria/altera/apaga nas tabelas do painel: feita pelo próprio banco,
 --    então não depende do navegador.
--- 5. Limite de envio no banco para mensagens de chat/coleta e pedidos de
---    coleta (anti-flood), mesmo se alguém ignorar o site e falar direto
+-- 5. Limite de envio no banco para mensagens de chat/coleta, pedidos de
+--    coleta e registros de atividade (anti-flood), mesmo se alguém ignorar o site e falar direto
 --    com a API do Supabase.
 -- ==========================================================
 
@@ -266,6 +266,13 @@ begin
     if v_n >= 15 then raise exception 'Muitas mensagens seguidas. Aguarde um minuto.' using errcode = 'P0001'; end if;
     select count(*) into v_n from public.coleta_mensagens where autor_id = v_autor and created_at > now() - interval '1 day';
     if v_n >= 300 then raise exception 'Limite diário de mensagens atingido.' using errcode = 'P0001'; end if;
+  elsif tg_table_name = 'visitante_eventos' then
+    -- o site envia no máximo ~20 eventos a cada 10 s; 600 por minuto já é abuso
+    select count(*) into v_n from public.visitante_eventos where auth_user_id = new.auth_user_id and criado_em > now() - interval '1 minute';
+    if v_n >= 600 then raise exception 'Muitos registros de atividade. Aguarde um minuto.' using errcode = 'P0001'; end if;
+  elsif tg_table_name = 'visitante_sessoes' then
+    select count(*) into v_n from public.visitante_sessoes where auth_user_id = new.auth_user_id and iniciada_em > now() - interval '1 hour';
+    if v_n >= 60 then raise exception 'Muitas sessões abertas em pouco tempo.' using errcode = 'P0001'; end if;
   elsif tg_table_name = 'coleta_solicitacoes' then
     v_autor := new.auth_user_id;
     select count(*) into v_n from public.coleta_solicitacoes where auth_user_id = v_autor and created_at > now() - interval '1 day';
@@ -279,7 +286,7 @@ revoke all on function public.limitar_envio() from public, anon, authenticated;
 do $$
 declare t text;
 begin
-  foreach t in array array['chat_mensagens', 'coleta_mensagens', 'coleta_solicitacoes'] loop
+  foreach t in array array['chat_mensagens', 'coleta_mensagens', 'coleta_solicitacoes', 'visitante_eventos', 'visitante_sessoes'] loop
     if to_regclass('public.' || t) is not null then
       execute format('drop trigger if exists limitar_envio_%1$s on public.%1$I', t);
       execute format('create trigger limitar_envio_%1$s before insert on public.%1$I for each row execute function public.limitar_envio()', t);
