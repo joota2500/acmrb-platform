@@ -3,24 +3,26 @@
 /**
  * NoticiaDetalhe — corpo da página /noticias/[slug]
  * ------------------------------------------------------------
- * Barra de progresso de leitura, breadcrumb, imagem inteira com
- * legenda/crédito, conteúdo formatado, galeria com ampliação,
- * tags, compartilhar (WhatsApp, Facebook, LinkedIn, copiar link,
- * compartilhamento nativo do celular), anterior/próxima e
- * relacionadas. Conta 1 visualização por notícia por sessão.
+ * Barra de progresso de leitura, breadcrumb, título, data e autor,
+ * capa inteira com legenda/crédito, texto formatado (ConteudoNoticia),
+ * galeria com ampliação, assuntos, compartilhar (CompartilharNoticia:
+ * folha nativa com foto no celular; redes e copiar link no computador),
+ * voltar, anterior/próxima e relacionadas.
+ * Conta 1 visualização por notícia por sessão.
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import {
-  ArrowLeft, ArrowRight, CalendarDays, Check, ChevronLeft, ChevronRight, Clock, Copy,
-  ExternalLink, Eye, Share2, UserRound, X,
+  ArrowLeft, ArrowRight, CalendarDays, ChevronLeft, ChevronRight, Clock,
+  ExternalLink, Eye, UserRound, X,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import ConteudoNoticia from "@/components/noticias/ConteudoNoticia";
 import NoticiaCard from "@/components/noticias/NoticiaCard";
-import { formatarData, type Noticia } from "@/lib/noticias";
+import CompartilharNoticia from "@/components/noticias/CompartilharNoticia";
+import { formatarData, textoPuro, type Noticia } from "@/lib/noticias";
 
 import "@/styles/noticia-detalhe.css";
 
@@ -37,15 +39,7 @@ export default function NoticiaDetalhe({ noticia: n, anterior, proxima, relacion
   const progresso = useSpring(scrollYProgress, { stiffness: 120, damping: 25, restDelta: 0.001 });
 
   const [visualizacoes, setVisualizacoes] = useState(n.visualizacoes);
-  const [copiado, setCopiado] = useState(false);
-  const [url, setUrl] = useState("");
-  const [podeNativo, setPodeNativo] = useState(false);
   const [ampliada, setAmpliada] = useState<number | null>(null);
-
-  useEffect(() => {
-    setUrl(window.location.href);
-    setPodeNativo(typeof navigator !== "undefined" && typeof navigator.share === "function");
-  }, []);
 
   // conta a visualização uma vez por sessão (RPC security definer)
   useEffect(() => {
@@ -72,26 +66,7 @@ export default function NoticiaDetalhe({ noticia: n, anterior, proxima, relacion
     return () => document.removeEventListener("keydown", onKey);
   }, [ampliada, n.galeria.length]);
 
-  const texto = encodeURIComponent(`${n.titulo} — ACMRB`);
-  const link = encodeURIComponent(url);
-
-  async function copiar() {
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopiado(true);
-      setTimeout(() => setCopiado(false), 2500);
-    } catch {
-      /* navegador sem permissão de área de transferência */
-    }
-  }
-
-  async function nativo() {
-    try {
-      await navigator.share({ title: n.titulo, text: n.resumo, url });
-    } catch {
-      /* usuário cancelou */
-    }
-  }
+  const resumo = n.resumo || textoPuro(n.conteudo).slice(0, 220);
 
   const entrada = reduzir ? {} : { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.45 } };
 
@@ -129,6 +104,11 @@ export default function NoticiaDetalhe({ noticia: n, anterior, proxima, relacion
               <span><Eye size={15} aria-hidden="true" /> {visualizacoes} {visualizacoes === 1 ? "visualização" : "visualizações"}</span>
             )}
           </div>
+
+          <div className="nd__acoes-topo">
+            <Link href="/noticias" className="nd__voltar"><ArrowLeft size={16} aria-hidden="true" /> Todas as notícias</Link>
+            <CompartilharNoticia variante="botao" rotulo="Compartilhar" titulo={n.titulo} resumo={resumo} slug={n.slug} imagemUrl={n.imagem_url} className="nd__compartilhar-topo" />
+          </div>
         </motion.header>
 
         {n.imagem_url && (
@@ -148,7 +128,7 @@ export default function NoticiaDetalhe({ noticia: n, anterior, proxima, relacion
           </figure>
         )}
 
-        <div className="nd__layout">
+        <div className="nd__corpo">
           <div className="nd__principal">
             <ConteudoNoticia texto={n.conteudo} className="nd__texto" />
 
@@ -176,31 +156,21 @@ export default function NoticiaDetalhe({ noticia: n, anterior, proxima, relacion
 
             {n.tags.length > 0 && (
               <div className="nd__tags" aria-label="Assuntos">
+                <span className="nd__tags-rotulo">Assuntos:</span>
                 {n.tags.map((t) => (
-                  <Link key={t} href={`/noticias?tag=${encodeURIComponent(t)}`} className="nd__tag">#{t}</Link>
+                  <Link key={t} href={`/noticias?tag=${encodeURIComponent(t)}`} className="nd__tag">{t}</Link>
                 ))}
               </div>
             )}
-          </div>
 
-          <aside className="nd__lateral" aria-label="Compartilhar">
-            <div className="nd__compartilhar">
-              <span className="nd__rotulo"><Share2 size={14} aria-hidden="true" /> Compartilhar</span>
-              <div className="nd__botoes">
-                <a className="nd__social nd__social--whats" href={`https://wa.me/?text=${texto}%20${link}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                <a className="nd__social nd__social--face" href={`https://www.facebook.com/sharer/sharer.php?u=${link}`} target="_blank" rel="noopener noreferrer">Facebook</a>
-                <a className="nd__social nd__social--linkedin" href={`https://www.linkedin.com/sharing/share-offsite/?url=${link}`} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <button type="button" className="nd__social" onClick={copiar} aria-live="polite">
-                  {copiado ? <><Check size={14} aria-hidden="true" /> Copiado!</> : <><Copy size={14} aria-hidden="true" /> Copiar link</>}
-                </button>
-                {podeNativo && (
-                  <button type="button" className="nd__social" onClick={nativo}>
-                    <Share2 size={14} aria-hidden="true" /> Mais opções
-                  </button>
-                )}
+            <section className="nd__cartao" aria-labelledby="nd-gostou">
+              <div className="nd__cartao-texto">
+                <h2 id="nd-gostou">Gostou? Compartilhe!</h2>
+                <p>Envie para amigos e familiares. No celular, a foto, o resumo e o link seguem juntos.</p>
               </div>
-            </div>
-          </aside>
+              <CompartilharNoticia variante="inline" rotulo="Compartilhar" titulo={n.titulo} resumo={resumo} slug={n.slug} imagemUrl={n.imagem_url} />
+            </section>
+          </div>
         </div>
 
         {(anterior || proxima) && (
