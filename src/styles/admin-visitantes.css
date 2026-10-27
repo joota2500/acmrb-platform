@@ -10,6 +10,7 @@
 .advis-titulo svg { color: #2E5E4E; }
 .advis-sub { margin-top: 0.25rem; font-size: 0.9rem; color: #71717a; text-align: var(--texto-justificado, justify); }
 
+.advis-topo-botoes { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: flex-end; }
 .advis-filtros { display: grid; grid-template-columns: 1fr 13rem 13rem; gap: 0.6rem; }
 .advis-busca { display: flex; align-items: center; gap: 0.5rem; background: #fff; border: 1px solid #e4e4e7; border-radius: 0.9rem; padding: 0 0.8rem; color: #2E5E4E; }
 .advis-busca input { flex: 1; min-width: 0; border: 0; outline: 0; padding: 0.65rem 0; background: transparent; color: #18181b; }

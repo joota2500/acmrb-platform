@@ -14,7 +14,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Clock, Loader2, LogIn, MousePointerClick, Power, Save, Timer, Trash2, X, FileText } from "lucide-react";
+import { Activity, Clock, Copy, KeyRound, Loader2, LogIn, Mail, MousePointerClick, Power, Save, Timer, Trash2, X, FileText } from "lucide-react";
 
 import "@/styles/admin-visitante-detalhe.css";
 import { supabase } from "@/lib/supabase";
@@ -71,6 +71,7 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
   const [confirmar, setConfirmar] = useState(false);
+  const [linkSenha, setLinkSenha] = useState<string | null>(null);
   const [form, setForm] = useState({
     nome: v.nome,
     telefone: v.telefone ?? "",
@@ -132,12 +133,37 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
     }
   }
 
+  // Redefinir senha: por e-mail (Supabase envia) ou gerando o link para o deus copiar
+  async function redefinirSenha(modo: "email" | "link") {
+    setSalvando(true);
+    setLinkSenha(null);
+    try {
+      const r = await chamarApi("POST", "/api/admin/visitantes", { acao: "resetar_senha", id: v.id, modo });
+      if (modo === "link") setLinkSenha(r.link as string);
+      else onAlterado(`E-mail de redefinição enviado para ${v.email}.`);
+    } catch (e) {
+      onErro((e as Error).message);
+    } finally {
+      setSalvando(false);
+    }
+  }
+
+  async function copiarLink() {
+    if (!linkSenha) return;
+    try {
+      await navigator.clipboard.writeText(linkSenha);
+      onAlterado("Link copiado. Envie ao visitante (vale por pouco tempo).");
+    } catch {
+      onErro("Não foi possível copiar; selecione o link e copie manualmente.");
+    }
+  }
+
   async function excluir() {
     setSalvando(true);
     try {
       const r = await chamarApi("DELETE", `/api/admin/visitantes?id=${v.id}`);
       setConfirmar(false);
-      onExcluido(r.modo === "completo" ? "Visitante excluído (conta e histórico)." : "Perfil excluído; a conta de acesso não pôde ser removida e foi bloqueada.");
+      onExcluido(r.modo === "completo" ? "Visitante excluído (conta e histórico)." : "Visitante excluído.");
     } catch (e) {
       onErro((e as Error).message);
       setSalvando(false);
@@ -261,6 +287,26 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
                 <button type="button" className="advd-btn advd-btn--soft" disabled={salvando} onClick={() => void salvar({ ativo: !v.ativo }, v.ativo ? "Visitante desativado." : "Visitante reativado.")}>
                   <Power size={16} aria-hidden="true" /> {v.ativo ? "Desativar" : "Reativar"}
                 </button>
+              </div>
+              <div className="advd-senha">
+                <div>
+                  <h3><KeyRound size={15} aria-hidden="true" /> Redefinir senha</h3>
+                  <p>Envie ao visitante um e-mail para criar nova senha, ou gere o link e mande por WhatsApp.</p>
+                </div>
+                <div className="advd-senha-botoes">
+                  <button type="button" className="advd-btn advd-btn--soft" disabled={salvando} onClick={() => void redefinirSenha("email")}>
+                    <Mail size={16} aria-hidden="true" /> Enviar e-mail
+                  </button>
+                  <button type="button" className="advd-btn advd-btn--soft" disabled={salvando} onClick={() => void redefinirSenha("link")}>
+                    <KeyRound size={16} aria-hidden="true" /> Gerar link
+                  </button>
+                </div>
+                {linkSenha && (
+                  <div className="advd-senha-link">
+                    <input className="advd-input" readOnly value={linkSenha} onFocus={(e) => e.currentTarget.select()} aria-label="Link para redefinir a senha" />
+                    <button type="button" className="advd-btn" onClick={() => void copiarLink()}><Copy size={16} aria-hidden="true" /> Copiar</button>
+                  </div>
+                )}
               </div>
               <div className="advd-perigo advd-perigo--vermelho">
                 <div>

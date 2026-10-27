@@ -14,11 +14,12 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Loader2, RefreshCw, Search, UserRound, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2, RefreshCw, Search, UserPlus, UserRound, Users } from "lucide-react";
 
 import "@/styles/admin-visitantes.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
+import NovoVisitanteModal from "@/components/admin/visitantes/NovoVisitanteModal";
 import VisitanteDetalhe from "@/components/admin/visitantes/VisitanteDetalhe";
 import { dataHoraCurta, duracao, type ResumoAtividade, type Visitante } from "@/components/admin/visitantes/tipos";
 
@@ -38,6 +39,7 @@ export default function VisitantesSection() {
   const [cidades, setCidades] = useState<string[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [aberto, setAberto] = useState<Visitante | null>(null);
+  const [novo, setNovo] = useState(false);
 
   // Busca com atraso (evita uma consulta por tecla)
   useEffect(() => {
@@ -111,9 +113,14 @@ export default function VisitantesSection() {
           <h2 className="advis-titulo"><Users size={20} aria-hidden="true" /> Visitantes cadastrados</h2>
           <p className="advis-sub">Contas criadas na área de visitantes do site. Só o ADM DEUS vê esta seção.</p>
         </div>
-        <button type="button" className="advis-btn advis-btn--soft" onClick={() => { void carregar(); void carregarCidades(); }}>
-          <RefreshCw size={16} aria-hidden="true" /> Atualizar
-        </button>
+        <div className="advis-topo-botoes">
+          <button type="button" className="advis-btn" onClick={() => setNovo(true)}>
+            <UserPlus size={16} aria-hidden="true" /> Novo visitante
+          </button>
+          <button type="button" className="advis-btn advis-btn--soft" onClick={() => { void carregar(); void carregarCidades(); }}>
+            <RefreshCw size={16} aria-hidden="true" /> Atualizar
+          </button>
+        </div>
       </div>
 
       <div className="advis-filtros">
@@ -205,6 +212,13 @@ export default function VisitantesSection() {
           onAlterado={(msg) => { mostrar("sucesso", msg); void carregar(); void carregarCidades(); }}
           onErro={(msg) => mostrar("erro", msg)}
           onExcluido={(msg) => { setAberto(null); mostrar("sucesso", msg); void carregar(); }}
+        />
+      )}
+
+      {novo && (
+        <NovoVisitanteModal
+          onFechar={() => setNovo(false)}
+          onCriado={(msg) => { setNovo(false); mostrar("sucesso", msg); void carregar(); void carregarCidades(); }}
         />
       )}
 

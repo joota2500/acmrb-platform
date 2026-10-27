@@ -11,9 +11,11 @@ import { NextResponse } from "next/server";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 export const MSG_SEM_CHAVE =
-  "A chave SUPABASE_SERVICE_ROLE_KEY não está configurada no servidor. " +
-  "Pegue em Supabase → Project Settings → API → service_role, adicione " +
-  "SUPABASE_SERVICE_ROLE_KEY=... no arquivo .env.local e reinicie o npm run dev.";
+  "A chave secreta do servidor (SUPABASE_SERVICE_ROLE_KEY) não está configurada. " +
+  "No seu computador: coloque-a no arquivo .env.local e reinicie o npm run dev. " +
+  "No site publicado: Vercel → Settings → Environment Variables, adicione a mesma variável " +
+  "(sem NEXT_PUBLIC no nome) e faça um novo Deploy. A chave está em Supabase → Project Settings → API Keys " +
+  "(\"service_role\" ou \"secret\").";
 
 const semSessao = { auth: { persistSession: false, autoRefreshToken: false } };
 
@@ -59,7 +61,7 @@ export async function autorizar(req: Request, somenteDeus = false): Promise<Auto
   const { data: linha } = await admin
     .from("admins")
     .select("id, email, role, auth_user_id")
-    .ilike("email", email)
+    .ilike("email", email.replace(/[\\%_]/g, (c) => `\\${c}`)) // escapa curingas: "_" valeria "qualquer letra"
     .eq("ativo", true)
     .maybeSingle();
 

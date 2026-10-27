@@ -71,6 +71,15 @@
   .advd-grade { grid-template-columns: 1fr; }
 }
 
+/* Redefinir senha */
+.advd-senha { display: flex; flex-direction: column; gap: 0.8rem; padding: 1rem; border-radius: 1rem; background: #fff; border: 1px solid rgba(0, 0, 0, 0.05); }
+.advd-senha h3 { display: flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 800; color: #18181b; }
+.advd-senha h3 svg { color: #2E5E4E; }
+.advd-senha p { font-size: 0.8rem; color: #71717a; text-align: var(--texto-justificado, justify); }
+.advd-senha-botoes { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.advd-senha-link { display: flex; gap: 0.5rem; }
+.advd-senha-link .advd-input { min-width: 0; font-size: 0.78rem; }
+
 /* Celular */
 @media (max-width: 480px) {
   .advd { width: 100%; }
@@ -80,6 +89,8 @@
   .advd-form-linha { grid-template-columns: 1fr; }
   .advd-perigo { flex-direction: column; align-items: stretch; }
   .advd-perigo .advd-btn { width: 100%; }
+  .advd-senha-botoes .advd-btn { width: 100%; }
+  .advd-senha-link { flex-direction: column; }
 }
 
 @media (prefers-reduced-motion: reduce) {

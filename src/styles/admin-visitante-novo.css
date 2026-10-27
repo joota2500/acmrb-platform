@@ -1,0 +1,25 @@
+/* ==================== PAINEL: NOVO VISITANTE (prefixo "advn-") ==================== */
+.advn-fundo { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(24, 24, 27, 0.5); }
+.advn { width: min(34rem, 100%); max-height: 100%; overflow-y: auto; background: #fff; border-radius: 1.4rem; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25); }
+.advn-topo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem; border-bottom: 1px solid #eee; }
+.advn-topo h2 { display: flex; align-items: center; gap: 0.5rem; font-size: 1.1rem; font-weight: 900; color: #18181b; }
+.advn-topo h2 svg { color: #2E5E4E; }
+.advn-fechar { padding: 0.45rem; border-radius: 0.7rem; color: #71717a; }
+.advn-fechar:hover { background: #f4f4f5; color: #18181b; }
+.advn-form { display: flex; flex-direction: column; gap: 0.8rem; padding: 1.25rem; }
+.advn-form label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.8rem; font-weight: 700; color: #3f3f46; min-width: 0; }
+.advn-linha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+.advn-input { width: 100%; padding: 0.6rem 0.8rem; border-radius: 0.8rem; border: 1px solid #e4e4e7; background: #fff; font-size: 0.92rem; font-weight: 400; color: #18181b; outline: 0; }
+.advn-input:focus { border-color: #2E5E4E; box-shadow: 0 0 0 3px rgba(46, 94, 78, 0.15); }
+.advn-dica { font-size: 0.78rem; color: #71717a; text-align: var(--texto-justificado, justify); }
+.advn-acoes { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.3rem; }
+.advn-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.6rem 1.1rem; border-radius: 0.8rem; border: 0; background: #2E5E4E; color: #fff; font-weight: 700; font-size: 0.88rem; cursor: pointer; }
+.advn-btn:hover:not(:disabled) { background: #21463A; }
+.advn-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+.advn-btn--soft { background: #E8F3EE; color: #2E5E4E; }
+.advn-btn--soft:hover:not(:disabled) { background: #DDF5EC; }
+@media (max-width: 480px) {
+  .advn-linha { grid-template-columns: 1fr; }
+  .advn-acoes { flex-direction: column-reverse; }
+  .advn-btn { width: 100%; }
+}
