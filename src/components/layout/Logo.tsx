@@ -14,7 +14,8 @@ export default function Logo({ onSecretClick }: Props) {
       </div>
 
       <div className="logo__content">
-        <h1 className="logo__title">ACMRB</h1>
+        {/* <p> e não <h1>: o título principal (h1) é único em cada página */}
+        <p className="logo__title">ACMRB</p>
 
         <p className="logo__subtitle">Plataforma ESG</p>
       </div>

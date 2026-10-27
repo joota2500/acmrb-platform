@@ -39,11 +39,25 @@ import InstitutionalSection from "@/components/home/InstitutionalSection"; // In
 import { Suspense } from "react";
 import Loading from "@/components/ui/LoadingState"; // Indicador de carregamento
 
+// ---------- SEO ----------
+import type { Metadata } from "next";
+import JsonLd from "@/components/seo/JsonLd";
+import { DESCRICAO_PADRAO, TITULO_PADRAO, jsonLdOrganizacao, jsonLdSite } from "@/lib/seo";
+
+// Título completo (sem o sufixo do template) e endereço canônico da home
+export const metadata: Metadata = {
+  title: { absolute: TITULO_PADRAO },
+  description: DESCRICAO_PADRAO,
+  alternates: { canonical: "/" },
+};
+
 export default function Home() {
   return (
     // <main> envolve toda a página. "overflow-hidden" evita rolagem
     // horizontal causada por animações que saem da tela.
     <main className="overflow-hidden bg-white min-h-screen">
+      {/* Dados estruturados: organização/negócio local + site (para o Google) */}
+      <JsonLd dados={[jsonLdOrganizacao(), jsonLdSite()]} />
       {/* Cabeçalho fixo com logo, menu e menu mobile */}
       <Header />
 

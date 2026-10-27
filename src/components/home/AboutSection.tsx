@@ -78,7 +78,7 @@ export default function AboutSection() {
 
           <p className="about__description" lang="pt-BR">
             A ACMRB (Associação dos Catadores de Materiais Recicláveis de
-            Baturité) nasceu da necessidade de organizar, valorizar e dar
+            Baturité), conhecida como Reciclaê, nasceu da necessidade de organizar, valorizar e dar
             dignidade ao trabalho dos catadores, promovendo sustentabilidade,
             inclusão social e economia circular em nossa região.
           </p>

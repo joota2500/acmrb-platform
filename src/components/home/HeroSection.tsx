@@ -52,7 +52,7 @@ export default function HeroSection() {
       <div className="absolute inset-0">
         <Image
           src="/images/hero-reciclagem.jpg"
-          alt="" /* decorativa: o texto já descreve a seção */
+          alt="Catadores de materiais recicláveis separando garrafas plásticas em um galpão de reciclagem"
           fill
           priority
           sizes="100vw"
@@ -95,9 +95,10 @@ export default function HeroSection() {
             transition={{ delay: 0.3 }}
             className="mt-5 sm:mt-8 text-base sm:text-lg md:text-xl lg:text-2xl text-emerald-100 max-w-3xl leading-relaxed text-pretty"
           >
-            A ACMRB une coleta seletiva, educação ambiental e transparência para
-            gerar renda, proteger o meio ambiente e construir um futuro
-            sustentável para a nossa cidade.
+            A ACMRB, a Associação Reciclaê de catadores de Baturité, une coleta
+            seletiva, educação ambiental e transparência para gerar renda,
+            proteger o meio ambiente e construir um futuro sustentável para a
+            nossa cidade.
           </motion.p>
 
           {/* ===== Botões: coluna e largura total no celular; lado a lado
