@@ -97,3 +97,16 @@
   .apa-item-aparelho { flex-direction: column; align-items: stretch; }
   .apa-item-aparelho__acoes { justify-content: space-between; }
 }
+
+/* Seletor de prazo */
+.apa-prazo { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.8rem; border-radius: 0.9rem; background: #f8faf9; border: 1px solid #eef2f0; }
+.apa-prazo__linha { display: grid; grid-template-columns: 7rem 1fr; gap: 0.5rem; }
+.apa-prazo__previa { font-size: 0.8rem; font-weight: 700; color: #2E5E4E; }
+.apa-prazo__previa--erro { color: #b91c1c; }
+.apa-check--neutro { background: #f4f4f5; border-color: #e4e4e7; }
+.apa-check--neutro input { accent-color: #2E5E4E; }
+.apa-check--neutro small { color: #52525b; }
+@media (max-width: 480px) { .apa-prazo__linha { grid-template-columns: 1fr 1fr; } }
+.apa-chip { padding: 0.35rem 0.75rem; border-radius: 999px; border: 1px solid #d4d4d8; background: #fff; color: #3f3f46; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.apa-chip:hover { border-color: #2E5E4E; color: #2E5E4E; }
+.apa-chip--ativo { background: #2E5E4E; border-color: #2E5E4E; color: #fff; }

@@ -14,7 +14,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { Ban, ChevronLeft, ChevronRight, Clock, Loader2, RefreshCw, Search, ShieldCheck, Smartphone } from "lucide-react";
+import { Ban, ChevronLeft, ChevronRight, Clock, Loader2, Pencil, RefreshCw, Search, ShieldCheck, Smartphone } from "lucide-react";
 
 import "@/styles/admin-aparelhos.css";
 import { supabase } from "@/lib/supabase";
@@ -79,7 +79,7 @@ export default function AparelhosPainel() {
     <div className="aac">
       <div className="aac-barra">
         <p className="aac-nota">
-          Aparelhos que visitaram o site. O bloqueio vale em até 15 segundos. Visitas de anônimos somem em 24 h, mas os bloqueios continuam até você desbloquear.
+          Aparelhos que visitaram o site. O bloqueio vale na próxima navegação e a página aberta é trocada em até ~10 segundos. Visitas de anônimos somem em 24 h, mas os bloqueios continuam até você desbloquear.
         </p>
         <button type="button" className="advis-btn advis-btn--soft" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</button>
       </div>
@@ -136,7 +136,10 @@ export default function AparelhosPainel() {
                         <button type="button" className="advis-btn apa-btn--perigo" onClick={() => setAcao({ tipo: "bloquear", item: i })}><Ban size={15} aria-hidden="true" /> Bloquear</button>
                       </>
                     ) : (
-                      <button type="button" className="advis-btn" onClick={() => setAcao({ tipo: "desbloquear", item: i })}><ShieldCheck size={15} aria-hidden="true" /> Desbloquear</button>
+                      <>
+                        <button type="button" className="advis-btn" onClick={() => setAcao({ tipo: "desbloquear", item: i })}><ShieldCheck size={15} aria-hidden="true" /> Desbloquear</button>
+                        <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAcao({ tipo: "editar", item: i })}><Pencil size={15} aria-hidden="true" /> Editar</button>
+                      </>
                     )}
                     <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAberto(i.anon_id)}>Detalhes</button>
                   </td>
@@ -158,6 +161,7 @@ export default function AparelhosPainel() {
       {acao && (
         <AcaoAparelhoModal
           acao={acao.tipo}
+          inicial={acao.item.bloqueio_tipo ? { motivo: acao.item.motivo ?? "", ate: acao.item.ate, tipo: acao.item.bloqueio_tipo } : undefined}
           alvo={{ anon_id: acao.item.anon_id, descricao: `Aparelho id ${idCurto(acao.item.anon_id)} · ${quemRotulo(acao.item)} · ${aparelhoDe(acao.item)}` }}
           onFechar={() => setAcao(null)}
           onFeito={(msg) => { setAcao(null); mostrar("sucesso", msg); void carregar(); }}

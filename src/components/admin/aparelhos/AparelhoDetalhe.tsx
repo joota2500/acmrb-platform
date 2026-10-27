@@ -13,7 +13,7 @@
  */
 
 import { useCallback, useEffect, useState } from "react";
-import { Ban, Clock, Copy, Loader2, LogOut, ShieldCheck, Smartphone, X } from "lucide-react";
+import { Ban, Clock, Copy, Loader2, LogOut, Pencil, ShieldCheck, Smartphone, X } from "lucide-react";
 
 import "@/styles/admin-aparelhos.css";
 import "@/styles/admin-visitante-detalhe.css";
@@ -134,7 +134,7 @@ export default function AparelhoDetalhe({ anonId, onFechar, onAlterado }: Props)
                 </div>
                 {situacao !== "ativo" && item ? (
                   <p className="apa-situacao__texto">
-                    {situacao === "suspenso" ? `Suspenso até ${dataHoraCurta(item.ate)} (${tempoRestante(item.ate)}).` : "Bloqueado sem prazo."}{" "}
+                    {`${situacao === "suspenso" ? "Suspenso" : "Bloqueado"} ${item.ate ? `até ${dataHoraCurta(item.ate)} (${tempoRestante(item.ate)})` : "sem prazo (indeterminado)"}.`}{" "}
                     Motivo: <strong>{item.motivo}</strong>. Por {item.bloqueado_por} em {dataHoraCurta(item.bloqueado_em)}.
                     {item.com_rede ? " A rede (IP) também está bloqueada." : ""}
                   </p>
@@ -145,12 +145,12 @@ export default function AparelhoDetalhe({ anonId, onFechar, onAlterado }: Props)
                   {situacao === "ativo" ? (
                     <>
                       <button type="button" className="advis-btn apa-btn--perigo" onClick={() => setAcao("bloquear")}><Ban size={16} aria-hidden="true" /> Bloquear</button>
-                      <button type="button" className="advis-btn apa-btn--aviso" onClick={() => setAcao("suspender")}><Clock size={16} aria-hidden="true" /> Suspender…</button>
+                      <button type="button" className="advis-btn apa-btn--aviso" onClick={() => setAcao("suspender")}><Clock size={16} aria-hidden="true" /> Suspender</button>
                     </>
                   ) : (
                     <>
                       <button type="button" className="advis-btn" onClick={() => setAcao("desbloquear")}><ShieldCheck size={16} aria-hidden="true" /> Desbloquear</button>
-                      {situacao === "suspenso" && <button type="button" className="advis-btn apa-btn--perigo" onClick={() => setAcao("bloquear")}><Ban size={16} aria-hidden="true" /> Bloquear sem prazo</button>}
+                      <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAcao("editar")}><Pencil size={16} aria-hidden="true" /> Editar motivo/prazo</button>
                     </>
                   )}
                   <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAcao("expulsar")}><LogOut size={16} aria-hidden="true" /> Expulsar</button>
@@ -180,10 +180,10 @@ export default function AparelhoDetalhe({ anonId, onFechar, onAlterado }: Props)
                       <li key={b.id}>
                         <span className={`advd-ponto ${b.ativo ? "apa-ponto--vermelho" : ""}`} aria-hidden="true" />
                         <div>
-                          <strong>{b.tipo === "bloqueio" ? "Bloqueio" : "Suspensão"} · {dataHoraCurta(b.criado_em)}{b.ativo && b.tipo === "bloqueio" ? " · em vigor" : ""}</strong>
+                          <strong>{b.tipo === "bloqueio" ? "Bloqueio" : "Suspensão"} · {dataHoraCurta(b.criado_em)}{b.ativo && (!b.ate || new Date(b.ate).getTime() > Date.now()) ? " · em vigor" : ""}</strong>
                           <span>
                             Motivo: {b.motivo} · por {b.criado_por}
-                            {b.ate ? ` · até ${dataHoraCurta(b.ate)}` : ""}{b.ip_hash ? " · incluiu a rede" : ""}
+                            {b.ate ? ` · até ${dataHoraCurta(b.ate)}` : " · sem prazo"}{b.ip_hash ? " · incluiu a rede" : ""}
                             {b.desbloqueado_em ? ` · liberado ${dataHoraCurta(b.desbloqueado_em)} por ${b.desbloqueado_por ?? "—"}${b.desbloqueio_motivo ? ` (${b.desbloqueio_motivo})` : ""}` : ""}
                           </span>
                         </div>
@@ -241,6 +241,7 @@ export default function AparelhoDetalhe({ anonId, onFechar, onAlterado }: Props)
         <div onClick={(e) => e.stopPropagation()} role="presentation">
           <AcaoAparelhoModal
             acao={acao}
+            inicial={item?.bloqueio_tipo ? { motivo: item.motivo ?? "", ate: item.ate, tipo: item.bloqueio_tipo } : undefined}
             alvo={{ anon_id: anonId, descricao: `Aparelho id ${idCurto(anonId)}${item?.nome ? ` · ${item.nome}` : ""}${ref ? ` · ${aparelhoDe(ref)}` : ""}` }}
             onFechar={() => setAcao(null)}
             onFeito={(msg) => { setAcao(null); mostrar("sucesso", msg); onAlterado?.(); void carregar(); }}

@@ -1,7 +1,7 @@
 /** Tipos e utilitários das telas de aparelhos (somente ADM DEUS) */
 
 export type SituacaoAparelho = "ativo" | "bloqueado" | "suspenso";
-export type AcaoAparelho = "bloquear" | "suspender" | "expulsar" | "desbloquear";
+export type AcaoAparelho = "bloquear" | "suspender" | "editar" | "expulsar" | "desbloquear";
 
 /** Uma linha da função aparelhos_lista() */
 export interface AparelhoItem {
@@ -54,14 +54,6 @@ export interface ExpulsaoReg {
   criado_por: string;
   entregue_em: string | null;
 }
-
-export const DURACOES = [
-  { horas: 1, rotulo: "1 hora" },
-  { horas: 6, rotulo: "6 horas" },
-  { horas: 24, rotulo: "24 horas" },
-  { horas: 168, rotulo: "7 dias" },
-  { horas: 720, rotulo: "30 dias" },
-];
 
 export const ROTULO_SITUACAO: Record<SituacaoAparelho, string> = {
   ativo: "Ativo",

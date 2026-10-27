@@ -7,7 +7,7 @@ export default function SeloSituacao({ situacao, ate }: { situacao: SituacaoApar
   return (
     <span className={`apa-selo apa-selo--${situacao}`}>
       <Icone size={13} aria-hidden="true" /> {ROTULO_SITUACAO[situacao]}
-      {situacao === "suspenso" && ate ? ` · ${tempoRestante(ate)}` : ""}
+      {ate && situacao !== "ativo" ? ` · ${tempoRestante(ate)}` : ""}
     </span>
   );
 }
