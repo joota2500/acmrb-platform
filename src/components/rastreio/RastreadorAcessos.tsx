@@ -21,7 +21,8 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { CHAVE_ANON, EVENTO_PRIVACIDADE, medicaoPermitida } from "@/lib/privacidade";
+import { EVENTO_PRIVACIDADE, medicaoPermitida } from "@/lib/privacidade";
+import { esquecerAparelho, idDoAparelho } from "@/lib/dispositivoCliente";
 
 const CHAVE_SESSAO = "acmrb_acesso_sessao";
 const BATIMENTO_MS = 30_000;
@@ -31,18 +32,8 @@ const URL_API = "/api/acessos";
 
 const novoId = () => crypto.randomUUID();
 
-function anonId(): string | null {
-  try {
-    let id = localStorage.getItem(CHAVE_ANON);
-    if (!id || id.length !== 36) {
-      id = novoId();
-      localStorage.setItem(CHAVE_ANON, id);
-    }
-    return id;
-  } catch {
-    return null;
-  }
-}
+/** Id do aparelho (cookie do middleware + cópia local); é o mesmo que o ADM DEUS bloqueia */
+const anonId = idDoAparelho;
 
 export default function RastreadorAcessos() {
   const { user, loading } = useAuth();
@@ -65,6 +56,18 @@ export default function RastreadorAcessos() {
     }
   });
 
+  // Expulsão: sai da conta, apaga o id do aparelho e volta para a página inicial
+  const expulsarAgora = useRef(async () => {
+    sessaoId.current = null;
+    esquecerAparelho();
+    try {
+      await supabase.auth.signOut();
+    } catch {
+      /* já sem sessão */
+    }
+    window.location.replace("/");
+  });
+
   const enviar = useRef(async (t: string, extra: Record<string, unknown> = {}, opcoes: { beacon?: boolean; token?: string | null } = {}) => {
     const a = anonId();
     if (!a || !sessaoId.current || !medicaoPermitida()) return;
@@ -82,12 +85,17 @@ export default function RastreadorAcessos() {
         navigator.sendBeacon(URL_API, new Blob([corpo], { type: "application/json" }));
         return;
       }
-      await fetch(URL_API, {
+      const resp = await fetch(URL_API, {
         method: "POST",
         keepalive: true,
         headers: { "Content-Type": "application/json", ...(opcoes.token ? { Authorization: `Bearer ${opcoes.token}` } : {}) },
         body: corpo,
       });
+      // O ADM DEUS mandou expulsar este aparelho/conta: encerra o login, esquece o id e recomeça
+      if (resp.status === 200) {
+        const j = (await resp.json().catch(() => null)) as { acao?: string } | null;
+        if (j?.acao === "expulsar") await expulsarAgora.current();
+      }
     } catch {
       /* sem rede: ignora */
     }
