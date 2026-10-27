@@ -44,6 +44,13 @@ export default function PrivacidadePage() {
           </p>
           <PreferenciaPrivacidade />
 
+          <h2>Cookie de segurança</h2>
+          <p>
+            O site também guarda um cookie com o mesmo número aleatório do aparelho. Ele serve para a associação
+            conseguir barrar acessos abusivos (por exemplo, quem tenta invadir ou enviar mensagens em excesso). Esse
+            cookie é necessário para a segurança e não identifica você pelo nome.
+          </p>
+
           <h2>Quem cria uma conta</h2>
           <p>
             Ao se cadastrar, guardamos os dados que você informa (nome, e-mail, telefone, cidade e nascimento) para

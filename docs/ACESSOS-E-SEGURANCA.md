@@ -18,14 +18,29 @@ Linguagem simples, passo a passo. Tudo aqui foi feito na branch `acmrb-terceira-
 - Sem banner de cookies: a explicação fica na página `/privacidade` (link discreto no rodapé). O visitante pode desligar a medição
   (também respeitamos "Do Not Track" do navegador).
 
-### Tela do ADM DEUS: Admin → Usuários / Visitantes (5 abas)
+### Tela do ADM DEUS: Admin → Usuários / Visitantes (6 abas)
 | Aba | O que mostra |
 |---|---|
 | Tempo real | Quem está no site agora (anônimo ou logado), onde, página atual, aparelho, origem, tempo. Atualiza a cada 10 s. |
 | Resumo | Hoje / 7 / 30 / 90 dias: visitas, visitantes, páginas, tempo médio, anônimos × logados × cadastrados, conversão, gráfico por dia, aparelhos, origens, países, cidades, páginas mais vistas. |
 | Visitas | Lista de todas as visitas com filtros (anônimo/logado, período, aparelho, origem, cidade ou id). Clique em "Ver" para ver as páginas e o tempo em cada uma. |
+| Aparelhos | Todos os aparelhos (anônimos e logados) com situação **ativo / suspenso / bloqueado**. Ações: **bloquear**, **suspender** (1 h a 30 dias), **expulsar** e **desbloquear**, sempre com motivo (auditado). Filtros por situação, quem e busca; gaveta com histórico. |
 | Cadastrados | CRUD completo: **criar**, **editar**, **ativar/desativar**, **redefinir senha** (por e-mail ou gerando um link), **excluir**, com histórico de atividade e de logins de cada pessoa. |
 | Segurança | Tentativas de login (certas/erradas, e-mail parcialmente escondido), botão **Liberar** bloqueio, **auditoria** (quem fez o quê no painel) e **limpeza** manual. |
+
+### Bloquear, suspender e expulsar aparelhos
+- Cada navegador tem um id no cookie `acmrb_did` (criado pelo `src/middleware.ts`). É o mesmo id das estatísticas.
+- **Bloquear / suspender**: o aparelho só vê a página simples "Acesso bloqueado" (HTTP 403). Vale em **até ~15 s**
+  (o middleware guarda a lista de bloqueios por 15 s em memória; uma consulta leve ao banco a cada 15 s por instância).
+- **Expulsar**: derruba a sessão. O navegador recebe o aviso no próximo batimento (até ~30 s), sai da conta, apaga o id e
+  ganha outro. Para uma **conta cadastrada**, também encerra todas as sessões de login (`expulsar_usuario_auth`).
+- **Bloquear a rede (IP)** é opcional e perigoso (Wi-Fi/operadora compartilhados): use só em ataque repetido. Guardamos só o hash da rede.
+- Os bloqueios ficam em tabela própria (`dispositivos_bloqueios`) e **não são apagados** pela limpeza de 24 h.
+- **Nunca são bloqueados**: `/admin` e `/api/admin`, aparelhos que já foram usados por um administrador,
+  o aparelho/rede de quem está bloqueando, e robôs do Google/Bing/WhatsApp (pelo nome do robô).
+- Limite honesto: quem apaga cookies e dados do navegador ganha um id novo e escapa de um bloqueio só de aparelho
+  (por isso existe a opção de bloquear a rede). Contas desativadas continuam barradas no login.
+- Se a checagem no banco falhar, o site **abre normalmente** (não derruba o site por erro).
 
 ### Segurança extra
 - **Limite de tentativas de login**: 5 senhas erradas do mesmo e-mail na mesma rede = bloqueio de 15 min;
