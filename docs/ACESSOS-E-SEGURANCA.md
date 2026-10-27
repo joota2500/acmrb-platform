@@ -24,16 +24,25 @@ Linguagem simples, passo a passo. Tudo aqui foi feito na branch `acmrb-terceira-
 | Tempo real | Quem está no site agora (anônimo ou logado), onde, página atual, aparelho, origem, tempo. Atualiza a cada 10 s. |
 | Resumo | Hoje / 7 / 30 / 90 dias: visitas, visitantes, páginas, tempo médio, anônimos × logados × cadastrados, conversão, gráfico por dia, aparelhos, origens, países, cidades, páginas mais vistas. |
 | Visitas | Lista de todas as visitas com filtros (anônimo/logado, período, aparelho, origem, cidade ou id). Clique em "Ver" para ver as páginas e o tempo em cada uma. |
-| Aparelhos | Todos os aparelhos (anônimos e logados) com situação **ativo / suspenso / bloqueado**. Ações: **bloquear**, **suspender** (1 h a 30 dias), **expulsar** e **desbloquear**, sempre com motivo (auditado). Filtros por situação, quem e busca; gaveta com histórico. |
+| Aparelhos | Todos os aparelhos (anônimos e logados) com situação **ativo / suspenso / bloqueado**. Ações: **bloquear**, **suspender**, **editar**, **expulsar** e **desbloquear**, sempre com motivo (auditado). Filtros por situação, quem e busca; gaveta com histórico. |
 | Cadastrados | CRUD completo: **criar**, **editar**, **ativar/desativar**, **redefinir senha** (por e-mail ou gerando um link), **excluir**, com histórico de atividade e de logins de cada pessoa. |
 | Segurança | Tentativas de login (certas/erradas, e-mail parcialmente escondido), botão **Liberar** bloqueio, **auditoria** (quem fez o quê no painel) e **limpeza** manual. |
 
 ### Bloquear, suspender e expulsar aparelhos
 - Cada navegador tem um id no cookie `acmrb_did` (criado pelo `src/middleware.ts`). É o mesmo id das estatísticas.
-- **Bloquear / suspender**: o aparelho só vê a página simples "Acesso bloqueado" (HTTP 403). Vale em **até ~15 s**
-  (o middleware guarda a lista de bloqueios por 15 s em memória; uma consulta leve ao banco a cada 15 s por instância).
-- **Expulsar**: derruba a sessão. O navegador recebe o aviso no próximo batimento (até ~30 s), sai da conta, apaga o id e
-  ganha outro. Para uma **conta cadastrada**, também encerra todas as sessões de login (`expulsar_usuario_auth`).
+- **Duração (em bloquear, suspender, editar e "impedir retorno" da expulsão):** *indeterminado* (até você liberar),
+  *por um tempo* (minutos, horas ou dias) ou *até uma data e hora exatas*. Quando o prazo acaba, o aparelho volta sozinho.
+- **Bloquear**: o aparelho vê a tela **"Aparelho bloqueado"** (HTTP 403) com o **motivo que você digitou**, até quando
+  (com contagem regressiva) e o contato oficial (WhatsApp (85) 98921-4864 e e-mail) para contestar.
+- **Suspender**: igual, com a tela **"Aparelho suspenso"**. (A diferença é só o título/uso: ambos aceitam qualquer prazo.)
+- **Editar**: muda motivo, prazo ou o tipo (bloqueado ↔ suspenso) de um bloqueio em vigor; a tela da pessoa se atualiza.
+- **Expulsar**: derruba a sessão na hora. Quem está com o site aberto vê **"Você foi desconectado"** com o motivo, sai da conta
+  e apaga o id (pode entrar de novo e ganha um id novo). Com **"Impedir de voltar por um tempo"**, o aparelho (e a conta, se for
+  cadastrado) fica barrado pelo prazo escolhido, mantendo o mesmo id. Para uma **conta cadastrada**, encerra todas as sessões de login.
+- **Rapidez:** na próxima navegação (o middleware guarda a lista de bloqueios por **5 s**) e, com a página aberta,
+  o `GuardaAparelho` pergunta a `/api/dispositivo/estado` a cada **~10 s** (e ao voltar para a aba) e **troca a página pela tela
+  de bloqueio sem recarregar**. Ao desbloquear ou o prazo acabar, a tela some sozinha.
+- **O motivo aparece para a pessoa** (e fica na auditoria): escreva algo educado e sem dados de terceiros.
 - **Bloquear a rede (IP)** é opcional e perigoso (Wi-Fi/operadora compartilhados): use só em ataque repetido. Guardamos só o hash da rede.
 - Os bloqueios ficam em tabela própria (`dispositivos_bloqueios`) e **não são apagados** pela limpeza de 24 h.
 - **Nunca são bloqueados**: `/admin` e `/api/admin`, aparelhos que já foram usados por um administrador,
@@ -83,6 +92,8 @@ Cole o arquivo inteiro e clique em **Run**. Todas podem ser rodadas mais de uma 
 1. `supabase/migrations/20261027100000_acessos_site.sql` — tabelas de acessos, limpeza, painel.
 2. `supabase/migrations/20261027110000_seguranca_limites_auditoria.sql` — limites, log de login, auditoria, anti-flood.
 3. `supabase/migrations/20261027120000_agenda_limpeza.sql` — agenda a limpeza (pg_cron).
+4. `supabase/migrations/20261027130000_dispositivos_bloqueios.sql` — tabelas de bloqueio/expulsão de aparelhos.
+5. `supabase/migrations/20261027140000_bloqueios_prazo_estado.sql` — prazo livre, edição, impedir retorno e a função que a tela de bloqueio usa.
 
 (As migrations antigas até `20261021230000_chat_geral.sql` precisam já ter sido rodadas.)
 
@@ -108,7 +119,7 @@ Se a limpeza não rodar, nada quebra: só os anônimos ficam mais de 24 h. Na ab
    - Na Vercel: *Project → Settings → Environment Variables → Add* → nome `SUPABASE_SERVICE_ROLE_KEY`, valor = a chave,
      marque Production (e Preview se quiser) → Save → **Redeploy**.
 2. **Endereço do site:** na Vercel adicione `NEXT_PUBLIC_SITE_URL` com o domínio oficial. Redeploy.
-3. **Migrations:** rode as 3 acima, na ordem.
+3. **Migrations:** rode as 5 acima, na ordem (as duas últimas são as do bloqueio de aparelhos).
 4. **(Se usar Vercel Cron)** crie `CRON_SECRET` (qualquer texto longo e aleatório) na Vercel e faça Redeploy.
 5. **Link de "esqueci a senha" funcionar:** Supabase → *Authentication → URL Configuration* → em *Redirect URLs* adicione
    `https://SEU-DOMINIO/redefinir-senha` (e `http://localhost:3000/redefinir-senha`).
