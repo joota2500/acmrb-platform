@@ -1,17 +1,38 @@
-/* ==================== PÁGINA: ACESSO BLOQUEADO (prefixo "ab-") ====================
- * Paleta do site: #166534 / #2E5E4E, fundo #f8fafc. Tela cheia, centralizada.
+/* ==================== TELA DE BLOQUEIO (prefixo "ab-") ====================
+ * Usada em /acesso-bloqueado e como camada sobre a página aberta.
+ * Paleta do site: #166534 / #2E5E4E; vermelho para bloqueio, âmbar para suspensão.
  */
 
 .ab { min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: #f8fafc; }
-.ab__cartao { width: min(30rem, 100%); padding: 2rem 1.6rem; border-radius: 1.5rem; background: #fff; border: 1px solid #e4e4e7; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
+
+/* Camada sobre a página aberta (troca sem recarregar) */
+.ab-camada { position: fixed; inset: 0; z-index: 2147483000; overflow-y: auto; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: #f8fafc; }
+html[data-bloqueado] body > *:not([data-camada-bloqueio]) { display: none !important; }
+html[data-bloqueado] body { overflow: hidden; }
+
+.ab__cartao { width: min(32rem, 100%); padding: 2rem 1.6rem; border-radius: 1.5rem; background: #fff; border: 1px solid #e4e4e7; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.08); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 0.9rem; }
 .ab__icone { display: inline-flex; align-items: center; justify-content: center; width: 4.2rem; height: 4.2rem; border-radius: 50%; background: #fee2e2; color: #b91c1c; }
+.ab__cartao--suspensao .ab__icone { background: #fef3c7; color: #b45309; }
+.ab__cartao--expulsao .ab__icone { background: #E8F3EE; color: #166534; }
 .ab__titulo { font-size: 1.6rem; font-weight: 900; color: #18181b; }
 .ab__texto { font-size: 0.98rem; line-height: 1.6; color: #52525b; text-align: var(--texto-justificado, justify); }
-.ab__texto a { color: #166534; font-weight: 700; text-decoration: underline; word-break: break-all; }
+.ab__rotulo { display: block; margin-bottom: 0.2rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #71717a; text-align: left; }
+
+.ab__motivo, .ab__prazo { width: 100%; padding: 0.8rem 1rem; border-radius: 1rem; background: #f4f4f5; text-align: left; }
+.ab__motivo p, .ab__prazo p { font-size: 0.95rem; line-height: 1.55; color: #27272a; text-align: var(--texto-justificado, justify); word-break: break-word; }
+.ab__cartao--bloqueio .ab__motivo { background: #fef2f2; }
+.ab__cartao--suspensao .ab__motivo { background: #fffbeb; }
+.ab__contagem { margin-top: 0.3rem; font-size: 1.15rem; font-weight: 900; color: #b45309 !important; text-align: left !important; font-variant-numeric: tabular-nums; }
+
+.ab__contato { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; padding-top: 0.6rem; border-top: 1px solid #f0f0f0; }
+.ab__botao { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.8rem 1.2rem; border: 0; border-radius: 0.9rem; background: #166534; color: #fff; font-weight: 800; font-size: 0.95rem; text-decoration: none; cursor: pointer; }
+.ab__botao:hover { background: #14532d; }
+.ab__botao--zap { background: #15803d; }
+.ab__email { color: #166534; font-weight: 700; font-size: 0.88rem; text-decoration: underline; word-break: break-all; }
 
 @media (max-width: 480px) {
-  .ab { padding: 1rem; }
+  .ab, .ab-camada { padding: 1rem; }
   .ab__cartao { padding: 1.5rem 1.1rem; }
   .ab__titulo { font-size: 1.35rem; }
-  .ab__texto { font-size: 0.92rem; }
+  .ab__texto, .ab__motivo p, .ab__prazo p { font-size: 0.9rem; }
 }

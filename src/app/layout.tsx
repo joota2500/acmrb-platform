@@ -7,6 +7,7 @@ import "@/styles/user-menu.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import RastreadorVisitante from "@/components/rastreio/RastreadorVisitante";
 import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
+import GuardaAparelho from "@/components/bloqueio/GuardaAparelho";
 import RastreadorAcessos from "@/components/rastreio/RastreadorAcessos";
 import type { Metadata, Viewport } from "next";
 import { siteUrl } from "@/lib/siteUrl";
@@ -77,6 +78,8 @@ export default function RootLayout({
           <RastreadorVisitante />
           {/* Contagem anônima de visitas (todos os acessos). Sem banner: a explicação fica em /privacidade (link no rodapé) */}
           <RastreadorAcessos />
+          {/* Troca a página aberta pela tela de bloqueio/expulsão (decidida pelo ADM DEUS), sem recarregar */}
+          <GuardaAparelho />
           {/* Visitante logado: aviso de contato + botão flutuante de chat */}
           <ExtrasVisitante />
         </AuthProvider>
