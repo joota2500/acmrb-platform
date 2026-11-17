@@ -1,45 +1,17 @@
+/**
+ * LoadingState — círculo girando enquanto os dados carregam
+ */
+import Card from "@/components/ui/Card";
+
 type Props = {
   text?: string;
 };
 
-export default function LoadingState({
-  text = "Carregando...",
-}: Props) {
-
+export default function LoadingState({ text = "Carregando..." }: Props) {
   return (
-
-    <div
-      className="
-        bg-white
-        rounded-4xl
-        border
-        border-black/5
-        p-16
-        text-center
-      "
-    >
-
-      <div
-        className="
-          w-14
-          h-14
-          border-4
-          border-zinc-200
-          border-t-[#2E5E4E]
-          rounded-full
-          animate-spin
-          mx-auto
-        "
-      />
-
-      <p className="text-zinc-500 mt-6">
-
-        {text}
-
-      </p>
-
-    </div>
-
+    <Card espaco="grande" className="text-center sm:p-16" role="status" aria-live="polite">
+      <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-zinc-200 border-t-brand" />
+      <p className="mt-6 text-ink-soft">{text}</p>
+    </Card>
   );
-
 }

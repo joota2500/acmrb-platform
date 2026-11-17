@@ -1,48 +1,36 @@
+/**
+ * SectionTitle — título de seção com etiqueta opcional e descrição
+ * ------------------------------------------------------------
+ * Use no começo de cada bloco da página para manter o mesmo padrão
+ * de tamanho, cor e espaçamento.
+ */
+import { cn } from "@/utils/cn";
+
 type Props = {
-  title: string;
-  description?: string;
+  titulo: string;
+  descricao?: string;
+  /** Etiqueta pequena acima do título (ex.: "Transparência") */
+  etiqueta?: string;
+  alinhamento?: "esquerda" | "centro";
+  className?: string;
 };
 
-export default function SectionTitle({
-  title,
-  description,
-}: Props) {
+export default function SectionTitle({ titulo, descricao, etiqueta, alinhamento = "esquerda", className }: Props) {
+  const centro = alinhamento === "centro";
 
   return (
-
-    <div className="mb-8">
-
-      <h2
-        className="
-          text-4xl
-          font-black
-          text-[#1F2937]
-        "
-      >
-
-        {title}
-
-      </h2>
-
-      {description && (
-
-        <p
-          className="
-            text-zinc-500
-            mt-3
-            leading-8
-            max-w-3xl
-          "
-        >
-
-          {description}
-
-        </p>
-
+    <div className={cn("mb-8", centro && "text-center", className)}>
+      {etiqueta && (
+        <span className="mb-3 inline-flex items-center rounded-full border border-leaf-bright/20 bg-leaf-bright/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-leaf">
+          {etiqueta}
+        </span>
       )}
 
+      <h2 className="text-headline font-extrabold text-ink">{titulo}</h2>
+
+      {descricao && (
+        <p className={cn("mt-3 max-w-3xl leading-8 text-ink-soft", centro && "mx-auto")}>{descricao}</p>
+      )}
     </div>
-
   );
-
 }
