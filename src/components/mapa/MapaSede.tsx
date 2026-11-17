@@ -79,10 +79,10 @@ export default function MapaSede({ posicao, titulo, endereco, aproximada }: Prop
   }, [ativo]);
 
   return (
-    <div className="contato-mapa__wrap">
-      <div ref={divRef} className="contato-mapa__leaflet" role="region" aria-label={`Mapa: ${titulo}`} />
+    <div className="absolute inset-0">
+      <div ref={divRef} className="absolute inset-0 z-0" role="region" aria-label={`Mapa: ${titulo}`} />
       {toque && !ativo && (
-        <button type="button" className="contato-mapa__ativar" onClick={() => setAtivo(true)}>
+        <button type="button" className="absolute bottom-4 left-1/2 z-500 -translate-x-1/2 cursor-pointer rounded-full bg-ink/85 px-4 py-2 text-sm font-semibold text-white" onClick={() => setAtivo(true)}>
           Toque para mover o mapa
         </button>
       )}

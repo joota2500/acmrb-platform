@@ -1,31 +1,20 @@
 "use client";
 
 /**
- * DenunciasSection — "Denúncia Ambiental" (página inicial, id="denuncias")
+ * DenunciasSection — "Denúncia Ambiental" (página inicial)
  * ------------------------------------------------------------
- * A ACMRB não possui sistema próprio de denúncias. Esta seção orienta o
- * visitante e o direciona ao sistema oficial da AMAB (Autarquia Municipal
- * de Meio Ambiente de Baturité), que recebe e acompanha as denúncias.
+ * A ACMRB NÃO recebe denúncias: a seção explica o que pode ser denunciado,
+ * como fazer uma denúncia completa e leva a pessoa ao sistema oficial da
+ * AMAB (Autarquia Municipal de Meio Ambiente de Baturité).
  *
- * O que mostra:
- *  1. Cabeçalho: selo, título (parte em verde) e apresentação.
- *  2. O que pode ser denunciado (6 tipos genéricos de meio ambiente).
- *  3. Passo a passo em 4 etapas (linha do tempo).
- *  4. Dicas para uma boa denúncia + aviso de emergência (193).
- *  5. CTA para o sistema oficial (nova aba) e nota sobre o papel da ACMRB.
+ * Partes: cabeçalho · 6 tipos de denúncia · passo a passo (4 etapas) ·
+ * dicas + aviso de emergência (Bombeiros 193) · botão para o sistema da AMAB.
  *
- * Dados: conteúdo fixo, sem números ou telefones inventados (193 é o
- * número nacional do Corpo de Bombeiros).
- * Classes com prefixo "denun__" para não conflitar com outras seções.
- *
- * Responsividade (src/styles/denuncias-section.css):
- *  - Celular (≤480px): 1 coluna, compacto, fontes menores.
- *  - Tablet (481–1024px): 2 colunas.
- *  - Desktop (>1024px): 3 colunas; etapas em 4 colunas.
- * Animações: Framer Motion leve, desligadas com "reduzir movimento".
+ * Dados: conteúdo fixo. Responsivo: 1 coluna no celular, 2 no tablet e
+ * 3 (tipos) / 4 (passos) no desktop.
  */
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   AlertTriangle,
   Axe,
@@ -46,7 +35,9 @@ import {
   Wind,
 } from "lucide-react";
 
-import "@/styles/denuncias-section.css";
+import Container from "@/components/ui/Container";
+import { useAparecer } from "@/hooks/useAparecer";
+import TituloSecao from "./TituloSecao";
 
 /** Endereço oficial do sistema de denúncias da AMAB */
 const AMAB_DENUNCIA_URL =
@@ -116,122 +107,133 @@ const dicas = [
 ];
 
 export default function DenunciasSection() {
-  const reduzir = useReducedMotion();
-
-  // Animação leve de entrada; sem movimento quando o usuário prefere
-  const fade = (delay = 0) => ({
-    initial: reduzir ? { opacity: 1 } : { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.2 },
-    transition: { duration: reduzir ? 0 : 0.5, delay: reduzir ? 0 : delay },
-  });
+  const aparecer = useAparecer();
 
   return (
-    <section id="denuncias" className="denun" aria-labelledby="denun-titulo" lang="pt-BR">
-      <div className="denun__container">
-        {/* Cabeçalho */}
-        <motion.header className="denun__header" {...fade()}>
-          <span className="denun__tag">
-            <AlertTriangle size={14} aria-hidden="true" /> Denúncia Ambiental
-          </span>
-          <h2 id="denun-titulo" className="denun__title">
-            Viu um crime ambiental? <span>Denuncie no canal oficial</span>
-          </h2>
-          <p className="denun__description">
-            A proteção do meio ambiente de Baturité depende de todos. As denúncias
-            ambientais do município são recebidas e apuradas pela AMAB, a
-            Autarquia Municipal de Meio Ambiente de Baturité, por meio do seu
-            sistema oficial on-line. Veja abaixo o que pode ser denunciado e
-            como fazer uma denúncia completa.
-          </p>
-        </motion.header>
+    <section id="denuncias" className="bg-warning-soft py-16 sm:py-20 lg:py-24" aria-labelledby="denun-titulo" lang="pt-BR">
+      <Container>
+        {/* ===== Cabeçalho ===== */}
+        <motion.div {...aparecer()}>
+          <TituloSecao
+            id="denun-titulo"
+            icone={AlertTriangle}
+            etiqueta="Denúncia Ambiental"
+            titulo={
+              <>
+                Viu um crime ambiental? <span>Denuncie no canal oficial</span>
+              </>
+            }
+            descricao="A proteção do meio ambiente de Baturité depende de todos. As denúncias ambientais do município são recebidas e apuradas pela AMAB, a Autarquia Municipal de Meio Ambiente de Baturité, por meio do seu sistema oficial on-line. Veja abaixo o que pode ser denunciado e como fazer uma denúncia completa."
+          />
+        </motion.div>
 
-        {/* O que pode ser denunciado */}
-        <h3 className="denun__subtitle">O que pode ser denunciado</h3>
-        <ul className="denun__grid" role="list">
+        {/* ===== O que pode ser denunciado ===== */}
+        <h3 className="mb-6 text-xl font-black text-ink sm:text-2xl">O que pode ser denunciado</h3>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="list">
           {tipos.map((t, i) => (
-            <motion.li key={t.title} className="denun__card" {...fade(i * 0.05)}>
-              <div className="denun__icon" aria-hidden="true">
+            <motion.li
+              key={t.title}
+              {...aparecer(i * 0.05)}
+              className="flex gap-4 rounded-card border border-amber-200/60 bg-white p-5 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+            >
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-amber-100 text-warning" aria-hidden="true">
                 <t.icon size={22} />
+              </span>
+              <div>
+                <h4 className="font-black text-ink">{t.title}</h4>
+                <p className="mt-1 text-sm leading-relaxed text-ink-soft">{t.text}</p>
               </div>
-              <h4 className="denun__card-title">{t.title}</h4>
-              <p className="denun__card-text">{t.text}</p>
             </motion.li>
           ))}
         </ul>
 
-        {/* Passo a passo */}
-        <h3 className="denun__subtitle">Como denunciar</h3>
-        <ol className="denun__steps">
+        {/* ===== Passo a passo ===== */}
+        <h3 className="mb-6 mt-14 text-xl font-black text-ink sm:text-2xl">Como denunciar</h3>
+        <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {passos.map((p, i) => (
-            <motion.li key={p.title} className="denun__step" {...fade(i * 0.08)}>
-              <span className="denun__step-num" aria-hidden="true">
+            <motion.li
+              key={p.title}
+              {...aparecer(i * 0.08)}
+              className="relative overflow-hidden rounded-card bg-white p-6 shadow-card"
+            >
+              {/* número grande de fundo */}
+              <span aria-hidden="true" className="absolute -right-1 -top-3 text-7xl font-black text-amber-100">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <div className="denun__step-icon" aria-hidden="true">
+              <span className="relative grid size-11 place-items-center rounded-xl bg-brand text-white" aria-hidden="true">
                 <p.icon size={20} />
-              </div>
-              <h4 className="denun__step-title">{p.title}</h4>
-              <p className="denun__step-text">{p.text}</p>
+              </span>
+              <h4 className="relative mt-4 font-black text-ink">{p.title}</h4>
+              <p className="relative mt-1 text-sm leading-relaxed text-ink-soft">{p.text}</p>
             </motion.li>
           ))}
         </ol>
 
-        {/* Dicas + emergência */}
-        <div className="denun__info">
-          <motion.div className="denun__tips" {...fade()}>
-            <h3 className="denun__info-title">
-              <ShieldCheck size={20} aria-hidden="true" /> Dicas para uma boa denúncia
+        {/* ===== Dicas + emergência ===== */}
+        <div className="mt-10 grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+          <motion.div {...aparecer()} className="rounded-card bg-white p-6 shadow-card sm:p-8">
+            <h3 className="flex items-center gap-2 text-lg font-black text-ink">
+              <ShieldCheck size={20} className="text-leaf" aria-hidden="true" /> Dicas para uma boa denúncia
             </h3>
-            <ul role="list">
+            <ul className="mt-5 grid gap-4 sm:grid-cols-2" role="list">
               {dicas.map((d) => (
-                <li key={d.text}>
-                  <d.icon size={18} aria-hidden="true" />
-                  <p>{d.text}</p>
+                <li key={d.text} className="flex items-start gap-3">
+                  <d.icon size={18} className="mt-0.5 shrink-0 text-leaf-bright" aria-hidden="true" />
+                  <p className="text-sm leading-relaxed text-ink-soft">{d.text}</p>
                 </li>
               ))}
             </ul>
           </motion.div>
 
-          <motion.aside className="denun__emergency" aria-label="Emergências" {...fade(0.1)}>
-            <h3 className="denun__info-title">
+          <motion.aside
+            {...aparecer(0.1)}
+            aria-label="Emergências"
+            className="rounded-card border border-red-200 bg-danger-soft p-6 sm:p-8"
+          >
+            <h3 className="flex items-center gap-2 text-lg font-black text-danger">
               <Phone size={20} aria-hidden="true" /> Emergência ou incêndio?
             </h3>
-            <p>
-              Em situações de risco imediato, como incêndios em andamento, não
-              espere: ligue para o Corpo de Bombeiros.
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+              Em situações de risco imediato, como incêndios em andamento, não espere: ligue para o Corpo de Bombeiros.
             </p>
-            <a href="tel:193" className="denun__emergency-btn" aria-label="Ligar para os Bombeiros, 193">
+            <a
+              href="tel:193"
+              aria-label="Ligar para os Bombeiros, 193"
+              className="mt-5 inline-flex h-12 items-center gap-2 rounded-control bg-red-600 px-6 font-bold text-white shadow-sm transition hover:bg-red-700 active:scale-[0.98]"
+            >
               <Phone size={18} aria-hidden="true" /> Ligar 193
             </a>
           </motion.aside>
         </div>
 
-        {/* CTA */}
-        <motion.div className="denun__cta" {...fade()}>
-          <div className="denun__cta-text">
-            <h3>Faça sua denúncia ambiental</h3>
-            <p>
-              A ACMRB não recebe denúncias diretamente, mas apoia a fiscalização
-              ambiental e incentiva a comunidade a usar o canal oficial da AMAB.
+        {/* ===== Botão para o sistema da AMAB ===== */}
+        <motion.div
+          {...aparecer()}
+          className="mt-10 flex flex-col gap-6 rounded-3xl bg-emerald-950 p-7 sm:p-10 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <div className="max-w-2xl">
+            <h3 className="text-2xl font-black text-white">Faça sua denúncia ambiental</h3>
+            <p className="mt-2 leading-relaxed text-emerald-100">
+              A ACMRB não recebe denúncias diretamente, mas apoia a fiscalização ambiental e incentiva a comunidade a usar
+              o canal oficial da AMAB.
             </p>
           </div>
-          <div className="denun__cta-action">
+          <div className="flex flex-col gap-2 lg:shrink-0 lg:items-end">
             <a
               href={AMAB_DENUNCIA_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="denun__btn"
               aria-label="Fazer denúncia no sistema oficial da AMAB (abre em nova aba)"
+              className="inline-flex h-14 items-center justify-center gap-2 rounded-control bg-white px-7 font-bold text-leaf shadow-sm transition hover:bg-emerald-50 active:scale-[0.98]"
             >
               Fazer denúncia na AMAB <ExternalLink size={18} aria-hidden="true" />
             </a>
-            <small className="denun__notice">
+            <small className="flex items-center gap-1.5 text-xs text-emerald-200">
               <Info size={14} aria-hidden="true" /> Você será direcionado ao sistema oficial da AMAB
             </small>
           </div>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }

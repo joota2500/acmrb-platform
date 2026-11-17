@@ -1,30 +1,24 @@
 "use client";
 
 /**
- * ContactSection — "Contato Institucional" (página inicial, id="contato")
+ * ContactSection — "Contato Institucional" (âncora #contato)
  * ------------------------------------------------------------
  * O que mostra:
- *  1. Cabeçalho: selo, título (parte em verde) e apresentação.
- *  2. Cards de canais com ícone e ação: WhatsApp (mensagem pronta),
- *     Instagram, e-mail (mailto + copiar) e telefone (tel:).
- *  3. Formulário simples (nome, assunto, mensagem) que NÃO grava no banco:
- *     monta a mensagem e abre o WhatsApp ou o e-mail, à escolha do visitante.
- *  4. Mapa institucional real (Leaflet/OSM) com a sede e "Como chegar".
- *  5. CTA final: WhatsApp e projetos.
+ *  1. 4 canais de contato (WhatsApp, Instagram, E-mail e Telefone), com
+ *     botão de copiar o e-mail.
+ *  2. Formulário: NÃO salva nada no site; monta a mensagem e abre no
+ *     WhatsApp ou no e-mail da pessoa. Só quem tem conta envia.
+ *  3. Mapa da sede (Leaflet), com botões "Como chegar" e "Google Maps".
+ *  4. Faixa final de chamada.
  *
- * Dados: src/constants/contato.ts (fonte única). Horário de
- * atendimento omitido de propósito (não há dado oficial).
- * Classes com prefixo "contato__" (CSS em src/styles/contact-section.css).
- *
- * Responsividade: celular ≤480px compacto, botões largura total;
- * tablet 2 colunas; desktop completo. Animações desligadas com
- * "reduzir movimento".
+ * Os dados de contato ficam em src/constants/contato.ts (um lugar só).
+ * Responsivo: canais em 1/2/4 colunas; formulário e mapa lado a lado no desktop.
  */
 
 import { useState, type FormEvent } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   AtSign,
@@ -39,8 +33,11 @@ import {
   Send,
 } from "lucide-react";
 
-import "@/styles/contact-section.css";
+import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import Input, { Textarea } from "@/components/ui/Input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAparecer } from "@/hooks/useAparecer";
 import {
   CONTATO,
   SEDE_COORDENADA,
@@ -52,11 +49,18 @@ import {
   linkTelefone,
   linkWhatsApp,
 } from "@/constants/contato";
-import Button from "@/components/ui/Button";
+import { cn } from "@/utils/cn";
+import FaixaCta from "./FaixaCta";
+import TituloSecao from "./TituloSecao";
 
+// Mapa carregado só no navegador (Leaflet usa "window")
 const MapaSede = dynamic(() => import("@/components/mapa/MapaSede"), {
   ssr: false,
-  loading: () => <div className="contato-mapa__loading" aria-hidden="true">Carregando mapa…</div>,
+  loading: () => (
+    <div className="absolute inset-0 grid place-items-center bg-brand-soft text-sm font-semibold text-leaf" aria-hidden="true">
+      Carregando mapa…
+    </div>
+  ),
 });
 
 const ASSUNTOS = [
@@ -74,7 +78,6 @@ const MSG_PADRAO = "Olá, ACMRB! Vim pelo site e gostaria de mais informações.
 type Erros = Partial<Record<"nome" | "assunto" | "mensagem", string>>;
 
 export default function ContactSection() {
-  const reduzir = useReducedMotion();
   const [copiado, setCopiado] = useState(false);
   const [nome, setNome] = useState("");
   const [assunto, setAssunto] = useState<Assunto | "">("");
@@ -86,15 +89,7 @@ export default function ContactSection() {
   const { user } = useAuth();
   const [precisaLogin, setPrecisaLogin] = useState(false);
 
-  const anim = (atraso = 0) =>
-    reduzir
-      ? {}
-      : {
-          initial: { opacity: 0, y: 20 },
-          whileInView: { opacity: 1, y: 0 },
-          transition: { duration: 0.5, delay: atraso },
-          viewport: { once: true, margin: "-60px" },
-        };
+  const aparecer = useAparecer();
 
   async function copiarEmail() {
     try {
@@ -176,53 +171,61 @@ export default function ContactSection() {
     },
   ];
 
-  return (
-    <section id="contato" className="contato" aria-labelledby="contato-titulo" lang="pt-BR">
-      <div className="contato__container">
-        {/* 1. Cabeçalho */}
-        <motion.header className="contato__header" {...anim()}>
-          <span className="contato__tag">
-            <MessageCircle size={15} aria-hidden="true" /> Contato Institucional
-          </span>
-          <h2 id="contato-titulo" className="contato__title">
-            Fale com a ACMRB e <span>construa impacto com a gente</span>
-          </h2>
-          <p className="contato__description">
-            Atendemos indústrias, empresas, instituições, imprensa e cidadãos interessados em parcerias, logística
-            reversa, doações, projetos e educação ambiental. Escolha o canal que preferir ou envie sua mensagem pelo
-            formulário abaixo.
-          </p>
-        </motion.header>
+  // Classe dos botões de escolha (assunto e canal)
+  const opcao = "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition";
 
-        {/* 2. Canais */}
-        <ul className="contato__canais">
+  return (
+    <section id="contato" className="bg-white py-16 sm:py-20 lg:py-24" aria-labelledby="contato-titulo" lang="pt-BR">
+      <Container>
+        {/* ===== 1. Cabeçalho ===== */}
+        <motion.div {...aparecer()}>
+          <TituloSecao
+            id="contato-titulo"
+            icone={MessageCircle}
+            etiqueta="Contato Institucional"
+            titulo={
+              <>
+                Fale com a ACMRB e <span>construa impacto com a gente</span>
+              </>
+            }
+            descricao="Atendemos indústrias, empresas, instituições, imprensa e cidadãos interessados em parcerias, logística reversa, doações, projetos e educação ambiental. Escolha o canal que preferir ou envie sua mensagem pelo formulário abaixo."
+          />
+        </motion.div>
+
+        {/* ===== 2. Canais de contato ===== */}
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {canais.map((c, i) => {
             const Icon = c.icon;
             return (
-              <motion.li key={c.titulo} className="contato__canal" {...anim(i * 0.06)}>
-                <div className="contato__canal-icon" aria-hidden="true">
+              <motion.li
+                key={c.titulo}
+                {...aparecer(i * 0.06)}
+                className="flex flex-col rounded-card border border-black/5 bg-surface-alt p-6 transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-card-hover"
+              >
+                <span className="grid size-12 place-items-center rounded-2xl bg-brand text-white shadow-md" aria-hidden="true">
                   <Icon size={22} />
-                </div>
-                <h3 className="contato__canal-title">{c.titulo}</h3>
-                <strong className="contato__canal-valor">{c.valor}</strong>
-                <p className="contato__canal-text">{c.texto}</p>
-                <div className="contato__canal-acoes">
+                </span>
+                <h3 className="mt-4 text-lg font-black text-ink">{c.titulo}</h3>
+                <strong className="mt-1 break-words text-sm text-brand">{c.valor}</strong>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">{c.texto}</p>
+                <div className="mt-5 flex items-center gap-2">
                   <Button
                     href={c.href}
                     variante="secundario"
+                    tamanho="pequeno"
                     {...(c.externo ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     aria-label={`${c.acao}: ${c.titulo} ${c.valor}${c.externo ? " (abre em nova aba)" : ""}`}
                   >
                     {c.acao}
-                    {c.externo ? <ExternalLink size={15} aria-hidden="true" /> : <ArrowRight size={15} aria-hidden="true" />}
+                    {c.externo ? <ExternalLink size={14} aria-hidden="true" /> : <ArrowRight size={14} aria-hidden="true" />}
                   </Button>
                   {c.copiar && (
                     <button
                       type="button"
-                      className="contato__btn contato__btn--icon"
                       onClick={copiarEmail}
                       aria-label={copiado ? "E-mail copiado" : "Copiar e-mail"}
                       title={copiado ? "Copiado!" : "Copiar e-mail"}
+                      className="grid size-9 place-items-center rounded-control border border-brand/20 bg-white text-brand transition hover:bg-brand-soft"
                     >
                       {copiado ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
                     </button>
@@ -232,38 +235,43 @@ export default function ContactSection() {
             );
           })}
         </ul>
-        <p className="contato__sr" aria-live="polite">{copiado ? "E-mail copiado para a área de transferência." : ""}</p>
+        {/* aviso para leitores de tela quando copia o e-mail */}
+        <p className="sr-only" aria-live="polite">
+          {copiado ? "E-mail copiado para a área de transferência." : ""}
+        </p>
 
-        {/* 3. Formulário + 4. Mapa */}
-        <div className="contato__grid">
-          <motion.div className="contato__painel" {...anim()}>
-            <h3 className="contato__subtitle">Envie sua mensagem</h3>
-            <p className="contato__painel-text">
+        {/* ===== 3. Formulário + mapa ===== */}
+        <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <motion.div {...aparecer()} className="rounded-3xl border border-black/5 bg-white p-6 shadow-pop sm:p-8">
+            <h3 className="text-xl font-black text-ink">Envie sua mensagem</h3>
+            <p className="mt-2 text-sm leading-relaxed text-ink-soft">
               Nada é salvo no site: a mensagem é montada e aberta no seu WhatsApp ou no seu e-mail para você enviar.
             </p>
 
-            <form className="contato__form" onSubmit={enviar} noValidate>
-              <div className="contato__campo">
-                <label htmlFor="contato-nome">Seu nome</label>
-                <input
+            <form className="mt-6 flex flex-col gap-5" onSubmit={enviar} noValidate>
+              {/* Nome */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="contato-nome" className="text-sm font-semibold text-ink">Seu nome</label>
+                <Input
                   id="contato-nome"
                   type="text"
                   autoComplete="name"
                   maxLength={80}
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
-                  aria-invalid={!!erros.nome}
+                  invalido={!!erros.nome}
                   aria-describedby={erros.nome ? "contato-nome-erro" : undefined}
                   placeholder="Nome ou empresa"
                 />
-                {erros.nome && <span id="contato-nome-erro" className="contato__erro">{erros.nome}</span>}
+                {erros.nome && <span id="contato-nome-erro" className="text-xs font-medium text-danger">{erros.nome}</span>}
               </div>
 
-              <fieldset className="contato__campo">
-                <legend id="contato-assunto-legenda">Assunto</legend>
+              {/* Assunto (botões de escolha) */}
+              <fieldset className="flex flex-col gap-2">
+                <legend id="contato-assunto-legenda" className="mb-1 text-sm font-semibold text-ink">Assunto</legend>
                 <div
                   id="contato-assunto"
-                  className="contato__chips"
+                  className="flex flex-wrap gap-2"
                   role="radiogroup"
                   aria-labelledby="contato-assunto-legenda"
                   aria-invalid={!!erros.assunto}
@@ -275,73 +283,80 @@ export default function ContactSection() {
                       type="button"
                       role="radio"
                       aria-checked={assunto === a}
-                      className={`contato__chip${assunto === a ? " contato__chip--ativo" : ""}`}
                       onClick={() => setAssunto(a)}
+                      className={cn(opcao, assunto === a ? "border-brand bg-brand text-white" : "border-line bg-white text-ink hover:bg-brand-soft")}
                     >
                       {a}
                     </button>
                   ))}
                 </div>
-                {erros.assunto && <span className="contato__erro">{erros.assunto}</span>}
+                {erros.assunto && <span className="text-xs font-medium text-danger">{erros.assunto}</span>}
               </fieldset>
 
-              <div className="contato__campo">
-                <label htmlFor="contato-mensagem">Mensagem</label>
-                <textarea
+              {/* Mensagem */}
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="contato-mensagem" className="text-sm font-semibold text-ink">Mensagem</label>
+                <Textarea
                   id="contato-mensagem"
                   rows={5}
                   maxLength={1500}
                   value={mensagem}
                   onChange={(e) => setMensagem(e.target.value)}
-                  aria-invalid={!!erros.mensagem}
+                  invalido={!!erros.mensagem}
                   aria-describedby="contato-mensagem-info"
                   placeholder="Conte como podemos ajudar…"
                 />
-                <span id="contato-mensagem-info" className={erros.mensagem ? "contato__erro" : "contato__contador"}>
+                <span id="contato-mensagem-info" className={cn("text-xs", erros.mensagem ? "font-medium text-danger" : "text-right text-ink-muted")}>
                   {erros.mensagem ?? `${mensagem.length}/1500`}
                 </span>
               </div>
 
-              <fieldset className="contato__campo">
-                <legend>Enviar por</legend>
-                <div className="contato__canal-escolha">
-                  <label className={`contato__opcao${canal === "whatsapp" ? " contato__opcao--ativa" : ""}`}>
-                    <input type="radio" name="contato-canal" checked={canal === "whatsapp"} onChange={() => setCanal("whatsapp")} />
+              {/* Canal de envio */}
+              <fieldset className="flex flex-col gap-2">
+                <legend className="mb-1 text-sm font-semibold text-ink">Enviar por</legend>
+                <div className="flex flex-wrap gap-2">
+                  <label className={cn(opcao, "cursor-pointer has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand", canal === "whatsapp" ? "border-brand bg-brand text-white" : "border-line bg-white text-ink hover:bg-brand-soft")}>
+                    <input type="radio" name="contato-canal" className="sr-only" checked={canal === "whatsapp"} onChange={() => setCanal("whatsapp")} />
                     <MessageCircle size={16} aria-hidden="true" /> WhatsApp
                   </label>
-                  <label className={`contato__opcao${canal === "email" ? " contato__opcao--ativa" : ""}`}>
-                    <input type="radio" name="contato-canal" checked={canal === "email"} onChange={() => setCanal("email")} />
+                  <label className={cn(opcao, "cursor-pointer has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand", canal === "email" ? "border-brand bg-brand text-white" : "border-line bg-white text-ink hover:bg-brand-soft")}>
+                    <input type="radio" name="contato-canal" className="sr-only" checked={canal === "email"} onChange={() => setCanal("email")} />
                     <Mail size={16} aria-hidden="true" /> E-mail
                   </label>
                 </div>
               </fieldset>
 
-              <Button type="submit" className="contato__enviar">
+              <Button type="submit" tamanho="grande" larguraTotal>
                 <Send size={17} aria-hidden="true" />
                 {canal === "whatsapp" ? "Abrir no WhatsApp" : "Abrir no e-mail"}
               </Button>
+
+              {/* Só quem tem conta envia: aviso com link para entrar */}
               {precisaLogin && !user && (
-                <p className="contato__login-aviso" role="alert">
+                <p className="rounded-xl border border-amber-200 bg-warning-soft p-3 text-sm text-warning" role="alert">
                   Para enviar mensagens pelo site é preciso ter uma conta de visitante.{" "}
-                  <Link href="/login">Entre ou crie sua conta grátis</Link>.
+                  <Link href="/login" className="font-bold underline">Entre ou crie sua conta grátis</Link>.
                 </p>
               )}
-              <p className="contato__sr" aria-live="polite">
+
+              <p className="sr-only" aria-live="polite">
                 {enviado ? `Mensagem aberta no ${canal === "whatsapp" ? "WhatsApp" : "e-mail"}. Finalize o envio por lá.` : ""}
               </p>
             </form>
           </motion.div>
 
-          <motion.div className="contato__painel contato__painel--mapa" {...anim(0.1)}>
-            <h3 className="contato__subtitle">Onde estamos</h3>
-            <div className="contato__endereco">
-              <MapPin size={18} aria-hidden="true" />
+          {/* Mapa da sede */}
+          <motion.div {...aparecer(0.1)} className="flex flex-col rounded-3xl border border-black/5 bg-surface-alt p-6 sm:p-8">
+            <h3 className="text-xl font-black text-ink">Onde estamos</h3>
+            <div className="mt-4 flex items-start gap-3 text-leaf">
+              <MapPin size={20} className="mt-0.5 shrink-0" aria-hidden="true" />
               <div>
-                <strong>{CONTATO.endereco}</strong>
-                <span>CNPJ {CONTATO.cnpj}</span>
+                <strong className="block text-ink">{CONTATO.endereco}</strong>
+                <span className="mt-0.5 block text-sm text-ink-soft">CNPJ {CONTATO.cnpj}</span>
               </div>
             </div>
-            <div className="contato-mapa">
+
+            <div className="relative mt-5 min-h-72 flex-1 overflow-hidden rounded-2xl border border-brand-line bg-white">
               <MapaSede
                 posicao={SEDE_COORDENADA}
                 titulo="Sede da ACMRB"
@@ -349,33 +364,33 @@ export default function ContactSection() {
                 aproximada={SEDE_COORDENADA_APROXIMADA}
               />
             </div>
-            <div className="contato__mapa-acoes">
-              <Button href={linkComoChegar()} target="_blank" rel="noopener noreferrer" >
+
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button href={linkComoChegar()} target="_blank" rel="noopener noreferrer">
                 <Navigation size={16} aria-hidden="true" /> Como chegar
               </Button>
-              <Button href={linkMapaBusca()} target="_blank" rel="noopener noreferrer" variante="contorno" >
+              <Button href={linkMapaBusca()} target="_blank" rel="noopener noreferrer" variante="contorno">
                 Abrir no Google Maps <ExternalLink size={15} aria-hidden="true" />
               </Button>
             </div>
           </motion.div>
         </div>
 
-        {/* 5. CTA final */}
-        <motion.div className="contato__cta" {...anim()}>
-          <h3 className="contato__cta-title">Vamos construir soluções sustentáveis juntos</h3>
-          <p className="contato__cta-text">
-            Projetos, ações ambientais, campanhas educativas e parcerias institucionais começam com uma conversa.
-          </p>
-          <div className="contato__cta-acoes">
-            <Button href={linkWhatsApp(MSG_PADRAO)} target="_blank" rel="noopener noreferrer" variante="claro" >
+        {/* ===== 4. Chamada final ===== */}
+        <motion.div {...aparecer()}>
+          <FaixaCta
+            titulo="Vamos construir soluções sustentáveis juntos"
+            texto="Projetos, ações ambientais, campanhas educativas e parcerias institucionais começam com uma conversa."
+          >
+            <Button href={linkWhatsApp(MSG_PADRAO)} target="_blank" rel="noopener noreferrer" variante="claro" tamanho="grande">
               <MessageCircle size={17} aria-hidden="true" /> Falar no WhatsApp
             </Button>
-            <Button href="/projetos" variante="contornoClaro" >
+            <Button href="/projetos" variante="contornoClaro" tamanho="grande">
               Ver projetos <ArrowRight size={17} aria-hidden="true" />
             </Button>
-          </div>
+          </FaixaCta>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }

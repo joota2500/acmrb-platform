@@ -1,59 +1,62 @@
 "use client";
 
 /**
- * ApoiadoresMapaSection — "Parceiros e Apoiadores" (página inicial, id="parceiros")
+ * ApoiadoresMapaSection — "Parceiros e Apoiadores" (âncora #parceiros)
  * ------------------------------------------------------------
- * Substitui a antiga PartnersSection (cards genéricos "ESG").
- *
  * O que mostra:
- *  1. Cabeçalho: selo, título (parte em verde) e apresentação.
- *  2. Contadores (apoiadores, pontos no mapa, categorias).
- *  3. Filtros em chips por categoria e por tipo de apoio.
- *  4. Mapa interativo de Baturité (Leaflet + OpenStreetMap, só no
- *     navegador via next/dynamic) e, ao lado, lista acessível que
- *     também funciona por teclado e para quem não usa o mapa.
- *  5. Botões: "Conheça nossas empresas parceiras" (/parceiros) e
- *     "Quero apoiar" (/#contato).
+ *  - Contadores (apoiadores cadastrados, pontos no mapa, categorias).
+ *  - Filtros por categoria e por tipo de apoio.
+ *  - Mapa (Leaflet) ao lado da lista de apoiadores; clicar num item da
+ *    lista destaca o ponto no mapa.
+ *  - Faixa de chamada para /parceiros e para o contato.
  *
- * Dados: view pública apoiadores_publicos + empresas_logistica_publicas
- * (só as marcadas "mostrar no mapa", categoria "Logística reversa").
- * Camadas Mapa/Satélite/Híbrido no próprio mapa.
- * View pública apoiadores_publicos (sem CPF; pessoa física e
- * anônimos com localização aproximada). Se a migration ainda não foi
- * rodada ou não houver pontos, aparece o estado "Em breve".
- * Responsividade em src/styles/apoiadores-mapa.css.
+ * De onde vêm os dados (Supabase, via src/services/apoiadores.ts):
+ *  - listarApoiadoresPublicos: apoiadores cadastrados e publicados.
+ *  - listarEmpresasLogisticaPublicas: empresas de logística reversa que
+ *    aparecem no mapa (viram "pontos" com empresaComoPonto).
+ *
+ * O mapa só roda no navegador (next/dynamic com ssr: false).
+ * Responsivo: mapa e lista empilhados até 1024px; lado a lado no desktop.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Building2, Handshake, HeartHandshake, MapPin, MapPinned, RotateCcw, Tags } from "lucide-react";
 
+import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import { useAparecer } from "@/hooks/useAparecer";
 import { supabase } from "@/lib/supabase";
 import {
   CATEGORIAS, TIPOS_APOIO, corCategoria, empresaComoPonto, listarApoiadoresPublicos, listarEmpresasLogisticaPublicas, type ApoiadorPublico,
 } from "@/services/apoiadores";
-import "@/styles/apoiadores-mapa.css";
-import Button from "@/components/ui/Button";
+import { cn } from "@/utils/cn";
+import FaixaCta from "./FaixaCta";
+import TituloSecao from "./TituloSecao";
 
-// Leaflet usa window: carrega só no navegador (não quebra o SSR)
+// Mapa carregado só no navegador (Leaflet usa "window")
 const MapaPontos = dynamic(() => import("@/components/mapa/MapaPontos"), {
   ssr: false,
-  loading: () => <div className="apmapa__map-loading" aria-hidden="true">Carregando mapa…</div>,
+  loading: () => (
+    <div className="grid h-full place-items-center bg-brand-soft font-bold text-leaf" aria-hidden="true">
+      Carregando mapa…
+    </div>
+  ),
 });
 
 export default function ApoiadoresMapaSection() {
-  const reduzir = useReducedMotion();
+  const aparecer = useAparecer();
+
   const [lista, setLista] = useState<ApoiadorPublico[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [categoria, setCategoria] = useState<string | null>(null);
   const [apoio, setApoio] = useState<string | null>(null);
   const [selecionado, setSelecionado] = useState<string | null>(null);
 
+  // Busca apoiadores + empresas de logística reversa que estão no mapa
   useEffect(() => {
     let vivo = true;
-    // apoiadores + empresas de logística marcadas para o mapa (cor própria)
     Promise.all([listarApoiadoresPublicos(supabase), listarEmpresasLogisticaPublicas(supabase)]).then(([a, e]) => {
       if (!vivo) return;
       const empresas = e.dados.filter((x) => x.no_mapa && x.latitude != null && x.longitude != null).map(empresaComoPonto);
@@ -65,20 +68,14 @@ export default function ApoiadoresMapaSection() {
     };
   }, []);
 
-  const fade = (delay = 0) => ({
-    initial: reduzir ? { opacity: 1 } : { opacity: 0, y: 24 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.15 },
-    transition: { duration: reduzir ? 0 : 0.5, delay: reduzir ? 0 : delay },
-  });
-
-  // Só mostra chips de categorias/apoios que existem nos dados
+  // Só mostra nos filtros as categorias e apoios que existem de verdade
   const categoriasUsadas = useMemo(
     () => [...CATEGORIAS, "Logística reversa"].filter((c) => lista.some((a) => a.categoria === c)),
     [lista],
   );
   const apoiosUsados = useMemo(() => TIPOS_APOIO.filter((t) => lista.some((a) => a.tipos_apoio.includes(t))), [lista]);
 
+  // Lista depois de aplicar os filtros
   const filtrados = useMemo(
     () => lista.filter((a) => (!categoria || a.categoria === categoria) && (!apoio || a.tipos_apoio.includes(apoio))),
     [lista, categoria, apoio],
@@ -88,107 +85,142 @@ export default function ApoiadoresMapaSection() {
 
   const selecionar = useCallback((id: string) => setSelecionado(id), []);
 
-  // Clique na lista: no celular/tablet a lista fica ABAIXO do mapa, então
-  // rola até o mapa para o popup aberto ficar visível.
+  // Clicar na lista: seleciona o ponto e, no celular/tablet, rola até o mapa
   const selecionarDaLista = (id: string) => {
     setSelecionado(id);
     if (window.matchMedia("(max-width: 1024px)").matches) {
-      document.querySelector(".apmapa__map")?.scrollIntoView({ behavior: "smooth", block: "center" });
+      document.getElementById("apoiadores-mapa")?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
+
   const limpar = () => {
     setCategoria(null);
     setApoio(null);
   };
 
-  return (
-    <section id="parceiros" className="apmapa" aria-labelledby="apmapa-titulo" lang="pt-BR">
-      <div className="apmapa__container">
-        {/* Cabeçalho */}
-        <motion.header className="apmapa__header" {...fade()}>
-          <span className="apmapa__tag">
-            <Handshake size={14} aria-hidden="true" /> Parceiros e Apoiadores
-          </span>
-          <h2 id="apmapa-titulo" className="apmapa__title">
-            Quem faz a reciclagem acontecer <span>em Baturité</span>
-          </h2>
-          <p className="apmapa__description">
-            Comércios, restaurantes, pousadas, residências, empresas e instituições que apoiam a ACMRB com pontos de
-            entrega, doações, divulgação e logística reversa. Cada ponto no mapa representa alguém que fortalece a coleta
-            seletiva e o trabalho dos catadores do Maciço de Baturité.
-          </p>
-        </motion.header>
+  // Contadores do topo
+  const contadores = [
+    { icone: HeartHandshake, valor: lista.length, rotulo: "apoiadores cadastrados" },
+    { icone: MapPinned, valor: totalNoMapa, rotulo: "pontos no mapa" },
+    { icone: Tags, valor: categoriasUsadas.length, rotulo: "categorias" },
+  ];
 
-        {/* Contadores */}
-        <motion.ul className="apmapa__stats" {...fade(0.05)} aria-label="Resumo dos apoiadores">
-          <li>
-            <HeartHandshake size={20} aria-hidden="true" />
-            <strong>{carregando ? "—" : lista.length}</strong>
-            <span>apoiadores cadastrados</span>
-          </li>
-          <li>
-            <MapPinned size={20} aria-hidden="true" />
-            <strong>{carregando ? "—" : totalNoMapa}</strong>
-            <span>pontos no mapa</span>
-          </li>
-          <li>
-            <Tags size={20} aria-hidden="true" />
-            <strong>{carregando ? "—" : categoriasUsadas.length}</strong>
-            <span>categorias</span>
-          </li>
+  // Estilo base dos botões de filtro
+  const chip =
+    "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition";
+
+  return (
+    <section id="parceiros" className="bg-surface-alt py-16 sm:py-20 lg:py-24" aria-labelledby="apmapa-titulo" lang="pt-BR">
+      <Container>
+        {/* ===== Cabeçalho ===== */}
+        <motion.div {...aparecer()}>
+          <TituloSecao
+            id="apmapa-titulo"
+            icone={Handshake}
+            etiqueta="Parceiros e Apoiadores"
+            titulo={
+              <>
+                Quem faz a reciclagem acontecer <span>em Baturité</span>
+              </>
+            }
+            descricao="Comércios, restaurantes, pousadas, residências, empresas e instituições que apoiam a ACMRB com pontos de entrega, doações, divulgação e logística reversa. Cada ponto no mapa representa alguém que fortalece a coleta seletiva e o trabalho dos catadores do Maciço de Baturité."
+          />
+        </motion.div>
+
+        {/* ===== Contadores ===== */}
+        <motion.ul {...aparecer(0.05)} className="mb-8 grid grid-cols-3 gap-3 sm:gap-4" aria-label="Resumo dos apoiadores">
+          {contadores.map(({ icone: Icone, valor, rotulo }) => (
+            <li
+              key={rotulo}
+              className="flex min-w-0 flex-col items-center gap-1 rounded-card border border-black/5 bg-white p-3 text-center shadow-card sm:p-5"
+            >
+              <Icone size={20} className="text-leaf" aria-hidden="true" />
+              <strong className="text-2xl font-black text-brand sm:text-3xl">{carregando ? "—" : valor}</strong>
+              <span className="text-xs text-ink-soft sm:text-sm">{rotulo}</span>
+            </li>
+          ))}
         </motion.ul>
 
-        {/* Filtros */}
+        {/* ===== Filtros ===== */}
         {(categoriasUsadas.length > 0 || apoiosUsados.length > 0) && (
-          <motion.div className="apmapa__filters" {...fade(0.1)}>
+          <motion.div {...aparecer(0.1)} className="mb-6 flex flex-col gap-3 rounded-card border border-black/5 bg-white p-4 shadow-card sm:p-5">
             {categoriasUsadas.length > 0 && (
-              <div className="apmapa__chips" role="group" aria-label="Filtrar por categoria">
-                <span className="apmapa__chips-label">Categoria</span>
-                {categoriasUsadas.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    className="apmapa__chip"
-                    aria-pressed={categoria === c}
-                    style={{ ["--chip" as string]: corCategoria(c) }}
-                    onClick={() => setCategoria(categoria === c ? null : c)}
-                  >
-                    <span className="apmapa__dot" aria-hidden="true" /> {c}
-                  </button>
-                ))}
+              <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrar por categoria">
+                <span className="mr-1 text-xs font-bold uppercase tracking-wider text-ink-muted">Categoria</span>
+                {categoriasUsadas.map((c) => {
+                  const ativo = categoria === c;
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      aria-pressed={ativo}
+                      onClick={() => setCategoria(ativo ? null : c)}
+                      // a cor de cada categoria vem do serviço (corCategoria)
+                      style={ativo ? { backgroundColor: corCategoria(c), borderColor: corCategoria(c) } : undefined}
+                      className={cn(chip, ativo ? "text-white" : "border-line bg-white text-ink hover:bg-brand-soft")}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="size-2.5 rounded-full"
+                        style={{ backgroundColor: ativo ? "#fff" : corCategoria(c) }}
+                      />
+                      {c}
+                    </button>
+                  );
+                })}
               </div>
             )}
+
             {apoiosUsados.length > 0 && (
-              <div className="apmapa__chips" role="group" aria-label="Filtrar por tipo de apoio">
-                <span className="apmapa__chips-label">Tipo de apoio</span>
+              <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Filtrar por tipo de apoio">
+                <span className="mr-1 text-xs font-bold uppercase tracking-wider text-ink-muted">Tipo de apoio</span>
                 {apoiosUsados.map((t) => (
-                  <button key={t} type="button" className="apmapa__chip apmapa__chip--apoio" aria-pressed={apoio === t} onClick={() => setApoio(apoio === t ? null : t)}>
+                  <button
+                    key={t}
+                    type="button"
+                    aria-pressed={apoio === t}
+                    onClick={() => setApoio(apoio === t ? null : t)}
+                    className={cn(chip, apoio === t ? "border-brand bg-brand text-white" : "border-line bg-white text-ink hover:bg-brand-soft")}
+                  >
                     {t}
                   </button>
                 ))}
               </div>
             )}
+
             {(categoria || apoio) && (
-              <button type="button" className="apmapa__clear" onClick={limpar}>
+              <button
+                type="button"
+                onClick={limpar}
+                className="inline-flex w-fit items-center gap-1.5 text-sm font-bold text-leaf hover:underline"
+              >
                 <RotateCcw size={14} aria-hidden="true" /> Limpar filtros
               </button>
             )}
           </motion.div>
         )}
 
-        {/* Mapa + lista */}
-        {/* Mapa + lista: SEM animação "whileInView". Antes ficava com opacity 0
-            até o IntersectionObserver disparar; quando ele não dispara (pulo por
-            âncora /#parceiros, navegadores sem overflow-x: clip, aba em segundo
-            plano) o mapa ficava invisível. Agora sempre aparece. */}
-        <div className="apmapa__board">
-          <div className="apmapa__map">
+        {/* ===== Mapa + lista =====
+            Sem animação "whileInView" aqui de propósito: quando o observador não
+            dispara (pulo por âncora /#parceiros, aba em segundo plano) o mapa
+            ficava invisível. Assim ele sempre aparece. */}
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_22rem]">
+          <div
+            id="apoiadores-mapa"
+            className="relative h-[clamp(300px,55dvh,520px)] overflow-hidden rounded-card border border-black/5 bg-white shadow-card-hover"
+          >
             <MapaPontos pontos={noMapa} selecionado={selecionado} onSelecionar={selecionar} />
+
             {!carregando && noMapa.length === 0 && (
-              <div className="apmapa__empty" role="status">
-                <MapPin size={28} aria-hidden="true" />
-                <strong>{lista.length === 0 || totalNoMapa === 0 ? "Em breve os primeiros pontos no mapa" : "Nenhum ponto com esse filtro"}</strong>
-                <p>
+              <div
+                role="status"
+                className="absolute inset-x-3 bottom-3 z-450 flex flex-col items-center gap-1 rounded-2xl border border-brand-line bg-white/95 p-4 text-center shadow-card-hover sm:inset-x-4 sm:bottom-4"
+              >
+                <MapPin size={26} className="text-leaf" aria-hidden="true" />
+                <strong className="text-ink">
+                  {lista.length === 0 || totalNoMapa === 0 ? "Em breve os primeiros pontos no mapa" : "Nenhum ponto com esse filtro"}
+                </strong>
+                <p className="max-w-md text-sm text-ink-soft">
                   {totalNoMapa === 0
                     ? "Estamos cadastrando os comércios, casas e instituições que apoiam a coleta seletiva em Baturité."
                     : "Tente outra categoria ou limpe os filtros para ver todos os pontos."}
@@ -197,40 +229,53 @@ export default function ApoiadoresMapaSection() {
             )}
           </div>
 
-          <aside className="apmapa__list" aria-label="Lista de apoiadores">
-            <p className="apmapa__list-count" aria-live="polite">
+          <aside
+            className="flex max-h-85 flex-col rounded-card border border-black/5 bg-white p-4 shadow-card lg:max-h-[clamp(300px,55dvh,520px)]"
+            aria-label="Lista de apoiadores"
+          >
+            <p className="mb-3 text-xs font-extrabold uppercase tracking-wider text-leaf" aria-live="polite">
               {carregando ? "Carregando apoiadores…" : `${filtrados.length} ${filtrados.length === 1 ? "apoiador" : "apoiadores"}`}
             </p>
+
             {!carregando && filtrados.length === 0 ? (
-              <p className="apmapa__list-empty">Os apoiadores aparecerão aqui assim que forem cadastrados.</p>
+              <p className="text-sm text-ink-muted">Os apoiadores aparecerão aqui assim que forem cadastrados.</p>
             ) : (
-              <ul>
+              <ul className="flex flex-col gap-2 overflow-y-auto">
                 {filtrados.map((a) => (
-                  <li key={a.id}>
+                  <li key={a.id} className="min-w-0">
                     <button
                       type="button"
-                      className="apmapa__item"
                       aria-current={selecionado === a.id}
                       disabled={!a.no_mapa}
                       title={a.no_mapa ? "Ver no mapa" : "Ainda sem ponto no mapa"}
                       onClick={() => selecionarDaLista(a.id)}
+                      className={cn(
+                        "flex w-full items-center gap-3 rounded-xl border p-2.5 text-left transition disabled:cursor-default",
+                        selecionado === a.id
+                          ? "border-brand-line bg-brand-soft"
+                          : "border-transparent bg-surface-alt enabled:hover:border-brand-line enabled:hover:bg-brand-soft",
+                      )}
                     >
                       {a.logo_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={a.logo_url} alt="" className="apmapa__item-logo" loading="lazy" />
+                        <img src={a.logo_url} alt="" loading="lazy" className="size-10 shrink-0 rounded-lg border border-line bg-white object-contain" />
                       ) : (
-                        <span className="apmapa__item-logo apmapa__item-logo--ini" style={{ background: corCategoria(a.categoria) }} aria-hidden="true">
+                        <span
+                          className="grid size-10 shrink-0 place-items-center rounded-lg font-black text-white"
+                          style={{ background: corCategoria(a.categoria) }}
+                          aria-hidden="true"
+                        >
                           {a.nome_exibicao.charAt(0).toUpperCase()}
                         </span>
                       )}
-                      <span className="apmapa__item-text">
-                        <strong>{a.nome_exibicao}</strong>
-                        <span>
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <strong className="line-clamp-2 text-sm text-ink [overflow-wrap:anywhere]">{a.nome_exibicao}</strong>
+                        <span className="text-xs text-ink-muted">
                           {a.categoria}
                           {a.bairro ? ` · ${a.bairro}` : ""}
                         </span>
                       </span>
-                      {a.no_mapa && <MapPin size={16} className="apmapa__item-pin" aria-hidden="true" />}
+                      {a.no_mapa && <MapPin size={16} className="shrink-0 text-leaf" aria-hidden="true" />}
                     </button>
                   </li>
                 ))}
@@ -239,25 +284,21 @@ export default function ApoiadoresMapaSection() {
           </aside>
         </div>
 
-        {/* CTAs */}
-        <motion.div className="apmapa__cta" {...fade(0.2)}>
-          <div className="apmapa__cta-text">
-            <h3>Empresas parceiras e logística reversa</h3>
-            <p>
-              Conheça as empresas que recebem os materiais triados pela ACMRB, os responsáveis por cada parceria e o histórico
-              público do que já foi repassado para reciclagem.
-            </p>
-          </div>
-          <div className="apmapa__cta-actions">
-            <Button href="/parceiros" variante="claro" >
+        {/* ===== Chamada ===== */}
+        <motion.div {...aparecer(0.1)}>
+          <FaixaCta
+            titulo="Empresas parceiras e logística reversa"
+            texto="Conheça as empresas que recebem os materiais triados pela ACMRB, os responsáveis por cada parceria e o histórico público do que já foi repassado para reciclagem."
+          >
+            <Button href="/parceiros" variante="claro" tamanho="grande">
               <Building2 size={18} aria-hidden="true" /> Conheça nossas empresas parceiras <ArrowRight size={16} aria-hidden="true" />
             </Button>
-            <Button href="/#contato" variante="contornoClaro" >
+            <Button href="/#contato" variante="contornoClaro" tamanho="grande">
               <HeartHandshake size={18} aria-hidden="true" /> Quero apoiar
             </Button>
-          </div>
+          </FaixaCta>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }
