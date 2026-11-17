@@ -43,7 +43,7 @@ import { hrefReal, navigation } from "@/constants/navegacao";
 import NavDropdown from "@/components/layout/NavDropdown";
 import UserMenu from "@/components/layout/UserMenu";
 import MobileMenu from "@/components/layout/MobileMenu";
-import AdminModal from "@/components/admin/AdminModal";
+import AdminModal from "@/components/auth/AdminModal";
 import "@/styles/header.css";
 
 import { smoothScrollTo } from "@/utils/scroll";
