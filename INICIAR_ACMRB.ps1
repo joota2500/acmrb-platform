@@ -8,7 +8,8 @@ Write-Host ""
 # Força PATH
 $env:Path += ";C:\Program Files\nodejs"
 
-Set-Location "C:\Users\User\Desktop\MeusProjetos\acmrb-platform"
+# Entra na pasta onde este arquivo está (funciona em qualquer computador)
+Set-Location $PSScriptRoot
 
 Write-Host "[1/4] Abrindo VS Code..." -ForegroundColor Cyan
 Start-Process code "."
@@ -23,7 +24,8 @@ Write-Host "[4/4] Abrindo navegador..." -ForegroundColor Cyan
 Start-Process "http://localhost:3000"
 
 Write-Host "Abrindo Supabase..." -ForegroundColor Cyan
-Start-Process "https://supabase.com/dashboard/project/mvjyfxayvbwkrluaogzc"
+# Abre o painel do Supabase (escolha o projeto ACMRB na lista)
+Start-Process "https://supabase.com/dashboard/projects"
 
 Write-Host ""
 Write-Host "Projeto iniciado com sucesso!" -ForegroundColor Green
