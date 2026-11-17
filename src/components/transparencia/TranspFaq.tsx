@@ -2,11 +2,11 @@
 
 /** Perguntas frequentes sobre a metodologia (acordeão acessível com <details>) */
 
-import { ChevronDown } from "lucide-react";
-import Link from "next/link";
-import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
-import "@/styles/transp-faq.css";
+import { ArrowRight, ChevronDown, FolderKanban, HelpCircle } from "lucide-react";
 import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import FaixaCta from "@/components/home/FaixaCta";
+import TituloSecao from "@/components/home/TituloSecao";
 
 const PERGUNTAS = [
   {
@@ -33,29 +33,41 @@ const PERGUNTAS = [
 
 export default function TranspFaq() {
   return (
-    <section id="metodologia" className="tp-secao tp-secao--suave">
-      <div className="tp-container tf-container">
-        <TranspSecaoTitulo
-          tag="Metodologia"
-          titulo="Como os dados são produzidos"
-          texto="Transparência também é explicar a origem de cada número. Veja como a associação coleta e publica as informações desta central."
+    <section id="metodologia" className="scroll-mt-32 bg-white py-14 sm:py-20">
+      <Container>
+        <TituloSecao
+          etiqueta="Metodologia"
+          icone={HelpCircle}
+          alinhamento="esquerda"
+          className="mb-8 sm:mb-10"
+          titulo={<>Como os dados são <span>produzidos</span></>}
+          descricao="Transparência também é explicar a origem de cada número. Veja como a associação coleta e publica as informações desta central."
         />
-        <div className="tf-lista">
+
+        <div className="grid gap-3 lg:grid-cols-2 lg:items-start">
           {PERGUNTAS.map((q) => (
-            <details key={q.p} className="tf-item">
-              <summary>
+            <details key={q.p} className="group rounded-card border border-black/5 bg-white shadow-card open:border-brand-line open:bg-brand-soft/40">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-card p-4 font-bold text-ink marker:hidden focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-line sm:p-5 [&::-webkit-details-marker]:hidden">
                 <span>{q.p}</span>
-                <ChevronDown size={18} aria-hidden />
+                <ChevronDown size={18} className="flex-none text-leaf transition group-open:rotate-180" aria-hidden="true" />
               </summary>
-              <p>{q.r}</p>
+              <p lang="pt-BR" className="texto-justo px-4 pb-5 leading-relaxed text-ink-soft sm:px-5">{q.r}</p>
             </details>
           ))}
         </div>
-        <div className="tf-cta">
-          <Button href="/#contato" >Falar com a associação</Button>
-          <Button href="/projetos" variante="contorno" >Conhecer projetos</Button>
-        </div>
-      </div>
+
+        <FaixaCta
+          titulo="Ficou com alguma dúvida?"
+          texto="Fale com a associação ou conheça os projetos que geram os números desta central."
+        >
+          <Button href="/#contato" variante="claro" tamanho="grande">
+            Falar com a associação <ArrowRight size={18} aria-hidden="true" />
+          </Button>
+          <Button href="/projetos" variante="contornoClaro" tamanho="grande">
+            <FolderKanban size={18} aria-hidden="true" /> Conhecer projetos
+          </Button>
+        </FaixaCta>
+      </Container>
     </section>
   );
 }

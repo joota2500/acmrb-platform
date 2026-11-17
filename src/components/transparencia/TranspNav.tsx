@@ -7,6 +7,8 @@
  */
 
 import { useEffect, useState } from "react";
+import Container from "@/components/ui/Container";
+import { cn } from "@/utils/cn";
 
 export const SECOES = [
   { id: "indicadores", rotulo: "Indicadores" },
@@ -46,20 +48,24 @@ export default function TranspNav() {
   }
 
   return (
-    <nav className="tp-nav" aria-label="Seções da transparência">
-      <div className="tp-container tp-nav__trilho">
+    // fica colado embaixo do Header fixo (64px no celular, 72px no tablet, 68px no desktop)
+    <nav className="sticky top-16 z-30 border-b border-line bg-white/90 backdrop-blur-md sm:top-18 lg:top-17" aria-label="Seções da transparência">
+      <Container className="flex gap-1.5 overflow-x-auto py-2.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {SECOES.map((s) => (
           <a
             key={s.id}
             href={`#${s.id}`}
             onClick={(e) => ir(e, s.id)}
-            className={`tp-nav__link ${ativa === s.id ? "is-ativo" : ""}`}
             aria-current={ativa === s.id ? "true" : undefined}
+            className={cn(
+              "shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition",
+              ativa === s.id ? "bg-leaf text-white shadow-sm" : "text-ink-soft hover:bg-brand-soft hover:text-leaf",
+            )}
           >
             {s.rotulo}
           </a>
         ))}
-      </div>
+      </Container>
     </nav>
   );
 }

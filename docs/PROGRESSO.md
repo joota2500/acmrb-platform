@@ -30,7 +30,7 @@ Responsável: João Victor Rocha Costa
   - [x] 1. Quem somos (`/quem-somos`)
   - [x] 2. Lista de notícias
   - [x] 3. Notícia aberta
-  - [ ] 4. Transparência
+  - [x] 4. Transparência
   - [ ] 5. Parceiros
   - [ ] 6. Associados
   - [ ] 7. Mapa

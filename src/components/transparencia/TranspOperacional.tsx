@@ -11,13 +11,17 @@
  */
 
 import { useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
-import { Download, FileSpreadsheet, Filter, Hash, Scale, Wallet, Tag } from "lucide-react";
+import { motion } from "framer-motion";
+import { Download, FileSpreadsheet, Filter, Hash, Recycle, Scale, Wallet, Tag } from "lucide-react";
+import Button from "@/components/ui/Button";
 import Contador from "@/components/ui/Contador";
-import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
+import Container from "@/components/ui/Container";
+import EmptyState from "@/components/ui/EmptyState";
+import { Select } from "@/components/ui/Input";
+import TituloSecao from "@/components/home/TituloSecao";
+import { useAparecer } from "@/hooks/useAparecer";
 import { fmtMoeda, fmtNum, fmtPeso } from "@/utils/formatosTransparencia";
 import type { RegistroMaterial } from "@/hooks/useTransparencia";
-import "@/styles/transp-operacional.css";
 
 type Props = {
   registros: RegistroMaterial[]; // já filtrados
@@ -53,7 +57,7 @@ function exportarCSV(registros: RegistroMaterial[]) {
 }
 
 export default function TranspOperacional({ registros, anos, materiais, ano, material, onAno, onMaterial }: Props) {
-  const reduzir = useReducedMotion();
+  const aparecer = useAparecer();
 
   const { grupos, peso, valor } = useMemo(() => {
     const g: Record<string, Grupo> = {};
@@ -80,43 +84,52 @@ export default function TranspOperacional({ registros, anos, materiais, ano, mat
   ];
 
   return (
-    <section id="operacional" className="tp-secao tp-secao--suave">
-      <div className="tp-container">
-        <TranspSecaoTitulo
-          tag="♻ Transparência operacional"
-          titulo="Materiais recicláveis recuperados"
-          texto="Resumo público das pesagens de materiais recicláveis triados e comercializados pela associação. Use os filtros para ver um ano ou um tipo de material específico."
+    <section id="operacional" className="scroll-mt-32 bg-white py-14 sm:py-20">
+      <Container>
+        <TituloSecao
+          etiqueta="Transparência operacional"
+          icone={Recycle}
+          alinhamento="esquerda"
+          className="mb-8 sm:mb-10"
+          titulo={<>Materiais recicláveis <span>recuperados</span></>}
+          descricao="Resumo público das pesagens de materiais recicláveis triados e comercializados pela associação. Use os filtros para ver um ano ou um tipo de material específico."
         />
 
-        <div className="to-filtros" role="group" aria-label="Filtros dos materiais">
-          <Filter size={16} aria-hidden className="to-filtros__icone" />
-          <label>
-            <span>Ano</span>
-            <select value={ano} onChange={(e) => onAno(e.target.value)}>
+        {/* Filtros */}
+        <div
+          className="flex flex-wrap items-end gap-3 rounded-card border border-line bg-surface-alt p-4 sm:p-5"
+          role="group"
+          aria-label="Filtros dos materiais"
+        >
+          <Filter size={18} aria-hidden="true" className="mb-3 hidden text-leaf sm:block" />
+          <label className="flex min-w-40 flex-1 flex-col gap-1.5 sm:max-w-60">
+            <span className="text-xs font-bold uppercase tracking-wider text-ink-muted">Ano</span>
+            <Select value={ano} onChange={(e) => onAno(e.target.value)}>
               <option value="todos">Todos os anos</option>
               {anos.map((a) => <option key={a} value={String(a)}>{a}</option>)}
-            </select>
+            </Select>
           </label>
-          <label>
-            <span>Material</span>
-            <select value={material} onChange={(e) => onMaterial(e.target.value)}>
+          <label className="flex min-w-40 flex-1 flex-col gap-1.5 sm:max-w-60">
+            <span className="text-xs font-bold uppercase tracking-wider text-ink-muted">Material</span>
+            <Select value={material} onChange={(e) => onMaterial(e.target.value)}>
               <option value="todos">Todos os materiais</option>
               {materiais.map((m) => <option key={m} value={m}>{m}</option>)}
-            </select>
+            </Select>
           </label>
-          <button type="button" className="to-csv" onClick={() => exportarCSV(registros)} disabled={!registros.length}>
-            <Download size={16} aria-hidden /> Exportar CSV
-          </button>
+          <Button type="button" className="w-full sm:ml-auto sm:w-auto" onClick={() => exportarCSV(registros)} disabled={!registros.length}>
+            <Download size={16} aria-hidden="true" /> Exportar CSV
+          </Button>
         </div>
 
-        <div className="to-resumo">
+        {/* Totais */}
+        <div className="mt-5 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
           {resumo.map((r) => {
             const Icone = r.icone;
             return (
-              <div key={r.rotulo} className="to-resumo__item">
-                <Icone size={20} aria-hidden />
-                <span>{r.rotulo}</span>
-                <strong>
+              <div key={r.rotulo} className="flex flex-col gap-1 rounded-card border border-black/5 bg-white p-4 shadow-card sm:p-5">
+                <span className="grid size-9 place-items-center rounded-xl bg-brand-mint text-leaf"><Icone size={18} aria-hidden="true" /></span>
+                <span className="mt-2 text-xs font-semibold text-ink-muted sm:text-sm">{r.rotulo}</span>
+                <strong className="text-xl font-black tabular-nums text-ink sm:text-2xl">
                   {r.valor > 0 ? <Contador key={`${r.rotulo}-${r.valor}`} valor={r.valor} formatar={r.fmt} /> : r.vazio ?? r.fmt(0)}
                 </strong>
               </div>
@@ -125,52 +138,57 @@ export default function TranspOperacional({ registros, anos, materiais, ano, mat
         </div>
 
         {valor === 0 && peso > 0 && (
-          <p className="to-aviso">
+          <p lang="pt-BR" className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
             O valor operacional aparece como “Em apuração” enquanto o valor por quilo dos registros não for informado pela equipe.
           </p>
         )}
 
+        {/* Ranking por peso */}
         {grupos.length === 0 ? (
-          <div className="to-vazio">
-            <FileSpreadsheet size={28} aria-hidden />
-            <p>Nenhum registro encontrado para os filtros selecionados.</p>
+          <div className="mt-8">
+            <EmptyState title="Nada por aqui" description="Nenhum registro encontrado para os filtros selecionados." />
           </div>
         ) : (
-          <ol className="to-ranking">
-            {grupos.map((g, i) => {
-              const part = peso > 0 ? (g.peso / peso) * 100 : 0;
-              return (
-                <motion.li
-                  key={g.nome}
-                  className="to-item"
-                  initial={reduzir ? false : { opacity: 0, x: -14 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.35, delay: Math.min(i, 6) * 0.05 }}
-                >
-                  <span className="to-item__pos">#{i + 1}</span>
-                  <div className="to-item__corpo">
-                    <div className="to-item__topo">
-                      <h3>
-                        <i style={{ background: g.cor || "#059669" }} aria-hidden /> {g.nome}
-                      </h3>
-                      <strong>{fmtNum(part, 1)}%</strong>
+          <>
+            <h3 className="mt-10 flex items-center gap-2 text-lg font-extrabold text-ink">
+              <FileSpreadsheet size={18} className="text-leaf" aria-hidden="true" /> Ranking por peso
+            </h3>
+            <ol className="mt-4 grid gap-3 sm:gap-4">
+              {grupos.map((g, i) => {
+                const part = peso > 0 ? (g.peso / peso) * 100 : 0;
+                return (
+                  <motion.li
+                    key={g.nome}
+                    {...aparecer(Math.min(i, 6) * 0.05)}
+                    className="flex gap-3 rounded-card border border-black/5 bg-white p-4 shadow-card sm:gap-4 sm:p-5"
+                  >
+                    <span className="grid size-9 flex-none place-items-center rounded-full bg-brand-mint text-sm font-extrabold text-leaf">#{i + 1}</span>
+                    <div className="min-w-0 flex-1 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
+                      <div>
+                        <div className="flex items-center justify-between gap-3">
+                          <h4 className="flex min-w-0 items-center gap-2 text-base font-extrabold text-ink">
+                            <i className="size-3 flex-none rounded-full" style={{ background: g.cor || "#059669" }} aria-hidden="true" />
+                            <span className="truncate">{g.nome}</span>
+                          </h4>
+                          <strong className="flex-none text-base font-black tabular-nums text-leaf">{fmtNum(part, 1)}%</strong>
+                        </div>
+                        <div className="mt-2.5 h-2.5 overflow-hidden rounded-full bg-zinc-100" aria-hidden="true">
+                          <span className="block h-full rounded-full bg-leaf-bright" style={{ width: `${part}%`, background: g.cor || undefined }} />
+                        </div>
+                      </div>
+                      <dl className="mt-3 grid grid-cols-3 gap-2 text-sm lg:mt-0 lg:w-80">
+                        <div><dt className="text-xs font-semibold text-ink-muted">Peso</dt><dd className="font-bold tabular-nums text-ink">{fmtPeso(g.peso)}</dd></div>
+                        <div><dt className="text-xs font-semibold text-ink-muted">Valor</dt><dd className="font-bold tabular-nums text-ink">{g.valor > 0 ? fmtMoeda(g.valor) : "—"}</dd></div>
+                        <div><dt className="text-xs font-semibold text-ink-muted">Registros</dt><dd className="font-bold tabular-nums text-ink">{g.qtd}</dd></div>
+                      </dl>
                     </div>
-                    <div className="to-item__barra" aria-hidden>
-                      <span style={{ width: `${part}%`, background: g.cor || undefined }} />
-                    </div>
-                    <dl className="to-item__dados">
-                      <div><dt>Peso</dt><dd>{fmtPeso(g.peso)}</dd></div>
-                      <div><dt>Valor</dt><dd>{g.valor > 0 ? fmtMoeda(g.valor) : "—"}</dd></div>
-                      <div><dt>Registros</dt><dd>{g.qtd}</dd></div>
-                    </dl>
-                  </div>
-                </motion.li>
-              );
-            })}
-          </ol>
+                  </motion.li>
+                );
+              })}
+            </ol>
+          </>
         )}
-      </div>
+      </Container>
     </section>
   );
 }

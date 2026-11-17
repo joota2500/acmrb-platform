@@ -19,13 +19,14 @@
  *
  * Dados: hook useTransparencia (Supabase). Os filtros de ano e
  * material ficam aqui porque valem para Materiais e Evolução.
- * Estilos gerais: src/styles/transparencia-page.css; cada seção tem
- * o seu CSS. Celular ≤480px compacto, tablet 2 colunas, desktop completo.
+ * Estilo: Tailwind em cada componente (sem arquivos CSS). Celular
+ * compacto, tablet 2 colunas, desktop completo.
  */
 
 import { useMemo, useState } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 
+import Button from "@/components/ui/Button";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import TranspHero from "@/components/transparencia/TranspHero";
@@ -37,7 +38,7 @@ import TranspSocial from "@/components/transparencia/TranspSocial";
 import TranspDocumentos from "@/components/transparencia/TranspDocumentos";
 import TranspFaq from "@/components/transparencia/TranspFaq";
 import { useTransparencia } from "@/hooks/useTransparencia";
-import "@/styles/transparencia-page.css";
+import Container from "@/components/ui/Container";
 
 export default function TransparenciaPage() {
   const t = useTransparencia();
@@ -64,46 +65,50 @@ export default function TransparenciaPage() {
   const periodo = typeof t.metricas?.periodo_referencia === "string" ? t.metricas.periodo_referencia : undefined;
 
   return (
-    <main className="tp-pagina" lang="pt-BR">
+    <>
       <Header />
-      <TranspHero atualizadoEm={t.atualizadoEm} periodo={periodo} loading={t.loading} onAtualizar={t.recarregar} />
-      <TranspNav />
+      <main className="min-h-screen overflow-x-clip bg-surface-alt" lang="pt-BR">
+        <TranspHero atualizadoEm={t.atualizadoEm} periodo={periodo} loading={t.loading} onAtualizar={t.recarregar} />
+        <TranspNav />
 
-      {t.erro && (
-        <div className="tp-container">
-          <div className="tp-alerta" role="alert">
-            <AlertTriangle size={18} aria-hidden />
-            <span>{t.erro}</span>
-            <button type="button" onClick={t.recarregar}><RefreshCw size={14} aria-hidden /> Tentar de novo</button>
-          </div>
-        </div>
-      )}
+        {t.erro && (
+          <Container className="mt-6">
+            <div className="flex flex-wrap items-center gap-3 rounded-2xl border border-red-200 bg-danger-soft px-4 py-3 text-sm text-danger" role="alert">
+              <AlertTriangle size={18} aria-hidden="true" />
+              <span>{t.erro}</span>
+              <Button type="button" variante="perigo" tamanho="pequeno" className="ml-auto" onClick={t.recarregar}>
+                <RefreshCw size={14} aria-hidden="true" /> Tentar de novo
+              </Button>
+            </div>
+          </Container>
+        )}
 
-      {t.loading && !t.registros.length ? (
-        <div className="tp-container tp-carregando" aria-live="polite">
-          {[0, 1, 2, 3].map((i) => <div key={i} className="tp-esqueleto" />)}
-          <span className="sr-only">Carregando dados de transparência…</span>
-        </div>
-      ) : (
-        <>
-          <TranspIndicadores totalPeso={totalPeso} metricas={t.metricas} metas={t.metas} />
-          <TranspOperacional
-            registros={filtrados}
-            anos={anos}
-            materiais={materiais}
-            ano={ano}
-            material={material}
-            onAno={setAno}
-            onMaterial={setMaterial}
-          />
-          <TranspEvolucao registros={filtrados} ano={ano} />
-          <TranspSocial metricas={t.metricas} associadosAtivos={t.associadosAtivos} parceirosAtivos={t.parceirosAtivos} />
-          <TranspDocumentos documentos={t.documentos} />
-        </>
-      )}
+        {t.loading && !t.registros.length ? (
+          <Container className="grid gap-5 py-12 sm:grid-cols-2 lg:grid-cols-4" aria-live="polite">
+            {[0, 1, 2, 3].map((i) => <div key={i} className="h-40 animate-pulse rounded-card bg-white sm:h-44" />)}
+            <span className="sr-only">Carregando dados de transparência…</span>
+          </Container>
+        ) : (
+          <>
+            <TranspIndicadores totalPeso={totalPeso} metricas={t.metricas} metas={t.metas} />
+            <TranspOperacional
+              registros={filtrados}
+              anos={anos}
+              materiais={materiais}
+              ano={ano}
+              material={material}
+              onAno={setAno}
+              onMaterial={setMaterial}
+            />
+            <TranspEvolucao registros={filtrados} ano={ano} />
+            <TranspSocial metricas={t.metricas} associadosAtivos={t.associadosAtivos} parceirosAtivos={t.parceirosAtivos} />
+            <TranspDocumentos documentos={t.documentos} />
+          </>
+        )}
 
-      <TranspFaq />
+        <TranspFaq />
+      </main>
       <Footer />
-    </main>
+    </>
   );
 }
