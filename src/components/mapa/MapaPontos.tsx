@@ -2,7 +2,7 @@
 
 /**
  * MapaPontos — mapa Leaflet com marcadores coloridos
- * Camadas Mapa (CARTO/OSM), Satélite e Híbrido (Esri) — src/lib/mapaCamadas.ts
+ * Camadas Mapa (CARTO/OSM), Satélite e Híbrido (Esri) — src/utils/mapaCamadas.ts
  * ------------------------------------------------------------
  * Só roda no navegador: carregue SEMPRE com next/dynamic({ ssr: false }).
  * - Não captura a rolagem da página: zoom pela roda desligado e, em
@@ -40,7 +40,7 @@ export function iconeCategoria(categoria: string, destaque = false) {
 }
 
 function popupHtml(p: ApoiadorPublico) {
-  // Cartão compacto compartilhado (src/lib/mapaPopup.ts)
+  // Cartão compacto compartilhado (src/utils/mapaPopup.ts)
   return cartaoPopup({
     nome: p.nome_exibicao,
     categoria: p.categoria,

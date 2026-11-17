@@ -3,7 +3,7 @@
 /**
  * Painel › Relatórios — documentos públicos da transparência
  * (tabela transparencia_documentos, migration 20261020210000).
- * Qualquer admin ativo pode cadastrar (permissions.ts: relatorios = total).
+ * Qualquer admin ativo pode cadastrar (permissoes.ts: relatorios = total).
  * Só os marcados como "publicado" aparecem em /transparencia#documentos.
  * O arquivo em si fica num link (Google Drive, Storage do Supabase etc.).
  */

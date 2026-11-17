@@ -19,7 +19,7 @@
  * 10. Chamada final — contato / associados
  *
  * De onde vêm os textos: tabela quem_somos_conteudo (hook useQuemSomos).
- * Sem banco, a página usa os textos reais de src/lib/quemSomosFallback.ts.
+ * Sem banco, a página usa os textos reais de src/constants/quemSomos.ts.
  *
  * Responsividade (src/styles/quem-somos.css, mobile-first):
  *  - Celular (<640px): textos menores, 1 coluna, botões h-12 empilhados

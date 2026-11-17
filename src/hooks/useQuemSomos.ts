@@ -6,7 +6,7 @@
  * Busca no Supabase, em paralelo:
  *  - quem_somos_conteudo → textos institucionais (história, valores...)
  *  - associados          → SOMENTE a diretoria: Presidente, Secretário(a) e
- *                           Tesoureiro(a), nessa ordem (src/lib/associados.ts)
+ *                           Tesoureiro(a), nessa ordem (src/services/associados.ts)
  *  - parceiros           → ativos, destaques primeiro
  *
  * Segurança contra falhas:

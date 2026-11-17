@@ -12,7 +12,7 @@
  *
  * De onde vêm os dados:
  *  - useAuth() (AuthContext) → user, perfil, logout, loading (Supabase Auth).
- *  - navItems.ts → lista de links do menu.
+ *  - navegacao.ts → lista de links do menu.
  *
  * Responsividade:
  *  - Celular (<640px): altura ~64px, logo menor, subtítulo escondido,

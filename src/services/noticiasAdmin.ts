@@ -3,7 +3,7 @@
 /**
  * Notícias no painel — salvar, enviar imagens, checar slug
  * ------------------------------------------------------------
- * Só o ADM DEUS chega aqui (permissions.ts + RLS no banco).
+ * Só o ADM DEUS chega aqui (permissoes.ts + RLS no banco).
  * salvarNoticia tenta gravar com todas as colunas; se o banco
  * ainda não tiver as colunas novas (migration 20261020220000 não
  * rodada), grava só as antigas e avisa (semColunasNovas = true).

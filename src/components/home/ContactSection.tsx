@@ -12,7 +12,7 @@
  *  4. Mapa institucional real (Leaflet/OSM) com a sede e "Como chegar".
  *  5. CTA final: WhatsApp e projetos.
  *
- * Dados: src/lib/contatoInstitucional.ts (fonte única). Horário de
+ * Dados: src/constants/contato.ts (fonte única). Horário de
  * atendimento omitido de propósito (não há dado oficial).
  * Classes com prefixo "contato__" (CSS em src/styles/contact-section.css).
  *

@@ -73,7 +73,7 @@
 /* Marcador de item oculto do site (visão do painel) */
 .mapa-pin__gota--oculto { opacity: 0.55; outline: 2px dashed #fff; outline-offset: -4px; filter: grayscale(0.4); }
 
-/* ---------- Popup: cartão compacto (src/lib/mapaPopup.ts) ----------
+/* ---------- Popup: cartão compacto (src/utils/mapaPopup.ts) ----------
  * Causa do bug anterior: ".leaflet-popup-content { width: auto }" +
  * "overflow-wrap: anywhere" faziam o Leaflet medir a largura mínima
  * do conteúdo (1 letra) → popup com ~90px e nome quebrado letra a

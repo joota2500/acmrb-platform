@@ -5,7 +5,7 @@
  * ------------------------------------------------------------
  * Nome, telefone/WhatsApp, cidade, bairro (opcional) e canal preferido.
  * E-mail aparece só para leitura (não pode ser trocado aqui).
- * Validação com zod (src/lib/contaVisitante.ts).
+ * Validação com zod (src/services/contaVisitante.ts).
  * CSS: src/styles/minha-conta.css (prefixo "mconta").
  */
 

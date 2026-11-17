@@ -4,7 +4,7 @@
  * MapaSede — mapa Leaflet simples com um marcador (sede da ACMRB)
  * ------------------------------------------------------------
  * Só roda no navegador: carregue SEMPRE com next/dynamic({ ssr: false }).
- * Usa as mesmas camadas gratuitas (OSM / Esri) de src/lib/mapaCamadas.ts.
+ * Usa as mesmas camadas gratuitas (OSM / Esri) de src/utils/mapaCamadas.ts.
  * Não captura a rolagem da página (zoom pela roda desligado; em telas de
  * toque o arrasto só liga após "Toque para mover o mapa").
  */
@@ -52,7 +52,7 @@ export default function MapaSede({ posicao, titulo, endereco, aproximada }: Prop
       iconAnchor: [15, 38],
       popupAnchor: [0, -34],
     });
-    // Cartão compacto compartilhado (src/lib/mapaPopup.ts)
+    // Cartão compacto compartilhado (src/utils/mapaPopup.ts)
     const [lat, lng] = posicao;
     const el = cartaoPopup({
       nome: titulo,

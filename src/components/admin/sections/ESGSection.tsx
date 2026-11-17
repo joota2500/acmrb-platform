@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Painel › Indicadores ESG (somente ADM DEUS — ver src/lib/permissions.ts;
+ * Painel › Indicadores ESG (somente ADM DEUS — ver src/constants/permissoes.ts;
  * o banco reforça por RLS: só is_deus() escreve em dashboard_metricas).
  *
  * Formulário dos indicadores MANUAIS exibidos em /transparencia.

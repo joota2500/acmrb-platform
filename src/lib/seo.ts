@@ -3,7 +3,7 @@
  * ------------------------------------------------------------
  * Nomes, descrição, palavras-chave e construtores de metadata e de
  * JSON-LD (dados estruturados que o Google lê). Os dados de contato
- * vêm de contatoInstitucional.ts, então nada é repetido nem inventado.
+ * vêm de contato.ts, então nada é repetido nem inventado.
  */
 
 import type { Metadata } from "next";
@@ -116,7 +116,7 @@ export function jsonLdOrganizacao() {
       addressRegion: "CE",
       addressCountry: "BR",
     },
-    // coordenada aproximada (bairro Manga) — ajustar em contatoInstitucional.ts
+    // coordenada aproximada (bairro Manga) — ajustar em contato.ts
     geo: { "@type": "GeoCoordinates", latitude: SEDE_COORDENADA[0], longitude: SEDE_COORDENADA[1] },
     areaServed: { "@type": "City", name: "Baturité" },
     contactPoint: {

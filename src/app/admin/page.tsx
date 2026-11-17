@@ -142,7 +142,7 @@ function PainelAdmin() {
 
   if (loading || !perfil) return <Validando />;
 
-  // Papel e permissões (src/lib/permissions.ts)
+  // Papel e permissões (src/constants/permissoes.ts)
   const papel: PapelAdmin = isGod ? "deus" : "admin";
   const permitido = podeVer(papel, ativa);
 

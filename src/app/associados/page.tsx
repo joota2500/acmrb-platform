@@ -9,7 +9,7 @@
  *  3. Todos os associados ativos, com busca por nome e filtros por
  *     cargo e por tipo de associado
  *
- * Dados: listarAssociadosPublicos() (src/lib/associados.ts) → view
+ * Dados: listarAssociadosPublicos() (src/services/associados.ts) → view
  * associados_publicos, ou a tabela associados (só colunas públicas)
  * enquanto a migration não for rodada. Nada de CPF, e-mail, telefone
  * ou endereço é buscado aqui.

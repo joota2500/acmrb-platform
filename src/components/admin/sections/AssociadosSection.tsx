@@ -12,7 +12,7 @@
  * - Editar e inativar (exclusão lógica: status "inativo", o registro
  *   continua no banco) com caixa de confirmação. Também permite reativar.
  * - Avisos com Toast (src/components/ui/Toast.tsx).
- * Dados: src/lib/associadosAdmin.ts (view associados_admin ou tabela).
+ * Dados: src/services/associadosAdmin.ts (view associados_admin ou tabela).
  * Foto: bucket "associados" do Supabase Storage (igual à versão anterior).
  */
 

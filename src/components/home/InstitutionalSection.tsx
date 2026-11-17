@@ -78,7 +78,7 @@ const docsPadrao = ["Estatuto Social", "Relatório Anual", "Prestação de Conta
 
 type Doc = { id: string; titulo: string; url_arquivo: string; ano: number | null };
 
-// Dados oficiais centralizados em src/lib/contatoInstitucional.ts
+// Dados oficiais centralizados em src/constants/contato.ts
 const CNPJ = CONTATO.cnpj;
 const ENDERECO = CONTATO.endereco;
 const MAPS = linkMapaBusca();

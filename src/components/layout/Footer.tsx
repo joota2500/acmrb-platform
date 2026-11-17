@@ -4,7 +4,7 @@
  * Rodapé institucional da ACMRB
  * ------------------------------------------------------------
  * Compacto, no padrão das seções recentes. Dados de contato vêm de
- * src/lib/contatoInstitucional.ts. No celular, as colunas de links
+ * src/constants/contato.ts. No celular, as colunas de links
  * viram acordeão (<details>) para economizar espaço.
  * CSS em src/styles/footer.css (prefixo "footer__").
  */

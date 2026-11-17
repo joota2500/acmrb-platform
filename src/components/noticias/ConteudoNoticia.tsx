@@ -1,7 +1,7 @@
 /**
  * ConteudoNoticia — mostra o texto da notícia já formatado
  * ------------------------------------------------------------
- * Usa o interpretador de src/lib/markdownNoticia.ts: o texto vira
+ * Usa o interpretador de src/utils/markdownNoticia.ts: o texto vira
  * elementos React (sem dangerouslySetInnerHTML), então não há risco de
  * script injetado e nenhum "#", "**" ou "-" cru aparece na leitura.
  * Usado na página pública e na pré-visualização do editor.

@@ -6,7 +6,7 @@
  *  - Desliza da esquerda com Framer Motion, com fundo escurecido (overlay).
  *  - Fecha ao: clicar no X, clicar no overlay, apertar Esc ou clicar num link.
  *  - Enquanto aberto, trava a rolagem da página de fundo (body).
- *  - Mostra os mesmos links do desktop (navItems.ts) e, no final,
+ *  - Mostra os mesmos links do desktop (constants/navegacao.ts) e, no final,
  *    o botão "Acessar Plataforma" (/login) ou os dados do usuário logado.
  *
  * Dados: user/perfil/logout vêm do Header (AuthContext / Supabase).
