@@ -32,16 +32,6 @@
 .leaflet-popup-content-wrapper { border-radius: 1rem; box-shadow: 0 12px 30px rgba(4, 120, 87, 0.2); }
 .leaflet-popup-content { margin: 0.9rem 1rem; }
 .mapa-pop { font-family: inherit; color: #374151; min-width: 190px; }
-.mapa-pop__topo { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
-.mapa-pop__logo { width: 42px; height: 42px; object-fit: contain; border-radius: 0.6rem; background: #fff; border: 1px solid #e5e7eb; padding: 2px; flex-shrink: 0; }
-.mapa-pop__inicial { width: 42px; height: 42px; border-radius: 0.6rem; color: #fff; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.mapa-pop__nome { display: block; font-size: 0.95rem; color: #111827; line-height: 1.25; }
-.mapa-pop__cat { font-size: 0.75rem; font-weight: 700; }
-.mapa-pop__bairro { margin: 0 0 0.35rem !important; font-size: 0.8rem; color: #6b7280; }
-.mapa-pop__apoios { list-style: none; padding: 0; margin: 0.25rem 0 0.4rem; display: flex; flex-wrap: wrap; gap: 0.25rem; }
-.mapa-pop__apoios li { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 9999px; background: #ecfdf5; color: #047857; font-weight: 600; }
-.mapa-pop__aprox { margin: 0.2rem 0 !important; font-size: 0.72rem; color: #9ca3af; font-style: italic; }
-.mapa-pop__link { display: inline-block; margin-top: 0.3rem; font-weight: 700; color: #047857 !important; font-size: 0.82rem; }
 
 @media (max-width: 480px) {
   .mapa-wrap { min-height: 300px; border-radius: 1rem; }

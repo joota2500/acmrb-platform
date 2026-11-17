@@ -46,8 +46,6 @@
 .advis-acao { text-align: right; }
 
 .advis-selo { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 800; }
-.advis-selo--ativo { background: #DDF5EC; color: #2E5E4E; }
-.advis-selo--inativo { background: #f4f4f5; color: #71717a; }
 
 .advis-paginacao { display: flex; align-items: center; justify-content: center; gap: 0.8rem; font-size: 0.86rem; color: #52525b; }
 
