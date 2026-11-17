@@ -26,8 +26,22 @@ Responsável: João Victor Rocha Costa
 ## Falta fazer
 
 ### Front (visual)
-- [ ] **Páginas públicas** com o mesmo visual da home: Quem somos, Notícias, Transparência, Parceiros e Associados
-- [ ] **Painel admin** com visual novo, tela por tela
+- [ ] **Telas com visual novo (Tailwind, sem CSS antigo)** — uma por vez, na ordem abaixo:
+  - [x] 1. Quem somos (`/quem-somos`)
+  - [ ] 2. Lista de notícias
+  - [ ] 3. Notícia aberta
+  - [ ] 4. Transparência
+  - [ ] 5. Parceiros
+  - [ ] 6. Associados
+  - [ ] 7. Mapa
+  - [ ] 8. Admin: estrutura (shell)
+  - [ ] 9. Admin: visão geral
+  - [ ] 10. Admin: notícias
+  - [ ] 11. Admin: apoiadores
+  - [ ] 12. Admin: coletas e calendário
+  - [ ] 13. Admin: mensagens
+  - [ ] 14. Admin: visitantes
+  - [ ] 15. Admin: acessos e aparelhos
 - [ ] **Responsivo fino** — revisar celular, tablet e notebook em todas as telas
 - [ ] **Hooks** — separar a lógica de cada tela do visual
 - [ ] **Imagens otimizadas** com `next/image` em todo o site
