@@ -14,7 +14,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   AlertTriangle, ArrowRight, Building2, CalendarDays, ChevronDown, ChevronRight, ExternalLink, FileText,
   Globe, Handshake, HeartHandshake, AtSign, Mail, MapPin, Package, Phone, RefreshCw, Scale, Search, Truck, UserRound,
@@ -26,13 +26,31 @@ import {
   listarApoiadoresPublicos, listarEmpresasLogisticaPublicas, listarRepassesPublicos,
   type ApoiadorPublico, type EmpresaLogisticaPublica, type RepassePublico,
 } from "@/services/apoiadores";
-import "@/styles/parceiros-page.css";
 import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import EmptyState from "@/components/ui/EmptyState";
+import { Select } from "@/components/ui/Input";
+import FaixaCta from "@/components/home/FaixaCta";
+import TituloSecao from "@/components/home/TituloSecao";
+import { useAparecer } from "@/hooks/useAparecer";
+import { cn } from "@/utils/cn";
+
+/* Cor do selo de status da parceria */
+const COR_STATUS: Record<string, string> = {
+  ativa: "bg-brand-mint text-leaf",
+  em_negociacao: "bg-amber-100 text-amber-700",
+  pausada: "bg-zinc-100 text-zinc-600",
+  encerrada: "bg-zinc-100 text-zinc-600",
+};
+
+/* Pequenos pedaços de estilo que se repetem */
+const LINK_CARD = "inline-flex items-center gap-1.5 text-sm font-bold text-leaf hover:underline";
+const ETIQUETA = "rounded-full bg-brand-soft px-2.5 py-1 text-xs font-semibold text-leaf";
 
 type Estado = "carregando" | "pronto" | "erro";
 
 export default function ParceirosPagina() {
-  const reduzir = useReducedMotion();
+  const aparecer = useAparecer();
   const [estado, setEstado] = useState<Estado>("carregando");
   const [indisponivel, setIndisponivel] = useState(false);
   const [empresas, setEmpresas] = useState<EmpresaLogisticaPublica[]>([]);
@@ -64,13 +82,6 @@ export default function ParceirosPagina() {
   useEffect(() => {
     carregar();
   }, [carregar]);
-
-  const fade = (delay = 0) => ({
-    initial: reduzir ? { opacity: 1 } : { opacity: 0, y: 20 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true, amount: 0.1 },
-    transition: { duration: reduzir ? 0 : 0.45, delay: reduzir ? 0 : delay },
-  });
 
   const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const termo = norm(busca.trim());
@@ -111,160 +122,208 @@ export default function ParceirosPagina() {
   const totalRepassado = empresas.reduce((s, e) => s + Number(e.total_repassado_kg || 0), 0);
 
   return (
-    <main className="parc" lang="pt-BR">
-      {/* Hero */}
-      <section className="parc__hero" aria-labelledby="parc-titulo">
-        <div className="parc__container">
-          <nav aria-label="Trilha de navegação" className="parc__crumb">
-            <ol>
-              <li><Link href="/">Início</Link></li>
+    <main className="min-h-screen bg-surface-alt" lang="pt-BR">
+      {/* ---------- Topo ---------- */}
+      <section className="relative isolate overflow-hidden bg-emerald-950 pb-24 pt-24 sm:pb-28 sm:pt-28 lg:pb-32" aria-labelledby="parc-titulo">
+        {/* brilhos decorativos no fundo */}
+        <span aria-hidden="true" className="pointer-events-none absolute -left-24 top-10 -z-10 size-96 rounded-full bg-emerald-500/20 blur-3xl" />
+        <span aria-hidden="true" className="pointer-events-none absolute -right-20 bottom-0 -z-10 size-80 rounded-full bg-sun/10 blur-3xl" />
+
+        <Container>
+          <nav aria-label="Trilha de navegação">
+            <ol className="flex items-center gap-1.5 text-sm text-emerald-200">
+              <li><Link href="/" className="hover:text-white hover:underline">Início</Link></li>
               <li aria-hidden="true"><ChevronRight size={14} /></li>
-              <li aria-current="page">Parceiros</li>
+              <li aria-current="page" className="font-semibold text-white">Parceiros</li>
             </ol>
           </nav>
-          <motion.div {...fade()}>
-            <span className="parc__tag"><Handshake size={14} aria-hidden="true" /> Parceiros e Apoiadores</span>
-            <h1 id="parc-titulo" className="parc__title">
-              Parcerias que dão <span>destino certo</span> ao material reciclável
+          <motion.div className="mt-6 max-w-3xl" {...aparecer()}>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-emerald-100 backdrop-blur-md">
+              <Handshake size={14} className="text-emerald-300" aria-hidden="true" /> Parceiros e Apoiadores
+            </span>
+            <h1 id="parc-titulo" className="mt-5 text-balance text-4xl font-black leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
+              Parcerias que dão <span className="text-emerald-300">destino certo</span> ao material reciclável
             </h1>
-            <p className="parc__lead">
+            <p lang="pt-BR" className="mt-5 text-pretty text-base leading-relaxed text-emerald-100 sm:text-lg">
               A ACMRB recebe, identifica, separa e repassa os materiais recicláveis para empresas de logística reversa e
               indústrias recicladoras. Aqui você conhece cada parceiro, os responsáveis e o histórico público do que já foi
               repassado, além dos comércios, instituições e pessoas que apoiam a associação.
             </p>
           </motion.div>
-          <ul className="parc__stats" aria-label="Totais">
-            <li><Truck size={20} aria-hidden="true" /><strong>{estado === "pronto" ? empresas.length : "—"}</strong><span>empresas de logística</span></li>
-            <li><Scale size={20} aria-hidden="true" /><strong>{estado === "pronto" ? formatarKg(totalRepassado) : "—"}</strong><span>repassados (registros públicos)</span></li>
-            <li><HeartHandshake size={20} aria-hidden="true" /><strong>{estado === "pronto" ? apoiadores.length : "—"}</strong><span>apoiadores</span></li>
-          </ul>
-        </div>
+        </Container>
       </section>
 
-      <div className="parc__container parc__body">
-        {/* Filtros */}
-        <div className="parc__filters" role="search">
-          <label className="parc__search">
-            <Search size={18} aria-hidden="true" />
+      {/* ---------- Totais (sobem sobre o topo) ---------- */}
+      <Container className="relative z-10 -mt-14 sm:-mt-16">
+        <ul className="grid grid-cols-3 gap-2 sm:gap-4" aria-label="Totais">
+          {[
+            { icone: Truck, valor: estado === "pronto" ? String(empresas.length) : "—", rotulo: "empresas de logística" },
+            { icone: Scale, valor: estado === "pronto" ? formatarKg(totalRepassado) : "—", rotulo: "repassados (registros públicos)" },
+            { icone: HeartHandshake, valor: estado === "pronto" ? String(apoiadores.length) : "—", rotulo: "apoiadores" },
+          ].map((t) => {
+            const Icone = t.icone;
+            return (
+              <li key={t.rotulo} className="flex flex-col gap-1 rounded-card border border-black/5 bg-white p-3 shadow-pop sm:p-5">
+                <span className="grid size-8 place-items-center rounded-xl bg-brand-mint text-leaf sm:size-10"><Icone size={18} aria-hidden="true" /></span>
+                <strong className="mt-1 text-lg font-black tabular-nums text-ink sm:text-3xl">{t.valor}</strong>
+                <span className="text-[0.68rem] leading-tight text-ink-soft sm:text-sm">{t.rotulo}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </Container>
+
+      <Container className="pb-16 pt-8 sm:pb-24 sm:pt-10">
+        {/* ---------- Filtros ---------- */}
+        <div className="z-20 mb-10 grid gap-3 rounded-card border border-line bg-white/90 p-3 shadow-card backdrop-blur-md sm:sticky sm:top-18 sm:grid-cols-2 sm:p-4 lg:top-17 lg:grid-cols-[1fr_14rem_14rem]" role="search">
+          <label className="relative sm:col-span-2 lg:col-span-1">
+            <Search size={18} aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted" />
             <span className="sr-only">Buscar parceiro</span>
-            <input type="search" value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar por nome, material ou responsável" />
+            <input
+              type="search"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Buscar por nome, material ou responsável"
+              className="h-11 w-full rounded-control border border-line bg-white pl-11 pr-4 text-sm text-ink placeholder:text-ink-muted focus:border-brand focus:shadow-focus focus:outline-none"
+            />
           </label>
-          <label className="parc__select">
+          <label>
             <span className="sr-only">Filtrar por material</span>
-            <select value={material} onChange={(e) => setMaterial(e.target.value)}>
+            <Select value={material} onChange={(e) => setMaterial(e.target.value)}>
               <option value="">Todos os materiais</option>
               {materiais.map((m) => <option key={m} value={m}>{m}</option>)}
-            </select>
+            </Select>
           </label>
-          <label className="parc__select">
+          <label>
             <span className="sr-only">Filtrar apoiadores por categoria</span>
-            <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
+            <Select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
               <option value="">Todas as categorias</option>
               {CATEGORIAS.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+            </Select>
           </label>
         </div>
 
         {estado === "carregando" && (
-          <div className="parc__skeletons" aria-busy="true" aria-label="Carregando parceiros">
-            {[0, 1, 2].map((i) => <div key={i} className="parc__skeleton" />)}
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-busy="true" aria-label="Carregando parceiros">
+            {[0, 1, 2].map((i) => <div key={i} className="h-72 animate-pulse rounded-card bg-white" />)}
           </div>
         )}
 
         {estado === "erro" && (
-          <div className="parc__state parc__state--erro" role="alert">
-            <AlertTriangle size={28} aria-hidden="true" />
-            <strong>Não foi possível carregar os parceiros</strong>
-            <p>Verifique sua conexão e tente novamente.</p>
-            <Button type="button" onClick={carregar} ><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</Button>
+          <div className="flex flex-col items-center gap-2 rounded-card border border-dashed border-red-200 bg-danger-soft p-8 text-center" role="alert">
+            <AlertTriangle size={30} className="text-danger" aria-hidden="true" />
+            <strong className="text-lg text-ink">Não foi possível carregar os parceiros</strong>
+            <p className="text-sm text-ink-soft">Verifique sua conexão e tente novamente.</p>
+            <Button type="button" onClick={carregar} className="mt-2"><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</Button>
           </div>
         )}
 
         {estado === "pronto" && (
           <>
-            {/* Logística reversa */}
-            <section aria-labelledby="parc-log" className="parc__section">
-              <header className="parc__section-head">
-                <h2 id="parc-log"><Truck size={22} aria-hidden="true" /> Empresas de logística reversa</h2>
-                <p>Empresas e indústrias que recebem os materiais triados pela ACMRB e garantem o destino ambientalmente correto.</p>
-              </header>
+            {/* ---------- Logística reversa ---------- */}
+            <section aria-labelledby="parc-log">
+              <TituloSecao
+                id="parc-log"
+                etiqueta="Logística reversa"
+                icone={Truck}
+                alinhamento="esquerda"
+                className="mb-8 sm:mb-10"
+                titulo={<>Empresas de <span>logística reversa</span></>}
+                descricao="Empresas e indústrias que recebem os materiais triados pela ACMRB e garantem o destino ambientalmente correto."
+              />
 
               {empresasFiltradas.length === 0 ? (
-                <div className="parc__state" role="status">
-                  <Building2 size={28} aria-hidden="true" />
-                  <strong>{indisponivel || empresas.length === 0 ? "Em breve as empresas parceiras" : "Nenhuma empresa com esse filtro"}</strong>
-                  <p>{empresas.length === 0 ? "As parcerias de logística reversa serão publicadas aqui." : "Ajuste a busca ou o filtro de material."}</p>
+                <div role="status">
+                  <EmptyState
+                    title={indisponivel || empresas.length === 0 ? "Em breve as empresas parceiras" : "Nenhuma empresa com esse filtro"}
+                    description={empresas.length === 0 ? "As parcerias de logística reversa serão publicadas aqui." : "Ajuste a busca ou o filtro de material."}
+                  />
                 </div>
               ) : (
-                <ul className="parc__grid">
+                <ul className="grid items-start gap-5 md:grid-cols-2 xl:grid-cols-3">
                   {empresasFiltradas.map((e, i) => {
                     const hist = repasses.filter((r) => r.empresa_id === e.id);
                     const site = linkExterno(e.site);
                     const exp = aberto === e.id;
                     return (
-                      <motion.li key={e.id} className="parc__card" {...fade(Math.min(i, 6) * 0.05)}>
-                        <div className="parc__card-top">
-                          <div className="parc__logo">
+                      <motion.li
+                        key={e.id}
+                        {...aparecer(Math.min(i, 6) * 0.05)}
+                        className="flex flex-col gap-4 rounded-card border border-black/5 bg-white p-5 shadow-card transition duration-300 hover:border-brand-line hover:shadow-card-hover motion-reduce:transition-none sm:p-6"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="grid size-16 flex-none place-items-center overflow-hidden rounded-2xl border border-line bg-white p-1.5 sm:size-20">
                             {e.logo_url ? (
                               // eslint-disable-next-line @next/next/no-img-element
-                              <img src={e.logo_url} alt={`Logo de ${e.nome}`} loading="lazy" />
+                              <img src={e.logo_url} alt={`Logo de ${e.nome}`} loading="lazy" className="size-full object-contain" />
                             ) : (
-                              <span aria-hidden="true">{e.nome.charAt(0).toUpperCase()}</span>
+                              <span aria-hidden="true" className="grid size-full place-items-center rounded-xl bg-linear-to-br from-leaf to-leaf-bright text-3xl font-black text-white">{e.nome.charAt(0).toUpperCase()}</span>
                             )}
                           </div>
-                          <div className="parc__card-head">
-                            <h3>{e.nome}</h3>
-                            <span className={`parc__status parc__status--${e.status}`}>{STATUS_LOGISTICA[e.status] ?? e.status}</span>
-                            {e.cnpj && <span className="parc__cnpj">CNPJ {mascaraCnpj(e.cnpj)}</span>}
+                          <div className="flex min-w-0 flex-col items-start gap-1">
+                            <h3 className="text-lg font-black leading-tight text-ink [overflow-wrap:anywhere]">{e.nome}</h3>
+                            <span className={cn("rounded-full px-2.5 py-0.5 text-xs font-extrabold", COR_STATUS[e.status] ?? COR_STATUS.pausada)}>{STATUS_LOGISTICA[e.status] ?? e.status}</span>
+                            {e.cnpj && <span className="text-xs text-ink-muted">CNPJ {mascaraCnpj(e.cnpj)}</span>}
                           </div>
                         </div>
 
-                        {e.descricao && <p className="parc__desc">{e.descricao}</p>}
+                        {e.descricao && <p lang="pt-BR" className="texto-justo text-sm leading-relaxed text-ink-soft">{e.descricao}</p>}
 
-                        <dl className="parc__meta">
+                        <dl className="flex flex-col gap-2.5 text-sm">
                           {e.responsavel_nome && (
-                            <div><dt><UserRound size={15} aria-hidden="true" /> Responsável</dt><dd>{e.responsavel_nome}{e.responsavel_cargo ? ` · ${e.responsavel_cargo}` : ""}</dd></div>
+                            <div className="flex justify-between gap-3 border-b border-dashed border-line pb-2"><dt className="inline-flex flex-none items-center gap-1.5 text-ink-muted"><UserRound size={15} className="text-leaf" aria-hidden="true" /> Responsável</dt><dd className="text-right text-ink">{e.responsavel_nome}{e.responsavel_cargo ? ` · ${e.responsavel_cargo}` : ""}</dd></div>
                           )}
                           {e.parceria_desde && (
-                            <div><dt><CalendarDays size={15} aria-hidden="true" /> Parceria desde</dt><dd>{formatarData(e.parceria_desde, { month: "long", year: "numeric" })}</dd></div>
+                            <div className="flex justify-between gap-3 border-b border-dashed border-line pb-2"><dt className="inline-flex flex-none items-center gap-1.5 text-ink-muted"><CalendarDays size={15} className="text-leaf" aria-hidden="true" /> Parceria desde</dt><dd className="text-right text-ink">{formatarData(e.parceria_desde, { month: "long", year: "numeric" })}</dd></div>
                           )}
-                          <div><dt><Scale size={15} aria-hidden="true" /> Total repassado</dt><dd><strong>{formatarKg(e.total_repassado_kg)}</strong>{e.total_repasses ? ` em ${e.total_repasses} ${e.total_repasses === 1 ? "repasse" : "repasses"}` : ""}</dd></div>
+                          <div className="flex justify-between gap-3 border-b border-dashed border-line pb-2"><dt className="inline-flex flex-none items-center gap-1.5 text-ink-muted"><Scale size={15} className="text-leaf" aria-hidden="true" /> Total repassado</dt><dd className="text-right text-ink"><strong>{formatarKg(e.total_repassado_kg)}</strong>{e.total_repasses ? ` em ${e.total_repasses} ${e.total_repasses === 1 ? "repasse" : "repasses"}` : ""}</dd></div>
                         </dl>
 
                         {e.materiais_aceitos.length > 0 && (
-                          <div className="parc__mats">
-                            <span><Package size={14} aria-hidden="true" /> Materiais aceitos</span>
-                            <ul>{e.materiais_aceitos.map((m) => <li key={m}>{m}</li>)}</ul>
+                          <div>
+                            <span className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-wider text-ink-soft"><Package size={14} aria-hidden="true" /> Materiais aceitos</span>
+                            <ul className="mt-2 flex flex-wrap gap-1.5">{e.materiais_aceitos.map((m) => <li key={m} className={ETIQUETA}>{m}</li>)}</ul>
                           </div>
                         )}
 
-                        <div className="parc__links">
-                          {site && <a href={site} target="_blank" rel="noopener noreferrer"><Globe size={15} aria-hidden="true" /> Site <ExternalLink size={12} aria-hidden="true" /></a>}
-                          {e.email_publico && <a href={`mailto:${e.email_publico}`}><Mail size={15} aria-hidden="true" /> E-mail</a>}
-                          {e.telefone_publico && <a href={`tel:${e.telefone_publico.replace(/\D/g, "")}`}><Phone size={15} aria-hidden="true" /> {e.telefone_publico}</a>}
-                        </div>
+                        {(site || e.email_publico || e.telefone_publico) && (
+                          <div className="flex flex-wrap gap-x-4 gap-y-2">
+                            {site && <a href={site} target="_blank" rel="noopener noreferrer" className={LINK_CARD}><Globe size={15} aria-hidden="true" /> Site <ExternalLink size={12} aria-hidden="true" /></a>}
+                            {e.email_publico && <a href={`mailto:${e.email_publico}`} className={LINK_CARD}><Mail size={15} aria-hidden="true" /> E-mail</a>}
+                            {e.telefone_publico && <a href={`tel:${e.telefone_publico.replace(/\D/g, "")}`} className={LINK_CARD}><Phone size={15} aria-hidden="true" /> {e.telefone_publico}</a>}
+                          </div>
+                        )}
 
                         {hist.length > 0 && (
-                          <div className="parc__hist">
-                            <button type="button" aria-expanded={exp} aria-controls={`hist-${e.id}`} onClick={() => setAberto(exp ? null : e.id)}>
-                              Histórico de repasses ({hist.length}) <ChevronDown size={16} aria-hidden="true" className={exp ? "parc__rot" : ""} />
+                          <div>
+                            <button
+                              type="button"
+                              aria-expanded={exp}
+                              aria-controls={`hist-${e.id}`}
+                              onClick={() => setAberto(exp ? null : e.id)}
+                              className="flex w-full cursor-pointer items-center justify-between rounded-xl border border-brand-line bg-brand-soft px-3.5 py-2.5 text-sm font-bold text-leaf transition hover:bg-brand-mint"
+                            >
+                              Histórico de repasses ({hist.length}) <ChevronDown size={16} aria-hidden="true" className={cn("transition", exp && "rotate-180")} />
                             </button>
                             {exp && (
-                              <div id={`hist-${e.id}`} className="parc__table-wrap">
-                                <table className="parc__table">
+                              <div id={`hist-${e.id}`} className="mt-3">
+                                {/* no celular cada repasse vira um cartãozinho; do tablet para cima é tabela */}
+                                <table className="w-full border-collapse text-sm max-sm:block">
                                   <caption className="sr-only">Repasses públicos para {e.nome}</caption>
-                                  <thead><tr><th scope="col">Data</th><th scope="col">Material</th><th scope="col">Peso</th><th scope="col">Valor</th><th scope="col"><span className="sr-only">Documento</span></th></tr></thead>
-                                  <tbody>
+                                  <thead className="max-sm:hidden"><tr className="border-b border-brand-line text-left text-xs text-ink-muted"><th scope="col" className="px-1.5 py-2 font-bold">Data</th><th scope="col" className="px-1.5 py-2 font-bold">Material</th><th scope="col" className="px-1.5 py-2 font-bold">Peso</th><th scope="col" className="px-1.5 py-2 font-bold">Valor</th><th scope="col" className="px-1.5 py-2"><span className="sr-only">Documento</span></th></tr></thead>
+                                  <tbody className="max-sm:block max-sm:space-y-2">
                                     {hist.map((r) => (
-                                      <tr key={r.id}>
-                                        <td data-label="Data">{formatarData(r.data)}</td>
-                                        <td data-label="Material">{r.material}</td>
-                                        <td data-label="Peso">{formatarKg(r.peso_kg)}</td>
-                                        <td data-label="Valor">{r.valor != null ? formatarReais(r.valor) : "—"}</td>
-                                        <td data-label="Documento">
+                                      <tr key={r.id} className="border-b border-line text-ink max-sm:grid max-sm:grid-cols-2 max-sm:gap-x-3 max-sm:gap-y-1 max-sm:rounded-xl max-sm:border max-sm:bg-surface-alt max-sm:p-3">
+                                        <td className="px-1.5 py-2 max-sm:p-0"><span className="font-semibold text-ink-muted sm:hidden">Data: </span>{formatarData(r.data)}</td>
+                                        <td className="px-1.5 py-2 max-sm:p-0"><span className="font-semibold text-ink-muted sm:hidden">Material: </span>{r.material}</td>
+                                        <td className="px-1.5 py-2 max-sm:p-0"><span className="font-semibold text-ink-muted sm:hidden">Peso: </span>{formatarKg(r.peso_kg)}</td>
+                                        <td className="px-1.5 py-2 max-sm:p-0"><span className="font-semibold text-ink-muted sm:hidden">Valor: </span>{r.valor != null ? formatarReais(r.valor) : "—"}</td>
+                                        <td className="px-1.5 py-2 max-sm:col-span-2 max-sm:p-0">
                                           {r.documento_url ? (
-                                            <a href={linkExterno(r.documento_url)!} target="_blank" rel="noopener noreferrer"><FileText size={14} aria-hidden="true" /> Comprovante</a>
-                                          ) : "—"}
+                                            <a href={linkExterno(r.documento_url)!} target="_blank" rel="noopener noreferrer" className={LINK_CARD}><FileText size={14} aria-hidden="true" /> Comprovante</a>
+                                          ) : (
+                                            <><span className="font-semibold text-ink-muted sm:hidden">Documento: </span>—</>
+                                          )}
                                         </td>
                                       </tr>
                                     ))}
@@ -281,48 +340,55 @@ export default function ParceirosPagina() {
               )}
             </section>
 
-            {/* Apoiadores */}
-            <section aria-labelledby="parc-apo" className="parc__section">
-              <header className="parc__section-head">
-                <h2 id="parc-apo"><HeartHandshake size={22} aria-hidden="true" /> Apoiadores e parceiros institucionais</h2>
-                <p>Comércios, instituições e pessoas que apoiam a coleta seletiva com pontos de entrega, doações, divulgação e voluntariado.</p>
-              </header>
+            {/* ---------- Apoiadores ---------- */}
+            <section aria-labelledby="parc-apo" className="mt-16 sm:mt-24">
+              <TituloSecao
+                id="parc-apo"
+                etiqueta="Apoiadores"
+                icone={HeartHandshake}
+                alinhamento="esquerda"
+                className="mb-8 sm:mb-10"
+                titulo={<>Apoiadores e <span>parceiros institucionais</span></>}
+                descricao="Comércios, instituições e pessoas que apoiam a coleta seletiva com pontos de entrega, doações, divulgação e voluntariado."
+              />
 
               {grupos.length === 0 ? (
-                <div className="parc__state" role="status">
-                  <HeartHandshake size={28} aria-hidden="true" />
-                  <strong>{apoiadores.length === 0 ? "Em breve os primeiros apoiadores" : "Nenhum apoiador com esse filtro"}</strong>
-                  <p>{apoiadores.length === 0 ? "Os apoiadores da ACMRB serão listados aqui." : "Ajuste a busca ou a categoria."}</p>
+                <div role="status">
+                  <EmptyState
+                    title={apoiadores.length === 0 ? "Em breve os primeiros apoiadores" : "Nenhum apoiador com esse filtro"}
+                    description={apoiadores.length === 0 ? "Os apoiadores da ACMRB serão listados aqui." : "Ajuste a busca ou a categoria."}
+                  />
                 </div>
               ) : (
                 grupos.map((g) => (
-                  <div key={g.categoria} className="parc__group">
-                    <h3 className="parc__group-title" style={{ ["--cat" as string]: corCategoria(g.categoria) }}>
-                      <span aria-hidden="true" /> {g.categoria} <small>({g.itens.length})</small>
+                  <div key={g.categoria} className="mb-10 last:mb-0">
+                    <h3 className="mb-4 flex items-center gap-2.5 text-lg font-extrabold text-ink">
+                      <span aria-hidden="true" className="size-3 rounded-full" style={{ background: corCategoria(g.categoria) }} /> {g.categoria}{" "}
+                      <small className="font-semibold text-ink-muted">({g.itens.length})</small>
                     </h3>
-                    <ul className="parc__apo-grid">
+                    <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                       {g.itens.map((a) => {
                         const site = linkExterno(a.site);
                         const insta = linkInstagram(a.instagram);
                         return (
-                          <li key={a.id} className="parc__apo">
-                            <div className="parc__apo-logo">
+                          <li key={a.id} className="flex gap-3.5 rounded-card border border-black/5 bg-white p-4 shadow-card">
+                            <div className="grid size-14 flex-none place-items-center overflow-hidden rounded-xl border border-line bg-white p-1">
                               {a.logo_url ? (
                                 // eslint-disable-next-line @next/next/no-img-element
-                                <img src={a.logo_url} alt="" loading="lazy" />
+                                <img src={a.logo_url} alt="" loading="lazy" className="size-full object-contain" />
                               ) : (
-                                <span style={{ background: corCategoria(a.categoria) }} aria-hidden="true">{a.nome_exibicao.charAt(0).toUpperCase()}</span>
+                                <span className="grid size-full place-items-center rounded-lg text-xl font-black text-white" style={{ background: corCategoria(a.categoria) }} aria-hidden="true">{a.nome_exibicao.charAt(0).toUpperCase()}</span>
                               )}
                             </div>
-                            <div className="parc__apo-body">
-                              <strong>{a.nome_exibicao}</strong>
-                              {a.bairro && <span className="parc__apo-bairro"><MapPin size={12} aria-hidden="true" /> {a.bairro}</span>}
-                              {a.descricao && <p>{a.descricao}</p>}
-                              {a.tipos_apoio.length > 0 && <ul className="parc__apo-tags">{a.tipos_apoio.map((t) => <li key={t}>{t}</li>)}</ul>}
+                            <div className="flex min-w-0 flex-col gap-1.5">
+                              <strong className="text-base font-extrabold text-ink [overflow-wrap:anywhere]">{a.nome_exibicao}</strong>
+                              {a.bairro && <span className="inline-flex items-center gap-1 text-xs text-ink-muted"><MapPin size={12} aria-hidden="true" /> {a.bairro}</span>}
+                              {a.descricao && <p lang="pt-BR" className="text-sm leading-relaxed text-ink-soft">{a.descricao}</p>}
+                              {a.tipos_apoio.length > 0 && <ul className="flex flex-wrap gap-1.5">{a.tipos_apoio.map((t) => <li key={t} className={ETIQUETA}>{t}</li>)}</ul>}
                               {(site || insta) && (
-                                <div className="parc__apo-links">
-                                  {site && <a href={site} target="_blank" rel="noopener noreferrer"><Globe size={13} aria-hidden="true" /> Site</a>}
-                                  {insta && <a href={insta} target="_blank" rel="noopener noreferrer"><AtSign size={13} aria-hidden="true" /> Instagram</a>}
+                                <div className="flex gap-4">
+                                  {site && <a href={site} target="_blank" rel="noopener noreferrer" className={LINK_CARD}><Globe size={13} aria-hidden="true" /> Site</a>}
+                                  {insta && <a href={insta} target="_blank" rel="noopener noreferrer" className={LINK_CARD}><AtSign size={13} aria-hidden="true" /> Instagram</a>}
                                 </div>
                               )}
                             </div>
@@ -337,18 +403,17 @@ export default function ParceirosPagina() {
           </>
         )}
 
-        {/* CTA */}
-        <section className="parc__cta" aria-labelledby="parc-cta">
-          <div>
-            <h2 id="parc-cta">Sua empresa quer ser parceira?</h2>
-            <p>Indústrias, operadores de logística reversa, comércios e instituições podem apoiar a ACMRB. Entre em contato e conheça como funciona a parceria.</p>
-          </div>
-          <div className="parc__cta-actions">
-            <Button href="/#contato" variante="claro" >Quero ser parceiro <ArrowRight size={16} aria-hidden="true" /></Button>
-            <Button href="/#parceiros" variante="contornoClaro" ><MapPin size={16} aria-hidden="true" /> Ver mapa de apoiadores</Button>
-          </div>
+        {/* ---------- Chamada para ser parceiro ---------- */}
+        <section aria-label="Seja um parceiro">
+          <FaixaCta
+            titulo="Sua empresa quer ser parceira?"
+            texto="Indústrias, operadores de logística reversa, comércios e instituições podem apoiar a ACMRB. Entre em contato e conheça como funciona a parceria."
+          >
+            <Button href="/#contato" variante="claro" tamanho="grande">Quero ser parceiro <ArrowRight size={16} aria-hidden="true" /></Button>
+            <Button href="/#parceiros" variante="contornoClaro" tamanho="grande"><MapPin size={16} aria-hidden="true" /> Ver mapa de apoiadores</Button>
+          </FaixaCta>
         </section>
-      </div>
+      </Container>
     </main>
   );
 }

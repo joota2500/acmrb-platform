@@ -31,7 +31,7 @@ Responsável: João Victor Rocha Costa
   - [x] 2. Lista de notícias
   - [x] 3. Notícia aberta
   - [x] 4. Transparência
-  - [ ] 5. Parceiros
+  - [x] 5. Parceiros
   - [ ] 6. Associados
   - [ ] 7. Mapa
   - [ ] 8. Admin: estrutura (shell)
