@@ -27,7 +27,7 @@
  *  - Tablet (640–1023px): grades em 2 colunas, botões lado a lado.
  *  - Desktop (>=1024px): hero em 2 colunas (texto + foto), grades em 3–4
  *    colunas, linha do tempo com mais respiro.
- *  - Parágrafos justificados com hifenização (pedido do Artur); títulos não.
+ *  - Parágrafos justificados com hifenização (pedido do João Victor); títulos não.
  */
 
 import Link from "next/link";

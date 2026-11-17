@@ -20,7 +20,7 @@
  *  - Tablet (640–1023px): cards em 2 colunas (o 3º ocupa a linha inteira),
  *    botões lado a lado.
  *  - Desktop (>=1024px): cards em 3 colunas com a mesma altura.
- *  - Parágrafos justificados em todas as telas (pedido do Artur), com
+ *  - Parágrafos justificados em todas as telas (pedido do João Victor), com
  *    hifenização automática (lang="pt-BR") para evitar buracos entre palavras.
  *    Títulos continuam sem justificar.
  */

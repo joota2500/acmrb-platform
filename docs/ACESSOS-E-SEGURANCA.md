@@ -1,4 +1,4 @@
-# ACMRB — Acessos, privacidade e segurança (guia do Artur)
+# ACMRB — Acessos, privacidade e segurança (guia do João Victor)
 
 Linguagem simples, passo a passo. Tudo aqui foi feito na branch `acmrb-terceira-branch`.
 
@@ -111,7 +111,7 @@ Se a limpeza não rodar, nada quebra: só os anônimos ficam mais de 24 h. Na ab
 
 ---
 
-## 4. Passo a passo do Artur (bem simples)
+## 4. Passo a passo do João Victor (bem simples)
 
 1. **Chave do servidor**
    - Supabase → *Project Settings → API Keys*. Copie a chave **secret** (`sb_secret_…`) ou a **service_role**.

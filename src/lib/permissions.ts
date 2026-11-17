@@ -2,7 +2,7 @@
  * Matriz de permissões do painel administrativo
  * ------------------------------------------------------------
  * Só existem dois papéis (coluna admins.role):
- *   - "deus":  o programador (Artur). Acesso total. Único.
+ *   - "deus":  o programador (João Victor Rocha Costa). Acesso total. Único.
  *   - "admin": administrador normal. No máximo um.
  *
  * Esta matriz controla o que aparece no menu e o que cada seção
