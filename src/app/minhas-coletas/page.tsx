@@ -3,10 +3,8 @@
  */
 
 import type { Metadata } from "next";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import PaginaInterna from "@/components/layout/PaginaInterna";
 import MinhasColetas from "@/components/coletas/MinhasColetas";
-import "@/styles/paginas-coleta.css";
 
 export const metadata: Metadata = {
   title: "Minhas coletas",
@@ -15,18 +13,8 @@ export const metadata: Metadata = {
 
 export default function MinhasColetasPage() {
   return (
-    <>
-      <Header />
-      <main className="pcol">
-        <div className="pcol__container">
-          <header className="pcol__topo">
-            <p className="pcol__selo">Área do visitante</p>
-            <h1 className="pcol__titulo">Minhas coletas</h1>
-          </header>
-          <MinhasColetas />
-        </div>
-      </main>
-      <Footer />
-    </>
+    <PaginaInterna etiqueta="Área do visitante" titulo="Minhas coletas" largo>
+      <MinhasColetas />
+    </PaginaInterna>
   );
 }

@@ -5,10 +5,8 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/seo/JsonLd";
 import { jsonLdMigalhas, metaPagina } from "@/lib/seo";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import PaginaInterna from "@/components/layout/PaginaInterna";
 import FormAgendarColeta from "@/components/coletas/FormAgendarColeta";
-import "@/styles/paginas-coleta.css";
 
 export const metadata: Metadata = metaPagina({
   titulo: "Agende a coleta seletiva em Baturité",
@@ -19,20 +17,13 @@ export const metadata: Metadata = metaPagina({
 
 export default function AgendarColetaPage() {
   return (
-    <>
-      <Header />
+    <PaginaInterna
+      etiqueta="Coleta seletiva"
+      titulo="Agende sua coleta"
+      descricao="Conte onde e o que vamos recolher. A equipe da ACMRB confirma a data e você acompanha tudo em “Minhas coletas”."
+    >
       <JsonLd dados={jsonLdMigalhas([{ nome: "Agendar coleta", caminho: "/agendar-coleta" }])} />
-      <main className="pcol">
-        <div className="pcol__container pcol__container--estreito">
-          <header className="pcol__topo">
-            <p className="pcol__selo">Coleta seletiva</p>
-            <h1 className="pcol__titulo">Agende sua coleta</h1>
-            <p className="pcol__sub">Conte onde e o que vamos recolher. A equipe da ACMRB confirma a data e você acompanha tudo em “Minhas coletas”.</p>
-          </header>
-          <FormAgendarColeta />
-        </div>
-      </main>
-      <Footer />
-    </>
+      <FormAgendarColeta />
+    </PaginaInterna>
   );
 }

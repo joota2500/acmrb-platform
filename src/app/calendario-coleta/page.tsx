@@ -6,11 +6,9 @@
 import type { Metadata } from "next";
 import JsonLd from "@/components/seo/JsonLd";
 import { jsonLdMigalhas, metaPagina } from "@/lib/seo";
-import Link from "next/link";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import PaginaInterna from "@/components/layout/PaginaInterna";
+import Button from "@/components/ui/Button";
 import CalendarioBairros from "@/components/calendario/CalendarioBairros";
-import "@/styles/paginas-coleta.css";
 
 export const metadata: Metadata = metaPagina({
   titulo: "Calendário de coleta seletiva por bairro em Baturité",
@@ -21,21 +19,14 @@ export const metadata: Metadata = metaPagina({
 
 export default function CalendarioColetaPage() {
   return (
-    <>
-      <Header />
+    <PaginaInterna
+      etiqueta="Coleta seletiva"
+      titulo="Calendário de coleta por bairro"
+      descricao="Escolha seu bairro para ver os dias, horários e materiais recolhidos. Precisa de uma coleta fora desses dias? Faça um pedido."
+      acao={<Button href="/agendar-coleta">Agendar uma coleta</Button>}
+    >
       <JsonLd dados={jsonLdMigalhas([{ nome: "Calendário de coleta", caminho: "/calendario-coleta" }])} />
-      <main className="pcol">
-        <div className="pcol__container pcol__container--estreito">
-          <header className="pcol__topo">
-            <p className="pcol__selo">Coleta seletiva</p>
-            <h1 className="pcol__titulo">Calendário de coleta por bairro</h1>
-            <p className="pcol__sub">Escolha seu bairro para ver os dias, horários e materiais recolhidos. Precisa de uma coleta fora desses dias? Faça um pedido.</p>
-            <Link href="/agendar-coleta" className="pcol__btn">Agendar uma coleta</Link>
-          </header>
-          <CalendarioBairros />
-        </div>
-      </main>
-      <Footer />
-    </>
+      <CalendarioBairros />
+    </PaginaInterna>
   );
 }

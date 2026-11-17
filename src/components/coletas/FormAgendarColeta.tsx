@@ -9,16 +9,19 @@
  *   ajustável no mapa, bairro (lista do calendário ou "outro"),
  *   materiais, quantidade, data e período preferidos, observações e
  *   foto opcional (bucket privado "coletas"). Validação com zod.
- * CSS: src/styles/agendar-coleta.css (prefixo "agc").
+ * Visual: Tailwind + ui (Input, Select, Textarea, Button, Spinner).
  */
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Camera, CheckCircle2, Loader2, LocateFixed, MapPin, Send, Trash2 } from "lucide-react";
+import { Camera, CheckCircle2, LocateFixed, MapPin, Send, Trash2 } from "lucide-react";
 
-import "@/styles/agendar-coleta.css";
+import Input, { Select, Textarea } from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
+import Spinner from "@/components/ui/Spinner";
+import { cn } from "@/utils/cn";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { geocodificar } from "@/services/apoiadoresAdmin";
@@ -29,7 +32,7 @@ import {
 
 const MapaSeletor = dynamic(() => import("@/components/mapa/MapaSeletor"), {
   ssr: false,
-  loading: () => <div className="agc-mapa-carregando">Carregando mapa…</div>,
+  loading: () => <div className="flex h-full items-center justify-center rounded-2xl bg-emerald-50 font-bold text-leaf">Carregando mapa…</div>,
 });
 
 const QUANTIDADES = ["Até 1 saco", "2 a 5 sacos", "6 a 10 sacos", "Mais de 10 sacos", "Grande volume (carro/caminhão)"];
@@ -136,7 +139,7 @@ export default function FormAgendarColeta() {
     }
   }
 
-  if (loading) return <p className="pcol__carregando"><Loader2 className="agc-giro" aria-label="Carregando" /></p>;
+  if (loading) return <Spinner centralizado />;
   if (!user || !perfil) return <PedirLogin />;
   if (perfil.tipo === "admin") {
     return (
@@ -151,126 +154,168 @@ export default function FormAgendarColeta() {
   const alternar = (m: string) => setMateriais((l) => (l.includes(m) ? l.filter((x) => x !== m) : [...l, m]));
 
   return (
-    <form className="agc" onSubmit={enviar} noValidate>
+    <form className="flex flex-col gap-4" onSubmit={enviar} noValidate>
       {/* 1. Local */}
-      <fieldset className="agc-bloco">
-        <legend className="agc-bloco__titulo"><MapPin size={18} aria-hidden="true" /> Onde buscar</legend>
+      <fieldset className={BLOCO}>
+        <legend className={TITULO_BLOCO}>
+          <MapPin size={18} aria-hidden="true" /> Onde buscar
+        </legend>
 
-        <div className="agc-linha">
-          <label className="agc-campo">
+        <div className="grid gap-3.5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+          <label className={CAMPO}>
             Bairro
             {bairros.length ? (
-              <select id="agc-bairro" value={bairroSel} onChange={(e) => setBairroSel(e.target.value)} aria-invalid={!!erros.bairro}>
+              <Select id="agc-bairro" value={bairroSel} onChange={(e) => setBairroSel(e.target.value)} invalido={!!erros.bairro}>
                 <option value="">Escolha o bairro…</option>
-                {bairros.map((b) => <option key={b} value={b}>{b}</option>)}
+                {bairros.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
                 <option value={OUTRO}>Outro bairro</option>
-              </select>
+              </Select>
             ) : (
-              <input id="agc-bairro" value={bairroOutro} maxLength={80} onChange={(e) => setBairroOutro(e.target.value)} placeholder="Seu bairro" aria-invalid={!!erros.bairro} />
+              <Input id="agc-bairro" value={bairroOutro} maxLength={80} onChange={(e) => setBairroOutro(e.target.value)} placeholder="Seu bairro" invalido={!!erros.bairro} />
             )}
             {bairroSel === OUTRO && bairros.length > 0 && (
-              <input value={bairroOutro} maxLength={80} onChange={(e) => setBairroOutro(e.target.value)} placeholder="Digite o bairro" aria-label="Nome do bairro" />
+              <Input value={bairroOutro} maxLength={80} onChange={(e) => setBairroOutro(e.target.value)} placeholder="Digite o bairro" aria-label="Nome do bairro" />
             )}
-            {erros.bairro && <span className="agc-erro">{erros.bairro}</span>}
+            {erros.bairro && <span className={ERRO}>{erros.bairro}</span>}
           </label>
 
-          <label className="agc-campo agc-campo--largo">
+          <label className={CAMPO}>
             Endereço (rua, número e referência)
-            <div className="agc-com-botao">
-              <input id="agc-endereco" value={endereco} maxLength={200} autoComplete="street-address" onChange={(e) => setEndereco(e.target.value)} placeholder="Ex.: Rua Kaolim, 252" aria-invalid={!!erros.endereco} />
-              <button type="button" className="agc-btn agc-btn--leve" onClick={() => void localizar()} disabled={buscando}>
-                {buscando ? <Loader2 size={16} className="agc-giro" aria-hidden="true" /> : <LocateFixed size={16} aria-hidden="true" />}
-                <span>Localizar</span>
-              </button>
+            <div className="flex gap-2">
+              <Input
+                id="agc-endereco"
+                value={endereco}
+                maxLength={200}
+                autoComplete="street-address"
+                onChange={(e) => setEndereco(e.target.value)}
+                placeholder="Ex.: Rua Kaolim, 252"
+                invalido={!!erros.endereco}
+                className="min-w-0 flex-1"
+              />
+              <Button variante="secundario" onClick={() => void localizar()} disabled={buscando} className="shrink-0 whitespace-nowrap">
+                {buscando ? <Spinner tamanho={16} /> : <LocateFixed size={16} aria-hidden="true" />}
+                <span className="max-sm:hidden">Localizar</span>
+              </Button>
             </div>
-            {erros.endereco && <span className="agc-erro">{erros.endereco}</span>}
+            {erros.endereco && <span className={ERRO}>{erros.endereco}</span>}
           </label>
         </div>
 
-        <div className="agc-mapa">
+        <div className="h-[clamp(260px,42dvh,380px)] [&_.mapa-wrap--seletor]:h-full">
           <MapaSeletor latitude={lat} longitude={lng} categoria="Coleta" onChange={(a, b) => { setLat(a); setLng(b); setGeoMsg("Ponto marcado no mapa."); }} />
         </div>
-        <p className="agc-dica" aria-live="polite">{geoMsg || "Use “Localizar” ou toque no mapa para marcar o local exato. O pino pode ser arrastado."}</p>
+        <p className="text-xs text-ink-muted" aria-live="polite">
+          {geoMsg || "Use “Localizar” ou toque no mapa para marcar o local exato. O pino pode ser arrastado."}
+        </p>
       </fieldset>
 
       {/* 2. Material */}
-      <fieldset className="agc-bloco">
-        <legend className="agc-bloco__titulo">O que vamos recolher</legend>
-        <div className="agc-campo">
+      <fieldset className={BLOCO}>
+        <legend className={TITULO_BLOCO}>O que vamos recolher</legend>
+        <div className={CAMPO}>
           <span id="agc-materiais-rotulo">Tipos de material</span>
-          <div id="agc-materiais" className="agc-chips" role="group" aria-labelledby="agc-materiais-rotulo" tabIndex={-1}>
+          <div id="agc-materiais" className="flex flex-wrap gap-1.5" role="group" aria-labelledby="agc-materiais-rotulo" tabIndex={-1}>
             {MATERIAIS_COLETA.map((m) => (
-              <button key={m} type="button" aria-pressed={materiais.includes(m)} className={`agc-chip${materiais.includes(m) ? " agc-chip--ativo" : ""}`} onClick={() => alternar(m)}>
+              <button key={m} type="button" aria-pressed={materiais.includes(m)} className={chip(materiais.includes(m))} onClick={() => alternar(m)}>
                 {materiais.includes(m) && <CheckCircle2 size={14} aria-hidden="true" />} {m}
               </button>
             ))}
           </div>
-          {erros.materiais && <span className="agc-erro">{erros.materiais}</span>}
+          {erros.materiais && <span className={ERRO}>{erros.materiais}</span>}
         </div>
-        <label className="agc-campo">
+        <label className={CAMPO}>
           Quantidade aproximada
-          <select id="agc-quantidade" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} aria-invalid={!!erros.quantidade}>
+          <Select id="agc-quantidade" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} invalido={!!erros.quantidade}>
             <option value="">Escolha…</option>
-            {QUANTIDADES.map((q) => <option key={q} value={q}>{q}</option>)}
-          </select>
-          {erros.quantidade && <span className="agc-erro">{erros.quantidade}</span>}
+            {QUANTIDADES.map((q) => (
+              <option key={q} value={q}>
+                {q}
+              </option>
+            ))}
+          </Select>
+          {erros.quantidade && <span className={ERRO}>{erros.quantidade}</span>}
         </label>
       </fieldset>
 
       {/* 3. Quando */}
-      <fieldset className="agc-bloco">
-        <legend className="agc-bloco__titulo">Quando prefere</legend>
-        <div className="agc-linha">
-          <label className="agc-campo">
+      <fieldset className={BLOCO}>
+        <legend className={TITULO_BLOCO}>Quando prefere</legend>
+        <div className="grid gap-3.5 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+          <label className={CAMPO}>
             Data preferida (opcional)
-            <input id="agc-data_preferida" type="date" min={hoje} value={data} onChange={(e) => setData(e.target.value)} aria-invalid={!!erros.data_preferida} />
-            {erros.data_preferida && <span className="agc-erro">{erros.data_preferida}</span>}
+            <Input id="agc-data_preferida" type="date" min={hoje} value={data} onChange={(e) => setData(e.target.value)} invalido={!!erros.data_preferida} />
+            {erros.data_preferida && <span className={ERRO}>{erros.data_preferida}</span>}
           </label>
-          <div className="agc-campo">
+          <div className={CAMPO}>
             <span>Período</span>
-            <div className="agc-chips" role="radiogroup" aria-label="Período">
+            <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Período">
               {(Object.keys(PERIODOS) as Periodo[]).map((p) => (
-                <button key={p} type="button" role="radio" aria-checked={periodo === p} className={`agc-chip${periodo === p ? " agc-chip--ativo" : ""}`} onClick={() => setPeriodo(p)}>
+                <button key={p} type="button" role="radio" aria-checked={periodo === p} className={chip(periodo === p)} onClick={() => setPeriodo(p)}>
                   {PERIODOS[p]}
                 </button>
               ))}
             </div>
           </div>
         </div>
-        <label className="agc-campo">
+        <label className={CAMPO}>
           Observações (opcional)
-          <textarea id="agc-observacoes" rows={3} maxLength={1000} value={obs} onChange={(e) => setObs(e.target.value)} placeholder="Ex.: material separado na garagem; tocar o interfone." />
-          <span className="agc-contador">{obs.length}/1000</span>
+          <Textarea id="agc-observacoes" rows={3} maxLength={1000} value={obs} onChange={(e) => setObs(e.target.value)} placeholder="Ex.: material separado na garagem; tocar o interfone." className="resize-y" />
+          <span className="self-end text-xs font-medium text-zinc-400">{obs.length}/1000</span>
         </label>
 
-        <div className="agc-campo">
+        <div className={CAMPO}>
           <span>Foto do material (opcional)</span>
           {previa ? (
-            <div className="agc-foto">
+            <div className="flex flex-wrap items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={previa} alt="Prévia da foto do material" />
-              <button type="button" className="agc-btn agc-btn--leve" onClick={() => escolherFoto(null)}><Trash2 size={15} aria-hidden="true" /> Remover</button>
+              <img src={previa} alt="Prévia da foto do material" className="h-24 w-32 rounded-xl border border-zinc-200 object-cover" />
+              <Button variante="secundario" onClick={() => escolherFoto(null)}>
+                <Trash2 size={15} aria-hidden="true" /> Remover
+              </Button>
             </div>
           ) : (
-            <label className="agc-upload">
+            <label className="relative flex cursor-pointer items-center gap-3 rounded-2xl border-[1.5px] border-dashed border-brand-line bg-green-50 p-4 text-sm font-semibold text-emerald-800 focus-within:outline-3 focus-within:outline-brand/30">
               <Camera size={20} aria-hidden="true" />
               <span>Toque para escolher uma foto (JPG, PNG ou WEBP, até 5 MB)</span>
-              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => escolherFoto(e.target.files?.[0] ?? null)} />
+              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => escolherFoto(e.target.files?.[0] ?? null)} className="absolute inset-0 cursor-pointer opacity-0" />
             </label>
           )}
-          {erros.foto && <span className="agc-erro">{erros.foto}</span>}
+          {erros.foto && <span className={ERRO}>{erros.foto}</span>}
         </div>
       </fieldset>
 
-      {erroGeral && <p className="agc-alerta" role="alert">{erroGeral}</p>}
+      {erroGeral && (
+        <p className="rounded-2xl bg-danger-soft px-4 py-3 text-sm text-danger" role="alert">
+          {erroGeral}
+        </p>
+      )}
 
-      <div className="agc-rodape">
-        <Link href="/calendario-coleta" className="agc-link">Ver calendário do meu bairro</Link>
-        <button type="submit" className="agc-btn agc-btn--enviar" disabled={enviando}>
-          {enviando ? <Loader2 size={18} className="agc-giro" aria-hidden="true" /> : <Send size={18} aria-hidden="true" />}
+      <div className="flex flex-col-reverse items-stretch gap-4 text-center sm:flex-row sm:items-center sm:justify-between sm:text-left">
+        <Link href="/calendario-coleta" className="text-sm font-bold text-brand underline">
+          Ver calendário do meu bairro
+        </Link>
+        <Button type="submit" tamanho="grande" carregando={enviando} className="w-full sm:w-auto">
+          {!enviando && <Send size={18} aria-hidden="true" />}
           {enviando ? "Enviando…" : "Enviar pedido de coleta"}
-        </button>
+        </Button>
       </div>
     </form>
   );
 }
+
+// ----- Classes repetidas do formulário -----
+const BLOCO = "flex min-w-0 flex-col gap-3.5 rounded-3xl border border-brand-line/60 bg-white p-4 shadow-[0_10px_28px_-22px_rgb(46_94_78/0.5)] sm:p-5";
+const TITULO_BLOCO = "inline-flex items-center gap-2 px-1 text-base font-black text-emerald-900";
+const CAMPO = "flex min-w-0 flex-col gap-1.5 text-sm font-bold text-zinc-700";
+const ERRO = "text-xs font-semibold text-red-600";
+
+/** Botão de escolha (material, período): verde quando marcado */
+const chip = (ativo: boolean) =>
+  cn(
+    "inline-flex min-h-10 items-center gap-1 rounded-full border-[1.5px] px-3.5 py-1.5 text-sm font-bold transition",
+    ativo ? "border-brand bg-brand text-white" : "border-brand-line/60 bg-white text-zinc-700 hover:border-emerald-300",
+  );

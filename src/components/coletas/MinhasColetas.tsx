@@ -6,13 +6,16 @@
  * Lista à esquerda (ou em cima, no celular) e detalhe do pedido
  * escolhido: linha do tempo, dados, foto, cancelar e chat.
  * ?pedido=<id> abre um pedido; &novo=1 mostra a confirmação de envio.
- * CSS: src/styles/minhas-coletas.css (prefixo "mcol").
+ * Visual: Tailwind + ui (Badge, Button, Spinner).
  */
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { CalendarClock, CheckCircle2, ChevronLeft, Loader2, PackagePlus, XCircle } from "lucide-react";
-import "@/styles/minhas-coletas.css";
+import { CalendarClock, CheckCircle2, ChevronLeft, PackagePlus, XCircle } from "lucide-react";
+import Badge from "@/components/ui/Badge";
+import Button from "@/components/ui/Button";
+import Spinner from "@/components/ui/Spinner";
+import { cn } from "@/utils/cn";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import PedirLogin from "@/components/coletas/PedirLogin";
@@ -76,43 +79,64 @@ export default function MinhasColetas() {
     else void carregar();
   }
 
-  if (loading) return <p className="pcol__carregando"><Loader2 className="mcol-giro" aria-label="Carregando" /></p>;
+  if (loading) return <Spinner centralizado />;
   if (!user || !perfil) return <PedirLogin titulo="Entre para ver suas coletas" />;
   if (perfil.tipo === "admin") {
     return <PedirLogin titulo="Conta administrativa" texto="Os pedidos de coleta são acompanhados no painel, na seção Coletas." />;
   }
 
   return (
-    <div className={`mcol${aberto ? " mcol--detalhe" : ""}`}>
+    <div className={cn("grid items-start gap-5 min-[900px]:grid-cols-[minmax(0,20rem)_minmax(0,1fr)]")}>
       {novo && (
-        <p className="mcol-sucesso" role="status">
+        <p className="flex items-center gap-2 rounded-2xl bg-brand-mint px-4 py-3 text-sm font-bold text-[#1f4a3c] min-[900px]:col-span-full" role="status">
           <CheckCircle2 size={18} aria-hidden="true" /> Pedido enviado! A equipe vai analisar e responder por aqui.
         </p>
       )}
 
-      <aside className="mcol-lista" aria-label="Seus pedidos">
-        <div className="mcol-lista__topo">
-          <h2>Seus pedidos</h2>
-          <Link href="/agendar-coleta" className="mcol-novo"><PackagePlus size={16} aria-hidden="true" /> Novo</Link>
+      {/* Lista de pedidos (no celular e tablet some quando um pedido está aberto) */}
+      <aside
+        className={cn(
+          "flex-col gap-3 rounded-3xl border border-brand-line/60 bg-white p-4 min-[900px]:sticky min-[900px]:top-24 min-[900px]:flex min-[900px]:max-h-[calc(100dvh-8rem)]",
+          aberto ? "hidden" : "flex",
+        )}
+        aria-label="Seus pedidos"
+      >
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-black text-zinc-900">Seus pedidos</h2>
+          <Link href="/agendar-coleta" className="inline-flex items-center gap-1 rounded-xl bg-brand-soft px-3 py-1.5 text-sm font-extrabold text-brand">
+            <PackagePlus size={16} aria-hidden="true" /> Novo
+          </Link>
         </div>
         {carregando ? (
-          <p className="mcol-vazio"><Loader2 size={16} className="mcol-giro" aria-hidden="true" /> Carregando…</p>
+          <p className={VAZIO}>
+            <Spinner tamanho={16} /> Carregando…
+          </p>
         ) : erro ? (
-          <p className="mcol-vazio">{erro}</p>
+          <p className={VAZIO}>{erro}</p>
         ) : lista.length === 0 ? (
-          <div className="mcol-vazio">
+          <div className={VAZIO}>
             <p>Você ainda não pediu nenhuma coleta.</p>
-            <Link href="/agendar-coleta" className="pcol__btn">Agendar coleta</Link>
+            <Button href="/agendar-coleta">Agendar coleta</Button>
           </div>
         ) : (
-          <ul>
+          <ul className="flex flex-col gap-2 overflow-y-auto">
             {lista.map((s) => (
               <li key={s.id}>
-                <button type="button" className={`mcol-item${s.id === abertoId ? " mcol-item--ativo" : ""}`} onClick={() => { setAbertoId(s.id); setNovo(false); }}>
-                  <span className={`mcol-status mcol-status--${s.status}`}>{ROTULO_STATUS[s.status]}</span>
-                  <strong>{s.bairro}</strong>
-                  <span>{s.materiais.join(", ")}</span>
-                  <small>Pedido em {dataHoraBR(s.created_at)}</small>
+                <button
+                  type="button"
+                  className={cn(
+                    "flex w-full flex-col items-start gap-1 rounded-2xl border p-3 text-left transition",
+                    s.id === abertoId ? "border-brand bg-brand-soft" : "border-zinc-100 bg-[#fafcfb] hover:border-brand-line",
+                  )}
+                  onClick={() => {
+                    setAbertoId(s.id);
+                    setNovo(false);
+                  }}
+                >
+                  <StatusColeta status={s.status} />
+                  <strong className="text-sm text-zinc-900">{s.bairro}</strong>
+                  <span className="text-xs text-zinc-600">{s.materiais.join(", ")}</span>
+                  <small className="text-[0.72rem] text-zinc-400">Pedido em {dataHoraBR(s.created_at)}</small>
                 </button>
               </li>
             ))}
@@ -120,47 +144,73 @@ export default function MinhasColetas() {
         )}
       </aside>
 
-      <section className="mcol-detalhe" aria-label="Detalhes do pedido">
+      {/* Detalhe do pedido escolhido */}
+      <section className={cn("min-w-0 flex-col gap-4 min-[900px]:flex", aberto ? "flex" : "hidden")} aria-label="Detalhes do pedido">
         {!aberto ? (
-          <p className="mcol-vazio mcol-vazio--grande">Escolha um pedido para ver o andamento e conversar com a equipe.</p>
+          <p className={cn(VAZIO, "rounded-3xl border border-dashed border-brand-line bg-white px-4 py-12")}>
+            Escolha um pedido para ver o andamento e conversar com a equipe.
+          </p>
         ) : (
           <>
-            <button type="button" className="mcol-voltar" onClick={() => setAbertoId(null)}><ChevronLeft size={16} aria-hidden="true" /> Todos os pedidos</button>
-            <div className="mcol-cartao">
-              <div className="mcol-cartao__topo">
+            <button
+              type="button"
+              className="inline-flex items-center gap-1 self-start text-sm font-bold text-brand min-[900px]:hidden"
+              onClick={() => setAbertoId(null)}
+            >
+              <ChevronLeft size={16} aria-hidden="true" /> Todos os pedidos
+            </button>
+            <div className="flex flex-col gap-4.5 rounded-3xl border border-brand-line/60 bg-white p-4 sm:p-5">
+              <div className="flex flex-col-reverse items-start justify-between gap-2 sm:flex-row sm:gap-4">
                 <div>
-                  <h2>Coleta em {aberto.bairro}</h2>
-                  <p>{aberto.endereco}</p>
+                  <h2 className="text-lg font-black text-zinc-900">Coleta em {aberto.bairro}</h2>
+                  <p className="text-sm text-ink-muted">{aberto.endereco}</p>
                 </div>
-                <span className={`mcol-status mcol-status--${aberto.status}`}>{ROTULO_STATUS[aberto.status]}</span>
+                <StatusColeta status={aberto.status} />
               </div>
 
               <LinhaTempoColeta s={aberto} />
 
               {aberto.data_agendada && aberto.status === "agendado" && (
-                <p className="mcol-agenda"><CalendarClock size={18} aria-hidden="true" /> Coleta marcada para <strong>{dataBR(aberto.data_agendada)}</strong>{aberto.janela_agendada ? ` · ${aberto.janela_agendada}` : ""}</p>
+                <p className="flex items-center gap-2 rounded-2xl bg-warning-soft px-3.5 py-3 text-sm text-amber-800">
+                  <CalendarClock size={18} aria-hidden="true" /> Coleta marcada para <strong>{dataBR(aberto.data_agendada)}</strong>
+                  {aberto.janela_agendada ? ` · ${aberto.janela_agendada}` : ""}
+                </p>
               )}
 
-              <dl className="mcol-dados">
-                <div><dt>Materiais</dt><dd>{aberto.materiais.join(", ")}</dd></div>
-                <div><dt>Quantidade</dt><dd>{aberto.quantidade}</dd></div>
-                <div><dt>Preferência</dt><dd>{aberto.data_preferida ? dataBR(aberto.data_preferida) : "Sem data"} · {PERIODOS[aberto.periodo]}</dd></div>
-                {aberto.observacoes && <div className="mcol-dados__largo"><dt>Observações</dt><dd>{aberto.observacoes}</dd></div>}
+              <dl className="m-0 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <Dado titulo="Materiais">{aberto.materiais.join(", ")}</Dado>
+                <Dado titulo="Quantidade">{aberto.quantidade}</Dado>
+                <Dado titulo="Preferência">
+                  {aberto.data_preferida ? dataBR(aberto.data_preferida) : "Sem data"} · {PERIODOS[aberto.periodo]}
+                </Dado>
+                {aberto.observacoes && (
+                  <Dado titulo="Observações" largo>
+                    {aberto.observacoes}
+                  </Dado>
+                )}
               </dl>
 
               {foto && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img className="mcol-foto" src={foto} alt="Foto do material enviada no pedido" />
+                <img
+                  className="max-h-72 w-auto max-w-full self-start rounded-2xl border border-zinc-200 object-contain"
+                  src={foto}
+                  alt="Foto do material enviada no pedido"
+                />
               )}
 
               {["enviado", "recebido", "agendado"].includes(aberto.status) && (
-                <button type="button" className="mcol-cancelar" onClick={() => setCancelar(true)}>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-1.5 self-start rounded-xl border border-red-200 px-3.5 py-2 text-sm font-bold text-danger hover:bg-danger-soft"
+                  onClick={() => setCancelar(true)}
+                >
                   <XCircle size={16} aria-hidden="true" /> Cancelar pedido
                 </button>
               )}
             </div>
 
-            <h3 className="mcol-chat-titulo">Conversa com a ACMRB</h3>
+            <h3 className="text-base font-black text-zinc-900">Conversa com a ACMRB</h3>
             <ChatColeta
               solicitacaoId={aberto.id}
               usuarioId={user.id}
@@ -182,6 +232,29 @@ export default function MinhasColetas() {
         onConfirmar={confirmarCancelamento}
         onCancelar={() => setCancelar(false)}
       />
+    </div>
+  );
+}
+
+/** Mensagem centralizada para lista vazia, erro ou carregando */
+const VAZIO = "flex flex-col items-center gap-3 px-2 py-6 text-center text-sm text-ink-muted";
+
+/** Selo colorido com o status do pedido */
+function StatusColeta({ status }: { status: Solicitacao["status"] }) {
+  const tom = { enviado: "neutro", recebido: "info", agendado: "aviso", concluido: "marca", cancelado: "perigo" } as const;
+  return (
+    <Badge tom={tom[status]} tamanho="pequeno" className="whitespace-nowrap">
+      {ROTULO_STATUS[status]}
+    </Badge>
+  );
+}
+
+/** Um dado do pedido (título pequeno em cima, valor embaixo) */
+function Dado({ titulo, largo, children }: { titulo: string; largo?: boolean; children: React.ReactNode }) {
+  return (
+    <div className={cn("min-w-0", largo && "sm:col-span-3")}>
+      <dt className="text-[0.72rem] font-extrabold uppercase tracking-wide text-zinc-400">{titulo}</dt>
+      <dd className="mt-0.5 text-sm text-zinc-800">{children}</dd>
     </div>
   );
 }
