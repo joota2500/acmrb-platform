@@ -100,7 +100,7 @@ export default function QuemSomosPage() {
   const impacto = [
     { Icone: Recycle, valor: esg.totalPeso, formatar: formatarPeso, rotulo: "Resíduos reciclados" },
     { Icone: HeartHandshake, valor: esg.familiasImpactadas, formatar: (n: number) => formatarNumero(Math.round(n)), rotulo: "Famílias beneficiadas" },
-    { Icone: Leaf, valor: esg.co2, formatar: (n: number) => `${formatarNumero(Math.round(n))} t`, rotulo: "CO₂ evitado" },
+    { Icone: Leaf, valor: esg.co2, formatar: formatarPeso, rotulo: "CO₂ evitado" },
     { Icone: Sparkles, valor: 2025, formatar: (n: number) => String(Math.round(n)), rotulo: "Ano de fundação" },
   ];
 

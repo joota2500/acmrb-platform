@@ -13,7 +13,7 @@
  * De onde vêm os números (hook useESGMetrics → Supabase):
  *  - Resíduos reciclados: soma de materiais_registros.peso (em kg).
  *  - Famílias beneficiadas: dashboard_metricas.familias_impactadas.
- *  - CO₂ evitado: dashboard_metricas.co2_evitado (tratado como toneladas).
+ *  - CO₂ evitado: dashboard_metricas.co2_evitado (em kg; vira t acima de 1000).
  *  - Enquanto carrega mostra "—"; quando termina, o número conta de 0 até o valor.
  *
  * Responsivo: celular (360px) com botões em largura total e números em
@@ -70,7 +70,7 @@ export default function HeroSection() {
   const numeros = [
     { icone: Recycle, valor: totalPeso, formatar: formatarPeso, rotulo: "Resíduos reciclados" },
     { icone: Users, valor: familiasImpactadas, formatar: (n: number) => formatarNumero(Math.round(n)), rotulo: "Famílias beneficiadas" },
-    { icone: Cloud, valor: co2, formatar: (n: number) => `${formatarNumero(Math.round(n))} t`, rotulo: "CO₂ evitado" },
+    { icone: Cloud, valor: co2, formatar: formatarPeso, rotulo: "CO₂ evitado" },
     { icone: ShieldCheck, valor: 100, formatar: (n: number) => `${Math.round(n)}%`, rotulo: "Transparência" },
   ];
 
