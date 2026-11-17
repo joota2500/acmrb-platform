@@ -63,10 +63,10 @@ function Validando() {
   return (
     <div className="min-h-dvh flex items-center justify-center bg-[#F5F7F4] p-4">
       <div className="bg-white rounded-3xl border border-black/5 px-8 py-7 shadow-sm text-center max-w-md w-full">
-        <div className="w-14 h-14 rounded-2xl bg-[#E8F3EE] text-[#2E5E4E] flex items-center justify-center mx-auto mb-5">
+        <div className="w-14 h-14 rounded-2xl bg-brand-soft text-brand flex items-center justify-center mx-auto mb-5">
           <ShieldCheck size={24} />
         </div>
-        <h2 className="text-2xl font-black text-[#111827]">Carregando painel</h2>
+        <h2 className="text-2xl font-black text-ink">Carregando painel</h2>
         <p className="text-zinc-500 mt-3 text-sm leading-7">Validando permissões administrativas...</p>
       </div>
     </div>

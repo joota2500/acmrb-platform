@@ -1,5 +1,5 @@
 /* ==================== NOTÍCIA — CARTÃO (home, /noticias, relacionadas) ====================
- * Paleta do projeto: #047857, #059669, #10b981, #a7f3d0, #d1fae5, #ecfdf5,
+ * Paleta do projeto: var(--color-leaf), #059669, #10b981, #a7f3d0, #d1fae5, #ecfdf5,
  * textos #111827, #374151, #4b5563. Celular ≤480px | tablet 481–1024px.
  */
 
@@ -68,7 +68,7 @@
   left: 0.65rem;
   padding: 0.25rem 0.65rem;
   border-radius: 9999px;
-  background: #047857;
+  background: var(--color-leaf);
   color: #ffffff;
   font-size: 0.7rem;
   font-weight: 800;
@@ -96,7 +96,7 @@
   padding: 0.2rem 0.6rem;
   border-radius: 9999px;
   background: #ecfdf5;
-  color: #047857;
+  color: var(--color-leaf);
   font-weight: 700;
 }
 
@@ -113,7 +113,7 @@
   overflow: hidden;
 }
 
-.ncard__link:hover .ncard__titulo { color: #047857; }
+.ncard__link:hover .ncard__titulo { color: var(--color-leaf); }
 
 .ncard__resumo {
   font-size: 0.92rem;

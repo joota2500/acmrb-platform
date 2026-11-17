@@ -1,7 +1,7 @@
 /* ==================== CONTACT SECTION ("Contato Institucional") ====================
  * CSS próprio (não depende de #sections.css / components.css, que não são
  * importados em lugar nenhum — causa das partes sem formatação).
- * Paleta: verdes do projeto (#047857, #059669, #10b981, #a7f3d0, #d1fae5,
+ * Paleta: verdes do projeto (var(--color-leaf), #059669, #10b981, #a7f3d0, #d1fae5,
  * #ecfdf5) + cinzas (#111827, #374151, #4b5563).
  * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
  */
@@ -32,7 +32,7 @@
   font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem;
 }
 .contato__title { font-size: 2.1rem; font-weight: 900; color: #111827; line-height: 1.25; text-align: center; }
-.contato__title span { color: #047857; }
+.contato__title span { color: var(--color-leaf); }
 .contato__description { margin-top: 1.25rem; font-size: 1.05rem; line-height: 1.75; color: #4b5563; }
 
 .contato__subtitle { font-size: 1.3rem; font-weight: 800; color: #111827; margin: 0 0 0.5rem; }
@@ -73,15 +73,15 @@
 .contato__opcao:focus-within,
 .contato__form input:focus-visible,
 .contato__form textarea:focus-visible { outline: 3px solid #10b981; outline-offset: 2px; }
-.contato__btn--primary { background: linear-gradient(135deg, #047857, #059669); color: #fff; box-shadow: 0 6px 18px rgba(4, 120, 87, 0.25); }
+.contato__btn--primary { background: linear-gradient(135deg, var(--color-leaf), #059669); color: #fff; box-shadow: 0 6px 18px rgba(4, 120, 87, 0.25); }
 .contato__btn--primary:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(4, 120, 87, 0.32); }
-.contato__btn--soft { background: #ecfdf5; color: #047857; border-color: #d1fae5; }
+.contato__btn--soft { background: #ecfdf5; color: var(--color-leaf); border-color: #d1fae5; }
 .contato__btn--soft:hover { background: #d1fae5; }
-.contato__btn--icon { width: 2.75rem; padding: 0; background: #fff; color: #047857; border-color: #d1fae5; }
+.contato__btn--icon { width: 2.75rem; padding: 0; background: #fff; color: var(--color-leaf); border-color: #d1fae5; }
 .contato__btn--icon:hover { background: #ecfdf5; }
-.contato__btn--ghost { background: #fff; color: #047857; border-color: #a7f3d0; }
+.contato__btn--ghost { background: #fff; color: var(--color-leaf); border-color: #a7f3d0; }
 .contato__btn--ghost:hover { background: #ecfdf5; }
-.contato__btn--light { background: #fff; color: #047857; }
+.contato__btn--light { background: #fff; color: var(--color-leaf); }
 .contato__btn--light:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15); }
 .contato__btn--outline { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); }
 .contato__btn--outline:hover { background: rgba(255, 255, 255, 0.12); }
@@ -115,12 +115,12 @@
 .contato__chips { display: flex; flex-wrap: wrap; gap: 0.5rem; outline: none; }
 .contato__chip {
   padding: 0.5rem 0.9rem; border-radius: 9999px; cursor: pointer;
-  border: 1px solid #d1fae5; background: #f0fdf4; color: #047857;
+  border: 1px solid #d1fae5; background: #f0fdf4; color: var(--color-leaf);
   font-size: 0.85rem; font-weight: 600;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .contato__chip:hover { border-color: #a7f3d0; background: #ecfdf5; }
-.contato__chip--ativo { background: #047857; border-color: #047857; color: #fff; }
+.contato__chip--ativo { background: var(--color-leaf); border-color: var(--color-leaf); color: #fff; }
 .contato__chips[aria-invalid="true"] .contato__chip { border-color: #fca5a5; }
 
 .contato__canal-escolha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
@@ -130,10 +130,10 @@
   border: 1px solid #d1d5db; color: #374151; font-weight: 600; font-size: 0.9rem; margin: 0 !important;
 }
 .contato__opcao input { position: absolute; opacity: 0; width: 1px; height: 1px; }
-.contato__opcao--ativa { border-color: #10b981; background: #ecfdf5; color: #047857; }
+.contato__opcao--ativa { border-color: #10b981; background: #ecfdf5; color: var(--color-leaf); }
 .contato__enviar { width: 100%; margin-top: 0.25rem; }
 
-.contato__endereco { display: flex; gap: 0.6rem; align-items: flex-start; color: #047857; margin: 0.25rem 0 1rem; }
+.contato__endereco { display: flex; gap: 0.6rem; align-items: flex-start; color: var(--color-leaf); margin: 0.25rem 0 1rem; }
 .contato__endereco strong { display: block; color: #111827; font-size: 0.98rem; }
 .contato__endereco span { display: block; color: #4b5563; font-size: 0.82rem; margin-top: 0.15rem; }
 
@@ -142,7 +142,7 @@
 .contato-mapa__leaflet { z-index: 0; }
 .contato-mapa__loading {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  background: #ecfdf5; color: #047857; font-weight: 600; font-size: 0.9rem;
+  background: #ecfdf5; color: var(--color-leaf); font-weight: 600; font-size: 0.9rem;
 }
 .contato-mapa__ativar {
   position: absolute; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 500;
@@ -154,7 +154,7 @@
 /* ---------- CTA ---------- */
 .contato__cta {
   text-align: center; border-radius: 1.75rem; padding: 3rem 2rem;
-  background: linear-gradient(135deg, #047857 0%, #059669 55%, #10b981 100%);
+  background: linear-gradient(135deg, var(--color-leaf) 0%, #059669 55%, #10b981 100%);
   color: #fff; box-shadow: 0 16px 40px rgba(4, 120, 87, 0.25);
 }
 .contato__cta-title { font-size: 1.8rem; font-weight: 900; line-height: 1.25; }
@@ -272,14 +272,14 @@
 .contato__login-aviso {
   padding: 0.75rem 0.9rem;
   border-radius: 0.9rem;
-  background: #ddf5ec;
+  background: var(--color-brand-mint);
   border: 1px solid #a7e3cb;
   color: #1f4a3c;
   font-size: 0.86rem;
   line-height: 1.45;
   text-align: var(--texto-justificado, justify);
 }
-.contato__login-aviso a { font-weight: 800; color: #2e5e4e; text-decoration: underline; }
+.contato__login-aviso a { font-weight: 800; color: var(--color-brand); text-decoration: underline; }
 @media (max-width: 480px) {
   .contato__login-aviso { font-size: 0.8rem; }
 }

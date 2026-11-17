@@ -15,11 +15,12 @@ import { Loader2, LogOut, Mail, MailCheck, ShieldCheck, ShieldOff } from "lucide
 import { supabase } from "@/lib/supabase";
 import { chamarApi, ESPERA_EMAIL_SEG, urlRedefinir } from "@/services/apiAdmin";
 import { confirmar } from "@/utils/alertas";
+import Button from "@/components/ui/Button";
 
 type Mostrar = (tipo: "sucesso" | "erro" | "aviso", mensagem: string) => void;
 
 const campo =
-  "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-[#2E5E4E]/40";
+  "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-brand/40";
 const botao =
   "w-full sm:w-auto h-11 px-5 rounded-2xl font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60";
 
@@ -155,9 +156,9 @@ export default function SegurancaConta({ email, mostrar, onEmailTrocado }: {
             aria-label="Novo e-mail" onChange={(e) => setNovoEmail(e.target.value)} />
           <input className={campo} type="password" placeholder="Senha atual" autoComplete="current-password"
             aria-label="Senha atual" value={senhaEmail} onChange={(e) => setSenhaEmail(e.target.value)} />
-          <button type="submit" disabled={trocando} className={`${botao} bg-[#2E5E4E] text-white`}>
+          <Button type="submit" disabled={trocando}>
             {trocando && <Loader2 size={16} className="animate-spin" />} Trocar e-mail
-          </button>
+          </Button>
         </form>
 
         {/* Redefinição e sessões */}
@@ -210,7 +211,7 @@ export default function SegurancaConta({ email, mostrar, onEmailTrocado }: {
               <input className={campo} inputMode="numeric" autoComplete="one-time-code" aria-label="Código de 6 dígitos"
                 value={codigo} onChange={(e) => setCodigo(e.target.value.replace(/\D/g, "").slice(0, 6))} />
               <div className="flex gap-2 flex-wrap">
-                <button type="submit" disabled={codigo.length !== 6 || mfaOcupado} className={`${botao} bg-[#2E5E4E] text-white`}>Confirmar</button>
+                <Button type="submit" disabled={codigo.length !== 6 || mfaOcupado}>Confirmar</Button>
                 <button type="button" onClick={() => setCadastro(null)} className={`${botao} border border-zinc-200`}>Cancelar</button>
               </div>
             </div>

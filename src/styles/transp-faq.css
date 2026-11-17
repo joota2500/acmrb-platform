@@ -24,7 +24,7 @@
   color: #111827;
 }
 .tf-item summary::-webkit-details-marker { display: none; }
-.tf-item summary svg { flex-shrink: 0; color: #047857; transition: transform 0.25s; }
+.tf-item summary svg { flex-shrink: 0; color: var(--color-leaf); transition: transform 0.25s; }
 .tf-item[open] summary svg { transform: rotate(180deg); }
 .tf-item summary:focus-visible { outline: 2px solid #10b981; outline-offset: -2px; }
 

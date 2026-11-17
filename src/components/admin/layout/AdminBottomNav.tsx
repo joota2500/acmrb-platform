@@ -25,8 +25,8 @@ export default function AdminBottomNav({ ativa, onSelecionar, onMais }: Props) {
   const ativaEhRapida = rapidos.some((i) => i.id === ativa);
 
   const botao = (ativo: boolean) =>
-    `flex-1 min-h-14 flex flex-col items-center justify-center gap-0.5 text-[11px] font-semibold focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#2E5E4E] ${
-      ativo ? "text-[#2E5E4E]" : "text-zinc-500"
+    `flex-1 min-h-14 flex flex-col items-center justify-center gap-0.5 text-[11px] font-semibold focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand ${
+      ativo ? "text-brand" : "text-zinc-500"
     }`;
 
   return (
@@ -42,7 +42,7 @@ export default function AdminBottomNav({ ativa, onSelecionar, onMais }: Props) {
             aria-current={ativo ? "page" : undefined}
             className={botao(ativo)}
           >
-            <span className={`w-10 h-7 rounded-full flex items-center justify-center ${ativo ? "bg-[#DDF5EC]" : ""}`}>
+            <span className={`w-10 h-7 rounded-full flex items-center justify-center ${ativo ? "bg-brand-mint" : ""}`}>
               <Icone size={20} aria-hidden="true" />
             </span>
             {item.rotulo}
@@ -50,7 +50,7 @@ export default function AdminBottomNav({ ativa, onSelecionar, onMais }: Props) {
         );
       })}
       <button type="button" onClick={onMais} className={botao(!ativaEhRapida)} aria-label="Mais seções">
-        <span className={`w-10 h-7 rounded-full flex items-center justify-center ${!ativaEhRapida ? "bg-[#DDF5EC]" : ""}`}>
+        <span className={`w-10 h-7 rounded-full flex items-center justify-center ${!ativaEhRapida ? "bg-brand-mint" : ""}`}>
           <MoreHorizontal size={20} aria-hidden="true" />
         </span>
         Mais

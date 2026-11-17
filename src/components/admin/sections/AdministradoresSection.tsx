@@ -17,6 +17,7 @@ import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import { chamarApi } from "@/services/apiAdmin";
 import GerenciarAdmin from "@/components/admin/conta/GerenciarAdmin";
 import AuditoriaLista from "@/components/admin/conta/AuditoriaLista";
+import Button from "@/components/ui/Button";
 
 interface AdminLinha {
   id: string;
@@ -36,7 +37,7 @@ export const dataHora = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "nunca";
 
 const campo =
-  "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-[#2E5E4E]/40";
+  "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-brand/40";
 
 export default function AdministradoresSection() {
   const { toasts, mostrar, fechar } = useToast();
@@ -106,7 +107,7 @@ export default function AdministradoresSection() {
   if (carregando) {
     return (
       <div className="bg-white rounded-3xl border border-black/5 p-10 flex justify-center" aria-busy="true">
-        <Loader2 className="animate-spin text-[#2E5E4E]" />
+        <Loader2 className="animate-spin text-brand" />
       </div>
     );
   }
@@ -140,7 +141,7 @@ export default function AdministradoresSection() {
 
         {/* Vaga 2: admin normal */}
         <article className="bg-white rounded-3xl border border-black/5 p-5 sm:p-6">
-          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#2E5E4E]">
+          <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand">
             <ShieldCheck size={14} aria-hidden="true" /> Vaga 2 · Administrador
           </p>
 
@@ -190,11 +191,11 @@ export default function AdministradoresSection() {
                 </span>
                 <RegrasSenha senha={form.senha} />
               </label>
-              <button type="submit" disabled={salvando}
-                className="w-full sm:w-auto h-12 px-6 rounded-2xl bg-[#2E5E4E] text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-[#21463A] disabled:opacity-60">
+              <Button type="submit" disabled={salvando}
+                className="w-full sm:w-auto">
                 {salvando ? <Loader2 size={18} className="animate-spin" /> : <UserPlus size={18} aria-hidden="true" />}
                 Criar administrador
-              </button>
+              </Button>
               <p className="text-xs text-zinc-400">
                 Peça para ele trocar a senha em “Minha conta” no primeiro acesso.
               </p>

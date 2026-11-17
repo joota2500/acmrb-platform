@@ -17,6 +17,7 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import { avisar } from "@/utils/alertas";
+import Button from "@/components/ui/Button";
 
 type Props = {
   tipos: any[];
@@ -240,8 +241,8 @@ export default function MaterialsForm({
               w-18
               h-18
               rounded-[1.7rem]
-              bg-[#E8F3EE]
-              text-[#2E5E4E]
+              bg-brand-soft
+              text-brand
               flex
               items-center
               justify-center
@@ -261,7 +262,7 @@ export default function MaterialsForm({
               className="
                 text-4xl
                 font-black
-                text-[#111827]
+                text-ink
               "
             >
 
@@ -333,7 +334,7 @@ export default function MaterialsForm({
               className="
                 text-2xl
                 font-black
-                text-[#111827]
+                text-ink
                 mt-3
               "
             >
@@ -374,7 +375,7 @@ export default function MaterialsForm({
               className="
                 text-2xl
                 font-black
-                text-[#111827]
+                text-ink
                 mt-3
               "
             >
@@ -415,7 +416,7 @@ export default function MaterialsForm({
               className="
                 text-3xl
                 font-black
-                text-[#2E5E4E]
+                text-brand
                 mt-3
               "
             >
@@ -473,7 +474,7 @@ export default function MaterialsForm({
                 border-zinc-200
                 px-6
                 outline-none
-                focus:border-[#2E5E4E]
+                focus:border-brand
                 bg-white
                 font-semibold
               "
@@ -549,7 +550,7 @@ export default function MaterialsForm({
                   pl-14
                   pr-6
                   outline-none
-                  focus:border-[#2E5E4E]
+                  focus:border-brand
                   font-semibold
                 "
               />
@@ -605,7 +606,7 @@ export default function MaterialsForm({
                   pl-14
                   pr-6
                   outline-none
-                  focus:border-[#2E5E4E]
+                  focus:border-brand
                   font-semibold
                 "
               />
@@ -852,7 +853,7 @@ export default function MaterialsForm({
               <Calculator
                 size={20}
                 className="
-                  text-[#2E5E4E]
+                  text-brand
                 "
               />
 
@@ -860,7 +861,7 @@ export default function MaterialsForm({
                 className="
                   text-xl
                   font-black
-                  text-[#2E5E4E]
+                  text-brand
                 "
               >
 
@@ -926,27 +927,12 @@ export default function MaterialsForm({
           "
         >
 
-          <button
+          <Button type="submit"
             onClick={
               salvarRegistro
             }
             disabled={loading}
-            className="
-              h-16
-              px-10
-              rounded-3xl
-              bg-[#2E5E4E]
-              hover:bg-[#21463A]
-              transition
-              text-white
-              font-black
-              text-lg
-              flex
-              items-center
-              gap-4
-              disabled:opacity-50
-              shadow-lg
-            "
+
           >
 
             <Save size={22} />
@@ -955,7 +941,7 @@ export default function MaterialsForm({
               ? "Salvando..."
               : "Salvar registro"}
 
-          </button>
+          </Button>
 
         </div>
 

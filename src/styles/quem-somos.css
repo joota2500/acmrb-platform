@@ -70,7 +70,7 @@
 
 .qs-label {
   background: #d1fae5;
-  color: #047857;
+  color: var(--color-leaf);
 }
 
 @media (min-width: 640px) {
@@ -503,7 +503,7 @@
 
 .qs-associado__corpo { padding: 1rem 1.15rem 1.25rem; display: flex; flex-direction: column; flex: 1; }
 .qs-associado__corpo h3 { font-size: 1.05rem; font-weight: 800; color: #111827; }
-.qs-associado__cargo { margin-top: 0.2rem; font-size: 0.875rem; font-weight: 600; color: #047857; }
+.qs-associado__cargo { margin-top: 0.2rem; font-size: 0.875rem; font-weight: 600; color: var(--color-leaf); }
 .qs-associado__tipo { font-size: 0.8rem; color: #6b7280; }
 
 .qs-associado__link {

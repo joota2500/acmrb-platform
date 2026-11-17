@@ -62,17 +62,17 @@ export default function AdminHeader({
           aria-label="Abrir menu"
           aria-expanded={gavetaAberta}
           aria-controls="admin-gaveta"
-          className="lg:hidden w-11 h-11 shrink-0 rounded-xl text-[#21463A] hover:bg-[#DDF5EC] flex items-center justify-center focus-visible:outline-2 focus-visible:outline-[#2E5E4E]"
+          className="lg:hidden w-11 h-11 shrink-0 rounded-xl text-brand-dark hover:bg-brand-mint flex items-center justify-center focus-visible:outline-2 focus-visible:outline-brand"
         >
           <Menu size={22} />
         </button>
 
         {/* Título da seção ativa */}
         <div className="min-w-0 flex-1">
-          <h1 className="flex items-center gap-2 text-lg sm:text-xl lg:text-2xl font-black text-[#111827] truncate">
+          <h1 className="flex items-center gap-2 text-lg sm:text-xl lg:text-2xl font-black text-ink truncate">
             <span className="truncate">{titulo}</span>
             {emBreve && (
-              <span className="shrink-0 text-[10px] font-bold uppercase bg-[#DDF5EC] text-[#2E5E4E] px-2 py-0.5 rounded-full">
+              <span className="shrink-0 text-[10px] font-bold uppercase bg-brand-mint text-brand px-2 py-0.5 rounded-full">
                 em breve
               </span>
             )}
@@ -86,7 +86,7 @@ export default function AdminHeader({
         <Link
           href="/"
           target="_blank"
-          className="hidden md:inline-flex h-11 px-4 items-center gap-2 rounded-xl text-sm font-semibold text-[#2E5E4E] hover:bg-[#DDF5EC] focus-visible:outline-2 focus-visible:outline-[#2E5E4E]"
+          className="hidden md:inline-flex h-11 px-4 items-center gap-2 rounded-xl text-sm font-semibold text-brand hover:bg-brand-mint focus-visible:outline-2 focus-visible:outline-brand"
         >
           Ver site <ExternalLink size={16} aria-hidden="true" />
         </Link>
@@ -99,9 +99,9 @@ export default function AdminHeader({
             aria-haspopup="menu"
             aria-expanded={menuAberto}
             aria-label="Menu do usuário"
-            className="h-11 min-w-11 rounded-xl flex items-center gap-2 px-1 sm:pr-3 hover:bg-[#DDF5EC] focus-visible:outline-2 focus-visible:outline-[#2E5E4E]"
+            className="h-11 min-w-11 rounded-xl flex items-center gap-2 px-1 sm:pr-3 hover:bg-brand-mint focus-visible:outline-2 focus-visible:outline-brand"
           >
-            <span className="w-9 h-9 rounded-xl bg-linear-to-br from-emerald-600 to-[#2E5E4E] text-white font-black flex items-center justify-center">
+            <span className="w-9 h-9 rounded-xl bg-linear-to-br from-emerald-600 to-brand text-white font-black flex items-center justify-center">
               {inicial}
             </span>
             <span className="hidden sm:block text-left leading-tight max-w-40">
@@ -117,7 +117,7 @@ export default function AdminHeader({
               className="absolute right-0 mt-2 w-[min(18rem,calc(100vw-2rem))] bg-white rounded-2xl shadow-xl border border-black/5 p-2 z-50"
             >
               <div className="px-3 py-3 border-b border-zinc-100">
-                <span className="inline-block text-[10px] font-black uppercase tracking-wider bg-amber-400 text-[#111827] px-2 py-0.5 rounded-full">
+                <span className="inline-block text-[10px] font-black uppercase tracking-wider bg-amber-400 text-ink px-2 py-0.5 rounded-full">
                   {usuario.papel}
                 </span>
                 <p className="mt-1 font-bold text-zinc-900 truncate">{usuario.nome}</p>

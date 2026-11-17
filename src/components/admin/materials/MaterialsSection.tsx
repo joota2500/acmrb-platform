@@ -22,6 +22,7 @@ import {
   Scale,
   TrendingUp,
 } from "lucide-react";
+import Button from "@/components/ui/Button";
 
 type ResumoMaterial = {
   peso: number;
@@ -254,8 +255,8 @@ export default function MaterialsSection() {
               px-4
               py-2
               rounded-full
-              bg-[#E8F3EE]
-              text-[#2E5E4E]
+              bg-brand-soft
+              text-brand
               font-black
               text-xs
               md:text-sm
@@ -272,7 +273,7 @@ export default function MaterialsSection() {
               text-3xl
               md:text-5xl
               font-black
-              text-[#111827]
+              text-ink
               leading-tight
             "
           >
@@ -302,35 +303,20 @@ export default function MaterialsSection() {
 
         </div>
 
-        <button
+        <Button type="submit"
           onClick={() =>
             setOpenCreateModal(
               true,
             )
           }
-          className="
-            h-12
-            md:h-14
-            px-5
-            rounded-2xl
-            bg-[#2E5E4E]
-            hover:bg-[#21463A]
-            transition
-            text-white
-            font-black
-            flex
-            items-center
-            justify-center
-            gap-3
-            shadow-lg
-          "
+
         >
 
           <Plus size={18} />
 
           Novo tipo
 
-        </button>
+        </Button>
 
       </div>
 
@@ -353,7 +339,7 @@ export default function MaterialsSection() {
             rounded-4xl
             p-6
             bg-linear-to-br
-            from-[#2E5E4E]
+            from-brand
             to-[#5C9B80]
             text-white
             shadow-xl
@@ -585,7 +571,7 @@ export default function MaterialsSection() {
                 text-2xl
                 md:text-3xl
                 font-black
-                text-[#111827]
+                text-ink
               "
             >
 
@@ -680,8 +666,8 @@ export default function MaterialsSection() {
                       w-12
                       h-12
                       rounded-2xl
-                      bg-[#E8F3EE]
-                      text-[#2E5E4E]
+                      bg-brand-soft
+                      text-brand
                       flex
                       items-center
                       justify-center
@@ -718,7 +704,7 @@ export default function MaterialsSection() {
                   className="
                     text-xl
                     font-black
-                    text-[#111827]
+                    text-ink
                     mt-5
                     wrap-break-word
                   "
@@ -763,7 +749,7 @@ export default function MaterialsSection() {
               text-2xl
               md:text-3xl
               font-black
-              text-[#111827]
+              text-ink
             "
           >
 
@@ -836,8 +822,8 @@ export default function MaterialsSection() {
                       w-12
                       h-12
                       rounded-2xl
-                      bg-[#E8F3EE]
-                      text-[#2E5E4E]
+                      bg-brand-soft
+                      text-brand
                       flex
                       items-center
                       justify-center
@@ -877,7 +863,7 @@ export default function MaterialsSection() {
                   className="
                     text-xl
                     font-black
-                    text-[#111827]
+                    text-ink
                     mt-5
                     wrap-break-word
                   "
@@ -909,7 +895,7 @@ export default function MaterialsSection() {
                       className="
                         text-2xl
                         font-black
-                        text-[#2E5E4E]
+                        text-brand
                         mt-1
                       "
                     >
@@ -943,7 +929,7 @@ export default function MaterialsSection() {
                       className=" 
                         text-lg
                         font-black
-                        text-[#111827]  
+                        text-ink  
                         mt-1
                         wrap-break-word
                       "

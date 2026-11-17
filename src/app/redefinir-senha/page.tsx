@@ -13,6 +13,7 @@ import Link from "next/link";
 import { CheckCircle2, KeyRound, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
+import Button from "@/components/ui/Button";
 
 type Estado = "carregando" | "pronto" | "invalido" | "concluido";
 
@@ -76,18 +77,18 @@ export default function RedefinirSenhaPage() {
     setEstado("concluido");
   }
 
-  const campo = "w-full h-12 rounded-2xl border border-zinc-200 px-4 focus:outline-none focus:ring-2 focus:ring-[#2E5E4E]/40";
+  const campo = "w-full h-12 rounded-2xl border border-zinc-200 px-4 focus:outline-none focus:ring-2 focus:ring-brand/40";
 
   return (
-    <main className="min-h-dvh bg-[#F4F7F5] flex items-center justify-center p-4">
+    <main className="min-h-dvh bg-surface-alt flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-3xl border border-black/5 p-6 sm:p-8 shadow-sm">
-        <span className="w-14 h-14 rounded-2xl bg-[#DDF5EC] text-[#2E5E4E] flex items-center justify-center mx-auto">
+        <span className="w-14 h-14 rounded-2xl bg-brand-mint text-brand flex items-center justify-center mx-auto">
           <KeyRound size={26} aria-hidden="true" />
         </span>
         <h1 className="mt-4 text-2xl font-black text-zinc-900 text-center">Redefinir senha</h1>
 
         {estado === "carregando" && (
-          <p className="mt-6 flex justify-center"><Loader2 className="animate-spin text-[#2E5E4E]" aria-label="Validando link" /></p>
+          <p className="mt-6 flex justify-center"><Loader2 className="animate-spin text-brand" aria-label="Validando link" /></p>
         )}
 
         {estado === "invalido" && (
@@ -95,7 +96,7 @@ export default function RedefinirSenhaPage() {
             <p role="alert" className="text-zinc-600">
               Este link é inválido ou expirou. Peça um novo em “Esqueci minha senha”.
             </p>
-            <Link href="/" className="inline-flex h-12 px-6 rounded-2xl bg-[#2E5E4E] text-white font-bold items-center">Voltar ao site</Link>
+            <Button href="/">Voltar ao site</Button>
           </div>
         )}
 
@@ -103,7 +104,7 @@ export default function RedefinirSenhaPage() {
           <div className="mt-4 text-center space-y-4">
             <CheckCircle2 className="mx-auto text-emerald-600" size={40} aria-hidden="true" />
             <p className="text-zinc-600">Senha alterada! Entre novamente com a nova senha.</p>
-            <Link href="/" className="inline-flex h-12 px-6 rounded-2xl bg-[#2E5E4E] text-white font-bold items-center">Ir para o site</Link>
+            <Button href="/">Ir para o site</Button>
           </div>
         )}
 
@@ -119,9 +120,9 @@ export default function RedefinirSenhaPage() {
               <input className={campo} type="password" autoComplete="new-password" value={confirmar} onChange={(e) => setConfirmar(e.target.value)} />
             </label>
             {erro && <p role="alert" className="text-sm text-red-600">{erro}</p>}
-            <button type="submit" disabled={salvando} className="w-full h-12 rounded-2xl bg-[#2E5E4E] text-white font-bold disabled:opacity-60">
+            <Button type="submit" disabled={salvando} className="w-full">
               {salvando ? "Salvando..." : "Salvar nova senha"}
-            </button>
+            </Button>
           </form>
         )}
       </div>

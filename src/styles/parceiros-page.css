@@ -11,12 +11,12 @@
 /* Hero */
 .parc__hero { background: linear-gradient(180deg, #ecfdf5 0%, #f0fdf4 60%, #ffffff 100%); padding: 8rem 0 3rem; }
 .parc__crumb ol { list-style: none; display: flex; align-items: center; gap: 0.35rem; padding: 0; margin: 0 0 1.5rem; font-size: 0.85rem; color: #6b7280; }
-.parc__crumb a { color: #047857; font-weight: 700; text-decoration: none; }
+.parc__crumb a { color: var(--color-leaf); font-weight: 700; text-decoration: none; }
 .parc__crumb a:hover { text-decoration: underline; }
 .parc__crumb [aria-current] { color: #111827; font-weight: 600; }
 .parc__tag { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 1rem; border-radius: 9999px; background: #fff; color: #059669; font-size: 0.8rem; font-weight: 700; margin-bottom: 1rem; border: 1px solid #d1fae5; }
 .parc__title { font-size: 2.6rem; font-weight: 900; line-height: 1.15; color: #111827; max-width: 48rem; }
-.parc__title span { color: #047857; }
+.parc__title span { color: var(--color-leaf); }
 .parc__lead { margin-top: 1.25rem; max-width: 50rem; font-size: 1.05rem; line-height: 1.75; color: #4b5563; }
 .parc__stats { list-style: none; padding: 0; margin: 2rem 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 15rem)); gap: 1rem; }
 .parc__stats li { display: flex; flex-direction: column; gap: 0.2rem; padding: 1.1rem 1.25rem; border-radius: 1.25rem; background: #fff; border: 1px solid #d1fae5; color: #059669; box-shadow: 0 4px 18px rgba(4, 120, 87, 0.06); }
@@ -58,7 +58,7 @@
 .parc__logo span { width: 100%; height: 100%; border-radius: 0.7rem; background: linear-gradient(135deg, #059669, #10b981); color: #fff; font-size: 1.8rem; font-weight: 900; display: flex; align-items: center; justify-content: center; }
 .parc__card-head { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
 .parc__card-head h3 { font-size: 1.15rem; font-weight: 900; color: #111827; line-height: 1.25; }
-.parc__status { align-self: flex-start; font-size: 0.72rem; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 9999px; background: #d1fae5; color: #047857; }
+.parc__status { align-self: flex-start; font-size: 0.72rem; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 9999px; background: #d1fae5; color: var(--color-leaf); }
 .parc__status--em_negociacao { background: #fef3c7; color: #b45309; }
 .parc__status--pausada, .parc__status--encerrada { background: #f3f4f6; color: #4b5563; }
 .parc__cnpj { font-size: 0.75rem; color: #6b7280; }
@@ -70,18 +70,18 @@
 .parc__meta dd { margin: 0; color: #111827; text-align: right; }
 .parc__mats > span { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.78rem; font-weight: 800; color: #374151; text-transform: uppercase; letter-spacing: 0.03em; }
 .parc__mats ul { list-style: none; padding: 0; margin: 0.45rem 0 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.parc__mats li { font-size: 0.78rem; padding: 0.25rem 0.65rem; border-radius: 9999px; background: #ecfdf5; color: #047857; font-weight: 600; }
+.parc__mats li { font-size: 0.78rem; padding: 0.25rem 0.65rem; border-radius: 9999px; background: #ecfdf5; color: var(--color-leaf); font-weight: 600; }
 .parc__links { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-top: auto; }
-.parc__links a, .parc__apo-links a { display: inline-flex; align-items: center; gap: 0.3rem; color: #047857; font-weight: 700; font-size: 0.86rem; text-decoration: none; }
+.parc__links a, .parc__apo-links a { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--color-leaf); font-weight: 700; font-size: 0.86rem; text-decoration: none; }
 .parc__links a:hover, .parc__apo-links a:hover { text-decoration: underline; }
-.parc__hist button { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.9rem; border-radius: 0.8rem; border: 1px solid #d1fae5; background: #f0fdf4; color: #047857; font-weight: 800; font-size: 0.88rem; cursor: pointer; }
+.parc__hist button { width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 0.65rem 0.9rem; border-radius: 0.8rem; border: 1px solid #d1fae5; background: #f0fdf4; color: var(--color-leaf); font-weight: 800; font-size: 0.88rem; cursor: pointer; }
 .parc__hist svg { transition: transform 0.2s ease; }
 .parc__rot { transform: rotate(180deg); }
 .parc__table-wrap { margin-top: 0.6rem; overflow-x: auto; }
 .parc__table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
 .parc__table th { text-align: left; color: #6b7280; font-weight: 700; padding: 0.4rem 0.45rem; border-bottom: 1px solid #d1fae5; }
 .parc__table td { padding: 0.45rem; border-bottom: 1px solid #f3f4f6; color: #374151; }
-.parc__table a { color: #047857; font-weight: 700; display: inline-flex; gap: 0.25rem; align-items: center; }
+.parc__table a { color: var(--color-leaf); font-weight: 700; display: inline-flex; gap: 0.25rem; align-items: center; }
 
 /* Apoiadores */
 .parc__group { margin-bottom: 2rem; }
@@ -98,11 +98,11 @@
 .parc__apo-bairro { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.78rem; color: #6b7280; }
 .parc__apo-body p { font-size: 0.86rem; color: #4b5563; line-height: 1.55; }
 .parc__apo-tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.3rem; }
-.parc__apo-tags li { font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 9999px; background: #ecfdf5; color: #047857; font-weight: 600; }
+.parc__apo-tags li { font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 9999px; background: #ecfdf5; color: var(--color-leaf); font-weight: 600; }
 .parc__apo-links { display: flex; gap: 0.8rem; }
 
 /* CTA */
-.parc__cta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 2.25rem; border-radius: 1.5rem; background: linear-gradient(135deg, #047857 0%, #059669 60%, #10b981 100%); color: #fff; box-shadow: 0 14px 40px rgba(4, 120, 87, 0.25); }
+.parc__cta { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 2.25rem; border-radius: 1.5rem; background: linear-gradient(135deg, var(--color-leaf) 0%, #059669 60%, #10b981 100%); color: #fff; box-shadow: 0 14px 40px rgba(4, 120, 87, 0.25); }
 .parc__cta h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem; }
 .parc__cta p { color: #d1fae5; line-height: 1.65; max-width: 38rem; }
 .parc__cta-actions { display: flex; flex-direction: column; gap: 0.7rem; flex-shrink: 0; }

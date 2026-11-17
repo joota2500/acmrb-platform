@@ -4,7 +4,7 @@
    Celular  (<640px):   header compacto + gaveta + barra inferior
    Tablet   (640–1023): header com hambúrguer + gaveta
    Desktop  (>=1024px): barra lateral fixa 260px (recolhida: 80px)
-   Paleta: #21463A / #2E5E4E / #DDF5EC / #F5F7F4 (a mesma do painel)
+   Paleta: var(--color-brand-dark) / var(--color-brand) / var(--color-brand-mint) / #F5F7F4 (a mesma do painel)
    ========================================================== */
 
 .admin-shell {
@@ -39,7 +39,7 @@
     width: var(--admin-sidebar);
     display: flex;
     flex-direction: column;
-    background: linear-gradient(180deg, #21463a 0%, #18352c 100%);
+    background: linear-gradient(180deg, var(--color-brand-dark) 0%, #18352c 100%);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
     transition: width 0.25s ease;
   }
@@ -62,7 +62,7 @@
   width: min(300px, 86vw);
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, #21463a 0%, #18352c 100%);
+  background: linear-gradient(180deg, var(--color-brand-dark) 0%, #18352c 100%);
   box-shadow: 8px 0 40px rgba(0, 0, 0, 0.35);
   animation: admin-entrar 0.25s ease;
   overscroll-behavior: contain;

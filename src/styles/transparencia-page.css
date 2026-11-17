@@ -132,8 +132,8 @@
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
 }
-.tp-nav__link:hover { background: #ecfdf5; color: #047857; }
-.tp-nav__link.is-ativo { background: #047857; color: #fff; }
+.tp-nav__link:hover { background: #ecfdf5; color: var(--color-leaf); }
+.tp-nav__link.is-ativo { background: var(--color-leaf); color: #fff; }
 
 /* ---------- Seções ---------- */
 .tp-secao {
@@ -149,7 +149,7 @@
   padding: 0.35rem 0.9rem;
   border-radius: 9999px;
   background: #d1fae5;
-  color: #047857;
+  color: var(--color-leaf);
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;

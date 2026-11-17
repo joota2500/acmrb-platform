@@ -1,6 +1,6 @@
 /* ==================== ADMIN — NOTÍCIAS (lista + editor) ====================
- * Cores do painel: #2E5E4E (marca do admin) e verdes do projeto
- * (#047857, #059669, #10b981, #d1fae5, #ecfdf5). Celular ≤480px | tablet ≤1024px.
+ * Cores do painel: var(--color-brand) (marca do admin) e verdes do projeto
+ * (var(--color-leaf), #059669, #10b981, #d1fae5, #ecfdf5). Celular ≤480px | tablet ≤1024px.
  */
 
 .an, .an__editor { display: flex; flex-direction: column; gap: 1.25rem; }
@@ -21,7 +21,7 @@
   padding: 0 1.1rem;
   border-radius: 0.9rem;
   border: 0;
-  background: #2E5E4E;
+  background: var(--color-brand);
   color: #ffffff;
   font-weight: 700;
   font-size: 0.9rem;
@@ -36,7 +36,7 @@
 .an__btn--claro:hover { background: #d1fae5; }
 
 .an__icone { display: flex; padding: 0.5rem; border-radius: 0.75rem; border: 0; background: #f3f4f6; cursor: pointer; }
-.an__link { border: 0; background: none; color: #047857; font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+.an__link { border: 0; background: none; color: var(--color-leaf); font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
 
 .an__girando { animation: an-girar 0.9s linear infinite; }
 @keyframes an-girar { to { transform: rotate(360deg); } }
@@ -135,8 +135,8 @@
 .an__status--agendado { background: #dbeafe; color: #1e40af; }
 .an__status--rascunho { background: #f3f4f6; color: #374151; }
 .an__status--arquivado { background: #fef3c7; color: #92400e; }
-.an__status--destaque { background: #047857; color: #ffffff; }
-.an__cat { background: #ecfdf5; color: #047857; font-weight: 700; }
+.an__status--destaque { background: var(--color-leaf); color: #ffffff; }
+.an__cat { background: #ecfdf5; color: var(--color-leaf); font-weight: 700; }
 
 .an__acoes { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.35rem; max-width: 26rem; }
 
@@ -186,7 +186,7 @@
   border-radius: 1.5rem;
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  color: #2E5E4E;
+  color: var(--color-brand);
   text-align: center;
 }
 
@@ -209,7 +209,7 @@
   min-width: 0;
 }
 
-.an__bloco legend { padding: 0 0.4rem; font-size: 0.95rem; font-weight: 800; color: #2E5E4E; }
+.an__bloco legend { padding: 0 0.4rem; font-size: 0.95rem; font-weight: 800; color: var(--color-brand); }
 
 .an__linha { display: grid; grid-template-columns: 1fr 1fr; gap: 0.9rem; align-items: end; }
 
@@ -259,7 +259,7 @@
   padding: 0.2rem 0.55rem;
   border-radius: 9999px;
   background: #ecfdf5;
-  color: #047857;
+  color: var(--color-leaf);
   font-size: 0.78rem;
   font-weight: 700;
 }
@@ -267,7 +267,7 @@
 .an__tag button { display: flex; border: 0; background: none; color: inherit; cursor: pointer; }
 
 .an__check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; color: #374151; min-height: 2.75rem; }
-.an__check input { width: 1.15rem; height: 1.15rem; accent-color: #047857; }
+.an__check input { width: 1.15rem; height: 1.15rem; accent-color: var(--color-leaf); }
 
 .an__capa { display: grid; grid-template-columns: 16rem 1fr; gap: 1rem; align-items: center; }
 
@@ -297,7 +297,7 @@ label.an__btn { cursor: pointer; }
 .an__galeria-acoes button { display: flex; padding: 0.35rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #ffffff; cursor: pointer; }
 
 .an__google { padding: 0.9rem 1rem; border-radius: 0.9rem; background: #f9fafb; border: 1px solid #e5e7eb; }
-.an__google-url { display: block; font-size: 0.75rem; color: #047857; }
+.an__google-url { display: block; font-size: 0.75rem; color: var(--color-leaf); }
 .an__google strong { display: block; color: #1a0dab; font-size: 1.05rem; font-weight: 600; margin: 0.15rem 0; }
 .an__google p { font-size: 0.83rem; color: #4b5563; text-align: left; }
 

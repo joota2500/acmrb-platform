@@ -20,6 +20,7 @@ import { dataHora } from "@/components/admin/sections/AdministradoresSection";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import SegurancaConta from "@/components/admin/conta/SegurancaConta";
 import { ROTULO_PAPEL, papelDe } from "@/constants/permissoes";
+import Button from "@/components/ui/Button";
 
 interface Conta {
   id: string;
@@ -33,7 +34,7 @@ interface Conta {
 }
 
 const campo =
-  "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-[#2E5E4E]/40";
+  "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-brand/40";
 
 export default function MinhaContaSection() {
   const { toasts, mostrar, fechar } = useToast();
@@ -132,7 +133,7 @@ export default function MinhaContaSection() {
   if (carregando) {
     return (
       <div className="bg-white rounded-3xl border border-black/5 p-10 flex justify-center" aria-busy="true">
-        <Loader2 className="animate-spin text-[#2E5E4E]" />
+        <Loader2 className="animate-spin text-brand" />
       </div>
     );
   }
@@ -147,7 +148,7 @@ export default function MinhaContaSection() {
         <h2 className="text-lg font-black text-zinc-900">Perfil</h2>
 
         <div className="flex items-center gap-4">
-          <span className="w-20 h-20 rounded-full bg-[#DDF5EC] text-[#2E5E4E] text-2xl font-black overflow-hidden flex items-center justify-center shrink-0">
+          <span className="w-20 h-20 rounded-full bg-brand-mint text-brand text-2xl font-black overflow-hidden flex items-center justify-center shrink-0">
             {previa ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={previa} alt="Sua foto" className="w-full h-full object-cover" />
@@ -177,11 +178,11 @@ export default function MinhaContaSection() {
           <p>Conta criada em: <span className="font-semibold text-zinc-700">{dataHora(conta.created_at ?? null)}</span></p>
         </div>
 
-        <button type="submit" disabled={salvando}
-          className="w-full sm:w-auto h-12 px-6 rounded-2xl bg-[#2E5E4E] text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-[#21463A] disabled:opacity-60">
+        <Button type="submit" disabled={salvando}
+          className="w-full sm:w-auto">
           {salvando ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} aria-hidden="true" />}
           Salvar perfil
-        </button>
+        </Button>
       </form>
 
       {/* Senha */}

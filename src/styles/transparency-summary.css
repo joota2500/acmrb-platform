@@ -37,7 +37,7 @@
   padding: 0.4rem 1rem;
   border-radius: 9999px;
   background: #d1fae5;
-  color: #047857;
+  color: var(--color-leaf);
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -54,7 +54,7 @@
 }
 
 .tsum__title span {
-  color: #047857;
+  color: var(--color-leaf);
 }
 
 .tsum__description {
@@ -236,7 +236,7 @@
   margin-top: 2.75rem;
   padding: 2rem 2.25rem;
   border-radius: 1.5rem;
-  background: linear-gradient(135deg, #047857 0%, #059669 60%, #10b981 100%);
+  background: linear-gradient(135deg, var(--color-leaf) 0%, #059669 60%, #10b981 100%);
   color: #ffffff;
 }
 

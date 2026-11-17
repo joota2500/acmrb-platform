@@ -43,6 +43,7 @@ import { normalizar } from "@/services/associados";
 import type { AssociadoAdmin, StatusAssociado } from "@/types/associados";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import Button from "@/components/ui/Button";
 
 /* ==================== Opções padrão ==================== */
 const CARGOS = [
@@ -320,7 +321,7 @@ export default function AssociadosSection() {
 
   /* ----- Estilos reutilizados ----- */
   const campo =
-    "w-full h-12 px-4 rounded-2xl border border-zinc-200 bg-white text-zinc-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2E5E4E]";
+    "w-full h-12 px-4 rounded-2xl border border-zinc-200 bg-white text-zinc-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand";
   const rotulo = "block text-sm font-semibold text-zinc-700 mb-1.5";
   const erroTxt = (nome: keyof FormValores) =>
     errors[nome]?.message ? (
@@ -348,10 +349,10 @@ export default function AssociadosSection() {
 
       {/* ===== Cabeçalho ===== */}
       <header>
-        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#DDF5EC] text-[#2E5E4E] font-bold text-sm">
+        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-mint text-brand font-bold text-sm">
           <ShieldCheck size={16} aria-hidden="true" /> Painel institucional ACMRB
         </span>
-        <h1 className="mt-4 text-3xl md:text-5xl font-black text-[#111827]">Gestão de associados</h1>
+        <h1 className="mt-4 text-3xl md:text-5xl font-black text-ink">Gestão de associados</h1>
         <p className="mt-3 text-zinc-500 md:text-lg max-w-3xl text-justify hyphens-auto" lang="pt-BR">
           Cadastre, edite e inative associados. Apenas nome, cargo, tipo, foto,
           apresentação e redes sociais aparecem no site; CPF, contatos e endereço
@@ -402,7 +403,7 @@ export default function AssociadosSection() {
         </fieldset>
 
         <fieldset className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <legend className="text-sm font-bold uppercase tracking-wide text-[#2E5E4E] mb-2">Função na associação</legend>
+          <legend className="text-sm font-bold uppercase tracking-wide text-brand mb-2">Função na associação</legend>
           <div>
             <label htmlFor="f-cargo" className={rotulo}>Cargo *</label>
             <input id="f-cargo" list="lista-cargos" className={campo} {...register("cargo")} aria-invalid={!!errors.cargo} />
@@ -424,13 +425,13 @@ export default function AssociadosSection() {
             <input id="f-ordem" type="number" min={0} className={campo} {...register("ordem_exibicao")} />
           </div>
           <label className="flex items-center gap-3 min-h-12 sm:col-span-2 lg:col-span-3">
-            <input type="checkbox" className="w-5 h-5 accent-[#2E5E4E]" {...register("destaque")} />
+            <input type="checkbox" className="w-5 h-5 accent-brand" {...register("destaque")} />
             <span className="font-medium text-zinc-700">Destacar no site</span>
           </label>
         </fieldset>
 
         <fieldset className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <legend className="text-sm font-bold uppercase tracking-wide text-[#2E5E4E] mb-2">Contato e endereço (somente admin)</legend>
+          <legend className="text-sm font-bold uppercase tracking-wide text-brand mb-2">Contato e endereço (somente admin)</legend>
           <div>
             <label htmlFor="f-email" className={rotulo}>E-mail</label>
             <input id="f-email" type="email" className={campo} {...register("email")} aria-invalid={!!errors.email} />
@@ -469,7 +470,7 @@ export default function AssociadosSection() {
         </fieldset>
 
         <fieldset className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <legend className="text-sm font-bold uppercase tracking-wide text-[#2E5E4E] mb-2">Perfil público</legend>
+          <legend className="text-sm font-bold uppercase tracking-wide text-brand mb-2">Perfil público</legend>
           <div className="sm:col-span-2 lg:col-span-3">
             <label htmlFor="f-bio" className={rotulo}>Apresentação</label>
             <textarea id="f-bio" rows={4} className={`${campo} h-auto py-3`} {...register("bio")} />
@@ -490,12 +491,12 @@ export default function AssociadosSection() {
           <div className="sm:col-span-2 lg:col-span-3">
             <span className={rotulo}>Foto</span>
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-2xl bg-[#DDF5EC] overflow-hidden flex items-center justify-center shrink-0">
+              <div className="w-20 h-20 rounded-2xl bg-brand-mint overflow-hidden flex items-center justify-center shrink-0">
                 {fotoPreview ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={fotoPreview} alt="Pré-visualização da foto" className="w-full h-full object-cover" />
                 ) : (
-                  <ImageIcon className="text-[#2E5E4E]" aria-hidden="true" />
+                  <ImageIcon className="text-brand" aria-hidden="true" />
                 )}
               </div>
               <input
@@ -514,14 +515,14 @@ export default function AssociadosSection() {
         </fieldset>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting}
-            className="h-12 px-6 rounded-2xl bg-[#2E5E4E] hover:bg-[#21463A] text-white font-bold inline-flex items-center justify-center gap-2 disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2E5E4E]"
+
           >
             {isSubmitting && <Loader2 size={18} className="animate-spin" aria-hidden="true" />}
             {editandoId ? "Salvar alterações" : "Cadastrar associado"}
-          </button>
+          </Button>
           {editandoId && (
             <button
               type="button"
@@ -574,7 +575,7 @@ export default function AssociadosSection() {
               const st = statusDe(a);
               return (
                 <li key={a.id} className={`bg-white rounded-3xl border p-4 flex gap-4 ${st === "ativo" ? "border-black/5" : "border-dashed border-zinc-300 opacity-75"}`}>
-                  <div className="w-16 h-16 rounded-2xl bg-[#DDF5EC] overflow-hidden shrink-0 flex items-center justify-center font-black text-[#2E5E4E] text-xl">
+                  <div className="w-16 h-16 rounded-2xl bg-brand-mint overflow-hidden shrink-0 flex items-center justify-center font-black text-brand text-xl">
                     {a.foto_url ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={a.foto_url} alt="" className="w-full h-full object-cover" />
@@ -587,7 +588,7 @@ export default function AssociadosSection() {
                       {a.nome}
                       {a.destaque && <Star size={14} className="text-amber-500 fill-amber-500" aria-label="Destaque" />}
                     </p>
-                    <p className="text-sm text-[#2E5E4E] truncate">{a.cargo || "Sem cargo"}</p>
+                    <p className="text-sm text-brand truncate">{a.cargo || "Sem cargo"}</p>
                     <p className="text-xs text-zinc-500">
                       {a.tipo_associado || "—"} • {STATUS.find((s) => s.valor === st)?.rotulo}
                     </p>
@@ -595,7 +596,7 @@ export default function AssociadosSection() {
                       <button
                         type="button"
                         onClick={() => editar(a)}
-                        className="h-10 px-3 rounded-xl bg-[#DDF5EC] text-[#2E5E4E] text-sm font-semibold inline-flex items-center gap-1.5 hover:bg-[#c9eedf]"
+                        className="h-10 px-3 rounded-xl bg-brand-mint text-brand text-sm font-semibold inline-flex items-center gap-1.5 hover:bg-[#c9eedf]"
                       >
                         <Pencil size={15} aria-hidden="true" /> Editar
                       </button>

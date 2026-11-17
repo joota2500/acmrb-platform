@@ -75,7 +75,7 @@
 }
 
 .about__title span {
-  color: #047857;
+  color: var(--color-leaf);
 }
 
 .about__description {

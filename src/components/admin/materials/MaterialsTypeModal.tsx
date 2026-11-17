@@ -11,6 +11,7 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import { avisar } from "@/utils/alertas";
+import Button from "@/components/ui/Button";
 
 type Props = {
   open: boolean;
@@ -162,7 +163,7 @@ export default function MaterialTypeModal({
               className="
                 text-4xl
                 font-black
-                text-[#111827]
+                text-ink
                 mt-2
               "
             >
@@ -229,7 +230,7 @@ export default function MaterialTypeModal({
                 border-zinc-200
                 px-5
                 outline-none
-                focus:border-[#2E5E4E]
+                focus:border-brand
               "
             />
 
@@ -311,23 +312,10 @@ export default function MaterialTypeModal({
 
           {/* ACTION */}
 
-          <button
+          <Button type="submit"
             onClick={salvar}
             disabled={loading}
-            className="
-              w-full
-              h-16
-              rounded-2xl
-              bg-[#2E5E4E]
-              hover:bg-[#21463A]
-              transition
-              text-white
-              font-black
-              flex
-              items-center
-              justify-center
-              gap-3
-            "
+            className="w-full"
           >
 
             <Save size={20} />
@@ -336,7 +324,7 @@ export default function MaterialTypeModal({
               ? "Salvando..."
               : "Salvar tipo"}
 
-          </button>
+          </Button>
 
         </div>
 

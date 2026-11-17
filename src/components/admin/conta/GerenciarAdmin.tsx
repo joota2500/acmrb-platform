@@ -11,11 +11,12 @@ import { KeyRound, Mail, Power } from "lucide-react";
 import { chamarApi } from "@/services/apiAdmin";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import Button from "@/components/ui/Button";
 
 type Mostrar = (tipo: "sucesso" | "erro" | "aviso", mensagem: string) => void;
 
 const campo =
-  "w-full h-11 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-[#2E5E4E]/40";
+  "w-full h-11 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-brand/40";
 const botao = "h-10 px-3 rounded-xl text-sm font-bold inline-flex items-center gap-2 border border-zinc-200 hover:bg-zinc-50 disabled:opacity-60";
 
 export default function GerenciarAdmin({ alvo, mostrar, onAlterado }: {
@@ -81,9 +82,9 @@ export default function GerenciarAdmin({ alvo, mostrar, onAlterado }: {
             onChange={(e) => setValor(e.target.value)}
           />
           {aberto === "senha" && <RegrasSenha senha={valor} />}
-          <button type="submit" disabled={ocupado} className="h-10 px-4 rounded-xl bg-[#2E5E4E] text-white text-sm font-bold disabled:opacity-60">
+          <Button type="submit" disabled={ocupado} tamanho="pequeno">
             Salvar
-          </button>
+          </Button>
         </form>
       )}
 

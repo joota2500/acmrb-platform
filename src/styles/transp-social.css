@@ -22,7 +22,7 @@
   place-items: center;
   border-radius: 0.8rem;
   background: #d1fae5;
-  color: #047857;
+  color: var(--color-leaf);
 }
 .ts-card strong {
   display: block;

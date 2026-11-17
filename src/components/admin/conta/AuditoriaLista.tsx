@@ -55,7 +55,7 @@ export default function AuditoriaLista({ atualizar }: { atualizar: number }) {
         </button>
       </div>
 
-      {estado === "carregando" && <Loader2 className="mt-4 animate-spin text-[#2E5E4E]" />}
+      {estado === "carregando" && <Loader2 className="mt-4 animate-spin text-brand" />}
       {estado === "erro" && (
         <p className="mt-3 text-sm text-amber-700">
           Histórico indisponível. Rode a migration 20261020190000_admin_auditoria.sql no Supabase.

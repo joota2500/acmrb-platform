@@ -1,5 +1,5 @@
 /* ==================== INSTITUTIONAL SECTION ("Plataforma Institucional") ====================
- * Paleta: verdes/esmeralda do projeto (#047857, #059669, #10b981, #a7f3d0,
+ * Paleta: verdes/esmeralda do projeto (var(--color-leaf), #059669, #10b981, #a7f3d0,
  * #d1fae5, #ecfdf5) + cinzas de texto (#111827, #374151, #4b5563).
  * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
  */
@@ -45,7 +45,7 @@
   line-height: 1.25;
   text-align: center;
 }
-.inst__title span { color: #047857; }
+.inst__title span { color: var(--color-leaf); }
 
 .inst__description {
   margin-top: 1.25rem;
@@ -74,7 +74,7 @@
   border-radius: 1rem;
   box-shadow: 0 6px 20px rgba(4, 120, 87, 0.06);
 }
-.inst__stat strong { display: block; font-size: 1.35rem; font-weight: 900; color: #047857; line-height: 1.2; }
+.inst__stat strong { display: block; font-size: 1.35rem; font-weight: 900; color: var(--color-leaf); line-height: 1.2; }
 .inst__stat span { font-size: 0.85rem; color: #4b5563; }
 
 .inst__stat-icon,
@@ -135,7 +135,7 @@
   transition: color 0.2s, transform 0.2s;
 }
 .inst__link svg { color: #10b981; flex-shrink: 0; }
-.inst__link:hover { color: #047857; transform: translateX(3px); }
+.inst__link:hover { color: var(--color-leaf); transform: translateX(3px); }
 
 .inst a:focus-visible,
 .inst button:focus-visible { outline: 3px solid #10b981; outline-offset: 2px; border-radius: 0.5rem; }
@@ -155,7 +155,7 @@
 
 .inst__docs-all {
   display: inline-flex; align-items: center; gap: 0.35rem;
-  font-size: 0.88rem; font-weight: 700; color: #047857; text-decoration: none; white-space: nowrap;
+  font-size: 0.88rem; font-weight: 700; color: var(--color-leaf); text-decoration: none; white-space: nowrap;
 }
 .inst__docs-all:hover { text-decoration: underline; }
 
@@ -166,12 +166,12 @@
   padding: 0.85rem 1rem;
   border-radius: 0.8rem;
   background: #ecfdf5;
-  color: #047857;
+  color: var(--color-leaf);
   font-size: 0.9rem; font-weight: 700;
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
 }
-.inst__doc:hover { background: #047857; color: #ffffff; }
+.inst__doc:hover { background: var(--color-leaf); color: #ffffff; }
 
 /* ---------- Dados oficiais ---------- */
 .inst__legal { list-style: none; margin: 0 0 2.5rem; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
@@ -193,20 +193,20 @@
   border-radius: 0.6rem;
   border: 1px solid #a7f3d0;
   background: #ecfdf5;
-  color: #047857;
+  color: var(--color-leaf);
   font-size: 0.8rem; font-weight: 700;
   cursor: pointer; text-decoration: none;
   transition: background 0.2s, color 0.2s;
 }
 .inst__legal-btn span { display: inline; font-size: inherit; text-transform: none; letter-spacing: 0; color: inherit; }
-.inst__legal-btn:hover { background: #047857; color: #ffffff; }
+.inst__legal-btn:hover { background: var(--color-leaf); color: #ffffff; }
 
 /* ---------- Chamada final ---------- */
 .inst__cta {
   display: flex; align-items: center; justify-content: space-between; gap: 2rem;
   padding: 2.25rem;
   border-radius: 1.5rem;
-  background: linear-gradient(135deg, #047857 0%, #059669 60%, #10b981 100%);
+  background: linear-gradient(135deg, var(--color-leaf) 0%, #059669 60%, #10b981 100%);
   color: #ffffff;
   box-shadow: 0 18px 40px rgba(4, 120, 87, 0.25);
 }

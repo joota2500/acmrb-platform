@@ -13,7 +13,7 @@
   border: 1px solid #e5e7eb;
   margin-bottom: 1.5rem;
 }
-.to-filtros__icone { color: #047857; align-self: center; }
+.to-filtros__icone { color: var(--color-leaf); align-self: center; }
 .to-filtros label { display: flex; flex-direction: column; gap: 0.3rem; min-width: 11rem; }
 .to-filtros label span { font-size: 0.75rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 0.04em; }
 .to-filtros select {
@@ -36,7 +36,7 @@
   padding: 0 1.1rem;
   border-radius: 0.75rem;
   border: none;
-  background: #047857;
+  background: var(--color-leaf);
   color: #fff;
   font-weight: 700;
   font-size: 0.88rem;
@@ -57,7 +57,7 @@
   gap: 0.35rem;
   padding: 1.3rem;
   border-radius: 1.25rem;
-  background: linear-gradient(135deg, #064e3b, #047857);
+  background: linear-gradient(135deg, #064e3b, var(--color-leaf));
   color: #d1fae5;
 }
 .to-resumo__item span { font-size: 0.8rem; font-weight: 600; }
@@ -108,10 +108,10 @@
   place-items: center;
   border-radius: 0.8rem;
   background: #ecfdf5;
-  color: #047857;
+  color: var(--color-leaf);
   font-weight: 900;
 }
-.to-item:first-child .to-item__pos { background: #047857; color: #fff; }
+.to-item:first-child .to-item__pos { background: var(--color-leaf); color: #fff; }
 .to-item__corpo { flex: 1; min-width: 0; }
 .to-item__topo { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
 .to-item__topo h3 {
@@ -126,7 +126,7 @@
   white-space: nowrap;
 }
 .to-item__topo h3 i { width: 0.7rem; height: 0.7rem; border-radius: 9999px; flex-shrink: 0; }
-.to-item__topo strong { color: #047857; font-size: 1rem; }
+.to-item__topo strong { color: var(--color-leaf); font-size: 1rem; }
 
 .to-item__barra {
   margin: 0.6rem 0 0.8rem;

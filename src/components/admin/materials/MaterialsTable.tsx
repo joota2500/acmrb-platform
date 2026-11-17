@@ -17,6 +17,7 @@ import {
 
 import { supabase } from "@/lib/supabase";
 import { avisar, confirmar } from "@/utils/alertas";
+import Button from "@/components/ui/Button";
 
 type Registro = {
 
@@ -283,8 +284,8 @@ export default function MaterialsTable({
             w-20
             h-20
             rounded-3xl
-            bg-[#E8F3EE]
-            text-[#2E5E4E]
+            bg-brand-soft
+            text-brand
             flex
             items-center
             justify-center
@@ -300,7 +301,7 @@ export default function MaterialsTable({
           className="
             text-3xl
             font-black
-            text-[#111827]
+            text-ink
             mt-6
           "
         >
@@ -349,7 +350,7 @@ export default function MaterialsTable({
             className="
               text-3xl
               font-black
-              text-[#111827]
+              text-ink
             "
           >
 
@@ -376,8 +377,8 @@ export default function MaterialsTable({
             px-5
             py-3
             rounded-2xl
-            bg-[#E8F3EE]
-            text-[#2E5E4E]
+            bg-brand-soft
+            text-brand
             font-black
           "
         >
@@ -396,7 +397,7 @@ export default function MaterialsTable({
 
         <table className="w-full">
 
-          <thead className="bg-[#F8FAF9]">
+          <thead className="bg-surface-alt">
 
             <tr>
 
@@ -475,8 +476,8 @@ export default function MaterialsTable({
                               w-12
                               h-12
                               rounded-2xl
-                              bg-[#E8F3EE]
-                              text-[#2E5E4E]
+                              bg-brand-soft
+                              text-brand
                               flex
                               items-center
                               justify-center
@@ -494,7 +495,7 @@ export default function MaterialsTable({
                             <h3
                               className="
                                 font-black
-                                text-[#111827]
+                                text-ink
                               "
                             >
 
@@ -533,7 +534,7 @@ export default function MaterialsTable({
                         <strong
                           className="
                             text-lg
-                            text-[#111827]
+                            text-ink
                           "
                         >
 
@@ -585,7 +586,7 @@ export default function MaterialsTable({
                             py-2
                             rounded-2xl
                             bg-[#F2FBF6]
-                            text-[#2E5E4E]
+                            text-brand
                             font-black
                           "
                         >
@@ -724,7 +725,7 @@ export default function MaterialsTable({
 
                       <tr
                         className="
-                          bg-[#F8FAF9]
+                          bg-surface-alt
                           border-t
                           border-zinc-100
                         "
@@ -893,7 +894,7 @@ export default function MaterialsTable({
 
                             </button>
 
-                            <button
+                            <Button type="submit"
                               onClick={() =>
                                 salvarEdicao(
                                   item.id,
@@ -902,17 +903,7 @@ export default function MaterialsTable({
                               disabled={
                                 loading
                               }
-                              className="
-                                h-14
-                                px-8
-                                rounded-2xl
-                                bg-[#2E5E4E]
-                                text-white
-                                font-black
-                                flex
-                                items-center
-                                gap-2
-                              "
+
                             >
 
                               <Save
@@ -923,7 +914,7 @@ export default function MaterialsTable({
                                 ? "Salvando..."
                                 : "Salvar"}
 
-                            </button>
+                            </Button>
 
                           </div>
 

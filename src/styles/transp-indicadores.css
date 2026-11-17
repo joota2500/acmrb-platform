@@ -117,7 +117,7 @@
   border-radius: 1rem;
   background: #f0fdf4;
   border: 1px solid #d1fae5;
-  color: #047857;
+  color: var(--color-leaf);
 }
 .ti-extra div { display: flex; flex-direction: column; }
 .ti-extra strong { font-size: 1.15rem; color: #064e3b; font-variant-numeric: tabular-nums; }

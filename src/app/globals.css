@@ -12,7 +12,7 @@
      --text-display       → text-display
    Use sempre estes nomes em vez de cores soltas (#2e5e4e etc.).
    ========================================================== */
-@theme {
+@theme static {
   /* Fonte principal (Inter, carregada com next/font no layout) */
   --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
 
@@ -302,3 +302,20 @@ html[data-bloqueado] body {
 .swal2-popup.swal-acmrb.swal-acmrb-toast { padding: 0.75rem 1rem; border-radius: 1rem; }
 .swal2-popup.swal-acmrb.swal-acmrb-toast .swal-acmrb-titulo { font-size: 0.95rem; font-weight: 700; }
 .swal2-container { z-index: 2000; }
+
+/* ---------- Painel admin: campos e títulos com o mesmo acabamento do resto do site ---------- */
+.admin-shell :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="file"], [type="range"]):focus-visible {
+  border-color: var(--color-brand);
+  box-shadow: var(--shadow-focus);
+  outline: none;
+}
+.admin-shell :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+.admin-shell :is(button, a):focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
+.admin-shell :is(button, [role="button"]):not(:disabled) {
+  cursor: pointer;
+}

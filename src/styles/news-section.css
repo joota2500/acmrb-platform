@@ -1,6 +1,6 @@
 /* ==================== NEWS SECTION ("Notícias e Atualizações" — home) ====================
  * Mesmo padrão de OperationsSection / InstitutionalSection.
- * Paleta: #047857, #059669, #10b981, #a7f3d0, #d1fae5, #ecfdf5 + cinzas de texto.
+ * Paleta: var(--color-leaf), #059669, #10b981, #a7f3d0, #d1fae5, #ecfdf5 + cinzas de texto.
  * Breakpoints: celular ≤480px | tablet 481–1024px | desktop >1024px.
  */
 
@@ -39,7 +39,7 @@
   text-align: center;
 }
 
-.news__title span { color: #047857; }
+.news__title span { color: var(--color-leaf); }
 
 .news__description { margin-top: 1.25rem; font-size: 1.05rem; line-height: 1.75; color: #4b5563; }
 
@@ -80,7 +80,7 @@
   border: 1px dashed #a7f3d0;
   border-radius: 1.25rem;
   background: #ffffff;
-  color: #047857;
+  color: var(--color-leaf);
   text-align: center;
 }
 

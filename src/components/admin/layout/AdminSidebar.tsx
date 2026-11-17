@@ -43,7 +43,7 @@ function Marca({ compacta }: { compacta?: boolean }) {
   return (
     <div className="flex items-center gap-3 min-w-0">
       <span
-        className="w-11 h-11 shrink-0 rounded-2xl bg-linear-to-br from-emerald-500 to-[#2E5E4E] text-white flex items-center justify-center text-2xl shadow-lg"
+        className="w-11 h-11 shrink-0 rounded-2xl bg-linear-to-br from-emerald-500 to-brand text-white flex items-center justify-center text-2xl shadow-lg"
         aria-hidden="true"
       >
         ♻
@@ -103,7 +103,7 @@ function Menu({
                       compacta ? "justify-center px-0" : "px-3"
                     } ${
                       ativo
-                        ? "bg-white text-[#21463A] shadow-md"
+                        ? "bg-white text-brand-dark shadow-md"
                         : "text-emerald-50/85 hover:bg-white/10 hover:text-white"
                     }`}
                   >
@@ -111,7 +111,7 @@ function Menu({
                       <Icone size={20} aria-hidden="true" />
                       {/* Bolinha de não lidas no modo recolhido */}
                       {compacta && item.id === "mensagens" && naoLidas > 0 && (
-                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-[#21463A]" aria-hidden="true" />
+                        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-brand-dark" aria-hidden="true" />
                       )}
                     </span>
                     {!compacta && (
@@ -130,7 +130,7 @@ function Menu({
                         {!item.pronto && (
                           <span
                             className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                              ativo ? "bg-[#DDF5EC] text-[#2E5E4E]" : "bg-white/10 text-emerald-200"
+                              ativo ? "bg-brand-mint text-brand" : "bg-white/10 text-emerald-200"
                             }`}
                           >
                             em breve
@@ -185,7 +185,7 @@ function CartaoUsuario({
           {inicial}
         </span>
         <div className="min-w-0 flex-1">
-          <span className="inline-block text-[10px] font-black uppercase tracking-wider bg-amber-400 text-[#111827] px-2 py-0.5 rounded-full">
+          <span className="inline-block text-[10px] font-black uppercase tracking-wider bg-amber-400 text-ink px-2 py-0.5 rounded-full">
             {usuario.papel}
           </span>
           <p className="mt-1 text-sm font-bold text-white truncate">{usuario.nome}</p>

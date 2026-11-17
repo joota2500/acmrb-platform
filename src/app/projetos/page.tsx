@@ -9,6 +9,7 @@ import {
   Recycle,
   ArrowRight,
 } from "lucide-react";
+import Button from "@/components/ui/Button";
 
 export default function ProjetosPage() {
 
@@ -33,7 +34,7 @@ export default function ProjetosPage() {
             absolute
             inset-0
             bg-linear-to-b
-            from-[#DDF5EC]
+            from-brand-mint
             to-transparent
             opacity-70
           "
@@ -66,7 +67,7 @@ export default function ProjetosPage() {
               shadow-sm
               hover:shadow-md
               transition
-              text-[#111827]
+              text-ink
               font-semibold
             "
           >
@@ -121,8 +122,8 @@ export default function ProjetosPage() {
                     px-5
                     py-3
                     rounded-full
-                    bg-[#DDF5EC]
-                    text-[#2E5E4E]
+                    bg-brand-mint
+                    text-brand
                     font-bold
                     text-sm
                     w-fit
@@ -144,7 +145,7 @@ export default function ProjetosPage() {
                     md:text-6xl
                     font-black
                     leading-[1.05]
-                    text-[#111827]
+                    text-ink
                   "
                 >
                   Projetos e ações ambientais
@@ -205,28 +206,16 @@ export default function ProjetosPage() {
                   "
                 >
 
-                  <Link
+                  <Button
                     href="/#parcerias"
-                    className="
-                      h-14
-                      px-8
-                      rounded-2xl
-                      bg-[#2E5E4E]
-                      hover:bg-[#21463A]
-                      transition
-                      text-white
-                      font-bold
-                      inline-flex
-                      items-center
-                      gap-3
-                    "
+
                   >
 
                     Tornar-se parceiro
 
                     <ArrowRight size={18} />
 
-                  </Link>
+                  </Button>
 
                   <Link
                     href="/quem-somos"
@@ -237,7 +226,7 @@ export default function ProjetosPage() {
                       bg-zinc-100
                       hover:bg-zinc-200
                       transition
-                      text-[#111827]
+                      text-ink
                       font-bold
                       inline-flex
                       items-center
@@ -258,7 +247,7 @@ export default function ProjetosPage() {
                 className="
                   relative
                   min-h-125
-                  bg-[#111827]
+                  bg-ink
                   overflow-hidden
                 "
               >
@@ -272,7 +261,7 @@ export default function ProjetosPage() {
                     right-10
                     w-72
                     h-72
-                    bg-[#2E5E4E]/30
+                    bg-brand/30
                     blur-3xl
                     rounded-full
                   "

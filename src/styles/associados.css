@@ -37,7 +37,7 @@
   text-transform: uppercase;
 }
 .as-badge { background: rgba(255,255,255,0.1); border: 1px solid rgba(167,243,208,0.3); color: #a7f3d0; }
-.as-label { background: #d1fae5; color: #047857; }
+.as-label { background: #d1fae5; color: var(--color-leaf); }
 
 /* ===== Hero (desconta o Header fixo: 64 / 72 / 80px) ===== */
 .as-hero {
@@ -131,7 +131,7 @@
   border: none;
   border-radius: 0.85rem;
   background: #d1fae5;
-  color: #047857;
+  color: var(--color-leaf);
   font-weight: 700;
   cursor: pointer;
 }
@@ -181,7 +181,7 @@
 
 .as-card__corpo { padding: 0.7rem 0.8rem 0.85rem; display: flex; flex-direction: column; flex: 1; }
 .as-card__nome { font-size: 0.9rem; font-weight: 800; color: #111827; line-height: 1.25; }
-.as-card__cargo { margin-top: 0.15rem; font-size: 0.78rem; font-weight: 600; color: #047857; }
+.as-card__cargo { margin-top: 0.15rem; font-size: 0.78rem; font-weight: 600; color: var(--color-leaf); }
 .as-card__tipo { font-size: 0.72rem; color: #6b7280; }
 .as-card__link { margin-top: auto; padding-top: 0.6rem; display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; font-weight: 700; color: #059669; }
 
@@ -240,7 +240,7 @@
 
 .as-perfil__nome { margin-top: 0.75rem; font-size: 1.6rem; font-weight: 900; color: #111827; line-height: 1.15; }
 @media (min-width: 1024px) { .as-perfil__nome { font-size: 2.25rem; } }
-.as-perfil__cargo { margin-top: 0.25rem; font-size: 1rem; font-weight: 700; color: #047857; }
+.as-perfil__cargo { margin-top: 0.25rem; font-size: 1rem; font-weight: 700; color: var(--color-leaf); }
 
 .as-redes { list-style: none; margin: 1.25rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
 @media (min-width: 640px) { .as-redes { flex-direction: row; flex-wrap: wrap; } }

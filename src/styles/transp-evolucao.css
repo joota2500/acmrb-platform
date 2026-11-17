@@ -35,10 +35,10 @@
   color: #4b5563;
   cursor: pointer;
 }
-.te-alternar button.is-ativo { background: #047857; color: #fff; }
+.te-alternar button.is-ativo { background: var(--color-leaf); color: #fff; }
 
 .te-destaque { font-size: 0.85rem; color: #4b5563; }
-.te-destaque strong { color: #047857; text-transform: capitalize; }
+.te-destaque strong { color: var(--color-leaf); text-transform: capitalize; }
 
 .te-grafico {
   display: flex;
@@ -75,7 +75,7 @@
 .te-coluna__barra {
   width: 100%;
   border-radius: 0.6rem;
-  background: linear-gradient(180deg, #10b981, #047857);
+  background: linear-gradient(180deg, #10b981, var(--color-leaf));
   transition: height 0.6s ease;
 }
 .te-coluna:hover .te-coluna__barra { background: linear-gradient(180deg, #34d399, #059669); }

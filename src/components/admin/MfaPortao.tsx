@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import Button from "@/components/ui/Button";
 
 export default function MfaPortao({ children, onSair }: { children: React.ReactNode; onSair: () => void }) {
   const [estado, setEstado] = useState<"verificando" | "pedir" | "ok">("verificando");
@@ -51,12 +52,12 @@ export default function MfaPortao({ children, onSair }: { children: React.ReactN
   if (estado === "ok") return <>{children}</>;
 
   return (
-    <div className="min-h-dvh bg-[#F4F7F5] flex items-center justify-center p-4">
+    <div className="min-h-dvh bg-surface-alt flex items-center justify-center p-4">
       {estado === "verificando" ? (
-        <Loader2 className="animate-spin text-[#2E5E4E]" aria-label="Verificando segurança" />
+        <Loader2 className="animate-spin text-brand" aria-label="Verificando segurança" />
       ) : (
         <form onSubmit={verificar} className="w-full max-w-sm bg-white rounded-3xl border border-black/5 p-6 sm:p-8 text-center space-y-4">
-          <span className="w-14 h-14 rounded-2xl bg-[#DDF5EC] text-[#2E5E4E] flex items-center justify-center mx-auto">
+          <span className="w-14 h-14 rounded-2xl bg-brand-mint text-brand flex items-center justify-center mx-auto">
             <ShieldCheck size={26} aria-hidden="true" />
           </span>
           <h1 className="text-xl font-black text-zinc-900">Verificação em duas etapas</h1>
@@ -68,13 +69,13 @@ export default function MfaPortao({ children, onSair }: { children: React.ReactN
             autoComplete="one-time-code"
             autoFocus
             aria-label="Código de verificação"
-            className="w-full h-14 rounded-2xl border border-zinc-200 text-center text-2xl tracking-[0.5em] font-black focus:outline-none focus:ring-2 focus:ring-[#2E5E4E]/40"
+            className="w-full h-14 rounded-2xl border border-zinc-200 text-center text-2xl tracking-[0.5em] font-black focus:outline-none focus:ring-2 focus:ring-brand/40"
           />
           {erro && <p role="alert" className="text-sm text-red-600">{erro}</p>}
-          <button type="submit" disabled={codigo.length !== 6 || enviando}
-            className="w-full h-12 rounded-2xl bg-[#2E5E4E] text-white font-bold disabled:opacity-60">
+          <Button type="submit" disabled={codigo.length !== 6 || enviando}
+            className="w-full">
             {enviando ? "Verificando..." : "Verificar"}
-          </button>
+          </Button>
           <button type="button" onClick={onSair} className="text-sm text-zinc-500 underline">
             Sair
           </button>

@@ -133,7 +133,7 @@ export default function AdminModal({ open, onClose }: Props) {
     <div className="fixed inset-0 z-9999 bg-black/70 backdrop-blur-md flex items-center justify-center p-5">
       <div className="relative w-full max-w-md overflow-hidden rounded-[38px] bg-white shadow-2xl">
         {/* Header */}
-        <div className="relative bg-linear-to-br from-[#111827] to-[#1F2937] px-8 pt-8 pb-20 text-white">
+        <div className="relative bg-linear-to-br from-ink to-[#1F2937] px-8 pt-8 pb-20 text-white">
           <button
             onClick={onClose}
             className="absolute top-5 right-5 w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/20 transition flex items-center justify-center"
@@ -141,7 +141,7 @@ export default function AdminModal({ open, onClose }: Props) {
             <X size={18} />
           </button>
 
-          <div className="w-20 h-20 rounded-[28px] bg-white text-[#111827] flex items-center justify-center shadow-2xl mx-auto">
+          <div className="w-20 h-20 rounded-[28px] bg-white text-ink flex items-center justify-center shadow-2xl mx-auto">
             <ShieldCheck size={38} />
           </div>
 
@@ -216,7 +216,7 @@ export default function AdminModal({ open, onClose }: Props) {
               <button
                 onClick={enviarRecuperacao}
                 disabled={espera > 0}
-                className="w-full h-14 rounded-3xl bg-linear-to-r from-[#2E5E4E] to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
+                className="w-full h-14 rounded-3xl bg-linear-to-r from-brand to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
               >
                 {espera > 0 ? `Aguarde ${espera}s para reenviar` : "Enviar link de redefinição"}
               </button>
@@ -224,7 +224,7 @@ export default function AdminModal({ open, onClose }: Props) {
               <button
                 onClick={handleLogin}
                 disabled={loading}
-                className="w-full h-14 rounded-3xl bg-linear-to-r from-[#2E5E4E] to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
+                className="w-full h-14 rounded-3xl bg-linear-to-r from-brand to-[#1E3A32] text-white font-black text-lg transition-all disabled:opacity-60 hover:brightness-105"
               >
                 {loading ? "Entrando..." : "Entrar no Painel"}
               </button>
@@ -237,7 +237,7 @@ export default function AdminModal({ open, onClose }: Props) {
                 setError("");
                 setAviso("");
               }}
-              className="w-full text-sm font-semibold text-[#2E5E4E] hover:underline"
+              className="w-full text-sm font-semibold text-brand hover:underline"
             >
               {recuperar ? "Voltar para o login" : "Esqueci minha senha"}
             </button>

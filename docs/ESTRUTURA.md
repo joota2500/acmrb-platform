@@ -42,3 +42,12 @@ src/
 - Classes juntas com `cn()` (`src/utils/cn.ts`).
 - Cuidado: CSS antigo (sem `@layer`) ganha do Tailwind. Ao migrar um componente,
   migre junto o que usa as mesmas classes e apague o `.css`.
+
+## Botões, avisos e cores
+
+- Todo botão/link com cara de botão usa `components/ui/Button` (variantes: primario, secundario,
+  contorno, fantasma, perigo e, para fundo verde escuro, destaque, claro e contornoClaro).
+- Nada de `alert()`/`confirm()` do navegador: use `utils/alertas.ts` (`avisar`, `confirmar`,
+  `avisoRapido`), que usa SweetAlert2 com as cores da ACMRB (estilo em `globals.css`).
+  O `ConfirmDialog` também chama esse helper.
+- Cores fixas do tipo `bg-[#2E5E4E]` viraram tokens (`bg-brand`, `bg-brand-dark`...).
