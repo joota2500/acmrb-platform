@@ -12,7 +12,7 @@
  *    senha e confirmação (zod). O perfil é criado pelo gatilho do banco
  *    (migration 20261020260000_visitantes_perfil.sql).
  *  - Esqueci minha senha: envia o link para /redefinir-senha.
- * CSS: src/styles/login.css (prefixo "login__").
+ * Visual: Tailwind + Button.
  */
 
 import { useEffect, useState, type FormEvent } from "react";
@@ -27,7 +27,6 @@ import {
   Eye,
   EyeOff,
   Leaf,
-  Loader2,
   Lock,
   Mail,
   MapPin,
@@ -35,7 +34,8 @@ import {
   User,
 } from "lucide-react";
 
-import "@/styles/login.css";
+import Button from "@/components/ui/Button";
+import { cn } from "@/utils/cn";
 import { supabase } from "@/lib/supabase";
 import { podeTentar, registrarResultado } from "@/services/loginSeguro";
 import { mascaraTelefone, somenteDigitos } from "@/utils/validacao";
@@ -77,6 +77,14 @@ function mensagemErroCadastro(error: { status?: number; code?: string; message: 
   if (/fetch|network/i.test(msg)) return "Sem conexão com o servidor. Verifique sua internet e tente de novo.";
   return "Não foi possível criar a conta agora. Tente novamente.";
 }
+
+// Classes que se repetem no formulário
+const CAIXA_CAMPO =
+  "flex h-12 items-center gap-2.5 rounded-[0.9rem] border bg-white px-3.5 text-zinc-500 transition focus-within:border-brand focus-within:text-brand focus-within:shadow-[0_0_0_3px_rgb(46_94_78/0.15)] max-[480px]:h-11.5";
+const ENTRADA =
+  "h-full min-w-0 flex-1 border-0 bg-transparent text-[0.95rem] text-zinc-900 outline-none max-[480px]:text-base";
+const ROTULO = "text-[0.82rem] font-bold text-zinc-700";
+const LINK = "inline-flex items-center justify-center gap-1.5 text-[0.85rem] font-bold text-brand hover:underline";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -260,18 +268,19 @@ export default function LoginPage() {
   ) {
     const erro = erros[id];
     return (
-      <div className="login__campo">
-        <label htmlFor={`login-${id}`}>{rotulo}</label>
-        <div className={`login__input${erro ? " login__input--erro" : ""}`}>
+      <div className="flex min-w-0 flex-col gap-1.5">
+        <label htmlFor={`login-${id}`} className={ROTULO}>{rotulo}</label>
+        <div className={cn(CAIXA_CAMPO, erro ? "border-red-400" : "border-zinc-200")}>
           <Icone size={17} aria-hidden="true" />
           <input
             id={`login-${id}`}
+            className={ENTRADA}
             aria-invalid={!!erro}
             aria-describedby={erro ? `login-${id}-erro` : undefined}
             {...props}
           />
         </div>
-        {erro && <span id={`login-${id}-erro`} className="login__erro">{erro}</span>}
+        {erro && <span id={`login-${id}-erro`} className="text-xs text-red-600">{erro}</span>}
       </div>
     );
   }
@@ -280,35 +289,54 @@ export default function LoginPage() {
   const t = TITULOS[modo];
 
   return (
-    <main className="login">
-      <div className="login__brilho" aria-hidden="true" />
+    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-surface-alt px-5 pb-12 pt-20 max-[768px]:pt-18 max-[480px]:items-start max-[480px]:px-3.5 max-[480px]:pb-6 max-[480px]:pt-15">
+      <div
+        className="pointer-events-none absolute -top-48 left-1/2 size-160 -translate-x-1/2 rounded-full bg-emerald-400/12 blur-[120px]"
+        aria-hidden="true"
+      />
 
-      <Link href="/" className="login__voltar">
+      <Link
+        href="/"
+        className="absolute left-6 top-6 z-10 inline-flex items-center gap-1.5 text-[0.9rem] font-semibold text-zinc-600 transition-colors hover:text-brand max-[480px]:left-4 max-[480px]:top-4 max-[480px]:text-[0.85rem]"
+      >
         <ArrowLeft size={17} aria-hidden="true" /> Voltar ao site
       </Link>
 
       <motion.section
-        className="login__cartao"
+        className="relative z-1 w-full max-w-120 rounded-[1.75rem] border border-black/5 bg-white/90 p-8 shadow-[0_20px_50px_-20px_rgb(46_94_78/0.25)] backdrop-blur-lg max-[768px]:p-7 max-[480px]:rounded-[1.25rem] max-[480px]:p-5"
         initial={reduzir ? false : { opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
         aria-labelledby="login-titulo"
       >
-        <header className="login__topo">
-          <span className="login__selo"><Leaf size={22} aria-hidden="true" /></span>
-          <p className="login__marca">RECICLAÊ • ACMRB</p>
-          <h1 id="login-titulo" className="login__titulo">{t.titulo}</h1>
-          <p className="login__sub">{t.sub}</p>
+        <header className="text-center">
+          <span className="inline-flex size-13 items-center justify-center rounded-2xl bg-brand-mint text-brand max-[480px]:size-11">
+            <Leaf size={22} aria-hidden="true" />
+          </span>
+          <p className="mt-3 text-[0.72rem] font-extrabold tracking-[0.14em] text-brand">RECICLAÊ • ACMRB</p>
+          <h1 id="login-titulo" className="mt-1 text-center text-[1.75rem] font-black text-zinc-900 max-[480px]:text-[1.45rem]">
+            {t.titulo}
+          </h1>
+          <p className="texto-justo mt-1.5 text-[0.92rem] text-zinc-600 [text-align-last:center] max-[480px]:text-[0.85rem]">{t.sub}</p>
         </header>
 
         {modo !== "recuperar" && (
-          <div className="login__abas" role="tablist" aria-label="Entrar ou criar conta">
-            <button type="button" role="tab" aria-selected={modo === "entrar"} className={`login__aba${modo === "entrar" ? " login__aba--ativa" : ""}`} onClick={() => trocarModo("entrar")}>
-              Entrar
-            </button>
-            <button type="button" role="tab" aria-selected={modo === "cadastro"} className={`login__aba${modo === "cadastro" ? " login__aba--ativa" : ""}`} onClick={() => trocarModo("cadastro")}>
-              Criar conta
-            </button>
+          <div className="mt-6 grid grid-cols-2 gap-1 rounded-2xl bg-surface-alt p-1" role="tablist" aria-label="Entrar ou criar conta">
+            {(["entrar", "cadastro"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                role="tab"
+                aria-selected={modo === m}
+                className={cn(
+                  "h-10 cursor-pointer rounded-[0.8rem] text-[0.9rem] font-bold transition-colors",
+                  modo === m ? "bg-white text-brand shadow-[0_2px_8px_rgb(0_0_0/0.06)]" : "text-zinc-600",
+                )}
+                onClick={() => trocarModo(m)}
+              >
+                {m === "entrar" ? "Entrar" : "Criar conta"}
+              </button>
+            ))}
           </div>
         )}
 
@@ -317,7 +345,12 @@ export default function LoginPage() {
             <motion.div
               key={aviso.texto}
               role={aviso.tipo === "erro" ? "alert" : "status"}
-              className={`login__aviso login__aviso--${aviso.tipo}`}
+              className={cn(
+                "texto-justo mt-5 flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-[0.88rem] leading-snug [&>svg]:mt-0.5 [&>svg]:shrink-0",
+                aviso.tipo === "erro"
+                  ? "border-red-200 bg-red-50 text-danger"
+                  : "border-[#a7e3cb] bg-brand-mint text-[#1f4a3c]",
+              )}
               initial={reduzir ? false : { opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
@@ -328,11 +361,11 @@ export default function LoginPage() {
           )}
         </AnimatePresence>
 
-        <form className="login__form" onSubmit={enviar} noValidate>
+        <form className="mt-5 flex flex-col gap-3.5" onSubmit={enviar} noValidate>
           {modo === "cadastro" && (
             <>
               {campo("nome", "Nome completo", User, { type: "text", autoComplete: "name", maxLength: 100, value: nome, onChange: (e) => setNome(e.target.value), placeholder: "Seu nome e sobrenome" })}
-              <div className="login__linha">
+              <div className="grid grid-cols-2 gap-3.5 max-[480px]:grid-cols-1">
                 {campo("telefone", "Telefone", Phone, { type: "tel", inputMode: "numeric", autoComplete: "tel-national", value: telefone, onChange: (e) => setTelefone(mascaraTelefone(e.target.value)), placeholder: "(85) 98888-7777" })}
                 {campo("nascimento", "Data de nascimento", CalendarDays, { type: "date", autoComplete: "bday", max: new Date().toISOString().slice(0, 10), value: nascimento, onChange: (e) => setNascimento(e.target.value) })}
               </div>
@@ -343,12 +376,13 @@ export default function LoginPage() {
           {campo("email", "E-mail", Mail, { type: "email", autoComplete: "email", inputMode: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "voce@email.com" })}
 
           {modo !== "recuperar" && (
-            <div className="login__campo">
-              <label htmlFor="login-senha">Senha</label>
-              <div className={`login__input${erros.senha ? " login__input--erro" : ""}`}>
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <label htmlFor="login-senha" className={ROTULO}>Senha</label>
+              <div className={cn(CAIXA_CAMPO, erros.senha ? "border-red-400" : "border-zinc-200")}>
                 <Lock size={17} aria-hidden="true" />
                 <input
                   id="login-senha"
+                  className={ENTRADA}
                   type={tipoSenha}
                   autoComplete={modo === "entrar" ? "current-password" : "new-password"}
                   value={senha}
@@ -357,14 +391,23 @@ export default function LoginPage() {
                   aria-describedby={erros.senha ? "login-senha-erro" : modo === "cadastro" ? "login-senha-dica" : undefined}
                   placeholder="••••••••"
                 />
-                <button type="button" className="login__olho" onClick={() => setVerSenha((v) => !v)} aria-label={verSenha ? "Ocultar senha" : "Mostrar senha"}>
+                <button
+                  type="button"
+                  className="inline-flex cursor-pointer p-1 text-zinc-500 hover:text-brand"
+                  onClick={() => setVerSenha((v) => !v)}
+                  aria-label={verSenha ? "Ocultar senha" : "Mostrar senha"}
+                >
                   {verSenha ? <EyeOff size={17} /> : <Eye size={17} />}
                 </button>
               </div>
               {erros.senha ? (
-                <span id="login-senha-erro" className="login__erro">{erros.senha}</span>
+                <span id="login-senha-erro" className="text-xs text-red-600">{erros.senha}</span>
               ) : (
-                modo === "cadastro" && <span id="login-senha-dica" className="login__dica">Mínimo 8 caracteres, com maiúscula, minúscula e número.</span>
+                modo === "cadastro" && (
+                  <span id="login-senha-dica" className="text-[0.76rem] text-zinc-500">
+                    Mínimo 8 caracteres, com maiúscula, minúscula e número.
+                  </span>
+                )
               )}
             </div>
           )}
@@ -373,26 +416,31 @@ export default function LoginPage() {
             campo("confirmar", "Confirmar senha", Lock, { type: tipoSenha, autoComplete: "new-password", value: confirmar, onChange: (e) => setConfirmar(e.target.value), placeholder: "Repita a senha" })}
 
           {modo === "entrar" && (
-            <button type="button" className="login__link login__link--direita" onClick={() => trocarModo("recuperar")}>
+            <button type="button" className={cn(LINK, "-mt-1 cursor-pointer self-end")} onClick={() => trocarModo("recuperar")}>
               Esqueci minha senha
             </button>
           )}
 
-          <button type="submit" className="login__botao" disabled={carregando || (modo === "recuperar" && espera > 0)}>
-            {carregando && <Loader2 size={18} className="login__giro" aria-hidden="true" />}
+          <Button
+            type="submit"
+            larguraTotal
+            carregando={carregando}
+            className="h-12.5 rounded-[0.9rem] text-[0.95rem] font-extrabold max-[480px]:h-11.5"
+            disabled={carregando || (modo === "recuperar" && espera > 0)}
+          >
             {modo === "entrar" && (carregando ? "Entrando…" : "Entrar")}
             {modo === "cadastro" && (carregando ? "Criando conta…" : "Criar minha conta")}
             {modo === "recuperar" && (espera > 0 ? `Reenviar em ${espera}s` : carregando ? "Enviando…" : "Enviar link")}
-          </button>
+          </Button>
 
           {modo === "recuperar" && (
-            <button type="button" className="login__link" onClick={() => trocarModo("entrar")}>
+            <button type="button" className={cn(LINK, "cursor-pointer")} onClick={() => trocarModo("entrar")}>
               <ArrowLeft size={15} aria-hidden="true" /> Voltar para entrar
             </button>
           )}
         </form>
 
-        <p className="login__rodape">
+        <p className="texto-justo mt-5.5 border-t border-zinc-100 pt-4.5 text-[0.8rem] leading-normal text-zinc-500">
           Sem conta você pode navegar e ler todo o site. Com a conta de visitante você também pode enviar mensagens e interagir com a ACMRB.
         </p>
       </motion.section>
