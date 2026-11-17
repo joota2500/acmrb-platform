@@ -11,6 +11,7 @@ import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronRight, Clock, RefreshCw, ShieldCheck } from "lucide-react";
 import { fmtData } from "@/utils/formatosTransparencia";
+import Button from "@/components/ui/Button";
 
 type Props = {
   atualizadoEm: string | null;
@@ -58,9 +59,9 @@ export default function TranspHero({ atualizadoEm, periodo, loading, onAtualizar
               {loading ? "Carregando dados…" : data ? `Dados atualizados em ${data}` : "Ainda sem registros publicados"}
             </span>
             {periodo && <span className="tp-hero__chip tp-hero__chip--claro">Período: {periodo}</span>}
-            <button type="button" className="tp-hero__btn" onClick={onAtualizar} disabled={loading}>
+            <Button type="button" variante="contornoClaro" onClick={onAtualizar} disabled={loading}>
               <RefreshCw size={15} className={loading ? "tp-girando" : ""} aria-hidden /> Atualizar
-            </button>
+            </Button>
           </div>
         </motion.div>
       </div>

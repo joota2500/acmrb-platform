@@ -25,6 +25,7 @@ import CompartilharNoticia from "@/components/noticias/CompartilharNoticia";
 import { formatarData, textoPuro, type Noticia } from "@/utils/noticias";
 
 import "@/styles/noticia-detalhe.css";
+import Button from "@/components/ui/Button";
 
 interface Props {
   noticia: Noticia;
@@ -199,7 +200,7 @@ export default function NoticiaDetalhe({ noticia: n, anterior, proxima, relacion
               {relacionadas.map((r) => <NoticiaCard key={r.id} noticia={r} />)}
             </div>
             <div className="nd__centro">
-              <Link href="/noticias" className="nd__btn">Ver todas as notícias</Link>
+              <Button href="/noticias" >Ver todas as notícias</Button>
             </div>
           </div>
         </section>

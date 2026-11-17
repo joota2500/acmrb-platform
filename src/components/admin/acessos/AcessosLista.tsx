@@ -19,6 +19,7 @@ import { supabase } from "@/lib/supabase";
 import { dataHoraCurta, duracao } from "@/types/visitantes";
 import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe } from "@/types/acessos";
+import Button from "@/components/ui/Button";
 
 interface Linha {
   id: string;
@@ -135,7 +136,7 @@ export default function AcessosLista() {
           <option value="">Todas as origens</option><option value="direto">Direto</option><option value="busca">Busca</option><option value="rede social">Rede social</option>
           <option value="e-mail">E-mail</option><option value="outros sites">Outros sites</option><option value="campanha">Campanha</option>
         </select>
-        <button type="button" className="advis-btn advis-btn--soft" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</button>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
 
       {erro && <p className="aac-erro" role="alert">{erro}</p>}
@@ -163,8 +164,8 @@ export default function AcessosLista() {
                   <td data-rotulo="Páginas">{l.paginas}</td>
                   <td data-rotulo="Tempo">{duracao(l.duracao_seg)}</td>
                   <td className="advis-acao">
-                    <button type="button" className="advis-btn advis-btn--soft" onClick={() => void abrir(l)}>Ver</button>{" "}
-                    <button type="button" className="advis-btn advis-btn--ghost" onClick={() => setAparelhoAberto(l.anon_id)}><Smartphone size={15} aria-hidden="true" /> Aparelho</button>
+                    <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void abrir(l)}>Ver</Button>{" "}
+                    <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setAparelhoAberto(l.anon_id)}><Smartphone size={15} aria-hidden="true" /> Aparelho</Button>
                   </td>
                 </tr>
               ))}
@@ -174,9 +175,9 @@ export default function AcessosLista() {
       )}
 
       <nav className="advis-paginacao" aria-label="Paginação">
-        <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</button>
+        <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</Button>
         <span>Página {pagina + 1} de {nTotal}</span>
-        <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina + 1 >= nTotal} onClick={() => setPagina((p) => p + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></button>
+        <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina + 1 >= nTotal} onClick={() => setPagina((p) => p + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></Button>
       </nav>
 
       {aparelhoAberto && <AparelhoDetalhe anonId={aparelhoAberto} onFechar={() => setAparelhoAberto(null)} onAlterado={() => void carregar()} />}
@@ -191,7 +192,7 @@ export default function AcessosLista() {
             <p className="aac-nota">
               {dataHoraCurta(aberta.iniciada_em)} · {localDe(aberta)} · {aparelhoDe(aberta)} · origem: {origemDe(aberta)} · {duracao(aberta.duracao_seg)} no total
             </p>
-            <button type="button" className="advis-btn advis-btn--soft" onClick={() => { setAparelhoAberto(aberta.anon_id); setAberta(null); }}><Smartphone size={15} aria-hidden="true" /> Gerenciar este aparelho (bloquear, suspender, expulsar)</button>
+            <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => { setAparelhoAberto(aberta.anon_id); setAberta(null); }}><Smartphone size={15} aria-hidden="true" /> Gerenciar este aparelho (bloquear, suspender, expulsar)</Button>
             <ul className="aac-linha-tempo">
               {paginas.length === 0 ? <li>Carregando páginas…</li> : paginas.map((p) => (
                 <li key={p.id}><code className="aac-codigo">{p.caminho}</code><span>{new Date(p.entrou_em).toLocaleTimeString("pt-BR")} · {duracao(p.duracao_seg)}</span></li>

@@ -205,27 +205,6 @@
 }
 
 /* ===== Botões (h-12, largura total no celular) ===== */
-.as-btn {
-  height: 3rem;
-  width: 100%;
-  padding: 0 1.25rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.9rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background 0.25s;
-}
-@media (min-width: 640px) { .as-btn { width: auto; font-size: 0.95rem; } }
-.as-btn:focus-visible { outline: 2px solid #059669; outline-offset: 3px; }
-.as-btn--primary { background: #059669; color: #fff; }
-.as-btn--primary:hover { background: #047857; }
-.as-btn--outline { border: 1.5px solid #a7f3d0; color: #047857; background: #fff; }
-.as-btn--outline:hover { background: #ecfdf5; }
 
 /* ===== Perfil ===== */
 .as-perfil-wrap { padding-top: 1.5rem; }
@@ -280,6 +259,3 @@
 }
 
 /* Celular: rótulos longos quebram em vez de sair do botão */
-@media (max-width: 480px) {
-  .as-btn { height: auto; min-height: 3rem; padding: 0.6rem 1rem; white-space: normal; text-align: center; }
-}

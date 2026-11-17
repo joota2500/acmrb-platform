@@ -49,6 +49,7 @@ import {
 import { smoothScrollTo } from "@/utils/scroll";
 
 import "@/styles/operations-section.css";
+import Button from "@/components/ui/Button";
 
 /** Públicos atendidos: editar aqui para mudar textos/benefícios. */
 const publicos = [
@@ -260,22 +261,22 @@ export default function OperationsSection() {
           </div>
           <div className="operations__cta-buttons">
             {/* Rolagem suave até o formulário de contato (href funciona sem JS) */}
-            <a
+            <Button
               href="#contato"
               onClick={(ev) => {
-                if (document.getElementById("contato")) {
-                  ev.preventDefault();
-                  smoothScrollTo("contato");
-                }
+              if (document.getElementById("contato")) {
+              ev.preventDefault();
+              smoothScrollTo("contato");
+              }
               }}
-              className="operations__btn-primary"
+              variante="claro"
             >
               Seja parceiro
               <ArrowRight size={18} aria-hidden="true" />
-            </a>
-            <Link href="/transparencia" className="operations__btn-secondary">
+            </Button>
+            <Button href="/transparencia" variante="contornoClaro" >
               Ver transparência
-            </Link>
+            </Button>
           </div>
         </motion.div>
       </div>

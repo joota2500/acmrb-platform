@@ -89,45 +89,6 @@
   .qs-actions { flex-direction: row; flex-wrap: wrap; }
 }
 
-.qs-btn {
-  height: 3rem;
-  width: 100%;
-  padding: 0 1.25rem;
-  border-radius: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-  white-space: nowrap;
-  text-decoration: none;
-  transition: background 0.25s, transform 0.25s, border-color 0.25s;
-}
-
-@media (min-width: 640px) {
-  .qs-btn { width: auto; padding: 0 1.5rem; font-size: 0.95rem; }
-}
-
-@media (min-width: 1024px) {
-  .qs-btn { height: 3.25rem; }
-}
-
-.qs-btn:hover { transform: translateY(-2px); }
-.qs-btn:focus-visible { outline: 2px solid #6ee7b7; outline-offset: 3px; }
-
-.qs-btn--primary { background: #059669; color: #fff; }
-.qs-btn--primary:hover { background: #047857; }
-
-.qs-btn--ghost {
-  border: 1.5px solid rgba(167, 243, 208, 0.5);
-  color: #ecfdf5;
-}
-.qs-btn--ghost:hover { background: rgba(255, 255, 255, 0.1); }
-
-.qs-btn--light { background: #ecfdf5; color: #064e3b; }
-.qs-btn--light:hover { background: #d1fae5; }
-
 /* ==================== 1. HERO ==================== */
 /* padding-top desconta o Header fixo (64 / 72 / 80px) */
 .qs-hero {
@@ -808,6 +769,5 @@
 
 /* Celular: botões e números grandes não vazam (antes: nowrap + altura fixa) */
 @media (max-width: 480px) {
-  .qs-btn { height: auto; min-height: 3rem; padding: 0.6rem 1rem; white-space: normal; text-align: center; }
   .qs-impacto__valor { white-space: normal; overflow-wrap: anywhere; font-size: clamp(1.2rem, 6vw, 1.6rem); }
 }

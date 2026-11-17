@@ -32,6 +32,7 @@ import {
 } from "@/utils/noticias";
 
 import "@/styles/admin-noticias.css";
+import Button from "@/components/ui/Button";
 
 type Editor = { modo: "nova" } | { modo: "editar"; noticia: Noticia } | { modo: "duplicar"; noticia: Noticia } | null;
 
@@ -194,9 +195,9 @@ export default function NoticiasSection() {
           <h2>Notícias</h2>
           <p>Publique e organize as notícias do site. Os destaques aparecem na página inicial (máximo 3).</p>
         </div>
-        <button type="button" className="an__btn" onClick={() => setEditor({ modo: "nova" })}>
+        <Button type="button" tamanho="pequeno" onClick={() => setEditor({ modo: "nova" })}>
           <Plus size={16} /> Nova notícia
-        </button>
+        </Button>
       </div>
 
       <div className="an__stats">
@@ -224,16 +225,16 @@ export default function NoticiasSection() {
           <option value="">Todas as categorias</option>
           {categorias.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <button type="button" className="an__btn an__btn--claro" onClick={carregar} aria-label="Atualizar lista">
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={carregar} aria-label="Atualizar lista">
           <RefreshCw size={16} />
-        </button>
+        </Button>
       </div>
 
       {carregando && <div className="an__vazio"><Loader2 className="an__girando" /> Carregando notícias...</div>}
       {!carregando && erroCarga && (
         <div className="an__vazio an__vazio--erro" role="alert">
           Erro ao carregar: {erroCarga}
-          <button type="button" className="an__btn an__btn--claro" onClick={carregar}>Tentar de novo</button>
+          <Button type="button" variante="secundario" tamanho="pequeno" onClick={carregar}>Tentar de novo</Button>
         </div>
       )}
       {!carregando && !erroCarga && filtradas.length === 0 && (

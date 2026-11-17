@@ -22,6 +22,7 @@ import { chamarApi } from "@/services/apiAdmin";
 import { dataHoraCurta } from "@/types/visitantes";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { localDe, mensagemErro } from "@/types/acessos";
+import Button from "@/components/ui/Button";
 
 interface Tentativa {
   id: number;
@@ -140,7 +141,7 @@ function Logins({ onAviso }: { onAviso: (a: { tipo: "ok" | "erro"; texto: string
         <select className="advis-select" aria-label="Tipo" value={tipo} onChange={(e) => { setTipo(e.target.value); setPagina(0); }}>
           <option value="">Login, cadastro e senha</option><option value="login">Login</option><option value="cadastro">Cadastro</option><option value="recuperar">Recuperar senha</option>
         </select>
-        <button type="button" className="advis-btn advis-btn--soft" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</button>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
       {erro && <p className="aac-erro" role="alert">{erro}</p>}
       {carregando ? <p className="aac-vazio"><Loader2 className="advis-giro" aria-hidden="true" /> Carregando…</p> : linhas.length === 0 ? <p className="aac-vazio">Nenhum registro ainda.</p> : (
@@ -156,7 +157,7 @@ function Logins({ onAviso }: { onAviso: (a: { tipo: "ok" | "erro"; texto: string
                   <td data-rotulo="E-mail">{t.email_mascarado ?? "—"}</td>
                   <td data-rotulo="Local">{localDe(t)}</td>
                   <td data-rotulo="Aparelho">{[t.dispositivo, t.navegador].filter(Boolean).join(" · ") || "—"}</td>
-                  <td className="advis-acao">{!t.sucesso && t.tipo === "login" && <button type="button" className="advis-btn advis-btn--soft" onClick={() => void liberar(t)}><LockOpen size={15} aria-hidden="true" /> Liberar</button>}</td>
+                  <td className="advis-acao">{!t.sucesso && t.tipo === "login" && <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void liberar(t)}><LockOpen size={15} aria-hidden="true" /> Liberar</Button>}</td>
                 </tr>
               ))}
             </tbody>
@@ -208,7 +209,7 @@ function AuditoriaLista() {
           <option value="">Todos os administradores</option>
           {atores.map((a) => <option key={a} value={a}>{a}</option>)}
         </select>
-        <button type="button" className="advis-btn advis-btn--soft" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</button>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
       {erro && <p className="aac-erro" role="alert">{erro}</p>}
       {carregando ? <p className="aac-vazio"><Loader2 className="advis-giro" aria-hidden="true" /> Carregando…</p> : linhas.length === 0 ? <p className="aac-vazio">Nenhuma ação registrada ainda.</p> : (
@@ -283,7 +284,7 @@ function Limpeza({ onAviso }: { onAviso: (a: { tipo: "ok" | "erro"; texto: strin
           (Vercel Cron). Se os números acima de &ldquo;já passaram de 24 h&rdquo; não zerarem, o agendamento não está ativo: veja o guia de configuração.
         </p>
         <div>
-          <button type="button" className="advis-btn" onClick={() => setConfirmar(true)}><Trash2 size={16} aria-hidden="true" /> Rodar limpeza agora</button>
+          <Button type="button" tamanho="pequeno" onClick={() => setConfirmar(true)}><Trash2 size={16} aria-hidden="true" /> Rodar limpeza agora</Button>
         </div>
       </section>
       <ConfirmDialog aberto={confirmar} titulo="Rodar a limpeza agora?" mensagem="Os acessos anônimos com mais de 24 h serão apagados (ficam só os totais do dia). Isso não pode ser desfeito." textoConfirmar="Rodar limpeza" perigo carregando={rodando} onConfirmar={rodar} onCancelar={() => setConfirmar(false)} />
@@ -294,9 +295,9 @@ function Limpeza({ onAviso }: { onAviso: (a: { tipo: "ok" | "erro"; texto: strin
 function Paginacao({ pagina, total, onMudar }: { pagina: number; total: number; onMudar: (p: number) => void }) {
   return (
     <nav className="advis-paginacao" aria-label="Paginação">
-      <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina === 0} onClick={() => onMudar(pagina - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</button>
+      <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina === 0} onClick={() => onMudar(pagina - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</Button>
       <span>Página {pagina + 1} de {total}</span>
-      <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina + 1 >= total} onClick={() => onMudar(pagina + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></button>
+      <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina + 1 >= total} onClick={() => onMudar(pagina + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></Button>
     </nav>
   );
 }

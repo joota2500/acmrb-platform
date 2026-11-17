@@ -28,6 +28,7 @@ import { buscarAssociadoPublico } from "@/services/associados";
 import type { AssociadoPublico } from "@/types/associados";
 
 import "@/styles/associados.css";
+import Button from "@/components/ui/Button";
 
 /** Aceita "@usuario", "usuario" ou a URL completa e devolve a URL. */
 function linkRede(valor: string | null, base: string): string | null {
@@ -135,9 +136,9 @@ export default function AssociadoPerfilPage() {
                   <ul className="as-redes" aria-label="Redes sociais">
                     {redes.map((r) => (
                       <li key={r.nome}>
-                        <a href={r.url} target="_blank" rel="noopener noreferrer" className="as-btn as-btn--outline">
+                        <Button href={r.url} target="_blank" rel="noopener noreferrer" variante="contorno" tamanho="pequeno">
                           {r.nome} <ExternalLink size={15} aria-hidden="true" />
-                        </a>
+                        </Button>
                       </li>
                     ))}
                   </ul>
@@ -147,9 +148,9 @@ export default function AssociadoPerfilPage() {
           )}
 
           <div className="as-voltar">
-            <Link href="/associados" className="as-btn as-btn--primary">
+            <Button href="/associados" tamanho="pequeno">
               <ArrowLeft size={18} aria-hidden="true" /> Voltar para associados
-            </Link>
+            </Button>
           </div>
         </div>
       </main>

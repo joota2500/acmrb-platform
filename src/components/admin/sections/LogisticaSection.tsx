@@ -28,6 +28,7 @@ import {
   type EmpresaLogistica, type Repasse,
 } from "@/services/apoiadoresAdmin";
 import "@/styles/admin-apoiadores.css";
+import Button from "@/components/ui/Button";
 
 const MapaSeletor = dynamic(() => import("@/components/mapa/MapaSeletor"), {
   ssr: false,
@@ -305,7 +306,7 @@ export default function LogisticaSection() {
           <span className="admap-sr">Buscar empresa</span>
           <input type="search" value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Buscar por nome, responsável ou material" />
         </label>
-        <button type="button" className="admap-btn" onClick={novaEmpresa}><Plus size={16} aria-hidden="true" /> Nova empresa</button>
+        <Button type="button" tamanho="pequeno" onClick={novaEmpresa}><Plus size={16} aria-hidden="true" /> Nova empresa</Button>
       </div>
 
       {carregando ? (
@@ -313,7 +314,7 @@ export default function LogisticaSection() {
       ) : erro ? (
         <div className="admap-state admap-state--erro" role="alert">
           {erro}
-          <button type="button" className="admap-btn admap-btn--soft" onClick={carregar}><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</button>
+          <Button type="button" variante="secundario" tamanho="pequeno" onClick={carregar}><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</Button>
         </div>
       ) : filtradas.length === 0 ? (
         <div className="admap-state">{empresas.length ? "Nenhuma empresa com essa busca." : "Nenhuma empresa cadastrada. Clique em “Nova empresa”."}</div>
@@ -352,7 +353,7 @@ export default function LogisticaSection() {
                 </button>
                 {exp && (
                   <div className="admap-hist">
-                    <button type="button" className="admap-btn admap-btn--soft" onClick={() => novoRepasse(e.id)}><Plus size={16} aria-hidden="true" /> Registrar repasse</button>
+                    <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => novoRepasse(e.id)}><Plus size={16} aria-hidden="true" /> Registrar repasse</Button>
                     {!reps ? (
                       <p className="admap-hint"><Loader2 size={14} className="admap-spin" aria-hidden="true" /> Carregando…</p>
                     ) : reps.length === 0 ? (
@@ -393,8 +394,8 @@ export default function LogisticaSection() {
         titulo={editEmp ? "Editar empresa" : "Nova empresa de logística reversa"}
         onFechar={fecharEmp}
         rodape={<>
-          <button type="button" className="admap-btn admap-btn--ghost" onClick={fecharEmp}>Cancelar</button>
-          <button type="button" className="admap-btn" onClick={salvarEmp} disabled={salvando}>{salvando && <Loader2 size={16} className="admap-spin" aria-hidden="true" />} Salvar</button>
+          <Button type="button" variante="contorno" tamanho="pequeno" onClick={fecharEmp}>Cancelar</Button>
+          <Button type="button" tamanho="pequeno" onClick={salvarEmp} disabled={salvando}>{salvando && <Loader2 size={16} className="admap-spin" aria-hidden="true" />} Salvar</Button>
         </>}
       >
         <fieldset className="admap-fs">
@@ -406,9 +407,9 @@ export default function LogisticaSection() {
             <span>CNPJ</span>
             <div className="admap-inline">
               <input className="admap-input" inputMode="numeric" value={fe.cnpj} onChange={(e) => setFe({ ...fe, cnpj: mascaraCnpj(e.target.value) })} placeholder="00.000.000/0000-00" aria-invalid={!cnpjOk} />
-              <button type="button" className="admap-btn admap-btn--soft" onClick={preencherCnpj} disabled={buscandoCnpj || soDigitos(fe.cnpj).length !== 14}>
+              <Button type="button" variante="secundario" tamanho="pequeno" onClick={preencherCnpj} disabled={buscandoCnpj || soDigitos(fe.cnpj).length !== 14}>
                 {buscandoCnpj ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Search size={16} aria-hidden="true" />} Buscar dados
-              </button>
+              </Button>
             </div>
             {!cnpjOk && <small className="admap-err">CNPJ inválido</small>}
             <small>Opcional. Preenche pela Receita (BrasilAPI/CNPJ.ws) e já localiza o endereço no mapa.</small>
@@ -438,9 +439,9 @@ export default function LogisticaSection() {
             <span>Buscar endereço no mapa (OpenStreetMap, Photon, Esri e CEP)</span>
             <div className="admap-inline">
               <input className="admap-input" value={buscaEnd} onChange={(e) => setBuscaEnd(e.target.value)} placeholder="Rua, número, bairro, cidade" onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), procurarEndereco())} />
-              <button type="button" className="admap-btn admap-btn--soft" onClick={procurarEndereco} disabled={buscandoEnd}>
+              <Button type="button" variante="secundario" tamanho="pequeno" onClick={procurarEndereco} disabled={buscandoEnd}>
                 {buscandoEnd ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Search size={16} aria-hidden="true" />} Buscar
-              </button>
+              </Button>
             </div>
             <ResultadosGeo resultados={resultadosGeo} escolhido={escolhidoGeo} onEscolher={aplicarGeo} aviso={avisoGeo} />
           </div>
@@ -448,7 +449,7 @@ export default function LogisticaSection() {
           <div className="admap-coords">
             <span>{fe.latitude != null ? `Ponto: ${fe.latitude}, ${fe.longitude}` : "Clique no mapa para marcar o ponto (depois arraste para ajustar)."}</span>
             {fe.latitude != null && (
-              <div><button type="button" className="admap-btn admap-btn--ghost" onClick={() => setFe((f) => ({ ...f, latitude: null, longitude: null, mostrar_no_mapa: false }))}>Limpar ponto</button></div>
+              <div><Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setFe((f) => ({ ...f, latitude: null, longitude: null, mostrar_no_mapa: false }))}>Limpar ponto</Button></div>
             )}
           </div>
           <label className="admap-toggle"><input type="checkbox" checked={fe.mostrar_no_mapa} onChange={(e) => setFe({ ...fe, mostrar_no_mapa: e.target.checked })} /> Mostrar no mapa público (cor de logística reversa)</label>
@@ -476,8 +477,8 @@ export default function LogisticaSection() {
         titulo={painelRep?.id ? "Editar repasse" : "Registrar repasse"}
         onFechar={fecharRep}
         rodape={<>
-          <button type="button" className="admap-btn admap-btn--ghost" onClick={fecharRep}>Cancelar</button>
-          <button type="button" className="admap-btn" onClick={salvarRep} disabled={salvando}>{salvando && <Loader2 size={16} className="admap-spin" aria-hidden="true" />} Salvar</button>
+          <Button type="button" variante="contorno" tamanho="pequeno" onClick={fecharRep}>Cancelar</Button>
+          <Button type="button" tamanho="pequeno" onClick={salvarRep} disabled={salvando}>{salvando && <Loader2 size={16} className="admap-spin" aria-hidden="true" />} Salvar</Button>
         </>}
       >
         <fieldset className="admap-fs">

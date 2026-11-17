@@ -6,6 +6,7 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
 import "@/styles/transp-faq.css";
+import Button from "@/components/ui/Button";
 
 const PERGUNTAS = [
   {
@@ -51,8 +52,8 @@ export default function TranspFaq() {
           ))}
         </div>
         <div className="tf-cta">
-          <Link href="/#contato" className="tf-cta__btn">Falar com a associação</Link>
-          <Link href="/projetos" className="tf-cta__btn tf-cta__btn--claro">Conhecer projetos</Link>
+          <Button href="/#contato" >Falar com a associação</Button>
+          <Button href="/projetos" variante="contorno" >Conhecer projetos</Button>
         </div>
       </div>
     </section>

@@ -62,6 +62,7 @@ import { useESGMetrics } from "@/hooks/useESGMetrics";
 import { formatarNumero, formatarPeso } from "@/utils/formatadores";
 
 import "@/styles/quem-somos.css";
+import Button from "@/components/ui/Button";
 
 /** Ícones que podem ser escolhidos pelo campo "icone" no banco. */
 const ICONES: Record<string, LucideIcon> = {
@@ -156,13 +157,13 @@ export default function QuemSomosPage() {
               )}
 
               <div className="qs-actions">
-                <a href="#historia" className="qs-btn qs-btn--primary">
+                <Button href="#historia" variante="destaque" >
                   Conheça nossa história
                   <ArrowRight size={18} aria-hidden="true" />
-                </a>
-                <Link href="/#contato" className="qs-btn qs-btn--ghost">
+                </Button>
+                <Button href="/#contato" variante="contornoClaro" >
                   Seja parceiro
-                </Link>
+                </Button>
               </div>
             </motion.div>
 
@@ -353,10 +354,10 @@ export default function QuemSomosPage() {
                 </p>
               </div>
               {/* Botão centralizado abaixo do título (cabeçalho centralizado) */}
-              <Link href="/associados" className="qs-btn qs-btn--primary">
+              <Button href="/associados" variante="destaque" >
                 Ver todos os associados
                 <ChevronRight size={18} aria-hidden="true" />
-              </Link>
+              </Button>
             </div>
 
             {loading ? (
@@ -523,14 +524,14 @@ export default function QuemSomosPage() {
                 </p>
               </div>
               <div className="qs-actions qs-actions--cta">
-                <Link href="/#contato" className="qs-btn qs-btn--light">
+                <Button href="/#contato" variante="claro" >
                   Fale conosco
                   <ArrowRight size={18} aria-hidden="true" />
-                </Link>
-                <Link href="/associados" className="qs-btn qs-btn--ghost">
+                </Button>
+                <Button href="/associados" variante="contornoClaro" >
                   <Users size={18} aria-hidden="true" />
                   Conheça os associados
-                </Link>
+                </Button>
               </div>
             </motion.div>
           </div>

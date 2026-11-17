@@ -28,6 +28,7 @@ import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
 import NovoVisitanteModal from "@/components/admin/visitantes/NovoVisitanteModal";
 import VisitanteDetalhe from "@/components/admin/visitantes/VisitanteDetalhe";
 import { dataHoraCurta, duracao, type ResumoAtividade, type Visitante } from "@/types/visitantes";
+import Button from "@/components/ui/Button";
 
 const POR_PAGINA = 15;
 type Situacao = "todos" | "ativos" | "inativos";
@@ -139,12 +140,12 @@ export default function VisitantesCadastrados() {
           <p className="advis-sub">Contas criadas na área de visitantes do site. Só o ADM DEUS vê esta seção.</p>
         </div>
         <div className="advis-topo-botoes">
-          <button type="button" className="advis-btn" onClick={() => setNovo(true)}>
+          <Button type="button" tamanho="pequeno" onClick={() => setNovo(true)}>
             <UserPlus size={16} aria-hidden="true" /> Novo visitante
-          </button>
-          <button type="button" className="advis-btn advis-btn--soft" onClick={() => { void carregar(); void carregarCidades(); }}>
+          </Button>
+          <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => { void carregar(); void carregarCidades(); }}>
             <RefreshCw size={16} aria-hidden="true" /> Atualizar
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -212,10 +213,10 @@ export default function VisitantesCadastrados() {
                       <button type="button" className={v.ativo ? "advis-btn apa-btn--aviso" : "advis-btn"} onClick={() => setMudarSituacao(v)}>
                         <Power size={15} aria-hidden="true" /> {v.ativo ? "Desativar" : "Reativar"}
                       </button>
-                      <button type="button" className="advis-btn advis-btn--ghost" disabled={!v.auth_user_id} onClick={() => setExpulsar(v)} title="Encerra o login em todos os aparelhos">
+                      <Button type="button" variante="contorno" tamanho="pequeno" disabled={!v.auth_user_id} onClick={() => setExpulsar(v)} title="Encerra o login em todos os aparelhos">
                         <LogOut size={15} aria-hidden="true" /> Expulsar
-                      </button>
-                      <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAberto(v)}>Detalhes</button>
+                      </Button>
+                      <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setAberto(v)}>Detalhes</Button>
                     </td>
                   </tr>
                 );
@@ -226,13 +227,13 @@ export default function VisitantesCadastrados() {
       )}
 
       <nav className="advis-paginacao" aria-label="Paginação">
-        <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}>
+        <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}>
           <ChevronLeft size={16} aria-hidden="true" /> Anterior
-        </button>
+        </Button>
         <span>Página {pagina + 1} de {paginas}</span>
-        <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina + 1 >= paginas} onClick={() => setPagina((p) => p + 1)}>
+        <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina + 1 >= paginas} onClick={() => setPagina((p) => p + 1)}>
           Próxima <ChevronRight size={16} aria-hidden="true" />
-        </button>
+        </Button>
       </nav>
 
       {aberto && (

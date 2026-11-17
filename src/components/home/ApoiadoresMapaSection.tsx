@@ -35,6 +35,7 @@ import {
   CATEGORIAS, TIPOS_APOIO, corCategoria, empresaComoPonto, listarApoiadoresPublicos, listarEmpresasLogisticaPublicas, type ApoiadorPublico,
 } from "@/services/apoiadores";
 import "@/styles/apoiadores-mapa.css";
+import Button from "@/components/ui/Button";
 
 // Leaflet usa window: carrega só no navegador (não quebra o SSR)
 const MapaPontos = dynamic(() => import("@/components/mapa/MapaPontos"), {
@@ -248,12 +249,12 @@ export default function ApoiadoresMapaSection() {
             </p>
           </div>
           <div className="apmapa__cta-actions">
-            <Link href="/parceiros" className="apmapa__btn">
+            <Button href="/parceiros" variante="claro" >
               <Building2 size={18} aria-hidden="true" /> Conheça nossas empresas parceiras <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-            <a href="/#contato" className="apmapa__btn apmapa__btn--ghost">
+            </Button>
+            <Button href="/#contato" variante="contornoClaro" >
               <HeartHandshake size={18} aria-hidden="true" /> Quero apoiar
-            </a>
+            </Button>
           </div>
         </motion.div>
       </div>

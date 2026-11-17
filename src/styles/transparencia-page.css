@@ -99,24 +99,6 @@
 }
 .tp-hero__chip--claro { background: #d1fae5; color: #065f46; font-weight: 600; }
 
-.tp-hero__btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 40px;
-  padding: 0.5rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid rgba(167, 243, 208, 0.45);
-  background: transparent;
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.tp-hero__btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); }
-.tp-hero__btn:disabled { opacity: 0.6; cursor: wait; }
-
 .tp-girando { animation: tp-girar 1s linear infinite; }
 @keyframes tp-girar { to { transform: rotate(360deg); } }
 

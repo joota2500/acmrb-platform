@@ -30,6 +30,7 @@ import {
   type Apoiador, type ConsultaGeo, type EmpresaLogistica, type ResultadoGeo,
 } from "@/services/apoiadoresAdmin";
 import "@/styles/admin-visao-mapa.css";
+import Button from "@/components/ui/Button";
 
 const MapaVisao = dynamic(() => import("@/components/mapa/MapaVisao"), {
   ssr: false,
@@ -263,18 +264,18 @@ export default function VisaoMapaSection() {
           {verOcultos ? <Eye size={15} aria-hidden="true" /> : <EyeOff size={15} aria-hidden="true" />} Mostrar ocultos
         </label>
         <div className="avm-toolbar__acts">
-          <button type="button" className="avm-btn avm-btn--soft" onClick={carregar} disabled={carregando}>
+          <Button type="button" variante="secundario" tamanho="pequeno" onClick={carregar} disabled={carregando}>
             <RefreshCw size={16} aria-hidden="true" className={carregando ? "avm-spin" : ""} /> Atualizar
-          </button>
-          <button type="button" className="avm-btn" onClick={exportar} disabled={!itens.length}>
+          </Button>
+          <Button type="button" tamanho="pequeno" onClick={exportar} disabled={!itens.length}>
             <Download size={16} aria-hidden="true" /> Exportar CSV
-          </button>
+          </Button>
         </div>
       </div>
 
       {erro && (
         <div className="avm-state avm-state--erro" role="alert">
-          {erro} <button type="button" className="avm-btn avm-btn--soft" onClick={carregar}>Tentar de novo</button>
+          {erro} <Button type="button" variante="secundario" tamanho="pequeno" onClick={carregar}>Tentar de novo</Button>
         </div>
       )}
 
@@ -315,15 +316,15 @@ export default function VisaoMapaSection() {
                 />
               )}
               <div className="avm-rev__acts">
-                <button type="button" className="avm-btn" disabled={salvando || atual.lat == null} onClick={() => confirmar(true)}>
+                <Button type="button" tamanho="pequeno" disabled={salvando || atual.lat == null} onClick={() => confirmar(true)}>
                   {salvando ? <Loader2 size={16} className="avm-spin" aria-hidden="true" /> : <Check size={16} aria-hidden="true" />} Confirmar e mostrar no mapa
-                </button>
-                <button type="button" className="avm-btn avm-btn--soft" disabled={salvando || atual.lat == null} onClick={() => confirmar(false)}>
+                </Button>
+                <Button type="button" variante="secundario" tamanho="pequeno" disabled={salvando || atual.lat == null} onClick={() => confirmar(false)}>
                   Salvar sem exibir
-                </button>
-                <button type="button" className="avm-btn avm-btn--ghost" onClick={proximo} disabled={salvando}>
+                </Button>
+                <Button type="button" variante="contorno" tamanho="pequeno" onClick={proximo} disabled={salvando}>
                   <SkipForward size={16} aria-hidden="true" /> Pular
-                </button>
+                </Button>
               </div>
               <button type="button" className="avm-link" onClick={() => setFila([])}>Encerrar revisão</button>
             </section>
@@ -337,10 +338,10 @@ export default function VisaoMapaSection() {
                 <p className="avm-hint">Tudo localizado. 🎉</p>
               ) : (
                 <>
-                  <button type="button" className="avm-btn avm-btn--full" onClick={() => localizarTodos()} disabled={!!processando}>
+                  <Button type="button" tamanho="pequeno" larguraTotal onClick={() => localizarTodos()} disabled={!!processando}>
                     {processando ? <Loader2 size={16} className="avm-spin" aria-hidden="true" /> : <Wand2 size={16} aria-hidden="true" />}
                     {processando ? `Localizando ${processando.feitos}/${processando.total}…` : "Localizar automaticamente"}
-                  </button>
+                  </Button>
                   <p className="avm-hint">Usa o endereço salvo (ou o CNPJ) e sugere a posição. Nada é salvo sem a sua confirmação.</p>
                   <ul className="avm-pend">
                     {pendentes.map((i) => (
@@ -351,8 +352,8 @@ export default function VisaoMapaSection() {
                           <span>{i.tipo}{i.endereco ? ` · ${i.endereco}` : i.cnpj ? " · tem CNPJ" : " · sem endereço"}</span>
                         </span>
                         <span className="avm-pend__acts">
-                          <button type="button" className="avm-btn avm-btn--soft avm-btn--sm" disabled={!!processando} onClick={() => localizarTodos([i])}>Localizar</button>
-                          <a className="avm-btn avm-btn--ghost avm-btn--sm" href={`/admin?secao=${i.tabela === "apoiadores" ? "apoiadores" : "logistica"}`}>Corrigir</a>
+                          <Button type="button" variante="secundario" tamanho="pequeno" disabled={!!processando} onClick={() => localizarTodos([i])}>Localizar</Button>
+                          <Button variante="contorno" tamanho="pequeno" href={`/admin?secao=${i.tabela === "apoiadores" ? "apoiadores" : "logistica"}`}>Corrigir</Button>
                         </span>
                       </li>
                     ))}

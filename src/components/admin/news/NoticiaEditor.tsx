@@ -28,6 +28,7 @@ import {
 import { enviarImagem, slugEmUso, validarImagem, type DadosNoticia } from "@/services/noticiasAdmin";
 
 import "@/styles/noticia-detalhe.css";
+import Button from "@/components/ui/Button";
 
 const esquema = z
   .object({
@@ -323,9 +324,9 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
                   onChange={(e) => { trocarCapa(e.target.files?.[0]); e.target.value = ""; }} />
               </label>
               {d.imagem_url && (
-                <button type="button" className="an__btn an__btn--perigo-claro" onClick={() => set("imagem_url", "")}>
+                <Button type="button" variante="perigo" tamanho="pequeno" onClick={() => set("imagem_url", "")}>
                   <Trash2 size={16} /> Remover
-                </button>
+                </Button>
               )}
               <small className="an__dica">JPG, PNG, WEBP ou GIF até 5 MB. A imagem aparece inteira, sem cortes.</small>
             </div>
@@ -438,16 +439,16 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
       </div>
 
       <div className="an__rodape">
-        <button type="button" className="an__btn an__btn--claro" onClick={() => setPrevia(true)}><Eye size={16} /> Pré-visualizar</button>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setPrevia(true)}><Eye size={16} /> Pré-visualizar</Button>
         <span className="an__espaco" />
-        <button type="button" className="an__btn an__btn--claro" onClick={onCancelar} disabled={salvando}>Cancelar</button>
-        <button type="button" className="an__btn an__btn--claro" onClick={() => enviar("rascunho")} disabled={salvando}>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={onCancelar} disabled={salvando}>Cancelar</Button>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => enviar("rascunho")} disabled={salvando}>
           <Save size={16} /> Salvar rascunho
-        </button>
-        <button type="button" className="an__btn" onClick={() => enviar(d.status === "rascunho" ? "publicado" : undefined)} disabled={salvando}>
+        </Button>
+        <Button type="button" tamanho="pequeno" onClick={() => enviar(d.status === "rascunho" ? "publicado" : undefined)} disabled={salvando}>
           {salvando ? <Loader2 size={16} className="an__girando" /> : <Send size={16} />}
           {d.status === "agendado" ? "Agendar" : d.status === "arquivado" ? "Salvar arquivada" : "Publicar"}
-        </button>
+        </Button>
       </div>
 
       {previa && (

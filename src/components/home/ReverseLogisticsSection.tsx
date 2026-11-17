@@ -49,6 +49,7 @@ import {
 import { smoothScrollTo } from "@/utils/scroll";
 
 import "@/styles/reverse-logistics.css";
+import Button from "@/components/ui/Button";
 
 /** Parceiros: editar aqui para mudar textos/benefícios. */
 const parceiros = [
@@ -272,22 +273,22 @@ export default function ReverseLogisticsSection() {
           </div>
           <div className="revlog__cta-buttons">
             {/* Rolagem suave até o contato (href funciona sem JS) */}
-            <a
+            <Button
               href="/#contato"
               onClick={(ev) => {
-                if (document.getElementById("contato")) {
-                  ev.preventDefault();
-                  smoothScrollTo("contato");
-                }
+              if (document.getElementById("contato")) {
+              ev.preventDefault();
+              smoothScrollTo("contato");
+              }
               }}
-              className="revlog__btn-primary"
+              variante="claro"
             >
               Solicitar parceria
               <ArrowRight size={18} aria-hidden="true" />
-            </a>
-            <Link href="/transparencia" className="revlog__btn-secondary">
+            </Button>
+            <Button href="/transparencia" variante="contornoClaro" >
               Ver transparência
-            </Link>
+            </Button>
           </div>
         </motion.div>
       </div>

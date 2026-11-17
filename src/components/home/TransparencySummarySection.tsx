@@ -37,6 +37,7 @@ import {
 
 import { useESGMetrics } from "@/hooks/useESGMetrics";
 import "@/styles/transparency-summary.css";
+import Button from "@/components/ui/Button";
 
 type Indicador = {
   titulo: string;
@@ -256,12 +257,12 @@ export default function TransparencySummarySection() {
             </small>
           </div>
           <div className="tsum__cta-buttons">
-            <Link href="/transparencia" className="tsum__btn tsum__btn--primary">
+            <Button href="/transparencia" variante="claro" >
               Ver transparência completa <ArrowRight size={18} aria-hidden />
-            </Link>
-            <Link href="/projetos" className="tsum__btn tsum__btn--secondary">
+            </Button>
+            <Button href="/projetos" variante="contornoClaro" >
               Conhecer projetos
-            </Link>
+            </Button>
           </div>
         </motion.div>
       </div>

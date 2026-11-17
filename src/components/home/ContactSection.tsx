@@ -52,6 +52,7 @@ import {
   linkTelefone,
   linkWhatsApp,
 } from "@/constants/contato";
+import Button from "@/components/ui/Button";
 
 const MapaSede = dynamic(() => import("@/components/mapa/MapaSede"), {
   ssr: false,
@@ -206,15 +207,15 @@ export default function ContactSection() {
                 <strong className="contato__canal-valor">{c.valor}</strong>
                 <p className="contato__canal-text">{c.texto}</p>
                 <div className="contato__canal-acoes">
-                  <a
+                  <Button
                     href={c.href}
-                    className="contato__btn contato__btn--soft"
+                    variante="secundario"
                     {...(c.externo ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     aria-label={`${c.acao}: ${c.titulo} ${c.valor}${c.externo ? " (abre em nova aba)" : ""}`}
                   >
                     {c.acao}
                     {c.externo ? <ExternalLink size={15} aria-hidden="true" /> : <ArrowRight size={15} aria-hidden="true" />}
-                  </a>
+                  </Button>
                   {c.copiar && (
                     <button
                       type="button"
@@ -315,10 +316,10 @@ export default function ContactSection() {
                 </div>
               </fieldset>
 
-              <button type="submit" className="contato__btn contato__btn--primary contato__enviar">
+              <Button type="submit" className="contato__enviar">
                 <Send size={17} aria-hidden="true" />
                 {canal === "whatsapp" ? "Abrir no WhatsApp" : "Abrir no e-mail"}
-              </button>
+              </Button>
               {precisaLogin && !user && (
                 <p className="contato__login-aviso" role="alert">
                   Para enviar mensagens pelo site é preciso ter uma conta de visitante.{" "}
@@ -349,12 +350,12 @@ export default function ContactSection() {
               />
             </div>
             <div className="contato__mapa-acoes">
-              <a href={linkComoChegar()} target="_blank" rel="noopener noreferrer" className="contato__btn contato__btn--primary">
+              <Button href={linkComoChegar()} target="_blank" rel="noopener noreferrer" >
                 <Navigation size={16} aria-hidden="true" /> Como chegar
-              </a>
-              <a href={linkMapaBusca()} target="_blank" rel="noopener noreferrer" className="contato__btn contato__btn--ghost">
+              </Button>
+              <Button href={linkMapaBusca()} target="_blank" rel="noopener noreferrer" variante="contorno" >
                 Abrir no Google Maps <ExternalLink size={15} aria-hidden="true" />
-              </a>
+              </Button>
             </div>
           </motion.div>
         </div>
@@ -366,12 +367,12 @@ export default function ContactSection() {
             Projetos, ações ambientais, campanhas educativas e parcerias institucionais começam com uma conversa.
           </p>
           <div className="contato__cta-acoes">
-            <a href={linkWhatsApp(MSG_PADRAO)} target="_blank" rel="noopener noreferrer" className="contato__btn contato__btn--light">
+            <Button href={linkWhatsApp(MSG_PADRAO)} target="_blank" rel="noopener noreferrer" variante="claro" >
               <MessageCircle size={17} aria-hidden="true" /> Falar no WhatsApp
-            </a>
-            <Link href="/projetos" className="contato__btn contato__btn--outline">
+            </Button>
+            <Button href="/projetos" variante="contornoClaro" >
               Ver projetos <ArrowRight size={17} aria-hidden="true" />
-            </Link>
+            </Button>
           </div>
         </motion.div>
       </div>

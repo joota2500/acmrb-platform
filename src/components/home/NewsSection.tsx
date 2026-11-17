@@ -20,6 +20,7 @@ import { useNoticiasPublicas } from "@/hooks/useNoticiasPublicas";
 import { selecionarHome } from "@/utils/noticias";
 
 import "@/styles/news-section.css";
+import Button from "@/components/ui/Button";
 
 export default function NewsSection() {
   const { noticias, carregando, erro, recarregar } = useNoticiasPublicas(60);
@@ -65,9 +66,9 @@ export default function NewsSection() {
           <div className="news__aviso" role="alert">
             <AlertTriangle size={28} aria-hidden="true" />
             <p>{erro}</p>
-            <button type="button" onClick={recarregar} className="news__btn news__btn--claro">
+            <Button type="button" onClick={recarregar} variante="secundario" >
               <RefreshCw size={16} aria-hidden="true" /> Tentar de novo
-            </button>
+            </Button>
           </div>
         )}
 
@@ -90,9 +91,9 @@ export default function NewsSection() {
         )}
 
         <div className="news__acoes">
-          <Link href="/noticias" className="news__btn">
+          <Button href="/noticias" >
             Ver todas as notícias <ArrowRight size={18} aria-hidden="true" />
-          </Link>
+          </Button>
         </div>
       </div>
     </section>

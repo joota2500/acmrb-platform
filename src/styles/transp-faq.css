@@ -36,27 +36,10 @@
 }
 
 .tf-cta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
-.tf-cta__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 46px;
-  padding: 0 1.4rem;
-  border-radius: 0.9rem;
-  background: #047857;
-  color: #fff;
-  font-weight: 700;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-.tf-cta__btn:hover { background: #065f46; }
-.tf-cta__btn--claro { background: #fff; color: #047857; border: 1px solid #a7f3d0; }
-.tf-cta__btn--claro:hover { background: #ecfdf5; }
 
 @media (max-width: 480px) {
   .tf-item summary { padding: 0.9rem 1rem; font-size: 0.9rem; }
   .tf-item p { padding: 0 1rem 1rem; font-size: 0.84rem; }
-  .tf-cta__btn { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

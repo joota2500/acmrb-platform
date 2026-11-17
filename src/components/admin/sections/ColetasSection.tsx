@@ -26,6 +26,7 @@ import LinhaTempoColeta from "@/components/coletas/LinhaTempoColeta";
 import {
   PERIODOS, ROTULO_STATUS, STATUS_COLETA, dataBR, dataHoraBR, linkRota, urlFoto, type Solicitacao, type StatusColeta,
 } from "@/services/coletas";
+import Button from "@/components/ui/Button";
 
 const MapaColetas = dynamic(() => import("@/components/mapa/MapaColetas"), {
   ssr: false,
@@ -125,7 +126,7 @@ export default function ColetasSection() {
             <input type="date" value={fData} onChange={(e) => setFData(e.target.value)} />
           </label>
           {(fStatus || fBairro || fData) && (
-            <button type="button" className="adcol-btn adcol-btn--leve" onClick={() => { setFStatus(""); setFBairro(""); setFData(""); }}>Limpar</button>
+            <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => { setFStatus(""); setFBairro(""); setFData(""); }}>Limpar</Button>
           )}
         </div>
       )}
@@ -168,9 +169,9 @@ export default function ColetasSection() {
               <input type="date" value={diaRota} onChange={(e) => setDiaRota(e.target.value)} />
             </label>
             {urlRota && (
-              <a className="adcol-btn" href={urlRota} target="_blank" rel="noopener noreferrer">
+              <Button tamanho="pequeno" href={urlRota} target="_blank" rel="noopener noreferrer">
                 <Navigation size={16} aria-hidden="true" /> Abrir rota no Google Maps
-              </a>
+              </Button>
             )}
           </div>
           {rota.length === 0 ? (
@@ -309,9 +310,9 @@ function DetalheColeta({
               Janela / horário
               <input value={janela} maxLength={60} onChange={(e) => setJanela(e.target.value)} placeholder="Ex.: 8h às 11h" />
             </label>
-            <button type="button" className="adcol-btn" onClick={() => void salvar()} disabled={salvando}>
+            <Button type="button" tamanho="pequeno" onClick={() => void salvar()} disabled={salvando}>
               {salvando ? <Loader2 size={16} className="adcol-giro" aria-hidden="true" /> : <Save size={16} aria-hidden="true" />} Salvar
-            </button>
+            </Button>
           </div>
 
           <h3 className="adcol-chat-titulo">Conversa com o visitante</h3>

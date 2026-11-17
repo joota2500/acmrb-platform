@@ -19,6 +19,7 @@ import { supabase } from "@/lib/supabase";
 import { duracao } from "@/types/visitantes";
 import Ranking from "@/components/admin/acessos/Ranking";
 import { mensagemErro, type PainelAcessos } from "@/types/acessos";
+import Button from "@/components/ui/Button";
 
 const PERIODOS = [
   { dias: 1, rotulo: "Hoje" },
@@ -68,9 +69,9 @@ export default function AcessosResumo() {
             <button key={x.dias} type="button" className={x.dias === dias ? "aac-chip aac-chip--ativo" : "aac-chip"} onClick={() => setDias(x.dias)}>{x.rotulo}</button>
           ))}
         </div>
-        <button type="button" className="advis-btn advis-btn--soft" onClick={() => void carregar()}>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}>
           <RefreshCw size={16} aria-hidden="true" /> Atualizar
-        </button>
+        </Button>
       </div>
 
       {erro && <p className="aac-erro" role="alert">{erro}</p>}

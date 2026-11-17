@@ -27,6 +27,7 @@ import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
 import { aparelhoDe, idCurto, localDe } from "@/types/acessos";
 import { dataHoraCurta, duracao, type Visitante } from "@/types/visitantes";
+import Button from "@/components/ui/Button";
 
 interface Sessao {
   id: string;
@@ -369,7 +370,7 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
                         </div>
                         <div className="apa-item-aparelho__acoes">
                           <SeloSituacao situacao={a.situacao} ate={a.ate} />
-                          <button type="button" className="advd-btn advd-btn--soft" onClick={() => setAparelhoAberto(a.anon_id)}>Gerenciar</button>
+                          <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setAparelhoAberto(a.anon_id)}>Gerenciar</Button>
                         </div>
                       </li>
                     ))}
@@ -394,7 +395,7 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
                 </div>
                 <label>Cidade<input className="advd-input" value={form.cidade} maxLength={80} onChange={(e) => setForm({ ...form, cidade: e.target.value })} /></label>
                 <p className="advd-info">Cadastrado em {dataHoraCurta(v.created_at)}.</p>
-                <button type="submit" className="advd-btn" disabled={salvando}><Save size={16} aria-hidden="true" /> Salvar dados</button>
+                <Button type="submit" tamanho="pequeno" disabled={salvando}><Save size={16} aria-hidden="true" /> Salvar dados</Button>
               </form>
 
               <div className="advd-perigo">
@@ -411,9 +412,9 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
                   <h3><LogOut size={15} aria-hidden="true" /> Expulsar (sair de todos os aparelhos)</h3>
                   <p>Encerra o login desta conta em todos os aparelhos agora. A pessoa pode entrar de novo com a senha; para impedir, desative a conta ou bloqueie o aparelho.</p>
                 </div>
-                <button type="button" className="advd-btn advd-btn--soft" disabled={salvando || !v.auth_user_id} onClick={() => setExpulsando(true)}>
+                <Button type="button" variante="secundario" tamanho="pequeno" disabled={salvando || !v.auth_user_id} onClick={() => setExpulsando(true)}>
                   <LogOut size={16} aria-hidden="true" /> Expulsar
-                </button>
+                </Button>
               </div>
               <div className="advd-senha">
                 <div>
@@ -421,17 +422,17 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
                   <p>Envie ao visitante um e-mail para criar nova senha, ou gere o link e mande por WhatsApp.</p>
                 </div>
                 <div className="advd-senha-botoes">
-                  <button type="button" className="advd-btn advd-btn--soft" disabled={salvando} onClick={() => void redefinirSenha("email")}>
+                  <Button type="button" variante="secundario" tamanho="pequeno" disabled={salvando} onClick={() => void redefinirSenha("email")}>
                     <Mail size={16} aria-hidden="true" /> Enviar e-mail
-                  </button>
-                  <button type="button" className="advd-btn advd-btn--soft" disabled={salvando} onClick={() => void redefinirSenha("link")}>
+                  </Button>
+                  <Button type="button" variante="secundario" tamanho="pequeno" disabled={salvando} onClick={() => void redefinirSenha("link")}>
                     <KeyRound size={16} aria-hidden="true" /> Gerar link
-                  </button>
+                  </Button>
                 </div>
                 {linkSenha && (
                   <div className="advd-senha-link">
                     <input className="advd-input" readOnly value={linkSenha} onFocus={(e) => e.currentTarget.select()} aria-label="Link para redefinir a senha" />
-                    <button type="button" className="advd-btn" onClick={() => void copiarLink()}><Copy size={16} aria-hidden="true" /> Copiar</button>
+                    <Button type="button" tamanho="pequeno" onClick={() => void copiarLink()}><Copy size={16} aria-hidden="true" /> Copiar</Button>
                   </div>
                 )}
               </div>
@@ -440,9 +441,9 @@ export default function VisitanteDetalhe({ visitante: v, onFechar, onAlterado, o
                   <h3>Excluir visitante</h3>
                   <p>Remove a conta de acesso, o perfil, as sessões e os eventos. Não pode ser desfeito.</p>
                 </div>
-                <button type="button" className="advd-btn advd-btn--perigo" disabled={salvando} onClick={() => setConfirmar(true)}>
+                <Button type="button" variante="perigo" tamanho="pequeno" disabled={salvando} onClick={() => setConfirmar(true)}>
                   <Trash2 size={16} aria-hidden="true" /> Excluir
-                </button>
+                </Button>
               </div>
             </>
           )}

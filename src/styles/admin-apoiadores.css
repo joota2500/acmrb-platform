@@ -21,10 +21,6 @@ textarea.admap-input { resize: vertical; }
 .admap-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.6rem 1rem; border-radius: 0.8rem; border: 0; background: #2E5E4E; color: #fff; font-weight: 700; font-size: 0.9rem; cursor: pointer; white-space: nowrap; }
 .admap-btn:hover:not(:disabled) { background: #21463A; }
 .admap-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.admap-btn--soft { background: #E8F3EE; color: #2E5E4E; }
-.admap-btn--soft:hover:not(:disabled) { background: #DDF5EC; }
-.admap-btn--ghost { background: transparent; color: #52525b; border: 1px solid #e4e4e7; }
-.admap-btn--ghost:hover:not(:disabled) { background: #f4f4f5; }
 .admap-icon-btn { width: 2.2rem; height: 2.2rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 0.7rem; border: 0; background: transparent; color: #71717a; cursor: pointer; }
 .admap-icon-btn:hover { background: #f4f4f5; color: #18181b; }
 .admap-icon-btn--danger:hover { background: #fef2f2; color: #dc2626; }

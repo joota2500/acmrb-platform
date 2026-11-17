@@ -18,6 +18,7 @@ import { supabase } from "@/lib/supabase";
 import { duracao } from "@/types/visitantes";
 import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe, type PainelAcessos, type SessaoOnline } from "@/types/acessos";
+import Button from "@/components/ui/Button";
 
 export default function AcessosTempoReal() {
   const [online, setOnline] = useState<SessaoOnline[]>([]);
@@ -60,12 +61,12 @@ export default function AcessosTempoReal() {
           {auto ? " · atualiza sozinho a cada 10 s" : " · atualização pausada"}
         </p>
         <div className="aac-periodos">
-          <button type="button" className="advis-btn advis-btn--ghost" onClick={() => setAuto((a) => !a)}>
+          <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setAuto((a) => !a)}>
             {auto ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />} {auto ? "Pausar" : "Retomar"}
-          </button>
-          <button type="button" className="advis-btn advis-btn--soft" onClick={() => void carregar()}>
+          </Button>
+          <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}>
             <RefreshCw size={16} aria-hidden="true" /> Atualizar
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -98,7 +99,7 @@ export default function AcessosTempoReal() {
                   <td data-rotulo="Aparelho">{aparelhoDe(s)}</td>
                   <td data-rotulo="Origem">{origemDe(s)}</td>
                   <td data-rotulo="Tempo">{duracao(s.duracao_seg)}</td>
-                  <td className="advis-acao"><button type="button" className="advis-btn advis-btn--soft" onClick={() => setAparelhoAberto(s.anon_id)}><Smartphone size={15} aria-hidden="true" /> Gerenciar</button></td>
+                  <td className="advis-acao"><Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setAparelhoAberto(s.anon_id)}><Smartphone size={15} aria-hidden="true" /> Gerenciar</Button></td>
                 </tr>
               ))}
             </tbody>

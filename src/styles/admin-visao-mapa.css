@@ -21,16 +21,6 @@
 .avm-seg button[aria-checked="true"] { background: #047857; color: #fff; }
 .avm-toggle { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.82rem; color: #3f3f46; cursor: pointer; }
 .avm-toggle input { accent-color: #047857; }
-
-.avm-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.55rem 0.95rem; border-radius: 0.8rem; border: 0; background: #047857; color: #fff; font-weight: 700; font-size: 0.82rem; cursor: pointer; text-decoration: none; transition: background 0.15s; }
-.avm-btn:hover:not(:disabled) { background: #065f46; }
-.avm-btn:disabled { opacity: 0.55; cursor: not-allowed; }
-.avm-btn--soft { background: #E8F3EE; color: #047857; }
-.avm-btn--soft:hover:not(:disabled) { background: #d1fae5; }
-.avm-btn--ghost { background: transparent; color: #52525b; border: 1px solid #e4e4e7; }
-.avm-btn--ghost:hover:not(:disabled) { background: #f4f4f5; }
-.avm-btn--sm { padding: 0.35rem 0.6rem; font-size: 0.75rem; border-radius: 0.6rem; }
-.avm-btn--full { width: 100%; }
 .avm-btn:focus-visible, .avm-seg button:focus-visible { outline: 3px solid #a7f3d0; outline-offset: 2px; }
 .avm-link { border: 0; background: none; color: #71717a; font-size: 0.78rem; text-decoration: underline; cursor: pointer; align-self: center; }
 .avm-spin { animation: avm-giro 1s linear infinite; }
@@ -89,7 +79,6 @@
   .avm-kpis li { padding: 0.7rem; }
   .avm-kpis strong { font-size: 1.15rem; }
   .avm-toolbar__acts { margin-left: 0; width: 100%; }
-  .avm-toolbar__acts .avm-btn { flex: 1; }
   .avm-map .mapa-wrap, .avm-map-loading { height: 360px; }
   .avm-stats { grid-template-columns: 1fr; }
 }

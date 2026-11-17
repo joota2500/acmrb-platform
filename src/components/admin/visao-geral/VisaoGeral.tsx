@@ -23,6 +23,7 @@ import "@/styles/admin-visao-geral.css";
 import { usePainelResumo, type Resumo } from "@/hooks/usePainelResumo";
 import { ITENS_NAV } from "@/constants/adminNav";
 import { podeVer, type PapelAdmin } from "@/constants/permissoes";
+import Button from "@/components/ui/Button";
 
 interface Props {
   papel: PapelAdmin;
@@ -169,10 +170,10 @@ export default function VisaoGeral({ papel, nome }: Props) {
           <h1 className="vg-cabecalho__titulo">{saudacao()}, {nome.split(" ")[0]} 👋</h1>
           <p className="vg-cabecalho__sub">Resumo da operação da ACMRB com os dados cadastrados no sistema.</p>
         </div>
-        <button type="button" className="vg-btn" onClick={() => void recarregar()} disabled={carregando}>
+        <Button type="button" tamanho="pequeno" onClick={() => void recarregar()} disabled={carregando}>
           <RefreshCw size={16} className={carregando ? "vg-giro" : undefined} aria-hidden="true" />
           <span>Atualizar</span>
-        </button>
+        </Button>
       </header>
 
       {/* 2. Indicadores */}

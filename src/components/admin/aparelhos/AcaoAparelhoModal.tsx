@@ -19,6 +19,7 @@ import { chamarApi } from "@/services/apiAdmin";
 import { calcularAte, type PrazoEntrada } from "@/utils/prazo";
 import SeletorPrazo, { paraCampoData } from "@/components/admin/aparelhos/SeletorPrazo";
 import type { AcaoAparelho } from "@/types/aparelhos";
+import Button from "@/components/ui/Button";
 
 interface Props {
   acao: AcaoAparelho;
@@ -196,7 +197,7 @@ export default function AcaoAparelhoModal({ acao, alvo, inicial, onFechar, onFei
         {erro && <p className="apa-erro" role="alert">{erro}</p>}
 
         <div className="apa-modal__botoes">
-          <button type="button" className="advis-btn advis-btn--ghost" onClick={onFechar} disabled={enviando}>Cancelar</button>
+          <Button type="button" variante="contorno" tamanho="pequeno" onClick={onFechar} disabled={enviando}>Cancelar</Button>
           <button type="button" className={t.perigo ? "advis-btn apa-btn--perigo" : "advis-btn"} onClick={() => void confirmar()} disabled={enviando || !motivoOk || !prazoOk}>
             {enviando ? <Loader2 size={16} className="advis-giro" aria-hidden="true" /> : <Icone size={16} aria-hidden="true" />} {t.botao}
           </button>

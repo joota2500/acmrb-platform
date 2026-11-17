@@ -2,6 +2,7 @@
  * Button — botão padrão do site
  * ------------------------------------------------------------
  * variante: primario | secundario | contorno | fantasma | perigo
+ *           | destaque | claro | contornoClaro  (os 3 últimos são para fundo verde escuro)
  * tamanho:  pequeno | medio | grande
  * Passando "href" vira um link (next/link) com a mesma aparência.
  * "carregando" mostra o spinner e desativa o clique.
@@ -10,7 +11,7 @@ import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 
-type Variante = "primario" | "secundario" | "contorno" | "fantasma" | "perigo";
+type Variante = "primario" | "secundario" | "contorno" | "fantasma" | "perigo" | "destaque" | "claro" | "contornoClaro";
 type Tamanho = "pequeno" | "medio" | "grande";
 
 type Props = Omit<React.ComponentProps<"button">, "type"> & {
@@ -20,6 +21,9 @@ type Props = Omit<React.ComponentProps<"button">, "type"> & {
   carregando?: boolean;
   larguraTotal?: boolean;
   href?: string;
+  /** só vale com href (ex.: "_blank" para abrir em outra aba) */
+  target?: string;
+  rel?: string;
 };
 
 const BASE =
@@ -32,6 +36,10 @@ const VARIANTES: Record<Variante, string> = {
   contorno: "border border-brand/30 bg-white text-brand hover:bg-brand-soft",
   fantasma: "text-brand hover:bg-brand-soft",
   perigo: "bg-red-600 text-white shadow-sm hover:bg-red-700",
+  // para usar em cima de fundo verde escuro
+  destaque: "bg-emerald-600 text-white shadow-sm hover:bg-emerald-700",
+  claro: "bg-white text-leaf shadow-sm hover:bg-emerald-50",
+  contornoClaro: "border-2 border-white/70 bg-transparent text-white hover:bg-white/15",
 };
 
 const TAMANHOS: Record<Tamanho, string> = {
@@ -46,6 +54,8 @@ export default function Button({
   carregando = false,
   larguraTotal = false,
   href,
+  target,
+  rel,
   type = "button",
   className,
   children,
@@ -57,7 +67,7 @@ export default function Button({
   // Como link: mesma cara de botão
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <Link href={href} target={target} rel={target === "_blank" ? (rel ?? "noopener noreferrer") : rel} className={classes} {...(resto as Omit<React.ComponentProps<typeof Link>, "href" | "className">)}>
         {children}
       </Link>
     );

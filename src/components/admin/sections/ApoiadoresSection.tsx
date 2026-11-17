@@ -32,6 +32,7 @@ import {
 } from "@/services/apoiadoresAdmin";
 import ResultadosGeo from "@/components/admin/apoiadores/ResultadosGeo";
 import "@/styles/admin-apoiadores.css";
+import Button from "@/components/ui/Button";
 
 const MapaSeletor = dynamic(() => import("@/components/mapa/MapaSeletor"), {
   ssr: false,
@@ -306,7 +307,7 @@ export default function ApoiadoresSection() {
           <option value="sim">Aparecem no mapa</option>
           <option value="nao">Fora do mapa</option>
         </select>
-        <button type="button" className="admap-btn" onClick={novo}><Plus size={16} aria-hidden="true" /> Novo apoiador</button>
+        <Button type="button" tamanho="pequeno" onClick={novo}><Plus size={16} aria-hidden="true" /> Novo apoiador</Button>
       </div>
 
       <p className="admap-count">
@@ -318,7 +319,7 @@ export default function ApoiadoresSection() {
       ) : erroCarga ? (
         <div className="admap-state admap-state--erro" role="alert">
           {erroCarga}
-          <button type="button" className="admap-btn admap-btn--soft" onClick={carregar}><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</button>
+          <Button type="button" variante="secundario" tamanho="pequeno" onClick={carregar}><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</Button>
         </div>
       ) : filtrados.length === 0 ? (
         <div className="admap-state">{lista.length ? "Nenhum apoiador com esses filtros." : "Nenhum apoiador cadastrado ainda. Clique em “Novo apoiador”."}</div>
@@ -359,10 +360,10 @@ export default function ApoiadoresSection() {
         onFechar={fecharPainel}
         rodape={
           <>
-            <button type="button" className="admap-btn admap-btn--ghost" onClick={fecharPainel}>Cancelar</button>
-            <button type="button" className="admap-btn" onClick={salvar} disabled={salvando}>
+            <Button type="button" variante="contorno" tamanho="pequeno" onClick={fecharPainel}>Cancelar</Button>
+            <Button type="button" tamanho="pequeno" onClick={salvar} disabled={salvando}>
               {salvando && <Loader2 size={16} className="admap-spin" aria-hidden="true" />} Salvar
-            </button>
+            </Button>
           </>
         }
       >
@@ -381,9 +382,9 @@ export default function ApoiadoresSection() {
               <span>CNPJ</span>
               <div className="admap-inline">
                 <input className="admap-input" inputMode="numeric" value={form.cnpj} onChange={(e) => set("cnpj", mascaraCnpj(e.target.value))} placeholder="00.000.000/0000-00" aria-invalid={!docOk} />
-                <button type="button" className="admap-btn admap-btn--soft" onClick={preencherCnpj} disabled={buscandoCnpj || soDigitos(form.cnpj).length !== 14}>
+                <Button type="button" variante="secundario" tamanho="pequeno" onClick={preencherCnpj} disabled={buscandoCnpj || soDigitos(form.cnpj).length !== 14}>
                   {buscandoCnpj ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Search size={16} aria-hidden="true" />} Buscar dados
-                </button>
+                </Button>
               </div>
               {!docOk && <small className="admap-err">CNPJ inválido</small>}
               <small>Opcional. “Buscar dados” preenche pela Receita (BrasilAPI/CNPJ.ws) e já localiza o endereço no mapa.</small>
@@ -460,9 +461,9 @@ export default function ApoiadoresSection() {
             <span>Buscar endereço no mapa (OpenStreetMap, Photon, Esri e CEP)</span>
             <div className="admap-inline">
               <input className="admap-input" value={buscaEnd} onChange={(e) => setBuscaEnd(e.target.value)} placeholder="Rua, número, bairro" onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), procurarEndereco())} />
-              <button type="button" className="admap-btn admap-btn--soft" onClick={procurarEndereco} disabled={buscandoEnd}>
+              <Button type="button" variante="secundario" tamanho="pequeno" onClick={procurarEndereco} disabled={buscandoEnd}>
                 {buscandoEnd ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Search size={16} aria-hidden="true" />} Buscar
-              </button>
+              </Button>
             </div>
             <ResultadosGeo resultados={resultadosEnd} escolhido={escolhidoGeo} onEscolher={aplicarGeo} aviso={avisoGeo} />
           </div>
@@ -471,11 +472,11 @@ export default function ApoiadoresSection() {
           <div className="admap-coords">
             <span>{form.latitude != null ? `Ponto: ${form.latitude}, ${form.longitude}` : "Clique no mapa para marcar o ponto (depois arraste para ajustar)."}</span>
             <div>
-              <button type="button" className="admap-btn admap-btn--soft" onClick={minhaLocalizacao} disabled={localizando}>
+              <Button type="button" variante="secundario" tamanho="pequeno" onClick={minhaLocalizacao} disabled={localizando}>
                 {localizando ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <Crosshair size={16} aria-hidden="true" />} Usar minha localização
-              </button>
+              </Button>
               {form.latitude != null && (
-                <button type="button" className="admap-btn admap-btn--ghost" onClick={() => setForm((f) => ({ ...f, latitude: null, longitude: null, mostrar_no_mapa: false }))}>Limpar ponto</button>
+                <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setForm((f) => ({ ...f, latitude: null, longitude: null, mostrar_no_mapa: false }))}>Limpar ponto</Button>
               )}
             </div>
           </div>

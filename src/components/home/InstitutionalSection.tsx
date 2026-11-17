@@ -25,6 +25,7 @@ import { supabase } from "@/lib/supabase";
 
 import { CONTATO, linkMapaBusca } from "@/constants/contato";
 import "@/styles/institutional-section.css";
+import Button from "@/components/ui/Button";
 
 type LinkItem = { label: string; href: string };
 type Group = { title: string; icon: React.ElementType; items: LinkItem[] };
@@ -274,9 +275,9 @@ export default function InstitutionalSection() {
             </p>
           </div>
           <div className="inst__cta-actions">
-            <Link href="/quem-somos" className="inst__btn inst__btn--primary">Conhecer a associação</Link>
-            <Link href="/transparencia" className="inst__btn">Ver transparência</Link>
-            <Link href="/#contato" className="inst__btn">Seja parceiro</Link>
+            <Button href="/quem-somos" variante="claro" >Conhecer a associação</Button>
+            <Button href="/transparencia" variante="contornoClaro" >Ver transparência</Button>
+            <Button href="/#contato" variante="contornoClaro" >Seja parceiro</Button>
           </div>
         </motion.div>
       </div>

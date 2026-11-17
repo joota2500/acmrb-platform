@@ -24,6 +24,7 @@ import { aparelhoDe, idCurto, localDe, origemDe } from "@/types/acessos";
 import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
 import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
 import { tempoRestante, type AcaoAparelho, type AparelhoItem, type BloqueioReg, type ExpulsaoReg } from "@/types/aparelhos";
+import Button from "@/components/ui/Button";
 
 interface SessaoReg {
   id: string;
@@ -144,16 +145,16 @@ export default function AparelhoDetalhe({ anonId, onFechar, onAlterado }: Props)
                 <div className="apa-acoes">
                   {situacao === "ativo" ? (
                     <>
-                      <button type="button" className="advis-btn apa-btn--perigo" onClick={() => setAcao("bloquear")}><Ban size={16} aria-hidden="true" /> Bloquear</button>
-                      <button type="button" className="advis-btn apa-btn--aviso" onClick={() => setAcao("suspender")}><Clock size={16} aria-hidden="true" /> Suspender</button>
+                      <Button type="button" variante="perigo" tamanho="pequeno" onClick={() => setAcao("bloquear")}><Ban size={16} aria-hidden="true" /> Bloquear</Button>
+                      <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setAcao("suspender")}><Clock size={16} aria-hidden="true" /> Suspender</Button>
                     </>
                   ) : (
                     <>
-                      <button type="button" className="advis-btn" onClick={() => setAcao("desbloquear")}><ShieldCheck size={16} aria-hidden="true" /> Desbloquear</button>
-                      <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAcao("editar")}><Pencil size={16} aria-hidden="true" /> Editar motivo/prazo</button>
+                      <Button type="button" tamanho="pequeno" onClick={() => setAcao("desbloquear")}><ShieldCheck size={16} aria-hidden="true" /> Desbloquear</Button>
+                      <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setAcao("editar")}><Pencil size={16} aria-hidden="true" /> Editar motivo/prazo</Button>
                     </>
                   )}
-                  <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAcao("expulsar")}><LogOut size={16} aria-hidden="true" /> Expulsar</button>
+                  <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setAcao("expulsar")}><LogOut size={16} aria-hidden="true" /> Expulsar</Button>
                 </div>
               </section>
 

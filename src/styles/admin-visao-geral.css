@@ -13,14 +13,6 @@
 .vg-cabecalho__data { font-size: 0.78rem; font-weight: 600; opacity: 0.75; text-transform: capitalize; }
 .vg-cabecalho__titulo { margin-top: 0.15rem; font-size: 1.45rem; font-weight: 900; line-height: 1.2; }
 .vg-cabecalho__sub { margin-top: 0.25rem; font-size: 0.88rem; opacity: 0.85; text-align: var(--texto-justificado, justify); }
-.vg-btn {
-  display: inline-flex; align-items: center; gap: 0.4rem; flex-shrink: 0;
-  padding: 0.55rem 0.95rem; border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.14); color: #fff; font-weight: 700; font-size: 0.85rem;
-  transition: background 0.2s;
-}
-.vg-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.24); }
-.vg-btn:disabled { opacity: 0.6; }
 .vg-giro { animation: vg-giro 0.9s linear infinite; }
 @keyframes vg-giro { to { transform: rotate(360deg); } }
 
@@ -135,7 +127,6 @@
   .vg-cabecalho { padding: 1rem; align-items: flex-start; }
   .vg-cabecalho__titulo { font-size: 1.15rem; }
   .vg-cabecalho__sub { font-size: 0.8rem; }
-  .vg-btn span { display: none; }
   .vg-kpis { gap: 0.55rem; }
   .vg-kpi { padding: 0.8rem; }
   .vg-kpi__valor { font-size: 1.05rem; }

@@ -7,6 +7,7 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { enviarLogo } from "@/services/apoiadoresAdmin";
+import Button from "@/components/ui/Button";
 
 interface Props {
   valor: string | null | undefined;
@@ -39,14 +40,14 @@ export default function LogoUpload({ valor, pasta, onChange, onErro }: Props) {
         {valor ? <img src={valor} alt="Prévia da logo" /> : <ImagePlus size={26} aria-hidden="true" />}
       </div>
       <div className="admap-logo__actions">
-        <button type="button" className="admap-btn admap-btn--soft" onClick={() => input.current?.click()} disabled={enviando}>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => input.current?.click()} disabled={enviando}>
           {enviando ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <ImagePlus size={16} aria-hidden="true" />}
           {valor ? "Trocar logo" : "Enviar logo"}
-        </button>
+        </Button>
         {valor && (
-          <button type="button" className="admap-btn admap-btn--ghost" onClick={() => onChange("")}>
+          <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => onChange("")}>
             <Trash2 size={16} aria-hidden="true" /> Remover
-          </button>
+          </Button>
         )}
         <small>PNG, JPG, WEBP ou SVG · até 2 MB</small>
       </div>

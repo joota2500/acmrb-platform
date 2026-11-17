@@ -27,6 +27,7 @@ import {
   type ApoiadorPublico, type EmpresaLogisticaPublica, type RepassePublico,
 } from "@/services/apoiadores";
 import "@/styles/parceiros-page.css";
+import Button from "@/components/ui/Button";
 
 type Estado = "carregando" | "pronto" | "erro";
 
@@ -175,7 +176,7 @@ export default function ParceirosPagina() {
             <AlertTriangle size={28} aria-hidden="true" />
             <strong>Não foi possível carregar os parceiros</strong>
             <p>Verifique sua conexão e tente novamente.</p>
-            <button type="button" onClick={carregar} className="parc__btn"><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</button>
+            <Button type="button" onClick={carregar} ><RefreshCw size={16} aria-hidden="true" /> Tentar de novo</Button>
           </div>
         )}
 
@@ -343,8 +344,8 @@ export default function ParceirosPagina() {
             <p>Indústrias, operadores de logística reversa, comércios e instituições podem apoiar a ACMRB. Entre em contato e conheça como funciona a parceria.</p>
           </div>
           <div className="parc__cta-actions">
-            <a href="/#contato" className="parc__btn parc__btn--light">Quero ser parceiro <ArrowRight size={16} aria-hidden="true" /></a>
-            <a href="/#parceiros" className="parc__btn parc__btn--ghost"><MapPin size={16} aria-hidden="true" /> Ver mapa de apoiadores</a>
+            <Button href="/#contato" variante="claro" >Quero ser parceiro <ArrowRight size={16} aria-hidden="true" /></Button>
+            <Button href="/#parceiros" variante="contornoClaro" ><MapPin size={16} aria-hidden="true" /> Ver mapa de apoiadores</Button>
           </div>
         </section>
       </div>

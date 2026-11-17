@@ -140,23 +140,6 @@
 .nd__rel-grade { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
 .nd__centro { display: flex; justify-content: center; margin-top: 2rem; }
 
-.nd__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.85rem 1.5rem;
-  border-radius: 9999px;
-  background: #2E5E4E;
-  color: #ffffff;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.nd__btn:hover { background: #21463A; }
-.nd__btn--claro { background: #E8F3EE; color: #2E5E4E; }
-.nd__btn--claro:hover { background: #DDF5EC; }
-
 /* ---------- Galeria ampliada ---------- */
 .nd__lightbox {
   position: fixed;
@@ -240,7 +223,6 @@
   .nd__navegacao { grid-template-columns: 1fr; }
   .nd__nav-item--direita { text-align: left; align-items: flex-start; }
   .nd__rel-grade { grid-template-columns: 1fr; }
-  .nd__btn { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

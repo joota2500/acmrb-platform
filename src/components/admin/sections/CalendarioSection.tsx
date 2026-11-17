@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { DIAS_CURTOS, DIAS_SEMANA, MATERIAIS_COLETA, janelaHorario, listarCalendario, type CalendarioBairro } from "@/services/coletas";
+import Button from "@/components/ui/Button";
 
 type Form = {
   id?: string;
@@ -110,9 +111,9 @@ export default function CalendarioSection() {
     <div className="adcal">
       <div className="adcal-topo">
         <p className="adcal-sub">Dias e horários da coleta seletiva por bairro. Aparecem na home e em /calendario-coleta.</p>
-        <button type="button" className="adcal-btn" onClick={() => { setErros({}); setForm({ ...VAZIO }); }}>
+        <Button type="button" tamanho="pequeno" onClick={() => { setErros({}); setForm({ ...VAZIO }); }}>
           <CalendarPlus size={17} aria-hidden="true" /> Novo bairro
-        </button>
+        </Button>
       </div>
 
       {form && (
@@ -176,10 +177,10 @@ export default function CalendarioSection() {
           </label>
 
           <div className="adcal-form__acoes">
-            <button type="button" className="adcal-btn adcal-btn--leve" onClick={() => setForm(null)}>Cancelar</button>
-            <button type="submit" className="adcal-btn" disabled={salvando}>
+            <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setForm(null)}>Cancelar</Button>
+            <Button type="submit" tamanho="pequeno" disabled={salvando}>
               {salvando ? <Loader2 size={16} className="adcal-giro" aria-hidden="true" /> : <Save size={16} aria-hidden="true" />} Salvar
-            </button>
+            </Button>
           </div>
         </form>
       )}

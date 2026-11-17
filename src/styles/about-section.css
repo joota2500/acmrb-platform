@@ -310,67 +310,6 @@
 /* Botões: h-12 (3rem) e text-sm no celular, com largura total;
    texto maior a partir de 640px. white-space: nowrap evita quebra. */
 
-.about__btn-primary {
-  height: 3rem;
-  width: 100%;
-  white-space: nowrap;
-  padding: 0 1.25rem;
-  border-radius: 0.9rem;
-  background: #059669;
-  color: white;
-  font-weight: 700;
-  font-size: 0.875rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
-.about__btn-primary:hover {
-  background: #047857;
-}
-
-.about__btn-secondary {
-  height: 3rem;
-  width: 100%;
-  white-space: nowrap;
-  padding: 0 1.25rem;
-  border-radius: 0.9rem;
-  border: 1px solid #a7f3d0;
-  color: #047857;
-  font-weight: 700;
-  font-size: 0.875rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  transition: all 0.3s;
-}
-
-.about__btn-secondary:hover {
-  background: #ecfdf5;
-}
-
-@media (min-width: 640px) {
-  .about__btn-primary,
-  .about__btn-secondary {
-    width: auto;
-    padding: 0 1.5rem;
-    font-size: 0.95rem;
-  }
-}
-
 /* Foco visível para navegação por teclado */
-.about__btn-primary:focus-visible,
-.about__btn-secondary:focus-visible {
-  outline: 2px solid #059669;
-  outline-offset: 3px;
-}
 
 /* Celular estreito: o nowrap fazia o texto do botão vazar em telas de 320–360px */
-@media (max-width: 480px) {
-  .about__btn-primary,
-  .about__btn-secondary { height: auto; min-height: 3rem; padding: 0.6rem 1rem; white-space: normal; text-align: center; }
-}

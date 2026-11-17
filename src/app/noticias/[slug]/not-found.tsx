@@ -8,6 +8,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
 import "@/styles/noticia-detalhe.css";
+import Button from "@/components/ui/Button";
 
 export default function NoticiaNaoEncontrada() {
   return (
@@ -21,8 +22,8 @@ export default function NoticiaNaoEncontrada() {
             O endereço pode estar errado, ou a notícia foi retirada do ar ou ainda não foi publicada.
           </p>
           <div className="nd__404-acoes">
-            <Link href="/noticias" className="nd__btn">Ver todas as notícias</Link>
-            <Link href="/" className="nd__btn nd__btn--claro">Voltar ao início</Link>
+            <Button href="/noticias" >Ver todas as notícias</Button>
+            <Button href="/" variante="secundario" >Voltar ao início</Button>
           </div>
         </div>
       </main>

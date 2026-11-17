@@ -25,6 +25,7 @@ import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
 import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
 import { curto, type AcaoAparelho, type AparelhoItem } from "@/types/aparelhos";
+import Button from "@/components/ui/Button";
 
 const POR_PAGINA = 15;
 type Filtro = "todos" | "ativos" | "bloqueados" | "suspensos" | "online";
@@ -81,7 +82,7 @@ export default function AparelhosPainel() {
         <p className="aac-nota">
           Aparelhos que visitaram o site. O bloqueio vale na próxima navegação e a página aberta é trocada em até ~10 segundos. Visitas de anônimos somem em 24 h, mas os bloqueios continuam até você desbloquear.
         </p>
-        <button type="button" className="advis-btn advis-btn--soft" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</button>
+        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
 
       <div className="apa-chips" role="group" aria-label="Filtrar por situação">
@@ -132,16 +133,16 @@ export default function AparelhosPainel() {
                   <td className="advis-acao apa-acoes-linha">
                     {i.situacao === "ativo" ? (
                       <>
-                        <button type="button" className="advis-btn apa-btn--aviso" onClick={() => setAcao({ tipo: "suspender", item: i })} title="Suspender por um tempo"><Clock size={15} aria-hidden="true" /> Suspender</button>
-                        <button type="button" className="advis-btn apa-btn--perigo" onClick={() => setAcao({ tipo: "bloquear", item: i })}><Ban size={15} aria-hidden="true" /> Bloquear</button>
+                        <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setAcao({ tipo: "suspender", item: i })} title="Suspender por um tempo"><Clock size={15} aria-hidden="true" /> Suspender</Button>
+                        <Button type="button" variante="perigo" tamanho="pequeno" onClick={() => setAcao({ tipo: "bloquear", item: i })}><Ban size={15} aria-hidden="true" /> Bloquear</Button>
                       </>
                     ) : (
                       <>
-                        <button type="button" className="advis-btn" onClick={() => setAcao({ tipo: "desbloquear", item: i })}><ShieldCheck size={15} aria-hidden="true" /> Desbloquear</button>
-                        <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAcao({ tipo: "editar", item: i })}><Pencil size={15} aria-hidden="true" /> Editar</button>
+                        <Button type="button" tamanho="pequeno" onClick={() => setAcao({ tipo: "desbloquear", item: i })}><ShieldCheck size={15} aria-hidden="true" /> Desbloquear</Button>
+                        <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setAcao({ tipo: "editar", item: i })}><Pencil size={15} aria-hidden="true" /> Editar</Button>
                       </>
                     )}
-                    <button type="button" className="advis-btn advis-btn--soft" onClick={() => setAberto(i.anon_id)}>Detalhes</button>
+                    <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setAberto(i.anon_id)}>Detalhes</Button>
                   </td>
                 </tr>
               ))}
@@ -151,9 +152,9 @@ export default function AparelhosPainel() {
       )}
 
       <nav className="advis-paginacao" aria-label="Paginação">
-        <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</button>
+        <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</Button>
         <span>Página {pagina + 1} de {nPaginas}</span>
-        <button type="button" className="advis-btn advis-btn--ghost" disabled={pagina + 1 >= nPaginas} onClick={() => setPagina((p) => p + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></button>
+        <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina + 1 >= nPaginas} onClick={() => setPagina((p) => p + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></Button>
       </nav>
 
       {aberto && <AparelhoDetalhe anonId={aberto} onFechar={() => setAberto(null)} onAlterado={() => void carregar()} />}

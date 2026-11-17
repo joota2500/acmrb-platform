@@ -106,9 +106,6 @@
 .parc__cta h2 { font-size: 1.5rem; font-weight: 900; margin-bottom: 0.5rem; }
 .parc__cta p { color: #d1fae5; line-height: 1.65; max-width: 38rem; }
 .parc__cta-actions { display: flex; flex-direction: column; gap: 0.7rem; flex-shrink: 0; }
-.parc__btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.8rem 1.4rem; border-radius: 9999px; background: #047857; color: #fff; font-weight: 800; border: 0; cursor: pointer; text-decoration: none; }
-.parc__btn--light { background: #fff; color: #047857; }
-.parc__btn--ghost { background: transparent; border: 2px solid rgba(255, 255, 255, 0.7); color: #fff; }
 
 .parc a:focus-visible, .parc button:focus-visible, .parc select:focus-visible { outline: 3px solid #34d399; outline-offset: 2px; }
 
@@ -145,7 +142,6 @@
   .parc__cta { padding: 1.5rem; }
   .parc__cta h2 { font-size: 1.2rem; }
   .parc__cta-actions { flex-direction: column; width: 100%; }
-  .parc__btn { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

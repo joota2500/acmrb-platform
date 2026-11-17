@@ -15,6 +15,7 @@ import "@/styles/admin-visitante-novo.css";
 import { chamarApi } from "@/services/apiAdmin";
 import { mascaraTelefone } from "@/utils/validacao";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
+import Button from "@/components/ui/Button";
 
 interface Props {
   onFechar: () => void;
@@ -74,10 +75,10 @@ export default function NovoVisitanteModal({ onFechar, onCriado }: Props) {
           <p className="advn-dica">A conta já nasce com o e-mail confirmado. Depois você pode enviar um link para o visitante trocar a senha.</p>
           {erro && <p role="alert" style={{ color: "#b91c1c", fontSize: "0.86rem", fontWeight: 700 }}>{erro}</p>}
           <div className="advn-acoes">
-            <button type="button" className="advn-btn advn-btn--soft" onClick={onFechar}>Cancelar</button>
-            <button type="submit" className="advn-btn" disabled={salvando}>
+            <Button type="button" variante="secundario" tamanho="pequeno" onClick={onFechar}>Cancelar</Button>
+            <Button type="submit" tamanho="pequeno" disabled={salvando}>
               {salvando ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <UserPlus size={16} aria-hidden="true" />} Cadastrar
-            </button>
+            </Button>
           </div>
         </form>
       </div>

@@ -34,8 +34,6 @@
 .an__btn:focus-visible, .an__acoes > *:focus-visible { outline: 2px solid #10b981; outline-offset: 2px; }
 .an__btn--claro { background: #ecfdf5; color: #065f46; border: 1px solid #d1fae5; }
 .an__btn--claro:hover { background: #d1fae5; }
-.an__btn--perigo-claro { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
-.an__btn--perigo-claro:hover { background: #fee2e2; }
 
 .an__icone { display: flex; padding: 0.5rem; border-radius: 0.75rem; border: 0; background: #f3f4f6; cursor: pointer; }
 .an__link { border: 0; background: none; color: #047857; font-weight: 700; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }

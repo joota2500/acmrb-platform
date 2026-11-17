@@ -32,6 +32,7 @@ import { ArrowRight, Leaf, Users2, Building2 } from "lucide-react";
 import { smoothScrollTo } from "@/utils/scroll";
 
 import "@/styles/about-section.css";
+import Button from "@/components/ui/Button";
 
 /** Cards de valores: editar aqui para mudar textos/ícones. */
 const valores = [
@@ -126,22 +127,21 @@ export default function AboutSection() {
           <div className="about__cta-buttons">
             {/* Rolagem suave até o formulário de contato (se o JS falhar,
                 o href="#contato" continua funcionando normalmente) */}
-            <a
+            <Button
               href="#contato"
               onClick={(e) => {
-                if (document.getElementById("contato")) {
-                  e.preventDefault();
-                  smoothScrollTo("contato");
-                }
+              if (document.getElementById("contato")) {
+              e.preventDefault();
+              smoothScrollTo("contato");
+              }
               }}
-              className="about__btn-primary"
             >
               Quero colaborar
-            </a>
-            <Link href="/quem-somos" className="about__btn-secondary">
+            </Button>
+            <Button href="/quem-somos" variante="contorno" >
               Conheça nossa história
               <ArrowRight size={18} aria-hidden="true" />
-            </Link>
+            </Button>
           </div>
         </motion.div>
       </div>

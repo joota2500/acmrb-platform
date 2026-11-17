@@ -316,39 +316,6 @@
   flex-shrink: 0;
 }
 
-.operations__btn-primary,
-.operations__btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  height: 3rem;
-  padding: 0 1.4rem;
-  border-radius: 0.85rem;
-  font-weight: 700;
-  font-size: 0.95rem;
-  transition: transform 0.2s, background 0.2s;
-}
-
-.operations__btn-primary {
-  background: #ffffff;
-  color: #047857;
-}
-
-.operations__btn-secondary {
-  border: 2px solid rgba(255, 255, 255, 0.7);
-  color: #ffffff;
-}
-
-.operations__btn-primary:hover,
-.operations__btn-secondary:hover {
-  transform: translateY(-2px);
-}
-
-.operations__btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
 /* ==================== TABLET (481–1024px) ==================== */
 @media (max-width: 1024px) {
   .operations {
@@ -498,11 +465,6 @@
 
   .operations__cta-buttons {
     flex-direction: column;
-    width: 100%;
-  }
-
-  .operations__btn-primary,
-  .operations__btn-secondary {
     width: 100%;
   }
 }

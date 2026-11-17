@@ -22,6 +22,7 @@ import { useNoticiasPublicas } from "@/hooks/useNoticiasPublicas";
 import { selecionarHome, textoPuro, type Noticia } from "@/utils/noticias";
 
 import "@/styles/noticias-page.css";
+import Button from "@/components/ui/Button";
 
 const POR_PAGINA = 9;
 const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -263,9 +264,9 @@ export default function NoticiasJornal() {
             <div className="nj__aviso" role="alert">
               <AlertTriangle size={30} aria-hidden="true" />
               <p>{erro}</p>
-              <button type="button" className="nj__btn" onClick={recarregar}>
+              <Button type="button" onClick={recarregar}>
                 <RefreshCw size={16} aria-hidden="true" /> Tentar de novo
-              </button>
+              </Button>
             </div>
           )}
 
@@ -304,9 +305,9 @@ export default function NoticiasJornal() {
               </div>
               {qtd < grade.length && (
                 <div className="nj__mais">
-                  <button type="button" className="nj__btn" onClick={() => setQtd((v) => v + POR_PAGINA)}>
+                  <Button type="button" onClick={() => setQtd((v) => v + POR_PAGINA)}>
                     Carregar mais notícias ({grade.length - qtd} restantes)
-                  </button>
+                  </Button>
                 </div>
               )}
             </>
@@ -318,9 +319,9 @@ export default function NoticiasJornal() {
               <h2>{noticias.length ? "Nenhuma notícia com esses filtros" : "Nenhuma notícia publicada ainda"}</h2>
               <p>{noticias.length ? "Tente outra palavra ou limpe os filtros." : "Em breve as novidades da ACMRB estarão aqui."}</p>
               {temFiltro && (
-                <button type="button" className="nj__btn" onClick={limpar}>
+                <Button type="button" onClick={limpar}>
                   Limpar filtros
-                </button>
+                </Button>
               )}
             </div>
           )}
