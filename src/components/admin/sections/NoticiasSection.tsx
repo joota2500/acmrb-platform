@@ -10,9 +10,6 @@
  * - Editor completo em NoticiaEditor
  * O banco reforça a regra pela RLS (is_deus) — migration
  * 20261020220000_noticias_completo.sql.
- *
- * A versão antiga (NoticiasForm, NoticiasList, NoticiasStats,
- * NoticiasCard) continua no projeto, marcada como NÃO UTILIZADO.
  */
 
 import { useCallback, useEffect, useMemo, useState } from "react";

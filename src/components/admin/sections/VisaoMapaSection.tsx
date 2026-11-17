@@ -3,7 +3,7 @@
 /**
  * VisaoMapaSection — "Visão do Mapa" (painel, somente ADM DEUS)
  * ------------------------------------------------------------
- * Substitui a antiga tela "Parceiros" (ParceirosSection, NÃO UTILIZADO).
+ * Substitui a antiga tela "Parceiros".
  *  - Mapa grande com TODOS os apoiadores e empresas de logística,
  *    inclusive os ocultos do site (marcador tracejado/apagado).
  *  - Estatísticas: por categoria, tipo de apoio e bairro; ocultos e

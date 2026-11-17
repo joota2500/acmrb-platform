@@ -19,7 +19,7 @@
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Clock3, ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
@@ -38,12 +38,10 @@ import AdminBottomNav from "@/components/admin/layout/AdminBottomNav";
 import { itemPorId, secaoValida, type SecaoId } from "@/components/admin/layout/adminNav";
 
 /* Seções */
-// DashboardSection: NÃO UTILIZADO (substituída pela VisaoGeral)
 import VisaoGeral from "@/components/admin/visao-geral/VisaoGeral";
 import AssociadosSection from "@/components/admin/sections/AssociadosSection";
 import VisitantesSection from "@/components/admin/sections/VisitantesSection";
 import DenunciasSection from "@/components/admin/sections/DenunciasSection";
-// ParceirosSection: NÃO UTILIZADO (substituída por VisaoMapaSection)
 import VisaoMapaSection from "@/components/admin/sections/VisaoMapaSection";
 import ApoiadoresSection from "@/components/admin/sections/ApoiadoresSection";
 import LogisticaSection from "@/components/admin/sections/LogisticaSection";
@@ -70,21 +68,6 @@ function Validando() {
         <h2 className="text-2xl font-black text-[#111827]">Carregando painel</h2>
         <p className="text-zinc-500 mt-3 text-sm leading-7">Validando permissões administrativas...</p>
       </div>
-    </div>
-  );
-}
-
-/** Aviso para seções ainda sem tela própria (Coletas, Relatórios) */
-// NÃO UTILIZADO no momento (todas as seções estão prontas); mantido para seções futuras
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function EmBreve({ titulo, descricao }: { titulo: string; descricao: string }) {
-  return (
-    <div className="bg-white rounded-3xl border border-black/5 p-6 sm:p-10 text-center">
-      <span className="w-14 h-14 rounded-2xl bg-[#DDF5EC] text-[#2E5E4E] flex items-center justify-center mx-auto">
-        <Clock3 size={26} aria-hidden="true" />
-      </span>
-      <h2 className="mt-4 text-xl sm:text-2xl font-black text-zinc-900">{titulo}: em breve</h2>
-      <p className="mt-2 text-zinc-500 max-w-md mx-auto">{descricao}. Esta seção ainda está em desenvolvimento.</p>
     </div>
   );
 }
