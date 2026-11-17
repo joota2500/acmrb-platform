@@ -18,10 +18,10 @@ import { ChevronLeft, ChevronRight, Loader2, LockOpen, RefreshCw, Trash2 } from 
 
 import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
-import { chamarApi } from "@/lib/apiAdmin";
-import { dataHoraCurta } from "@/components/admin/visitantes/tipos";
+import { chamarApi } from "@/services/apiAdmin";
+import { dataHoraCurta } from "@/types/visitantes";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { localDe, mensagemErro } from "./tipos";
+import { localDe, mensagemErro } from "@/types/acessos";
 
 interface Tentativa {
   id: number;

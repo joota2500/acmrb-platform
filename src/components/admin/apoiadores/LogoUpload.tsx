@@ -6,7 +6,7 @@
 
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
-import { enviarLogo } from "@/lib/apoiadoresAdmin";
+import { enviarLogo } from "@/services/apoiadoresAdmin";
 
 interface Props {
   valor: string | null | undefined;

@@ -7,7 +7,7 @@
 
 import { Check, X } from "lucide-react";
 import "@/styles/coleta-timeline.css";
-import { dataBR, dataHoraBR, type Solicitacao } from "@/lib/coletas";
+import { dataBR, dataHoraBR, type Solicitacao } from "@/services/coletas";
 
 export default function LinhaTempoColeta({ s }: { s: Solicitacao }) {
   const etapas = [

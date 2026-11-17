@@ -8,7 +8,7 @@
  */
 import type { MetadataRoute } from "next";
 import { clientePublico } from "@/lib/supabasePublico";
-import { normalizarNoticia, visivelAoPublico } from "@/lib/noticias";
+import { normalizarNoticia, visivelAoPublico } from "@/utils/noticias";
 import { siteUrl } from "@/lib/siteUrl";
 
 export const revalidate = 3600;

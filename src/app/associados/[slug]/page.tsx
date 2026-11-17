@@ -24,7 +24,7 @@ import Footer from "@/components/layout/Footer";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
 
-import { buscarAssociadoPublico } from "@/lib/associados";
+import { buscarAssociadoPublico } from "@/services/associados";
 import type { AssociadoPublico } from "@/types/associados";
 
 import "@/styles/associados.css";

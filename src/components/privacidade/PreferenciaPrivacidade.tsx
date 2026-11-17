@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 
-import { lerPrivacidade, salvarPrivacidade, type EscolhaPrivacidade } from "@/lib/privacidade";
+import { lerPrivacidade, salvarPrivacidade, type EscolhaPrivacidade } from "@/utils/privacidade";
 
 export default function PreferenciaPrivacidade() {
   const [escolha, setEscolha] = useState<EscolhaPrivacidade>(null);

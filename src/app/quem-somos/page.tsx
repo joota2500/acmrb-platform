@@ -59,7 +59,7 @@ import EmptyState from "@/components/ui/EmptyState";
 
 import { useQuemSomos } from "@/hooks/useQuemSomos";
 import { useESGMetrics } from "@/hooks/useESGMetrics";
-import { formatarNumero, formatarPeso } from "@/lib/formatadores";
+import { formatarNumero, formatarPeso } from "@/utils/formatadores";
 
 import "@/styles/quem-somos.css";
 

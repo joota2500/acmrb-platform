@@ -7,7 +7,7 @@
  */
 
 import { createContext, useContext } from "react";
-import type { PapelAdmin } from "@/lib/permissions";
+import type { PapelAdmin } from "@/constants/permissoes";
 
 const PapelContext = createContext<PapelAdmin>("admin");
 

@@ -13,9 +13,9 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { cartaoPopup, linkRotaGoogle } from "@/lib/mapaPopup";
-import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria } from "@/lib/apoiadores";
-import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/lib/mapaCamadas";
+import { cartaoPopup, linkRotaGoogle } from "@/utils/mapaPopup";
+import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria } from "@/services/apoiadores";
+import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/utils/mapaCamadas";
 
 export interface PontoVisao {
   id: string;

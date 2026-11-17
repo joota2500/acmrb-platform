@@ -15,7 +15,7 @@ import "@/styles/admin-calendario.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { DIAS_CURTOS, DIAS_SEMANA, MATERIAIS_COLETA, janelaHorario, listarCalendario, type CalendarioBairro } from "@/lib/coletas";
+import { DIAS_CURTOS, DIAS_SEMANA, MATERIAIS_COLETA, janelaHorario, listarCalendario, type CalendarioBairro } from "@/services/coletas";
 
 type Form = {
   id?: string;

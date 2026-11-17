@@ -6,8 +6,8 @@
  */
 
 import { NextResponse } from "next/server";
-import { consultarCnpj, excedeuLimite } from "@/lib/geocodificacao";
-import { cnpjValido } from "@/lib/apoiadores";
+import { consultarCnpj, excedeuLimite } from "@/utils/geocodificacao";
+import { cnpjValido } from "@/services/apoiadores";
 import { limitarRota } from "@/lib/segurancaServidor";
 
 export const runtime = "nodejs";

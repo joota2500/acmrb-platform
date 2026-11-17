@@ -19,14 +19,14 @@ import { Activity, Clock, Copy, KeyRound, Loader2, LogIn, LogOut, Mail, MousePoi
 import "@/styles/admin-visitante-detalhe.css";
 import "@/styles/admin-aparelhos.css";
 import { supabase } from "@/lib/supabase";
-import { chamarApi } from "@/lib/apiAdmin";
-import { mascaraTelefone } from "@/lib/validacao";
+import { chamarApi } from "@/services/apiAdmin";
+import { mascaraTelefone } from "@/utils/validacao";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
 import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
-import { aparelhoDe, idCurto, localDe } from "@/components/admin/acessos/tipos";
-import { dataHoraCurta, duracao, type Visitante } from "./tipos";
+import { aparelhoDe, idCurto, localDe } from "@/types/acessos";
+import { dataHoraCurta, duracao, type Visitante } from "@/types/visitantes";
 
 interface Sessao {
   id: string;

@@ -21,8 +21,8 @@ import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { EVENTO_PRIVACIDADE, medicaoPermitida } from "@/lib/privacidade";
-import { idDoAparelho } from "@/lib/dispositivoCliente";
+import { EVENTO_PRIVACIDADE, medicaoPermitida } from "@/utils/privacidade";
+import { idDoAparelho } from "@/utils/dispositivoCliente";
 
 const CHAVE_SESSAO = "acmrb_acesso_sessao";
 const BATIMENTO_MS = 30_000;

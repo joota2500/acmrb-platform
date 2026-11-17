@@ -8,9 +8,9 @@
  */
 
 import { MoreHorizontal } from "lucide-react";
-import { ITENS_NAV, type SecaoId } from "./adminNav";
-import { usePapelAdmin } from "./PapelAdmin";
-import { podeVer } from "@/lib/permissions";
+import { ITENS_NAV, type SecaoId } from "@/constants/adminNav";
+import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
+import { podeVer } from "@/constants/permissoes";
 
 type Props = {
   ativa: SecaoId;

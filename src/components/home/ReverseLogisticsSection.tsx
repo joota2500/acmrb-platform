@@ -46,7 +46,7 @@ import {
   Truck,
 } from "lucide-react";
 
-import { smoothScrollTo } from "@/lib/scroll";
+import { smoothScrollTo } from "@/utils/scroll";
 
 import "@/styles/reverse-logistics.css";
 

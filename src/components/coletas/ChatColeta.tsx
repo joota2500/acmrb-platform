@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from "react"
 import { Check, CheckCheck, Loader2, Send } from "lucide-react";
 import "@/styles/chat-coleta.css";
 import { supabase } from "@/lib/supabase";
-import { enviarMensagem, listarMensagens, marcarLidas, type Mensagem } from "@/lib/coletas";
+import { enviarMensagem, listarMensagens, marcarLidas, type Mensagem } from "@/services/coletas";
 
 interface Props {
   solicitacaoId: string;

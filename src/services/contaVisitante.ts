@@ -9,7 +9,7 @@
 
 import { z } from "zod";
 import { supabase } from "@/lib/supabase";
-import { somenteDigitos } from "@/lib/validacao";
+import { somenteDigitos } from "@/utils/validacao";
 
 export const CANAIS_CONTATO = { whatsapp: "WhatsApp", ligacao: "Ligação", email: "E-mail" } as const;
 export type CanalContato = keyof typeof CANAIS_CONTATO;

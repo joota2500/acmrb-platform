@@ -21,7 +21,7 @@ import { Check, Copy, FileText, MessageCircle, Send, Share2, X } from "lucide-re
 import "@/styles/compartilhar-noticia.css";
 import {
   imagemComoArquivo, linksRedes, mensagemCompleta, resumoCurto, urlDaNoticia, type DadosCompartilhar,
-} from "@/lib/compartilharNoticia";
+} from "@/utils/compartilharNoticia";
 
 interface Props extends DadosCompartilhar {
   variante?: "inline" | "botao";

@@ -13,8 +13,8 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { cartaoPopup, linkRotaGoogle } from "@/lib/mapaPopup";
-import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
+import { cartaoPopup, linkRotaGoogle } from "@/utils/mapaPopup";
+import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/utils/mapaCamadas";
 
 interface Props {
   posicao: [number, number];

@@ -33,7 +33,7 @@ import { ArrowRight, Building2, Handshake, HeartHandshake, MapPin, MapPinned, Ro
 import { supabase } from "@/lib/supabase";
 import {
   CATEGORIAS, TIPOS_APOIO, corCategoria, empresaComoPonto, listarApoiadoresPublicos, listarEmpresasLogisticaPublicas, type ApoiadorPublico,
-} from "@/lib/apoiadores";
+} from "@/services/apoiadores";
 import "@/styles/apoiadores-mapa.css";
 
 // Leaflet usa window: carrega só no navegador (não quebra o SSR)

@@ -29,7 +29,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Leaf, Users2, Building2 } from "lucide-react";
 
-import { smoothScrollTo } from "@/lib/scroll";
+import { smoothScrollTo } from "@/utils/scroll";
 
 import "@/styles/about-section.css";
 

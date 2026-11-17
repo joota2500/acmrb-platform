@@ -22,8 +22,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, ClipboardList, LogOut, LogIn, MessageCircle, UserRound, X } from "lucide-react";
 import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
-import { hrefReal, navigation } from "./navItems";
-import { smoothScrollTo } from "@/lib/scroll";
+import { hrefReal, navigation } from "@/constants/navegacao";
+import { smoothScrollTo } from "@/utils/scroll";
 
 import "@/styles/mobile-menu.css";
 

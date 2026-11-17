@@ -18,7 +18,7 @@ import {
   linkInstagram,
   linkMapaBusca,
   linkWhatsApp,
-} from "@/lib/contatoInstitucional";
+} from "@/constants/contato";
 import "@/styles/footer.css";
 
 type Item = { rotulo: string; href: string };

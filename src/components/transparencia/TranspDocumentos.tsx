@@ -7,7 +7,7 @@
 
 import { useMemo, useState } from "react";
 import { ExternalLink, FileText, FolderOpen } from "lucide-react";
-import TranspSecaoTitulo from "./TranspSecaoTitulo";
+import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
 import type { DocumentoPublico } from "@/hooks/useTransparencia";
 import "@/styles/transp-documentos.css";
 

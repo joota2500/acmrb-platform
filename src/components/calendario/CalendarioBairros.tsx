@@ -12,7 +12,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, Clock, Loader2, MapPin, Recycle } from "lucide-react";
 import "@/styles/calendario-bairros.css";
-import { DIAS_CURTOS, DIAS_SEMANA, janelaHorario, listarCalendario, type CalendarioBairro } from "@/lib/coletas";
+import { DIAS_CURTOS, DIAS_SEMANA, janelaHorario, listarCalendario, type CalendarioBairro } from "@/services/coletas";
 
 export default function CalendarioBairros({ compacto = false }: { compacto?: boolean }) {
   const [itens, setItens] = useState<CalendarioBairro[]>([]);

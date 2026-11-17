@@ -8,7 +8,7 @@
  */
 
 import { z } from "zod";
-import { somenteDigitos } from "@/lib/validacao";
+import { somenteDigitos } from "@/utils/validacao";
 
 export const MSG_CONTA_INVALIDA = "E-mail ou senha incorretos.";
 

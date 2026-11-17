@@ -15,9 +15,9 @@ import { Activity, Pause, Play, RefreshCw, Smartphone, UserRound } from "lucide-
 
 import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
-import { duracao } from "@/components/admin/visitantes/tipos";
+import { duracao } from "@/types/visitantes";
 import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
-import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe, type PainelAcessos, type SessaoOnline } from "./tipos";
+import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe, type PainelAcessos, type SessaoOnline } from "@/types/acessos";
 
 export default function AcessosTempoReal() {
   const [online, setOnline] = useState<SessaoOnline[]>([]);

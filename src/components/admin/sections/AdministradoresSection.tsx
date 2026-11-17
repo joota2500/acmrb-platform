@@ -14,7 +14,7 @@ import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
-import { chamarApi } from "@/lib/apiAdmin";
+import { chamarApi } from "@/services/apiAdmin";
 import GerenciarAdmin from "@/components/admin/conta/GerenciarAdmin";
 import AuditoriaLista from "@/components/admin/conta/AuditoriaLista";
 

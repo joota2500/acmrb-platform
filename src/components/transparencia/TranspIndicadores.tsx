@@ -13,9 +13,9 @@ import {
   Cloud, Droplets, Factory, Landmark, MapPin, Recycle, Trees, Truck, Users, Zap,
   type LucideIcon,
 } from "lucide-react";
-import Contador from "./Contador";
-import TranspSecaoTitulo from "./TranspSecaoTitulo";
-import { fmtNum, fmtPeso } from "./formatos";
+import Contador from "@/components/transparencia/Contador";
+import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
+import { fmtNum, fmtPeso } from "@/utils/formatosTransparencia";
 import { num, type Metas } from "@/hooks/useTransparencia";
 import "@/styles/transp-indicadores.css";
 

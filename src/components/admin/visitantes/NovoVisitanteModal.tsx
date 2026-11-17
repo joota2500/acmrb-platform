@@ -12,8 +12,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Loader2, UserPlus, X } from "lucide-react";
 
 import "@/styles/admin-visitante-novo.css";
-import { chamarApi } from "@/lib/apiAdmin";
-import { mascaraTelefone } from "@/lib/validacao";
+import { chamarApi } from "@/services/apiAdmin";
+import { mascaraTelefone } from "@/utils/validacao";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 
 interface Props {

@@ -23,7 +23,7 @@ import {
 import { useESGMetrics } from "@/hooks/useESGMetrics";
 import { supabase } from "@/lib/supabase";
 
-import { CONTATO, linkMapaBusca } from "@/lib/contatoInstitucional";
+import { CONTATO, linkMapaBusca } from "@/constants/contato";
 import "@/styles/institutional-section.css";
 
 type LinkItem = { label: string; href: string };

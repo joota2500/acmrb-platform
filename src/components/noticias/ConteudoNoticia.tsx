@@ -9,7 +9,7 @@
  */
 
 import { Fragment, type ReactNode } from "react";
-import { blocos, type Trecho } from "@/lib/markdownNoticia";
+import { blocos, type Trecho } from "@/utils/markdownNoticia";
 
 import "@/styles/noticia-conteudo.css";
 

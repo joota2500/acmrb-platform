@@ -19,7 +19,7 @@ import PedirLogin from "@/components/coletas/PedirLogin";
 import ChatColeta from "@/components/coletas/ChatColeta";
 import LinhaTempoColeta from "@/components/coletas/LinhaTempoColeta";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { PERIODOS, ROTULO_STATUS, dataBR, dataHoraBR, urlFoto, type Solicitacao } from "@/lib/coletas";
+import { PERIODOS, ROTULO_STATUS, dataBR, dataHoraBR, urlFoto, type Solicitacao } from "@/services/coletas";
 
 export default function MinhasColetas() {
   const { user, perfil, loading } = useAuth();

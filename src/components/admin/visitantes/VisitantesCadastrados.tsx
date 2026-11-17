@@ -22,12 +22,12 @@ import "@/styles/admin-aparelhos.css";
 import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
-import { chamarApi } from "@/lib/apiAdmin";
+import { chamarApi } from "@/services/apiAdmin";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
-import NovoVisitanteModal from "./NovoVisitanteModal";
-import VisitanteDetalhe from "./VisitanteDetalhe";
-import { dataHoraCurta, duracao, type ResumoAtividade, type Visitante } from "./tipos";
+import NovoVisitanteModal from "@/components/admin/visitantes/NovoVisitanteModal";
+import VisitanteDetalhe from "@/components/admin/visitantes/VisitanteDetalhe";
+import { dataHoraCurta, duracao, type ResumoAtividade, type Visitante } from "@/types/visitantes";
 
 const POR_PAGINA = 15;
 type Situacao = "todos" | "ativos" | "inativos";

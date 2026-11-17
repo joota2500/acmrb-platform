@@ -19,12 +19,12 @@ import { Ban, ChevronLeft, ChevronRight, Clock, Loader2, Pencil, RefreshCw, Sear
 import "@/styles/admin-aparelhos.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
-import { dataHoraCurta } from "@/components/admin/visitantes/tipos";
-import { aparelhoDe, idCurto, localDe, mensagemErro } from "@/components/admin/acessos/tipos";
-import AcaoAparelhoModal from "./AcaoAparelhoModal";
-import AparelhoDetalhe from "./AparelhoDetalhe";
-import SeloSituacao from "./SeloSituacao";
-import { curto, type AcaoAparelho, type AparelhoItem } from "./tipos";
+import { dataHoraCurta } from "@/types/visitantes";
+import { aparelhoDe, idCurto, localDe, mensagemErro } from "@/types/acessos";
+import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
+import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
+import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
+import { curto, type AcaoAparelho, type AparelhoItem } from "@/types/aparelhos";
 
 const POR_PAGINA = 15;
 type Filtro = "todos" | "ativos" | "bloqueados" | "suspensos" | "online";

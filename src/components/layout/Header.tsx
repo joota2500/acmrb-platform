@@ -39,14 +39,14 @@ import { motion } from "framer-motion";
 import { useSecretUnlock } from "@/hooks/useSecretUnlock";
 import { useAuth } from "@/contexts/AuthContext";
 
-import { hrefReal, navigation } from "./navItems";
-import NavDropdown from "./NavDropdown";
-import UserMenu from "./UserMenu";
-import MobileMenu from "./MobileMenu";
+import { hrefReal, navigation } from "@/constants/navegacao";
+import NavDropdown from "@/components/layout/NavDropdown";
+import UserMenu from "@/components/layout/UserMenu";
+import MobileMenu from "@/components/layout/MobileMenu";
 import AdminModal from "@/components/admin/AdminModal";
 import "@/styles/header.css";
 
-import { smoothScrollTo } from "@/lib/scroll";
+import { smoothScrollTo } from "@/utils/scroll";
 
 /** ID usado pelo aria-controls do botão hambúrguer. */
 const MOBILE_MENU_ID = "menu-mobile";

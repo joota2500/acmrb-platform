@@ -21,11 +21,11 @@ import { Camera, CheckCircle2, Loader2, LocateFixed, MapPin, Send, Trash2 } from
 import "@/styles/agendar-coleta.css";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { geocodificar } from "@/lib/apoiadoresAdmin";
+import { geocodificar } from "@/services/apoiadoresAdmin";
 import PedirLogin from "@/components/coletas/PedirLogin";
 import {
   MATERIAIS_COLETA, PERIODOS, enviarFoto, esquemaSolicitacao, listarCalendario, validarFoto, type Periodo,
-} from "@/lib/coletas";
+} from "@/services/coletas";
 
 const MapaSeletor = dynamic(() => import("@/components/mapa/MapaSeletor"), {
   ssr: false,

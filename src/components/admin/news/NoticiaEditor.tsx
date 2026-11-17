@@ -24,8 +24,8 @@ import NoticiaCard from "@/components/noticias/NoticiaCard";
 import {
   CATEGORIAS_NOTICIA, LIMITE_RESUMO, LIMITE_SEO_DESCRICAO, LIMITE_SEO_TITULO, ROTULO_STATUS,
   calcularTempoLeitura, formatarData, gerarSlug, type Noticia, type StatusNoticia,
-} from "@/lib/noticias";
-import { enviarImagem, slugEmUso, validarImagem, type DadosNoticia } from "@/lib/noticiasAdmin";
+} from "@/utils/noticias";
+import { enviarImagem, slugEmUso, validarImagem, type DadosNoticia } from "@/services/noticiasAdmin";
 
 import "@/styles/noticia-detalhe.css";
 

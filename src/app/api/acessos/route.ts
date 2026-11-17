@@ -18,8 +18,8 @@
 import { NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { clienteServidor } from "@/lib/supabaseServidor";
-import { analisarUA } from "@/lib/userAgent";
-import { classificarOrigem } from "@/lib/origemAcesso";
+import { analisarUA } from "@/utils/userAgent";
+import { classificarOrigem } from "@/utils/origemAcesso";
 import { geoDaRequisicao, hashDoIp, limitar } from "@/lib/segurancaServidor";
 
 export const runtime = "nodejs";

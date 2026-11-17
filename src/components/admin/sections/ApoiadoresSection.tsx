@@ -25,11 +25,11 @@ import PainelLateral from "@/components/admin/apoiadores/PainelLateral";
 import LogoUpload from "@/components/admin/apoiadores/LogoUpload";
 import {
   CATEGORIAS, TIPOS_APOIO, corCategoria, mascaraCnpj, mascaraCpf, soDigitos, cnpjValido, cpfValido,
-} from "@/lib/apoiadores";
+} from "@/services/apoiadores";
 import {
   apoiadorSchema, buscarCnpj, buscarEndereco, consultaDoCnpj, enderecoDoCnpj, excluirApoiador, geocodificar, listarApoiadores, primeiroErro,
   salvarApoiador, type Apoiador, type ResultadoGeo,
-} from "@/lib/apoiadoresAdmin";
+} from "@/services/apoiadoresAdmin";
 import ResultadosGeo from "@/components/admin/apoiadores/ResultadosGeo";
 import "@/styles/admin-apoiadores.css";
 

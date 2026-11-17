@@ -12,7 +12,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import "@/styles/nav-dropdown.css";
-import { hrefReal, type NavItem } from "./navItems";
+import { hrefReal, type NavItem } from "@/constants/navegacao";
 
 interface Props {
   item: NavItem;

@@ -16,9 +16,9 @@ import { Clock, FileText, Loader2, RefreshCw, Smartphone, UserCheck, Users } fro
 
 import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
-import { duracao } from "@/components/admin/visitantes/tipos";
-import Ranking from "./Ranking";
-import { mensagemErro, type PainelAcessos } from "./tipos";
+import { duracao } from "@/types/visitantes";
+import Ranking from "@/components/admin/acessos/Ranking";
+import { mensagemErro, type PainelAcessos } from "@/types/acessos";
 
 const PERIODOS = [
   { dias: 1, rotulo: "Hoje" },

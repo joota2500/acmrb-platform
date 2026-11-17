@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ESPERA_EMAIL_SEG, urlRedefinir } from "@/lib/apiAdmin";
+import { ESPERA_EMAIL_SEG, urlRedefinir } from "@/services/apiAdmin";
 import { useRouter } from "next/navigation";
 import {
   ShieldCheck,
@@ -13,7 +13,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { podeTentar, registrarResultado } from "@/lib/loginSeguro";
+import { podeTentar, registrarResultado } from "@/services/loginSeguro";
 
 type Props = {
   open: boolean;

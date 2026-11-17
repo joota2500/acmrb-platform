@@ -39,7 +39,7 @@ import {
   listarAssociadosPublicos,
   normalizar,
   ordenarAssociados,
-} from "@/lib/associados";
+} from "@/services/associados";
 import type { AssociadoPublico } from "@/types/associados";
 
 import "@/styles/associados.css";

@@ -10,7 +10,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { excedeuLimite, geocodificar, ROTULO_PRECISAO } from "@/lib/geocodificacao";
+import { excedeuLimite, geocodificar, ROTULO_PRECISAO } from "@/utils/geocodificacao";
 import { limitarRota } from "@/lib/segurancaServidor";
 
 export const runtime = "nodejs";

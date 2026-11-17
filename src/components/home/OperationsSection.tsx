@@ -46,7 +46,7 @@ import {
   Users,
 } from "lucide-react";
 
-import { smoothScrollTo } from "@/lib/scroll";
+import { smoothScrollTo } from "@/utils/scroll";
 
 import "@/styles/operations-section.css";
 

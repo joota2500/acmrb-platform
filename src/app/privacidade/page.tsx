@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import PreferenciaPrivacidade from "@/components/privacidade/PreferenciaPrivacidade";
-import { CONTATO } from "@/lib/contatoInstitucional";
+import { CONTATO } from "@/constants/contato";
 import "@/styles/pagina-privacidade.css";
 
 export const metadata: Metadata = {

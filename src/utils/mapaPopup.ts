@@ -8,7 +8,7 @@
  * globais (h1–h6, overflow-wrap: anywhere, hyphens, justify) não vazem.
  */
 
-import { escaparHtml } from "@/lib/apoiadores";
+import { escaparHtml } from "@/services/apoiadores";
 
 export type AcaoPopup = { tipo: "whatsapp" | "instagram" | "rota" | "site"; href: string };
 

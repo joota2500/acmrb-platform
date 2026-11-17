@@ -14,12 +14,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { Camera, KeyRound, Loader2, Save } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { mascaraTelefone } from "@/lib/validacao";
+import { mascaraTelefone } from "@/utils/validacao";
 import { ToastArea, useToast } from "@/components/ui/Toast";
-import { dataHora } from "./AdministradoresSection";
+import { dataHora } from "@/components/admin/sections/AdministradoresSection";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import SegurancaConta from "@/components/admin/conta/SegurancaConta";
-import { ROTULO_PAPEL, papelDe } from "@/lib/permissions";
+import { ROTULO_PAPEL, papelDe } from "@/constants/permissoes";
 
 interface Conta {
   id: string;

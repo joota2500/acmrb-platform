@@ -8,8 +8,8 @@
 
 import { useMemo, useState } from "react";
 import { BarChart3 } from "lucide-react";
-import TranspSecaoTitulo from "./TranspSecaoTitulo";
-import { MESES, fmtMoeda, fmtPeso } from "./formatos";
+import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
+import { MESES, fmtMoeda, fmtPeso } from "@/utils/formatosTransparencia";
 import type { RegistroMaterial } from "@/hooks/useTransparencia";
 import "@/styles/transp-evolucao.css";
 

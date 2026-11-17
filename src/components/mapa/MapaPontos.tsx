@@ -16,9 +16,9 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { cartaoPopup, linkRotaGoogle, linkWhatsapp } from "@/lib/mapaPopup";
-import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/lib/mapaCamadas";
-import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, linkExterno, linkInstagram, type ApoiadorPublico } from "@/lib/apoiadores";
+import { cartaoPopup, linkRotaGoogle, linkWhatsapp } from "@/utils/mapaPopup";
+import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/utils/mapaCamadas";
+import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, linkExterno, linkInstagram, type ApoiadorPublico } from "@/services/apoiadores";
 
 interface Props {
   pontos: ApoiadorPublico[];

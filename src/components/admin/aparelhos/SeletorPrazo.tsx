@@ -7,7 +7,7 @@
  * CSS: src/styles/admin-aparelhos.css (prefixo "apa-").
  */
 
-import { calcularAte, dataFortaleza, type ModoPrazo, type PrazoEntrada, type UnidadePrazo } from "@/lib/prazo";
+import { calcularAte, dataFortaleza, type ModoPrazo, type PrazoEntrada, type UnidadePrazo } from "@/utils/prazo";
 
 interface Props {
   valor: PrazoEntrada;

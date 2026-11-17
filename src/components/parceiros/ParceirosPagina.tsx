@@ -25,7 +25,7 @@ import {
   CATEGORIAS, STATUS_LOGISTICA, corCategoria, formatarData, formatarKg, formatarReais, linkExterno, linkInstagram, mascaraCnpj,
   listarApoiadoresPublicos, listarEmpresasLogisticaPublicas, listarRepassesPublicos,
   type ApoiadorPublico, type EmpresaLogisticaPublica, type RepassePublico,
-} from "@/lib/apoiadores";
+} from "@/services/apoiadores";
 import "@/styles/parceiros-page.css";
 
 type Estado = "carregando" | "pronto" | "erro";

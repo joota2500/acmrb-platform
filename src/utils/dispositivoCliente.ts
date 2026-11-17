@@ -9,7 +9,7 @@
  */
 
 import { COOKIE_DISPOSITIVO, COOKIE_VALIDADE_SEG, UUID_RE } from "@/lib/dispositivo";
-import { CHAVE_ANON } from "@/lib/privacidade";
+import { CHAVE_ANON } from "@/utils/privacidade";
 
 function lerCookie(): string | null {
   const m = document.cookie.match(new RegExp(`(?:^|;\\s*)${COOKIE_DISPOSITIVO}=([^;]+)`));

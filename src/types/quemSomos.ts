@@ -31,7 +31,7 @@ export interface QuemSomosBloco {
 }
 
 /** Reexportado de src/types/associados.ts (fonte única do tipo). */
-export type { AssociadoPublico } from "./associados";
+export type { AssociadoPublico } from "@/types/associados";
 
 export interface ParceiroPublico {
   id: string;

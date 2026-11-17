@@ -19,8 +19,8 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { QUEM_SOMOS_FALLBACK } from "@/lib/quemSomosFallback";
-import { filtrarDiretoria, listarAssociadosPublicos } from "@/lib/associados";
+import { QUEM_SOMOS_FALLBACK } from "@/constants/quemSomos";
+import { filtrarDiretoria, listarAssociadosPublicos } from "@/services/associados";
 import type { AssociadoPublico } from "@/types/associados";
 import type {
   OrigemConteudo,

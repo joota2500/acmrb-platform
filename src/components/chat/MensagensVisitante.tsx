@@ -15,7 +15,7 @@ import "@/styles/mensagens-visitante.css";
 import { useAuth } from "@/contexts/AuthContext";
 import PedirLogin from "@/components/coletas/PedirLogin";
 import ChatGeral from "@/components/chat/ChatGeral";
-import { minhaConversa } from "@/lib/chatGeral";
+import { minhaConversa } from "@/services/chatGeral";
 
 export default function MensagensVisitante() {
   const { user, perfil, loading } = useAuth();

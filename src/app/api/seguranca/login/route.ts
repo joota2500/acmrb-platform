@@ -20,7 +20,7 @@
 
 import { NextResponse } from "next/server";
 import { clienteServidor } from "@/lib/supabaseServidor";
-import { analisarUA } from "@/lib/userAgent";
+import { analisarUA } from "@/utils/userAgent";
 import { geoDaRequisicao, hashar, hashDoIp, limitar, mascararEmail } from "@/lib/segurancaServidor";
 
 export const runtime = "nodejs";

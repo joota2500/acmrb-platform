@@ -9,7 +9,7 @@
 
 import { z } from "zod";
 import { supabase } from "@/lib/supabase";
-import { CATEGORIAS, TIPOS_APOIO, cnpjValido, cpfValido, soDigitos } from "@/lib/apoiadores";
+import { CATEGORIAS, TIPOS_APOIO, cnpjValido, cpfValido, soDigitos } from "@/services/apoiadores";
 
 // ---------- Tipos das tabelas base ----------
 

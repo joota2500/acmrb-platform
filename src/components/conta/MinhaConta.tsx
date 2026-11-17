@@ -15,10 +15,10 @@ import { CheckCircle2, Loader2, Mail, MessageCircle, Phone, Save } from "lucide-
 import "@/styles/minha-conta.css";
 import { useAuth } from "@/contexts/AuthContext";
 import PedirLogin from "@/components/coletas/PedirLogin";
-import { mascaraTelefone } from "@/lib/validacao";
+import { mascaraTelefone } from "@/utils/validacao";
 import {
   CANAIS_CONTATO, carregarConta, esquemaConta, salvarConta, telefoneValido, type CanalContato, type ContaVisitante,
-} from "@/lib/contaVisitante";
+} from "@/services/contaVisitante";
 
 const ICONE_CANAL = { whatsapp: MessageCircle, ligacao: Phone, email: Mail } as const;
 

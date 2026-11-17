@@ -13,7 +13,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Loader2, LogOut, Mail, MailCheck, ShieldCheck, ShieldOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { chamarApi, ESPERA_EMAIL_SEG, urlRedefinir } from "@/lib/apiAdmin";
+import { chamarApi, ESPERA_EMAIL_SEG, urlRedefinir } from "@/services/apiAdmin";
 
 type Mostrar = (tipo: "sucesso" | "erro" | "aviso", mensagem: string) => void;
 

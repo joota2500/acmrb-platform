@@ -15,10 +15,10 @@ import { useEffect, useState } from "react";
 import { Ban, Clock, Loader2, LogOut, Pencil, ShieldCheck, X } from "lucide-react";
 
 import "@/styles/admin-aparelhos.css";
-import { chamarApi } from "@/lib/apiAdmin";
-import { calcularAte, type PrazoEntrada } from "@/lib/prazo";
-import SeletorPrazo, { paraCampoData } from "./SeletorPrazo";
-import type { AcaoAparelho } from "./tipos";
+import { chamarApi } from "@/services/apiAdmin";
+import { calcularAte, type PrazoEntrada } from "@/utils/prazo";
+import SeletorPrazo, { paraCampoData } from "@/components/admin/aparelhos/SeletorPrazo";
+import type { AcaoAparelho } from "@/types/aparelhos";
 
 interface Props {
   acao: AcaoAparelho;

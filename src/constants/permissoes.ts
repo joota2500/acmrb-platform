@@ -12,7 +12,7 @@
  * migration 20261020220000_noticias_completo.sql (escrita só deus).
  */
 
-import type { SecaoId } from "@/components/admin/layout/adminNav";
+import type { SecaoId } from "@/constants/adminNav";
 
 export type PapelAdmin = "deus" | "admin";
 

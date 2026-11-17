@@ -20,7 +20,7 @@ import {
 import "@/styles/barra-formatacao.css";
 import {
   continuarLista, envolver, inserirDivisor, inserirLink, limparFormato, prefixoDeLinha, type Troca,
-} from "@/lib/editorTexto";
+} from "@/utils/editorTexto";
 
 interface Props {
   valor: string;

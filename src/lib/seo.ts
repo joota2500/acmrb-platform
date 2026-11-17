@@ -7,7 +7,7 @@
  */
 
 import type { Metadata } from "next";
-import { CONTATO, SEDE_COORDENADA, linkInstagram } from "@/lib/contatoInstitucional";
+import { CONTATO, SEDE_COORDENADA, linkInstagram } from "@/constants/contato";
 import { siteUrl } from "@/lib/siteUrl";
 
 /** Nome oficial e nomes pelos quais as pessoas procuram a associação */

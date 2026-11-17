@@ -21,8 +21,8 @@ import {
 
 import "@/styles/admin-visao-geral.css";
 import { usePainelResumo, type Resumo } from "@/hooks/usePainelResumo";
-import { ITENS_NAV } from "@/components/admin/layout/adminNav";
-import { podeVer, type PapelAdmin } from "@/lib/permissions";
+import { ITENS_NAV } from "@/constants/adminNav";
+import { podeVer, type PapelAdmin } from "@/constants/permissoes";
 
 interface Props {
   papel: PapelAdmin;

@@ -37,9 +37,9 @@ import {
   mensagemErroBanco,
   slugUnico,
   verificarDuplicados,
-} from "@/lib/associadosAdmin";
-import { mascaraCPF, mascaraTelefone, somenteDigitos, validarCPF } from "@/lib/validacao";
-import { normalizar } from "@/lib/associados";
+} from "@/services/associadosAdmin";
+import { mascaraCPF, mascaraTelefone, somenteDigitos, validarCPF } from "@/utils/validacao";
+import { normalizar } from "@/services/associados";
 import type { AssociadoAdmin, StatusAssociado } from "@/types/associados";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";

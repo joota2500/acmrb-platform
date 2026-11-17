@@ -10,7 +10,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { normalizarNoticia, ordenarRecentes, visivelAoPublico, type Noticia } from "@/lib/noticias";
+import { normalizarNoticia, ordenarRecentes, visivelAoPublico, type Noticia } from "@/utils/noticias";
 
 export function useNoticiasPublicas(limite = 300) {
   const [noticias, setNoticias] = useState<Noticia[]>([]);

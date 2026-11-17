@@ -19,9 +19,9 @@ import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
 
 import { supabase } from "@/lib/supabase";
-import { esquecerAparelho } from "@/lib/dispositivoCliente";
+import { esquecerAparelho } from "@/utils/dispositivoCliente";
 import { dispositivoDoCookie } from "@/lib/dispositivo";
-import TelaBloqueio, { type TipoBloqueio } from "./TelaBloqueio";
+import TelaBloqueio, { type TipoBloqueio } from "@/components/bloqueio/TelaBloqueio";
 
 const INTERVALO_MS = 10_000;
 

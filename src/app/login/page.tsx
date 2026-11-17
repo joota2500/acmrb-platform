@@ -37,9 +37,9 @@ import {
 
 import "@/styles/login.css";
 import { supabase } from "@/lib/supabase";
-import { podeTentar, registrarResultado } from "@/lib/loginSeguro";
-import { mascaraTelefone, somenteDigitos } from "@/lib/validacao";
-import { ESPERA_EMAIL_SEG, urlRedefinir } from "@/lib/apiAdmin";
+import { podeTentar, registrarResultado } from "@/services/loginSeguro";
+import { mascaraTelefone, somenteDigitos } from "@/utils/validacao";
+import { ESPERA_EMAIL_SEG, urlRedefinir } from "@/services/apiAdmin";
 import {
   MSG_CONTA_INVALIDA,
   errosDoZod,
@@ -47,7 +47,7 @@ import {
   esquemaEntrar,
   esquemaRecuperar,
   type ErrosCampos,
-} from "@/lib/visitanteAuth";
+} from "@/utils/visitanteAuth";
 
 type Modo = "entrar" | "cadastro" | "recuperar";
 type Aviso = { tipo: "erro" | "sucesso"; texto: string } | null;

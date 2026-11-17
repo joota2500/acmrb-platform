@@ -16,9 +16,9 @@ import { ChevronLeft, ChevronRight, Loader2, RefreshCw, Search, Smartphone, X } 
 
 import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
-import { dataHoraCurta, duracao } from "@/components/admin/visitantes/tipos";
+import { dataHoraCurta, duracao } from "@/types/visitantes";
 import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
-import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe } from "./tipos";
+import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe } from "@/types/acessos";
 
 interface Linha {
   id: string;

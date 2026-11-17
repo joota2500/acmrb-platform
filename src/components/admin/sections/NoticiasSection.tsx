@@ -19,17 +19,17 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
-import { podeEditar } from "@/lib/permissions";
+import { podeEditar } from "@/constants/permissoes";
 import { useToast, ToastArea } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import CompartilharNoticia from "@/components/noticias/CompartilharNoticia";
-import { resumoCurto } from "@/lib/compartilharNoticia";
+import { resumoCurto } from "@/utils/compartilharNoticia";
 import NoticiaEditor from "@/components/admin/news/NoticiaEditor";
-import { atualizarCampos, salvarNoticia, type DadosNoticia } from "@/lib/noticiasAdmin";
+import { atualizarCampos, salvarNoticia, type DadosNoticia } from "@/services/noticiasAdmin";
 import {
   CATEGORIAS_NOTICIA, ROTULO_STATUS, formatarData, normalizarNoticia, ordenarRecentes, visivelAoPublico,
   type Noticia, type StatusNoticia,
-} from "@/lib/noticias";
+} from "@/utils/noticias";
 
 import "@/styles/admin-noticias.css";
 

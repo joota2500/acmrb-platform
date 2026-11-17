@@ -22,7 +22,7 @@ import { supabase } from "@/lib/supabase";
 import ConteudoNoticia from "@/components/noticias/ConteudoNoticia";
 import NoticiaCard from "@/components/noticias/NoticiaCard";
 import CompartilharNoticia from "@/components/noticias/CompartilharNoticia";
-import { formatarData, textoPuro, type Noticia } from "@/lib/noticias";
+import { formatarData, textoPuro, type Noticia } from "@/utils/noticias";
 
 import "@/styles/noticia-detalhe.css";
 

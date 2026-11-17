@@ -12,8 +12,8 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { adicionarCamadas, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
-import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/lib/apoiadores";
+import { adicionarCamadas, ZOOM_MAXIMO } from "@/utils/mapaCamadas";
+import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/services/apoiadores";
 import { iconeCategoria } from "@/components/mapa/MapaPontos";
 
 interface Props {

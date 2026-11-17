@@ -9,7 +9,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { contarNaoLidasChat, INTERVALO_CHAT_MS } from "@/lib/chatGeral";
+import { contarNaoLidasChat, INTERVALO_CHAT_MS } from "@/services/chatGeral";
 
 export const EVENTO_CHAT_LIDO = "acmrb-chat-lido";
 

@@ -19,11 +19,11 @@ import "@/styles/admin-aparelhos.css";
 import "@/styles/admin-visitante-detalhe.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
-import { dataHoraCurta, duracao } from "@/components/admin/visitantes/tipos";
-import { aparelhoDe, idCurto, localDe, origemDe } from "@/components/admin/acessos/tipos";
-import AcaoAparelhoModal from "./AcaoAparelhoModal";
-import SeloSituacao from "./SeloSituacao";
-import { tempoRestante, type AcaoAparelho, type AparelhoItem, type BloqueioReg, type ExpulsaoReg } from "./tipos";
+import { dataHoraCurta, duracao } from "@/types/visitantes";
+import { aparelhoDe, idCurto, localDe, origemDe } from "@/types/acessos";
+import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
+import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
+import { tempoRestante, type AcaoAparelho, type AparelhoItem, type BloqueioReg, type ExpulsaoReg } from "@/types/aparelhos";
 
 interface SessaoReg {
   id: string;

@@ -20,13 +20,13 @@ import { ToastArea, useToast } from "@/components/ui/Toast";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import PainelLateral from "@/components/admin/apoiadores/PainelLateral";
 import LogoUpload from "@/components/admin/apoiadores/LogoUpload";
-import { STATUS_LOGISTICA, cnpjValido, formatarData, formatarKg, formatarReais, mascaraCnpj, soDigitos } from "@/lib/apoiadores";
+import { STATUS_LOGISTICA, cnpjValido, formatarData, formatarKg, formatarReais, mascaraCnpj, soDigitos } from "@/services/apoiadores";
 import ResultadosGeo from "@/components/admin/apoiadores/ResultadosGeo";
 import {
   buscarCnpj, buscarEndereco, consultaDoCnpj, enderecoDoCnpj, geocodificar, type ResultadoGeo,
   empresaSchema, excluirEmpresa, excluirRepasse, listarEmpresas, listarRepasses, primeiroErro, repasseSchema, salvarEmpresa, salvarRepasse,
   type EmpresaLogistica, type Repasse,
-} from "@/lib/apoiadoresAdmin";
+} from "@/services/apoiadoresAdmin";
 import "@/styles/admin-apoiadores.css";
 
 const MapaSeletor = dynamic(() => import("@/components/mapa/MapaSeletor"), {

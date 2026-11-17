@@ -4,7 +4,7 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import TranspSecaoTitulo from "./TranspSecaoTitulo";
+import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
 import "@/styles/transp-faq.css";
 
 const PERGUNTAS = [

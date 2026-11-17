@@ -8,9 +8,9 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { BookOpen, Building2, GraduationCap, HandHeart, HeartHandshake, UserCheck, Users, type LucideIcon } from "lucide-react";
-import Contador from "./Contador";
-import TranspSecaoTitulo from "./TranspSecaoTitulo";
-import { fmtNum } from "./formatos";
+import Contador from "@/components/transparencia/Contador";
+import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
+import { fmtNum } from "@/utils/formatosTransparencia";
 import { num } from "@/hooks/useTransparencia";
 import "@/styles/transp-social.css";
 

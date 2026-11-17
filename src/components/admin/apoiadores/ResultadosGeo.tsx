@@ -10,7 +10,7 @@
  */
 
 import { CheckCircle2, MapPin, TriangleAlert } from "lucide-react";
-import type { ResultadoGeo } from "@/lib/apoiadoresAdmin";
+import type { ResultadoGeo } from "@/services/apoiadoresAdmin";
 import "@/styles/admin-geo.css";
 
 interface Props {

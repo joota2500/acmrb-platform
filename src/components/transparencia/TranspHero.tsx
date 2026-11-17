@@ -10,7 +10,7 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronRight, Clock, RefreshCw, ShieldCheck } from "lucide-react";
-import { fmtData } from "./formatos";
+import { fmtData } from "@/utils/formatosTransparencia";
 
 type Props = {
   atualizadoEm: string | null;

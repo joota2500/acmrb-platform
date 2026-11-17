@@ -19,7 +19,7 @@ import { supabase } from "@/lib/supabase";
 import {
   enviarMensagemChat, horaCurta, INTERVALO_CHAT_MS, listarMensagensChat, marcarLidasChat, rotuloDia,
   type LadoChat, type MensagemChat,
-} from "@/lib/chatGeral";
+} from "@/services/chatGeral";
 import { EVENTO_CHAT_LIDO } from "@/hooks/useChatNaoLidas";
 
 interface Props {

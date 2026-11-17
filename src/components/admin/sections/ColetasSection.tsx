@@ -25,7 +25,7 @@ import ChatColeta from "@/components/coletas/ChatColeta";
 import LinhaTempoColeta from "@/components/coletas/LinhaTempoColeta";
 import {
   PERIODOS, ROTULO_STATUS, STATUS_COLETA, dataBR, dataHoraBR, linkRota, urlFoto, type Solicitacao, type StatusColeta,
-} from "@/lib/coletas";
+} from "@/services/coletas";
 
 const MapaColetas = dynamic(() => import("@/components/mapa/MapaColetas"), {
   ssr: false,

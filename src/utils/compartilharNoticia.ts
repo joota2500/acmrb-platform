@@ -6,7 +6,7 @@
  * - links de WhatsApp, Facebook, X (Twitter) e Telegram
  */
 
-import { textoPuro } from "@/lib/noticias";
+import { textoPuro } from "@/utils/noticias";
 
 export interface DadosCompartilhar {
   titulo: string;

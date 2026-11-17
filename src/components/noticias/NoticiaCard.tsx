@@ -10,7 +10,7 @@
 
 import Link from "next/link";
 import { CalendarDays, Clock, Eye, ImageOff } from "lucide-react";
-import { formatarData, textoPuro, type Noticia } from "@/lib/noticias";
+import { formatarData, textoPuro, type Noticia } from "@/utils/noticias";
 
 import "@/styles/noticia-card.css";
 

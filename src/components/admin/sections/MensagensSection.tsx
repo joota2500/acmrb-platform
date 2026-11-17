@@ -19,10 +19,10 @@ import "@/styles/admin-mensagens.css";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import ChatGeral from "@/components/chat/ChatGeral";
-import { INTERVALO_CHAT_MS, listarConversasAdmin, quandoCurto, type ConversaAdmin } from "@/lib/chatGeral";
-import { CANAIS_CONTATO, linkLigar, linkWhats } from "@/lib/contaVisitante";
+import { INTERVALO_CHAT_MS, listarConversasAdmin, quandoCurto, type ConversaAdmin } from "@/services/chatGeral";
+import { CANAIS_CONTATO, linkLigar, linkWhats } from "@/services/contaVisitante";
 import { EVENTO_CHAT_LIDO } from "@/hooks/useChatNaoLidas";
-import { mascaraTelefone } from "@/lib/validacao";
+import { mascaraTelefone } from "@/utils/validacao";
 
 const semAcento = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 

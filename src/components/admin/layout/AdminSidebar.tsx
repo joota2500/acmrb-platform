@@ -16,9 +16,9 @@
 import { useEffect, useRef } from "react";
 import { ChevronsLeft, ChevronsRight, LogOut, X } from "lucide-react";
 
-import { GRUPOS_NAV, type SecaoId } from "./adminNav";
-import { usePapelAdmin } from "./PapelAdmin";
-import { podeVer } from "@/lib/permissions";
+import { GRUPOS_NAV, type SecaoId } from "@/constants/adminNav";
+import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
+import { podeVer } from "@/constants/permissoes";
 import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
 interface Usuario {

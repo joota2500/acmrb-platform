@@ -51,7 +51,7 @@ import {
   linkMapaBusca,
   linkTelefone,
   linkWhatsApp,
-} from "@/lib/contatoInstitucional";
+} from "@/constants/contato";
 
 const MapaSede = dynamic(() => import("@/components/mapa/MapaSede"), {
   ssr: false,

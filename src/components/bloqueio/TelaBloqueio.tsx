@@ -17,8 +17,8 @@ import { useEffect, useState } from "react";
 import { Clock, LogOut, MessageCircle, ShieldAlert } from "lucide-react";
 
 import "@/styles/acesso-bloqueado.css";
-import { CONTATO, linkEmail, linkWhatsApp } from "@/lib/contatoInstitucional";
-import { contagem, dataFortaleza } from "@/lib/prazo";
+import { CONTATO, linkEmail, linkWhatsApp } from "@/constants/contato";
+import { contagem, dataFortaleza } from "@/utils/prazo";
 
 export type TipoBloqueio = "bloqueio" | "suspensao" | "expulsao";
 

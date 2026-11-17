@@ -20,7 +20,7 @@ import { NextResponse } from "next/server";
 import { auditar, autorizar, erro } from "@/lib/supabaseServidor";
 import { hashDoIp } from "@/lib/segurancaServidor";
 import { dispositivoDoCookie, UUID_RE } from "@/lib/dispositivo";
-import { calcularAte, type PrazoEntrada } from "@/lib/prazo";
+import { calcularAte, type PrazoEntrada } from "@/utils/prazo";
 
 export const runtime = "nodejs";
 

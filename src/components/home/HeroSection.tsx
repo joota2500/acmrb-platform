@@ -32,7 +32,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Leaf } from "lucide-react";
 import { useESGMetrics } from "@/hooks/useESGMetrics";
 // Formatação kg/t compartilhada com a página /quem-somos
-import { formatarNumero, formatarPeso } from "@/lib/formatadores";
+import { formatarNumero, formatarPeso } from "@/utils/formatadores";
 
 export default function HeroSection() {
   // Métricas do Supabase (veja o hook para os detalhes de cada tabela)

@@ -10,10 +10,10 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "@/styles/mapa.css";
-import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/lib/mapaCamadas";
-import { cartaoPopup, linkRotaGoogle } from "@/lib/mapaPopup";
-import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/lib/apoiadores";
-import { ROTULO_STATUS, type Solicitacao, type StatusColeta } from "@/lib/coletas";
+import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/utils/mapaCamadas";
+import { cartaoPopup, linkRotaGoogle } from "@/utils/mapaPopup";
+import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/services/apoiadores";
+import { ROTULO_STATUS, type Solicitacao, type StatusColeta } from "@/services/coletas";
 
 export const COR_STATUS: Record<StatusColeta, string> = {
   enviado: "#71717a",

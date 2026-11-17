@@ -24,11 +24,11 @@ import { ToastArea, useToast } from "@/components/ui/Toast";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import ResultadosGeo from "@/components/admin/apoiadores/ResultadosGeo";
 import type { PontoVisao } from "@/components/mapa/MapaVisao";
-import { corCategoria, mascaraCnpj } from "@/lib/apoiadores";
+import { corCategoria, mascaraCnpj } from "@/services/apoiadores";
 import {
   buscarCnpj, consultaDoCnpj, consultaDoEndereco, geocodificar, listarApoiadores, listarEmpresas, salvarLocalizacao,
   type Apoiador, type ConsultaGeo, type EmpresaLogistica, type ResultadoGeo,
-} from "@/lib/apoiadoresAdmin";
+} from "@/services/apoiadoresAdmin";
 import "@/styles/admin-visao-mapa.css";
 
 const MapaVisao = dynamic(() => import("@/components/mapa/MapaVisao"), {

@@ -13,9 +13,9 @@
 import { useMemo } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Download, FileSpreadsheet, Filter, Hash, Scale, Wallet, Tag } from "lucide-react";
-import Contador from "./Contador";
-import TranspSecaoTitulo from "./TranspSecaoTitulo";
-import { fmtMoeda, fmtNum, fmtPeso } from "./formatos";
+import Contador from "@/components/transparencia/Contador";
+import TranspSecaoTitulo from "@/components/transparencia/TranspSecaoTitulo";
+import { fmtMoeda, fmtNum, fmtPeso } from "@/utils/formatosTransparencia";
 import type { RegistroMaterial } from "@/hooks/useTransparencia";
 import "@/styles/transp-operacional.css";
 

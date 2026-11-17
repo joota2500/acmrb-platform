@@ -30,12 +30,12 @@ import { useInatividade, MINUTOS_INATIVIDADE } from "@/hooks/useInatividade";
 import { PapelProvider } from "@/components/admin/layout/PapelAdmin";
 import AdministradoresSection from "@/components/admin/sections/AdministradoresSection";
 import MinhaContaSection from "@/components/admin/sections/MinhaContaSection";
-import { podeVer, ROTULO_PAPEL, type PapelAdmin } from "@/lib/permissions";
+import { podeVer, ROTULO_PAPEL, type PapelAdmin } from "@/constants/permissoes";
 import AdminContainer from "@/components/admin/layout/AdminContainer";
 import AdminContent from "@/components/admin/layout/AdminContent";
 import AdminHeader from "@/components/admin/layout/AdminHeader";
 import AdminBottomNav from "@/components/admin/layout/AdminBottomNav";
-import { itemPorId, secaoValida, type SecaoId } from "@/components/admin/layout/adminNav";
+import { itemPorId, secaoValida, type SecaoId } from "@/constants/adminNav";
 
 /* Seções */
 import VisaoGeral from "@/components/admin/visao-geral/VisaoGeral";

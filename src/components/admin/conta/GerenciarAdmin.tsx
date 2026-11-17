@@ -8,7 +8,7 @@
 
 import { useState } from "react";
 import { KeyRound, Mail, Power } from "lucide-react";
-import { chamarApi } from "@/lib/apiAdmin";
+import { chamarApi } from "@/services/apiAdmin";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 

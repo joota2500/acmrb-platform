@@ -3,7 +3,7 @@
  * Estilos em src/styles/admin-acessos.css (prefixo "aac-").
  */
 
-import type { ItemRanking } from "./tipos";
+import type { ItemRanking } from "@/types/acessos";
 
 interface Props {
   titulo: string;

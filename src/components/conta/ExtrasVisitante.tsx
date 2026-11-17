@@ -17,7 +17,7 @@ import { usePathname } from "next/navigation";
 import { MessageCircle, PhoneCall, X } from "lucide-react";
 import "@/styles/extras-visitante.css";
 import { useAuth } from "@/contexts/AuthContext";
-import { precisaContato } from "@/lib/contaVisitante";
+import { precisaContato } from "@/services/contaVisitante";
 import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
 const CHAVE_ADIADO = "acmrb-aviso-contato-adiado";

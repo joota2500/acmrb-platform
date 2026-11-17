@@ -7,10 +7,10 @@ import {
 
 import { supabase } from "@/lib/supabase";
 
-import MaterialsForm from "./MaterialsForm";
-import MaterialsTable from "./MaterialsTable";
-import MaterialTypeModal from "./MaterialsTypeModal";
-import MaterialEditModal from "./MaterialsEditModal";
+import MaterialsForm from "@/components/admin/materials/MaterialsForm";
+import MaterialsTable from "@/components/admin/materials/MaterialsTable";
+import MaterialTypeModal from "@/components/admin/materials/MaterialsTypeModal";
+import MaterialEditModal from "@/components/admin/materials/MaterialsEditModal";
 
 import {
   Package,

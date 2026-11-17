@@ -13,7 +13,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { comLimite } from "@/lib/associados";
+import { comLimite } from "@/services/associados";
 
 export interface MesSerie { chave: string; rotulo: string; kg: number; valor: number }
 export interface FatiaMaterial { nome: string; cor: string; kg: number }

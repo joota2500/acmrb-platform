@@ -26,7 +26,7 @@ import {
   textoPuro,
   visivelAoPublico,
   type Noticia,
-} from "@/lib/noticias";
+} from "@/utils/noticias";
 
 export const dynamic = "force-dynamic";
 

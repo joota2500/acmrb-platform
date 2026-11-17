@@ -19,7 +19,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { AlertTriangle, ChevronRight, Newspaper, RefreshCw, Search, SlidersHorizontal, TrendingUp, X } from "lucide-react";
 import NoticiaCard from "@/components/noticias/NoticiaCard";
 import { useNoticiasPublicas } from "@/hooks/useNoticiasPublicas";
-import { selecionarHome, textoPuro, type Noticia } from "@/lib/noticias";
+import { selecionarHome, textoPuro, type Noticia } from "@/utils/noticias";
 
 import "@/styles/noticias-page.css";
 

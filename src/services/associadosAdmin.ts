@@ -15,8 +15,8 @@
  */
 
 import { supabase } from "@/lib/supabase";
-import { comLimite } from "@/lib/associados";
-import { gerarSlug, somenteDigitos } from "@/lib/validacao";
+import { comLimite } from "@/services/associados";
+import { gerarSlug, somenteDigitos } from "@/utils/validacao";
 import type { AssociadoAdmin } from "@/types/associados";
 
 /** Escapa % e _ (curingas do ILIKE) para comparar o texto exato. */

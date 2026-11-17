@@ -17,7 +17,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { AlertTriangle, ArrowRight, Newspaper, RefreshCw } from "lucide-react";
 import NoticiaCard from "@/components/noticias/NoticiaCard";
 import { useNoticiasPublicas } from "@/hooks/useNoticiasPublicas";
-import { selecionarHome } from "@/lib/noticias";
+import { selecionarHome } from "@/utils/noticias";
 
 import "@/styles/news-section.css";
 
