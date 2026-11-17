@@ -20,20 +20,17 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
 // ---------- Seções da página inicial ----------
-import HeroSection from "@/components/home/HeroSection"; // Banner principal com título, botões e números
-// StatsSection e ESGMetrics não são mais usados na home (substituídos por TransparencySummarySection)
-import TransparencySummarySection from "@/components/home/TransparencySummarySection"; // Resumo de transparência + indicadores
+import HeroSection from "@/components/home/HeroSection"; // Banner principal + faixa de números de impacto
+import TransparencySummarySection from "@/components/home/TransparencySummarySection"; // Indicadores de transparência (seção verde escura)
 import AboutSection from "@/components/home/AboutSection"; // Quem somos (âncora #quem-somos)
 import OperationsSection from "@/components/home/OperationsSection"; // Como a associação opera
 import ColetaCalendarioSection from "@/components/home/ColetaCalendarioSection"; // Calendário por bairro + "Agende sua coleta"
 import ReverseLogisticsSection from "@/components/home/ReverseLogisticsSection"; // Logística reversa
 import NewsSection from "@/components/home/NewsSection"; // Últimas notícias (dados do Supabase)
 import DenunciasSection from "@/components/home/DenunciasSection"; // Denúncia ambiental (direciona à AMAB)
-// PartnersSection (cards genéricos) foi substituída pelo mapa de apoiadores
 import ApoiadoresMapaSection from "@/components/home/ApoiadoresMapaSection"; // Parceiros e apoiadores (mapa)
 import ContactSection from "@/components/home/ContactSection"; // Formulário de contato
 import InstitutionalSection from "@/components/home/InstitutionalSection"; // Informações institucionais
-// MaterialsPublicSection ("Transparência Operacional") saiu da home: o conteúdo agora fica em /transparencia
 
 // ---------- Utilitários ----------
 import { Suspense } from "react";
