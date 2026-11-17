@@ -66,6 +66,40 @@ Linguagem simples, passo a passo. Tudo aqui foi feito na branch `acmrb-terceira-
 
 ---
 
+## 1.1 Como entrar no painel (logins separados)
+
+O atalho antigo (5 cliques na logo) **foi removido**. Agora cada tipo de conta tem a sua tela, e **nenhuma página do site
+tem link para as telas de administrador**:
+
+| Quem | Endereço | Quem consegue entrar |
+|---|---|---|
+| Visitante | `/login` | só visitantes (contas de administrador são recusadas com a mesma mensagem de "conta inexistente") |
+| Administrador | `/admin/login` | admin **ou** deus |
+| ADM DEUS | `/acesso-deus` | **só** `admins.role = 'deus'` |
+
+Quem abrir `/admin` sem estar logado vai para `/admin/login`.
+
+**Como o login do painel funciona (as duas telas):**
+1. Antes de tentar, consulta o limite de tentativas (`/api/seguranca/login`: 5 erros por e-mail na mesma rede = 15 min de bloqueio).
+2. Entra com e-mail e senha no Supabase Auth.
+3. O **servidor** confere a conta em `/api/admin/verificar` (mesma função `autorizar` das rotas `/api/admin`: admin ativo; no
+   login do deus, `role = 'deus'`). Se não passar, a sessão é encerrada na hora e aparece a mesma mensagem de senha errada
+   ("E-mail ou senha inválidos."), sem revelar se a conta existe.
+4. Acertos e erros entram no log de tentativas (aba Segurança do painel).
+5. Se a conta tem verificação em duas etapas (app autenticador), a tela `MfaPortao` pede o código de 6 dígitos antes de abrir o
+   `/admin`. (Quem ainda não ativou o app em "Minha conta" passa direto: a regra é a mesma de antes.)
+6. Avisos de erro com SweetAlert2. "Esqueci minha senha" manda o link de redefinição com mensagem neutra.
+
+**Trocar o endereço do ADM DEUS:** mude **só** `SLUG_ACESSO_DEUS` em `src/constants/rotasAcesso.ts` (ex.: `"entrada-x7k2"`).
+O `src/middleware.ts` leva esse endereço para a página interna `/acesso-interno-deus`, e quem digitar `/acesso-interno-deus` direto recebe 404.
+Depois de trocar, avise quem usa o endereço antigo (ele passa a dar 404).
+
+**Fora do Google:** as duas telas têm `noindex, nofollow` (meta e cabeçalho), ficam fora do `sitemap.xml` e não entram nas estatísticas de acesso.
+`/admin/login` já está coberto pelo `Disallow: /admin` do `robots.txt`. O endereço do ADM DEUS **não** foi colocado no `robots.txt`
+de propósito: uma linha "Disallow" mostraria o endereço secreto para qualquer pessoa que abrisse o arquivo.
+
+---
+
 ## 2. Variáveis de ambiente
 
 | Variável | Onde | Para quê | Obrigatória? |

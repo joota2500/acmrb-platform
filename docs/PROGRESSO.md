@@ -51,6 +51,9 @@ Responsável: João Victor Rocha Costa
 
 ### Back (banco e segurança)
 - [ ] **Logins separados** — usuário, admin e super admin
+  - [x] Atalho dos 5 cliques na logo removido (AdminModal apagado)
+  - [x] Login do admin em `/admin/login` e do ADM DEUS em `/acesso-deus` (endereço trocável em `src/constants/rotasAcesso.ts`), conferidos no servidor, com limite de tentativas e verificação em 2 etapas
+  - [ ] Falta: separar também as contas no banco (políticas por papel) e exigir o app autenticador para o deus
 - [ ] **Segurança do CPF e dos documentos** — criptografia, área privada e LGPD
 - [ ] **API v1 + Swagger** — `/api/v1` documentada em `/api-docs`
 - [ ] **Testes** com Jest + Supertest

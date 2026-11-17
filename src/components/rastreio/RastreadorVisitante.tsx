@@ -15,6 +15,7 @@
  * Banco: migration 20261020270000_visitantes_atividade.sql.
  */
 
+import { ROTA_LOGIN_DEUS } from "@/constants/rotasAcesso";
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -26,7 +27,7 @@ const LOTE_MS = 10_000;
 const LOTE_MAX = 20;
 const INTERVALO_CLIQUE_MS = 400;
 // Páginas que não são registradas
-const IGNORAR = [/^\/admin/, /^\/redefinir-senha/];
+const IGNORAR = [/^\/admin/, /^\/redefinir-senha/, new RegExp(`^${ROTA_LOGIN_DEUS}`)];
 
 type Evento = {
   sessao_id: string;

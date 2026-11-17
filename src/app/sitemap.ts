@@ -13,7 +13,7 @@ import { siteUrl } from "@/lib/siteUrl";
 
 export const revalidate = 3600;
 
-/** Páginas fixas públicas (as privadas — admin, login, conta — ficam de fora) */
+/** Páginas fixas públicas (as privadas — admin, /admin/login, login do deus, login, conta — ficam de fora) */
 const PAGINAS: { caminho: string; prioridade: number; frequencia: MetadataRoute.Sitemap[number]["changeFrequency"] }[] = [
   { caminho: "/", prioridade: 1, frequencia: "weekly" },
   { caminho: "/quem-somos", prioridade: 0.9, frequencia: "monthly" },
