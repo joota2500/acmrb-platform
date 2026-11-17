@@ -14,6 +14,8 @@
  *  - useAuth() (AuthContext) → user, perfil, logout, loading (Supabase Auth).
  *  - navegacao.ts → lista de links do menu.
  *
+ * Visual: Tailwind (verde esmeralda do cabeçalho).
+ *
  * Responsividade:
  *  - Celular (<640px): altura ~64px, logo menor, subtítulo escondido,
  *    só logo + botão hambúrguer.
@@ -44,7 +46,8 @@ import NavDropdown from "@/components/layout/NavDropdown";
 import UserMenu from "@/components/layout/UserMenu";
 import MobileMenu from "@/components/layout/MobileMenu";
 import AdminModal from "@/components/auth/AdminModal";
-import "@/styles/header.css";
+import { cn } from "@/utils/cn";
+import { LINK_NAV } from "@/components/layout/classesMenu";
 
 import { smoothScrollTo } from "@/utils/scroll";
 
@@ -129,30 +132,51 @@ export default function Header() {
       <motion.header
         initial={{ y: -120 }}
         animate={{ y: 0 }}
-        className={`header ${scrolled ? "scrolled" : ""}`}
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 border-b border-emerald-500/25 shadow-[0_4px_30px_rgb(6_78_59/0.25)] backdrop-blur-xl",
+          "transition-[background-color,box-shadow] duration-300",
+          scrolled ? "bg-emerald-900/98" : "bg-emerald-900/95",
+        )}
       >
-        {/* Container central: altura controlada no header.css (.header__inner) */}
-        <div className="header__inner">
+        {/* Container central: logo | menu | ações. A altura só muda no desktop ao rolar. */}
+        <div
+          className={cn(
+            "mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 transition-[height] duration-300 sm:h-18 sm:px-6 lg:h-20 lg:px-8",
+            scrolled && "lg:h-17",
+          )}
+        >
           {/* ===== Logo (clique = topo/home + contador secreto) ===== */}
           <button
             type="button"
             onClick={handleLogoClick}
-            className="logo header__logo"
+            className={cn(
+              "flex min-h-11 shrink-0 cursor-pointer items-center gap-2.5 rounded-xl p-0 transition-transform duration-300 hover:scale-[1.03] sm:gap-3.5",
+              "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-emerald-200",
+            )}
             aria-label="ACMRB - voltar ao início"
           >
-            <span className="logoIcon" aria-hidden="true">
+            <span
+              className="flex size-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-emerald-500 to-emerald-700 text-[1.6rem] leading-none text-white shadow-[0_8px_20px_rgb(16_185_129/0.4),inset_0_2px_4px_rgb(255_255_255/0.25)] sm:size-11.5 sm:text-[1.9rem] xl:size-13 xl:text-[2.25rem]"
+              aria-hidden="true"
+            >
               ♻
             </span>
-            <span className="header__brand">
-              <span className="header__brand-title">ACMRB</span>
-              <span className="header__brand-subtitle">
+            <span className="flex flex-col text-left leading-none">
+              <span className="text-2xl font-black tracking-[-1.5px] text-white sm:text-[1.75rem] sm:tracking-[-2px] xl:text-3xl xl:tracking-[-2.5px]">
+                ACMRB
+              </span>
+              {/* Subtítulo escondido no celular para não apertar o hambúrguer */}
+              <span className="mt-[0.2rem] hidden whitespace-nowrap text-[0.8rem] font-medium tracking-[0.02em] text-emerald-200 sm:block xl:text-sm">
                 Associação dos Catadores
               </span>
             </span>
           </button>
 
           {/* ===== Menu horizontal (somente desktop >=1024px) ===== */}
-          <nav className="desktopNav" aria-label="Menu principal">
+          <nav
+            className="hidden items-center gap-5 text-[15px] font-medium lg:flex xl:gap-9 xl:text-[15.5px]"
+            aria-label="Menu principal"
+          >
             {navigation.map((link) =>
               link.children?.length ? (
                 // Item com submenu (Coleta, Contato)
@@ -164,7 +188,7 @@ export default function Header() {
                   onClick={(e) => {
                     if (navigateTo(link.href)) e.preventDefault();
                   }}
-                  className="navLink"
+                  className={LINK_NAV}
                 >
                   {link.name}
                 </Link>

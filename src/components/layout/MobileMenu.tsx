@@ -13,7 +13,7 @@
  * Navegação: a lógica de âncoras/topo fica no Header (onNavigate), para
  * desktop e mobile se comportarem igual.
  * Acessibilidade: role="dialog" + aria-modal, foco vai para o botão
- * fechar ao abrir, alvos de toque >=48px e foco visível (mobile-menu.css).
+ * fechar ao abrir, alvos de toque >=48px e foco visível.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -25,7 +25,20 @@ import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 import { hrefReal, navigation } from "@/constants/navegacao";
 import { smoothScrollTo } from "@/utils/scroll";
 
-import "@/styles/mobile-menu.css";
+import { cn } from "@/utils/cn";
+import { FOCO_MENU, SELO_NAO_LIDAS } from "@/components/layout/classesMenu";
+
+// Link grande do menu (celular)
+const LINK_MOBILE = cn(
+  "flex min-h-12 items-center rounded-[14px] px-[1.1rem] py-[0.7rem] text-base font-medium text-emerald-50 no-underline",
+  "transition duration-300 hover:translate-x-2 hover:bg-emerald-500/20 hover:text-emerald-200 motion-reduce:hover:translate-x-0",
+  FOCO_MENU,
+);
+// Botões largos da área do usuário (Minha conta, Painel, Sair, Acessar)
+const BOTAO_MOBILE = cn(
+  "mt-2 w-full cursor-pointer rounded-[14px] border-0 p-4 text-center font-semibold no-underline transition duration-300",
+  FOCO_MENU,
+);
 
 interface MobileMenuProps {
   /** id usado pelo aria-controls do botão hambúrguer */
@@ -102,7 +115,7 @@ export default function MobileMenu({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="mobileOverlay"
+            className="fixed inset-0 z-55 bg-black/70 backdrop-blur-[6px]"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -117,23 +130,23 @@ export default function MobileMenu({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="mobileMenu"
+            className="fixed left-0 top-0 z-60 h-dvh w-full max-w-95 overflow-y-auto overscroll-contain bg-emerald-900 shadow-[8px_0_40px_rgb(0_0_0/0.4)]"
           >
             {/* Topo da gaveta: nome + botão fechar */}
-            <div className="mobileMenu__header">
-              <span className="mobileMenu__title">ACMRB</span>
+            <div className="flex items-center justify-between border-b border-emerald-500/25 px-6 py-5">
+              <span className="text-[1.4rem] font-black tracking-[-1px] text-white">ACMRB</span>
               <button
                 ref={closeBtnRef}
                 type="button"
                 onClick={onClose}
-                className="mobileMenu__close"
+                className={cn("flex size-12.5 cursor-pointer items-center justify-center rounded-xl text-emerald-200 transition-colors duration-300 hover:bg-white/10 hover:text-white", FOCO_MENU)}
                 aria-label="Fechar menu"
               >
                 <X size={26} />
               </button>
             </div>
 
-            <nav className="mobileMenu__content" aria-label="Menu principal">
+            <nav className="flex flex-col gap-1 p-6" aria-label="Menu principal">
               {/* Links (entrada escalonada) */}
               {navigation.map((link, i) => (
                 <motion.div
@@ -144,24 +157,24 @@ export default function MobileMenu({
                 >
                   {link.children?.length ? (
                     /* Submenu: toque no item para expandir (Coleta, Contato) */
-                    <div className={`mobileSub${subAberto === link.id ? " mobileSub--aberto" : ""}`}>
+                    <div>
                       <button
                         type="button"
-                        className="mobileNavLink mobileSub__botao"
+                        className={cn(LINK_MOBILE, "w-full cursor-pointer justify-between border-0 bg-transparent text-left font-[inherit]")}
                         aria-expanded={subAberto === link.id}
                         aria-controls={`mobile-sub-${link.id}`}
                         onClick={() => setSubAberto((v) => (v === link.id ? null : link.id))}
                       >
                         {link.name}
-                        <ChevronDown size={18} className="mobileSub__seta" aria-hidden="true" />
+                        <ChevronDown size={18} className={cn("opacity-80 transition-transform duration-200 motion-reduce:transition-none", subAberto === link.id && "rotate-180")} aria-hidden="true" />
                       </button>
-                      <div id={`mobile-sub-${link.id}`} className="mobileSub__lista" hidden={subAberto !== link.id}>
+                      <div id={`mobile-sub-${link.id}`} className="mb-1.5 ml-[1.1rem] mt-[0.1rem] flex flex-col gap-0.5 border-l-2 border-emerald-200/25 pl-3" hidden={subAberto !== link.id}>
                         {link.children.map((f) => (
                           <Link
                             key={f.id}
                             href={hrefReal(f.href)}
                             onClick={(e) => handleNavClick(e, f.href)}
-                            className="mobileSub__link"
+                            className="flex min-h-11 items-center rounded-xl px-[0.9rem] py-2 text-[0.95rem] text-emerald-100 no-underline transition-colors duration-300 hover:bg-emerald-500/20 hover:text-emerald-200 focus-visible:bg-emerald-500/20 focus-visible:text-emerald-200 focus-visible:outline-none"
                           >
                             {f.name}
                           </Link>
@@ -172,7 +185,7 @@ export default function MobileMenu({
                     <Link
                       href={hrefReal(link.href)}
                       onClick={(e) => handleNavClick(e, link.href)}
-                      className="mobileNavLink"
+                      className={LINK_MOBILE}
                     >
                       {link.name}
                     </Link>
@@ -182,11 +195,11 @@ export default function MobileMenu({
 
               {/* ===== Login / Perfil ===== */}
               {user && perfil ? (
-                <div className="mobileMenu__user-section">
-                  <div className="mobileMenu__user-info">
-                    <div className="mobileMenu__avatar">
+                <div className="mt-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/15 p-7">
+                  <div className="mb-5 flex items-center gap-4">
+                    <div className="flex size-15.5 items-center justify-center overflow-hidden rounded-[14px] bg-emerald-500 text-[1.4rem] font-bold text-white">
                       {perfil.avatar_url ? (
-                        <img src={perfil.avatar_url} alt={perfil.nome} />
+                        <img src={perfil.avatar_url} alt={perfil.nome} className="size-full rounded-[14px] object-cover" />
                       ) : (
                         <span>
                           {(perfil.nome ?? "U").charAt(0).toUpperCase()}
@@ -201,14 +214,14 @@ export default function MobileMenu({
 
                   {perfil.tipo === "visitante" && (
                     <>
-                      <Link href="/minha-conta" className="mobileMenu__admin-btn" onClick={onClose}>
+                      <Link href="/minha-conta" className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")} onClick={onClose}>
                         <UserRound size={18} aria-hidden="true" /> Minha conta
                       </Link>
-                      <Link href="/mensagens" className="mobileMenu__admin-btn" onClick={onClose}>
+                      <Link href="/mensagens" className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")} onClick={onClose}>
                         <MessageCircle size={18} aria-hidden="true" /> Mensagens
-                        {naoLidas > 0 && <span className="mobileMenu__selo" aria-label={`${naoLidas} não lidas`}>{naoLidas > 9 ? "9+" : naoLidas}</span>}
+                        {naoLidas > 0 && <span className={cn(SELO_NAO_LIDAS, "ml-auto h-[1.35rem] min-w-[1.35rem] px-1.5 text-[0.72rem]")} aria-label={`${naoLidas} não lidas`}>{naoLidas > 9 ? "9+" : naoLidas}</span>}
                       </Link>
-                      <Link href="/minhas-coletas" className="mobileMenu__admin-btn" onClick={onClose}>
+                      <Link href="/minhas-coletas" className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")} onClick={onClose}>
                         <ClipboardList size={18} aria-hidden="true" /> Minhas coletas
                       </Link>
                     </>
@@ -217,7 +230,7 @@ export default function MobileMenu({
                   {perfil.tipo === "admin" && (
                     <Link
                       href="/admin"
-                      className="mobileMenu__admin-btn"
+                      className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")}
                       onClick={onClose}
                     >
                       Painel Admin
@@ -230,7 +243,7 @@ export default function MobileMenu({
                       logout?.();
                       onClose();
                     }}
-                    className="mobileMenu__logout-btn"
+                    className={cn(BOTAO_MOBILE, "flex items-center justify-center gap-2.5 bg-red-500/20 text-red-300 hover:bg-red-500/35")}
                   >
                     <LogOut size={20} />
                     Sair
@@ -240,7 +253,7 @@ export default function MobileMenu({
                 /* Mesmo destino do botão do desktop: /login */
                 <Link
                   href="/login"
-                  className="mobileMenu__login-btn"
+                  className={cn(BOTAO_MOBILE, "mt-8 flex items-center justify-center gap-2.5 bg-emerald-500 text-[1.15rem] text-white hover:bg-emerald-600")}
                   onClick={onClose}
                 >
                   <LogIn size={20} aria-hidden="true" />

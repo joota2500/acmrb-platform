@@ -1,6 +1,4 @@
 import "@/app/globals.css";
-import "@/styles/mobile-menu.css";
-import "@/styles/user-menu.css";
 
 import { AuthProvider } from "@/contexts/AuthContext";
 import RastreadorVisitante from "@/components/rastreio/RastreadorVisitante";
