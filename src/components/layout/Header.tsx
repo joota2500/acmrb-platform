@@ -7,8 +7,6 @@
  *  - Mostra a logo, o menu de navegação e o botão "Acessar Plataforma"
  *    (ou os dados do usuário logado, via UserMenu).
  *  - Abre o MobileMenu (gaveta lateral) em telas menores.
- *  - Mantém o recurso secreto: 5 cliques rápidos na logo abrem o
- *    AdminModal (hook useSecretUnlock).
  *
  * De onde vêm os dados:
  *  - useAuth() (AuthContext) → user, perfil, logout, loading (Supabase Auth).
@@ -25,8 +23,8 @@
  *    Entre 1024 e 1279px o espaçamento do menu é reduzido para caber.
  *
  * Mudanças desta versão (feat(header)):
- *  - Clique na logo agora também leva ao topo / página inicial,
- *    sem atrapalhar a contagem dos 5 cliques secretos.
+ *  - Clique na logo leva ao topo / página inicial (sem atalhos escondidos:
+ *    administradores entram por /admin/login e pelo login do ADM DEUS).
  *  - Links "#âncora" funcionam também fora da página inicial
  *    (redirecionam para "/#secao").
  *  - "Início" rola suavemente ao topo quando já estamos em "/".
@@ -39,14 +37,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Recycle } from "lucide-react";
 
-import { useSecretUnlock } from "@/hooks/useSecretUnlock";
 import { useAuth } from "@/contexts/AuthContext";
 
 import { CTA_MENU, hrefReal, itemAtivo, navigation } from "@/constants/navegacao";
 import NavDropdown from "@/components/layout/NavDropdown";
 import UserMenu from "@/components/layout/UserMenu";
 import MobileMenu from "@/components/layout/MobileMenu";
-import AdminModal from "@/components/auth/AdminModal";
 import { cn } from "@/utils/cn";
 import { BOTAO_CTA, LINK_NAV, LINK_NAV_ATIVO } from "@/components/layout/classesMenu";
 
@@ -68,8 +64,6 @@ export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Recurso secreto: conta cliques na logo e abre o AdminModal no 5º clique
-  const { unlocked, handleSecretClick, closeAdmin } = useSecretUnlock();
   // Dados de autenticação vindos do Supabase (AuthContext)
   const { user, perfil, logout, loading } = useAuth();
 
@@ -110,17 +104,8 @@ export default function Header() {
     return false; // deixa o <Link> navegar normalmente
   };
 
-  /**
-   * Clique na logo:
-   *  1. Conta o clique secreto (5 cliques → AdminModal). Chamado primeiro
-   *     e sempre, então o contador continua funcionando.
-   *  2. Comportamento normal: topo da página (na home) ou ir para "/".
-   * Observação: fora da home, o 1º clique navega para "/" e o Header é
-   * montado de novo, então o contador recomeça lá — o atalho secreto
-   * deve ser feito na página inicial.
-   */
+  /** Clique na logo: topo da página (na home) ou ir para "/" */
   const handleLogoClick = () => {
-    handleSecretClick();
     if (pathname === "/") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
@@ -229,9 +214,6 @@ export default function Header() {
         perfil={perfil}
         logout={logout}
       />
-
-      {/* Modal secreto do admin (aberto pelos 5 cliques na logo) */}
-      <AdminModal open={unlocked} onClose={closeAdmin} />
     </>
   );
 }

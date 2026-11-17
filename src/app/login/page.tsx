@@ -6,8 +6,8 @@
  * Três modos no mesmo cartão: Entrar, Criar conta e Esqueci minha senha.
  *  - Entrar: signInWithPassword. Se a conta for de administrador (deus
  *    ou normal), sai na hora e mostra a MESMA mensagem de conta
- *    inexistente — aqui os admins "não existem". Eles entram pelo
- *    acesso restrito (5 cliques na logo → AdminModal).
+ *    inexistente — aqui os admins "não existem". Eles entram pelas telas
+ *    próprias: /admin/login (e o login do ADM DEUS, só do dono).
  *  - Criar conta: nome, telefone (máscara), cidade, nascimento, e-mail,
  *    senha e confirmação (zod). O perfil é criado pelo gatilho do banco
  *    (migration 20261020260000_visitantes_perfil.sql).

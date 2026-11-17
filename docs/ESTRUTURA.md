@@ -11,7 +11,7 @@ src/
 │   ├── layout/     Header, Footer, menus
 │   ├── home/       seções da página inicial
 │   ├── admin/      tudo do painel (sections, layout, acessos, aparelhos, visitantes...)
-│   ├── auth/       login do administrador (AdminModal)
+│   ├── auth/       login do administrador (LoginAdmin)
 │   └── ...         noticias, transparencia, coletas, mapa, chat, conta etc.
 ├── contexts/       contextos do React (AuthContext)
 ├── hooks/          hooks próprios (useQuemSomos, useTransparencia, useInatividade...)
