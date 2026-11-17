@@ -48,14 +48,20 @@ npm run dev
 Guia passo a passo para o VS Code:
 
 ```text
-INICIAR_NO_VSCODE.md
+docs/INICIAR_NO_VSCODE.md
 ```
 
 Atalho Windows para iniciar:
 
 ```text
-iniciar-projeto.bat
+INICIAR_ACMRB.ps1
 ```
+
+Como rodar no Linux (Ubuntu): `docs/COMO-RODAR.txt`.
+
+## Estrutura de pastas
+
+O resumo de cada pasta do `src` está em `docs/ESTRUTURA.md`.
 
 Se a prévia mostrar `localhost recusou a conexão`, o servidor local não está
 ligado. Rode `npm run dev` e mantenha o terminal aberto.
