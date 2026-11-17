@@ -23,7 +23,7 @@
  * (só no rodapé). Quando a página ficar pronta, é só incluir em "A Associação".
  */
 
-import { CalendarDays, Handshake, MapPin, Megaphone, Recycle, Users, Building2, type LucideIcon } from "lucide-react";
+import { CalendarDays, Handshake, MapPin, Megaphone, MessageCircle, Recycle, Users, Building2, type LucideIcon } from "lucide-react";
 
 export interface NavItem {
   id: string;
@@ -39,8 +39,9 @@ export const navigation: NavItem[] = [
   { id: "inicio", name: "Início", href: "/", soMobile: true },
   {
     id: "associacao",
-    name: "A Associação",
+    name: "Associação",
     href: "/quem-somos",
+    descricao: "Conheça a ACMRB",
     children: [
       { id: "quem-somos", name: "Quem somos", href: "/quem-somos", icone: Building2, descricao: "Nossa história, missão e diretoria" },
       { id: "associados", name: "Associados", href: "/associados", icone: Users, descricao: "Catadoras e catadores da associação" },
@@ -50,16 +51,17 @@ export const navigation: NavItem[] = [
     id: "coleta",
     name: "Coleta",
     href: "/agendar-coleta",
+    descricao: "Serviços de coleta",
     children: [
       { id: "agendar-coleta", name: "Agendar coleta", href: "/agendar-coleta", icone: Recycle, descricao: "Peça a retirada dos seus recicláveis" },
       { id: "calendario-coleta", name: "Calendário de coleta", href: "/calendario-coleta", icone: CalendarDays, descricao: "Dias de coleta no seu bairro" },
-      { id: "denuncias", name: "Denúncia ambiental", href: "#denuncias", icone: Megaphone, descricao: "Descarte irregular? Avise a associação" },
     ],
   },
   {
     id: "parceiros",
     name: "Parceiros",
     href: "/parceiros",
+    descricao: "Quem caminha com a gente",
     children: [
       { id: "nossos-parceiros", name: "Nossos parceiros", href: "/parceiros", icone: Handshake, descricao: "Logística reversa e apoiadores" },
       // Mapa de apoiadores da home (ApoiadoresMapaSection, id="parceiros").
@@ -68,7 +70,17 @@ export const navigation: NavItem[] = [
   },
   { id: "transparencia", name: "Transparência", href: "/transparencia" },
   { id: "noticias", name: "Notícias", href: "/noticias" },
-  { id: "contato", name: "Contato", href: "#contato" },
+  {
+    id: "contato",
+    name: "Contato",
+    href: "#contato",
+    descricao: "Fale com a associação",
+    children: [
+      // seções da home: "contato" e "denuncias"
+      { id: "fale-conosco", name: "Fale conosco", href: "#contato", icone: MessageCircle, descricao: "Dúvidas, sugestões e mensagens" },
+      { id: "denuncias", name: "Denúncia ambiental", href: "#denuncias", icone: Megaphone, descricao: "Descarte irregular? Avise a associação" },
+    ],
+  },
 ];
 
 /** Botão de destaque do cabeçalho e da gaveta do celular */

@@ -26,7 +26,11 @@ interface Props {
   ativo?: boolean;
 }
 
-export default function NavDropdown({ item, onNavigate, ativo = false }: Props) {
+export default function NavDropdown({
+  item,
+  onNavigate,
+  ativo = false,
+}: Props) {
   const pathname = usePathname();
   const [aberto, setAberto] = useState(false);
   const raizRef = useRef<HTMLDivElement>(null);
@@ -65,7 +69,8 @@ export default function NavDropdown({ item, onNavigate, ativo = false }: Props) 
       onMouseEnter={entrar}
       onMouseLeave={sair}
       onBlur={(e) => {
-        if (!raizRef.current?.contains(e.relatedTarget as Node)) setAberto(false);
+        if (!raizRef.current?.contains(e.relatedTarget as Node))
+          setAberto(false);
       }}
       onKeyDown={(e) => {
         if (e.key === "Escape" && aberto) {
@@ -77,7 +82,11 @@ export default function NavDropdown({ item, onNavigate, ativo = false }: Props) 
       <button
         ref={botaoRef}
         type="button"
-        className={cn(LINK_NAV, ativo && LINK_NAV_ATIVO, "cursor-pointer gap-1 border-0 bg-transparent p-0 font-[inherit]")}
+        className={cn(
+          LINK_NAV,
+          ativo && LINK_NAV_ATIVO,
+          "cursor-pointer gap-1 border-0 bg-transparent p-0 font-[inherit]",
+        )}
         aria-haspopup="true"
         aria-expanded={aberto}
         aria-controls={idMenu}
@@ -91,50 +100,96 @@ export default function NavDropdown({ item, onNavigate, ativo = false }: Props) 
         }}
       >
         {item.name}
-        <ChevronDown size={15} className={cn("opacity-80 transition-transform duration-200 motion-reduce:transition-none", aberto && "rotate-180")} aria-hidden="true" />
+        <ChevronDown
+          size={15}
+          className={cn(
+            "shrink-0 opacity-80 transition-transform duration-200 motion-reduce:transition-none",
+            aberto && "rotate-180",
+          )}
+          aria-hidden="true"
+        />
       </button>
 
-      <ul id={idMenu} className={cn(
-          "absolute left-1/2 top-[calc(100%-4px)] z-60 m-0 w-72 list-none rounded-2xl border border-emerald-200/20 bg-emerald-900 p-2 shadow-[0_16px_34px_rgb(0_0_0/0.28)]",
-          "-translate-x-1/2 transition-[opacity,transform,visibility] duration-200 motion-reduce:transition-none",
-          aberto ? "visible translate-y-0 opacity-100" : "invisible translate-y-1.5 opacity-0",
-        )} role="list">
-        {item.children?.map((f, i) => {
-          const Icone = f.icone;
-          const atual = linkAtivo(f.href, pathname);
-          return (
-            <li key={f.id}>
-              <Link
-                href={hrefReal(f.href)}
-                aria-current={atual ? "page" : undefined}
-                className={cn(
-                  "flex items-start gap-3 rounded-xl px-3 py-2.5 no-underline transition-colors hover:bg-emerald-500/20 focus-visible:bg-emerald-500/20 focus-visible:outline-none",
-                  atual && "bg-emerald-500/15",
-                )}
-                tabIndex={aberto ? 0 : -1}
-                onClick={(e) => {
-                  setAberto(false);
-                  if (onNavigate(f.href)) e.preventDefault();
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === "ArrowDown") { e.preventDefault(); focarItem(i + 1); }
-                  if (e.key === "ArrowUp") { e.preventDefault(); if (i === 0) botaoRef.current?.focus(); else focarItem(i - 1); }
-                }}
-              >
-                {Icone && (
-                  <span className="mt-0.5 grid size-9 flex-none place-items-center rounded-lg bg-emerald-500/20 text-emerald-300" aria-hidden="true">
-                    <Icone size={18} />
-                  </span>
-                )}
-                <span className="flex min-w-0 flex-col">
-                  <span className={cn("text-[0.92rem] font-semibold", atual ? "text-emerald-200" : "text-emerald-50")}>{f.name}</span>
-                  {f.descricao && <span className="mt-0.5 text-xs leading-snug text-emerald-100/70">{f.descricao}</span>}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {/* Painel: fica centralizado sob o título, com uma setinha apontando para ele */}
+      <div
+        className={cn(
+          "absolute left-1/2 top-full z-60 w-80 -translate-x-1/2 pt-3",
+          "transition-[opacity,transform,visibility] duration-200 motion-reduce:transition-none",
+          aberto
+            ? "visible translate-y-0 opacity-100"
+            : "invisible translate-y-1.5 opacity-0",
+        )}
+      >
+        <div className="relative rounded-2xl border border-emerald-200/20 bg-emerald-900 p-2 shadow-[0_18px_40px_rgb(0_0_0/0.32)]">
+          <span
+            className="absolute -top-1.5 left-1/2 size-3 -translate-x-1/2 rotate-45 rounded-tl-[3px] border-l border-t border-emerald-200/20 bg-emerald-900"
+            aria-hidden="true"
+          />
+          {item.descricao && (
+            <p className="relative m-0 px-3 pb-1.5 pt-2 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-emerald-300/80">
+              {item.descricao}
+            </p>
+          )}
+          <ul id={idMenu} className="relative m-0 list-none p-0" role="list">
+            {item.children?.map((f, i) => {
+              const Icone = f.icone;
+              const atual = linkAtivo(f.href, pathname);
+              return (
+                <li key={f.id}>
+                  <Link
+                    href={hrefReal(f.href)}
+                    aria-current={atual ? "page" : undefined}
+                    className={cn(
+                      "flex items-center gap-3 rounded-xl px-3 py-2.5 no-underline transition-colors hover:bg-emerald-500/20 focus-visible:bg-emerald-500/20 focus-visible:outline-none",
+                      atual && "bg-emerald-500/15",
+                    )}
+                    tabIndex={aberto ? 0 : -1}
+                    onClick={(e) => {
+                      setAberto(false);
+                      if (onNavigate(f.href)) e.preventDefault();
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowDown") {
+                        e.preventDefault();
+                        focarItem(i + 1);
+                      }
+                      if (e.key === "ArrowUp") {
+                        e.preventDefault();
+                        if (i === 0) botaoRef.current?.focus();
+                        else focarItem(i - 1);
+                      }
+                    }}
+                  >
+                    {Icone && (
+                      <span
+                        className="grid size-10 flex-none place-items-center rounded-xl bg-emerald-500/20 text-emerald-300"
+                        aria-hidden="true"
+                      >
+                        <Icone size={18} />
+                      </span>
+                    )}
+                    <span className="flex min-w-0 flex-col">
+                      <span
+                        className={cn(
+                          "text-[0.92rem] font-semibold",
+                          atual ? "text-emerald-200" : "text-emerald-50",
+                        )}
+                      >
+                        {f.name}
+                      </span>
+                      {f.descricao && (
+                        <span className="mt-0.5 text-xs leading-snug text-emerald-100/70">
+                          {f.descricao}
+                        </span>
+                      )}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

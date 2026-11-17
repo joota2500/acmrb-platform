@@ -167,7 +167,7 @@ export default function Header() {
                 ACMRB
               </span>
               {/* Subtítulo escondido no celular para não apertar o hambúrguer */}
-              <span className="mt-[0.2rem] hidden whitespace-nowrap text-[0.8rem] font-medium tracking-[0.02em] text-emerald-200 sm:block lg:hidden xl:block xl:text-sm">
+              <span className="mt-[0.2rem] hidden whitespace-nowrap text-[0.8rem] font-medium tracking-[0.02em] text-emerald-200 sm:block lg:hidden 2xl:block xl:text-sm">
                 Associação dos Catadores
               </span>
             </span>
@@ -175,7 +175,7 @@ export default function Header() {
 
           {/* ===== Menu horizontal (somente desktop >=1024px) ===== */}
           <nav
-            className="hidden items-center gap-5 text-[15px] font-medium lg:flex xl:gap-7 xl:text-[15.5px]"
+            className="hidden flex-1 items-center justify-center gap-5 px-4 text-[15px] font-medium lg:flex xl:gap-7 xl:px-6 xl:text-[15.5px]"
             aria-label="Menu principal"
           >
             {navigation.filter((link) => !link.soMobile).map((link) =>
