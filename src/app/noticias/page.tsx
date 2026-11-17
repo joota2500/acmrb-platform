@@ -26,7 +26,7 @@ export default function NoticiasPage() {
     <>
       <Header />
       <JsonLd dados={jsonLdMigalhas([{ nome: "Notícias", caminho: "/noticias" }])} />
-      <Suspense fallback={<main className="nj" aria-busy="true" />}>
+      <Suspense fallback={<main className="min-h-screen bg-surface-alt" aria-busy="true" />}>
         <NoticiasJornal />
       </Suspense>
       <Footer />

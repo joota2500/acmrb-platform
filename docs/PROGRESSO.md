@@ -28,7 +28,7 @@ Responsável: João Victor Rocha Costa
 ### Front (visual)
 - [ ] **Telas com visual novo (Tailwind, sem CSS antigo)** — uma por vez, na ordem abaixo:
   - [x] 1. Quem somos (`/quem-somos`)
-  - [ ] 2. Lista de notícias
+  - [x] 2. Lista de notícias
   - [ ] 3. Notícia aberta
   - [ ] 4. Transparência
   - [ ] 5. Parceiros
