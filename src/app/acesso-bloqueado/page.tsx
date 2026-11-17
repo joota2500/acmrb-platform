@@ -30,7 +30,7 @@ export default async function AcessoBloqueadoPage() {
   const codigo = dispositivoDoCookie(h.get("cookie"))?.slice(0, 8) ?? null;
 
   return (
-    <main className="ab" data-pagina-bloqueio>
+    <main className="flex min-h-dvh items-center justify-center bg-surface-alt p-4 sm:p-6" data-pagina-bloqueio>
       <TelaBloqueioComRecarga tipo={tipo} motivo={motivo} ate={ate} codigo={codigo} />
     </main>
   );

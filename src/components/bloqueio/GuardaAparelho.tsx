@@ -114,7 +114,7 @@ export default function GuardaAparelho() {
 
   if (!montado || !tela) return null;
   return createPortal(
-    <div className="ab-camada" data-camada-bloqueio role="alertdialog" aria-modal="true" aria-labelledby="ab-titulo">
+    <div className="fixed inset-0 z-2147483000 flex items-center justify-center overflow-y-auto bg-surface-alt p-4 sm:p-6" data-camada-bloqueio role="alertdialog" aria-modal="true" aria-labelledby="ab-titulo">
       <TelaBloqueio
         tipo={tela.tipo}
         motivo={tela.motivo}

@@ -10,13 +10,13 @@
  * contato oficial (WhatsApp e e-mail) para contestar.
  * Usada pela página /acesso-bloqueado (carregamento direto) e pelo
  * GuardaAparelho (página aberta trocada sem recarregar).
- * CSS: src/styles/acesso-bloqueado.css (prefixo "ab-").
+ * Visual: Tailwind (cor do ícone e da caixa de motivo muda conforme o tipo).
  */
 
 import { useEffect, useState } from "react";
 import { Clock, LogOut, MessageCircle, ShieldAlert } from "lucide-react";
 
-import "@/styles/acesso-bloqueado.css";
+import { cn } from "@/utils/cn";
 import { CONTATO, linkEmail, linkWhatsApp } from "@/constants/contato";
 import { contagem, dataFortaleza } from "@/utils/prazo";
 
@@ -34,6 +34,19 @@ interface Props {
   /** botão "voltar ao site" (usado na expulsão) */
   onContinuar?: () => void;
 }
+
+// Cores de cada tipo: vermelho para bloqueio, âmbar para suspensão, verde para expulsão
+const CORES: Record<TipoBloqueio, { icone: string; motivo: string }> = {
+  bloqueio: { icone: "bg-red-100 text-red-700", motivo: "bg-red-50" },
+  suspensao: { icone: "bg-amber-100 text-amber-700", motivo: "bg-amber-50" },
+  expulsao: { icone: "bg-brand-soft text-green-800", motivo: "bg-zinc-100" },
+};
+
+const BOTAO =
+  "inline-flex w-full items-center justify-center gap-2 rounded-control px-5 py-3 text-[0.95rem] font-extrabold text-white no-underline transition";
+const PARAGRAFO = "texto-justo text-[0.9rem] leading-relaxed sm:text-[0.98rem]";
+const CAIXA = "w-full rounded-2xl bg-zinc-100 px-4 py-3 text-left";
+const ROTULO = "mb-1 block text-left text-[0.72rem] font-extrabold uppercase tracking-wider text-ink-muted";
 
 const TITULO: Record<TipoBloqueio, string> = {
   bloqueio: "Aparelho bloqueado",
@@ -66,47 +79,68 @@ export default function TelaBloqueio({ tipo, motivo, ate, codigo, onTerminou, on
     `${motivo ? ` com o motivo: "${motivo}"` : ""}. Gostaria de entender e, se for um engano, pedir a liberação.`;
 
   return (
-    <section className={`ab__cartao ab__cartao--${tipo}`} aria-labelledby="ab-titulo" data-tela-bloqueio={tipo}>
-      <span className="ab__icone" aria-hidden="true"><Icone size={34} /></span>
-      <h1 id="ab-titulo" className="ab__titulo">{TITULO[tipo]}</h1>
+    <section
+      className="flex w-full max-w-lg flex-col items-center gap-3.5 rounded-3xl border border-zinc-200 bg-white px-4.5 py-6 text-center shadow-[0_18px_50px_rgb(0_0_0/0.08)] sm:px-6.5 sm:py-8"
+      aria-labelledby="ab-titulo"
+      data-tela-bloqueio={tipo}
+    >
+      <span className={cn("inline-flex h-17 w-17 items-center justify-center rounded-full", CORES[tipo].icone)} aria-hidden="true">
+        <Icone size={34} />
+      </span>
+      <h1 id="ab-titulo" className="text-2xl font-black text-zinc-900 sm:text-[1.6rem]">
+        {TITULO[tipo]}
+      </h1>
 
-      <p className="ab__texto">
+      <p className={cn(PARAGRAFO, "text-zinc-600")}>
         {tipo === "bloqueio" && "O acesso a este site foi bloqueado neste aparelho pela administração da associação."}
         {tipo === "suspensao" && "O acesso a este site foi suspenso neste aparelho pela administração da associação."}
         {tipo === "expulsao" && "A administração da associação encerrou o seu acesso neste aparelho. Você saiu da conta, se estava logado."}
       </p>
 
       {motivo ? (
-        <div className="ab__motivo">
-          <span className="ab__rotulo">Motivo</span>
-          <p>{motivo}</p>
+        <div className={cn(CAIXA, CORES[tipo].motivo)}>
+          <span className={ROTULO}>Motivo</span>
+          <p className={cn(PARAGRAFO, "break-words text-zinc-800")}>{motivo}</p>
         </div>
       ) : null}
 
       {tipo !== "expulsao" && (
-        <div className="ab__prazo">
-          <span className="ab__rotulo">Duração</span>
+        <div className={CAIXA}>
+          <span className={ROTULO}>Duração</span>
           {temFim ? (
             <>
-              <p>{tipo === "bloqueio" ? "Bloqueado" : "Suspenso"} até <strong>{dataFortaleza(ate as string)}</strong> (horário de Fortaleza).</p>
-              <p className="ab__contagem" aria-live="off">Libera em {contagem(restante)}</p>
+              <p className={cn(PARAGRAFO, "text-zinc-800")}>
+                {tipo === "bloqueio" ? "Bloqueado" : "Suspenso"} até <strong>{dataFortaleza(ate as string)}</strong> (horário de Fortaleza).
+              </p>
+              <p className="mt-1 text-left text-lg font-black tabular-nums text-amber-700" aria-live="off">
+                Libera em {contagem(restante)}
+              </p>
             </>
           ) : (
-            <p>Sem data para terminar (indeterminado). A liberação depende da administração.</p>
+            <p className={cn(PARAGRAFO, "text-zinc-800")}>Sem data para terminar (indeterminado). A liberação depende da administração.</p>
           )}
         </div>
       )}
 
       {tipo === "expulsao" && onContinuar && (
-        <button type="button" className="ab__botao" onClick={onContinuar}>Entendi, voltar ao site</button>
+        <button type="button" className={cn(BOTAO, "bg-green-800 hover:bg-green-900")} onClick={onContinuar}>
+          Entendi, voltar ao site
+        </button>
       )}
 
-      <div className="ab__contato">
-        <p className="ab__texto">Acha que foi um engano? Fale com a gente para contestar:</p>
-        <a className="ab__botao ab__botao--zap" href={linkWhatsApp(mensagemZap)} target="_blank" rel="noopener noreferrer">
+      <div className="flex w-full flex-col items-center gap-2.5 border-t border-zinc-100 pt-2.5">
+        <p className={cn(PARAGRAFO, "text-zinc-600")}>Acha que foi um engano? Fale com a gente para contestar:</p>
+        <a
+          className={cn(BOTAO, "bg-green-700 hover:bg-green-800")}
+          href={linkWhatsApp(mensagemZap)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <MessageCircle size={18} aria-hidden="true" /> WhatsApp {CONTATO.whatsappExibicao}
         </a>
-        <a className="ab__email" href={linkEmail("Contestar bloqueio no site", mensagemZap)}>{CONTATO.email}</a>
+        <a className="break-all text-sm font-bold text-green-800 underline" href={linkEmail("Contestar bloqueio no site", mensagemZap)}>
+          {CONTATO.email}
+        </a>
       </div>
     </section>
   );

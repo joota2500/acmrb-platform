@@ -3,11 +3,12 @@
 /**
  * PreferenciaPrivacidade — botão da página /privacidade para permitir
  * ou recusar a medição anônima de visitas (vale só neste navegador).
- * CSS: src/styles/pagina-privacidade.css (prefixo "pv-").
+ * Visual: Tailwind + Button.
  */
 
 import { useEffect, useState } from "react";
 
+import Button from "@/components/ui/Button";
 import { lerPrivacidade, salvarPrivacidade, type EscolhaPrivacidade } from "@/utils/privacidade";
 
 export default function PreferenciaPrivacidade() {
@@ -28,13 +29,13 @@ export default function PreferenciaPrivacidade() {
   const recusado = escolha === "recusado";
 
   return (
-    <div className="pv__preferencia">
-      <p>
+    <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-brand-mint bg-brand-soft p-4">
+      <p className="m-0 text-left!">
         Situação neste navegador: <strong>{recusado ? "medição desligada" : "medição anônima ligada"}</strong>.
       </p>
-      <button type="button" className="pv__btn" onClick={() => mudar(recusado ? "aceito" : "recusado")}>
+      <Button onClick={() => mudar(recusado ? "aceito" : "recusado")} className="w-full sm:w-auto">
         {recusado ? "Permitir a medição anônima" : "Desligar a medição neste navegador"}
-      </button>
+      </Button>
     </div>
   );
 }

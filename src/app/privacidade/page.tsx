@@ -7,7 +7,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import PreferenciaPrivacidade from "@/components/privacidade/PreferenciaPrivacidade";
 import { CONTATO } from "@/constants/contato";
-import "@/styles/pagina-privacidade.css";
+import Container from "@/components/ui/Container";
 
 export const metadata: Metadata = {
   title: "Privacidade",
@@ -19,10 +19,10 @@ export default function PrivacidadePage() {
   return (
     <>
       <Header />
-      <main className="pv">
-        <div className="pv__container">
-          <h1 className="pv__titulo">Privacidade e cookies</h1>
-          <p className="pv__intro">
+      <main className="bg-[linear-gradient(180deg,var(--color-brand-soft)_0,#fff_22rem)] pb-12 pt-22 sm:pb-16 sm:pt-30">
+        <Container tamanho="estreito" className="prosa">
+          <h1 className="text-left text-3xl font-black leading-tight text-brand-dark sm:text-4xl">Privacidade e cookies</h1>
+          <p className="mt-4">
             A ACMRB respeita a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018). Esta página explica, sem
             complicação, o que o site guarda e por quê.
           </p>
@@ -72,8 +72,8 @@ export default function PrivacidadePage() {
             apenas o administrador autorizado acessa os dados dos visitantes.
           </p>
 
-          <p className="pv__data">Atualizado em outubro de 2026.</p>
-        </div>
+          <p className="mt-8 text-sm text-ink-muted">Atualizado em outubro de 2026.</p>
+        </Container>
       </main>
       <Footer />
     </>
