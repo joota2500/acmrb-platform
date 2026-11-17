@@ -12,16 +12,22 @@
  * Variantes:
  *  - "inline": mostra tudo na própria página (lateral da notícia)
  *  - "botao" : só um botão; o painel abre como janela (usado no painel admin)
- * CSS: src/styles/compartilhar-noticia.css (prefixo "cn").
+ * Estilo: Tailwind (sem arquivo CSS).
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, Copy, FileText, MessageCircle, Send, Share2, X } from "lucide-react";
-import "@/styles/compartilhar-noticia.css";
+import { cn } from "@/utils/cn";
+import Button from "@/components/ui/Button";
 import {
   imagemComoArquivo, linksRedes, mensagemCompleta, resumoCurto, urlDaNoticia, type DadosCompartilhar,
 } from "@/utils/compartilharNoticia";
+
+/* Classes reaproveitadas pelos botões das redes */
+const REDE =
+  "inline-flex min-h-11 items-center justify-start gap-2.5 rounded-control border border-brand-line bg-white px-4 text-sm font-bold text-brand-dark transition hover:border-brand hover:bg-brand-soft focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-line";
+const GLIFO = "inline-flex size-[1.15rem] items-center justify-center font-sans text-[1.05rem] font-black leading-none";
 
 interface Props extends DadosCompartilhar {
   variante?: "inline" | "botao";
@@ -113,15 +119,15 @@ export default function CompartilharNoticia({ titulo, resumo, slug, imagemUrl, v
   const redes = linksRedes(dados, url || "");
 
   const opcoes = (
-    <div className="cn-opcoes">
-      <a className="cn-rede cn-rede--whats" href={redes.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle size={18} aria-hidden="true" /> WhatsApp</a>
-      <a className="cn-rede cn-rede--face" href={redes.facebook} target="_blank" rel="noopener noreferrer"><span className="cn-glifo" aria-hidden="true">f</span> Facebook</a>
-      <a className="cn-rede cn-rede--x" href={redes.x} target="_blank" rel="noopener noreferrer"><span className="cn-glifo" aria-hidden="true">𝕏</span> X</a>
-      <a className="cn-rede cn-rede--tg" href={redes.telegram} target="_blank" rel="noopener noreferrer"><Send size={18} aria-hidden="true" /> Telegram</a>
-      <button type="button" className="cn-rede" onClick={() => copiar("link")} aria-live="polite">
+    <div className={cn("grid grid-cols-1 gap-2", variante === "botao" && "min-[481px]:grid-cols-2")}>
+      <a className={cn(REDE, "border-[#128c4a] bg-[#128c4a] text-white hover:border-[#0e7a40] hover:bg-[#0e7a40]")} href={redes.whatsapp} target="_blank" rel="noopener noreferrer"><MessageCircle size={18} aria-hidden="true" /> WhatsApp</a>
+      <a className={cn(REDE, "text-[#1877f2]")} href={redes.facebook} target="_blank" rel="noopener noreferrer"><span className={GLIFO} aria-hidden="true">f</span> Facebook</a>
+      <a className={cn(REDE, "text-ink")} href={redes.x} target="_blank" rel="noopener noreferrer"><span className={GLIFO} aria-hidden="true">𝕏</span> X</a>
+      <a className={cn(REDE, "text-[#229ed9]")} href={redes.telegram} target="_blank" rel="noopener noreferrer"><Send size={18} aria-hidden="true" /> Telegram</a>
+      <button type="button" className={cn(REDE, "cursor-pointer")} onClick={() => copiar("link")} aria-live="polite">
         {copiado === "link" ? <><Check size={16} aria-hidden="true" /> Link copiado!</> : <><Copy size={16} aria-hidden="true" /> Copiar link</>}
       </button>
-      <button type="button" className="cn-rede" onClick={() => copiar("texto")} aria-live="polite">
+      <button type="button" className={cn(REDE, "cursor-pointer")} onClick={() => copiar("texto")} aria-live="polite">
         {copiado === "texto" ? <><Check size={16} aria-hidden="true" /> Texto copiado!</> : <><FileText size={16} aria-hidden="true" /> Copiar texto</>}
       </button>
     </div>
@@ -130,15 +136,15 @@ export default function CompartilharNoticia({ titulo, resumo, slug, imagemUrl, v
   /* ----- Variante inline: tudo visível na página ----- */
   if (variante === "inline") {
     return (
-      <div className={`cn cn--inline ${className ?? ""}`}>
-        <span className="cn-rotulo"><Share2 size={14} aria-hidden="true" /> {rotulo}</span>
+      <div className={cn("flex flex-col gap-3", className)}>
+        <span className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-brand"><Share2 size={14} aria-hidden="true" /> {rotulo}</span>
         {nativo && (
-          <button type="button" className="cn-principal" onClick={compartilhar}>
+          <Button type="button" onClick={compartilhar} className="min-h-11">
             <Send size={16} aria-hidden="true" /> Enviar com foto e resumo
-          </button>
+          </Button>
         )}
         {opcoes}
-        {aviso && <p className="cn-aviso" role="status">{aviso}</p>}
+        {aviso && <p className="rounded-xl bg-amber-100 px-3 py-2 text-left text-xs leading-snug text-amber-800" role="status">{aviso}</p>}
       </div>
     );
   }
@@ -148,7 +154,10 @@ export default function CompartilharNoticia({ titulo, resumo, slug, imagemUrl, v
     <>
       <button
         type="button"
-        className={`cn-botao ${className ?? ""}`}
+        className={cn(
+          "inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-xl border border-brand-line bg-brand-soft px-3 text-xs font-bold text-brand-dark transition hover:border-brand hover:bg-brand-mint focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-line",
+          className,
+        )}
         onClick={compartilhar}
         onPointerEnter={() => nativo && void preparar()}
         onFocus={() => nativo && void preparar()}
@@ -160,22 +169,22 @@ export default function CompartilharNoticia({ titulo, resumo, slug, imagemUrl, v
 
       {aberto && typeof document !== "undefined" &&
         createPortal(
-          <div className="cn-fundo" onClick={() => setAberto(false)}>
-            <div className="cn-janela" role="dialog" aria-modal="true" aria-label="Compartilhar notícia" onClick={(e) => e.stopPropagation()}>
-              <button type="button" className="cn-fechar" onClick={() => setAberto(false)} aria-label="Fechar"><X size={18} aria-hidden="true" /></button>
-              <div className="cn-previa">
+          <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/55 p-0 min-[481px]:items-center min-[481px]:p-4" onClick={() => setAberto(false)}>
+            <div className="relative flex max-h-[calc(100dvh-2rem)] w-full flex-col gap-4 overflow-y-auto rounded-t-card bg-white px-4 pb-6 pt-5 shadow-[0_24px_60px_rgb(0_0_0/0.3)] min-[481px]:w-[min(30rem,100%)] min-[481px]:rounded-card min-[481px]:p-5" role="dialog" aria-modal="true" aria-label="Compartilhar notícia" onClick={(e) => e.stopPropagation()}>
+              <button type="button" className="absolute right-2.5 top-2.5 z-10 grid size-9 cursor-pointer place-items-center rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200" onClick={() => setAberto(false)} aria-label="Fechar"><X size={18} aria-hidden="true" /></button>
+              <div className="flex items-center gap-3 rounded-2xl border border-brand-line bg-brand-soft p-2.5 pr-11">
                 {imagemUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={imagemUrl} alt="" />
+                  <img src={imagemUrl} alt="" className="size-20 flex-none rounded-xl object-cover" />
                 )}
-                <div className="cn-previa__texto">
-                  <strong>{titulo}</strong>
-                  {resumo && <p>{resumoCurto(resumo, 140)}</p>}
-                  <small>{url}</small>
+                <div className="flex min-w-0 flex-col gap-1">
+                  <strong className="line-clamp-2 text-left text-sm leading-snug text-brand-dark">{titulo}</strong>
+                  {resumo && <p className="line-clamp-2 text-left text-xs leading-snug text-zinc-600">{resumoCurto(resumo, 140)}</p>}
+                  <small className="truncate text-[0.7rem] text-ink-muted">{url}</small>
                 </div>
               </div>
               {opcoes}
-              {aviso && <p className="cn-aviso" role="status">{aviso}</p>}
+              {aviso && <p className="rounded-xl bg-amber-100 px-3 py-2 text-left text-xs leading-snug text-amber-800" role="status">{aviso}</p>}
             </div>
           </div>,
           document.body,

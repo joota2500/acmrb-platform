@@ -27,7 +27,6 @@ import {
 } from "@/utils/noticias";
 import { enviarImagem, slugEmUso, validarImagem, type DadosNoticia } from "@/services/noticiasAdmin";
 
-import "@/styles/noticia-detalhe.css";
 import Button from "@/components/ui/Button";
 
 const esquema = z
@@ -461,18 +460,20 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
             <p className="an__dica">Cartão (home e lista de notícias):</p>
             <div className="an__previa-card"><NoticiaCard noticia={previaNoticia} /></div>
             <p className="an__dica">Página da notícia:</p>
-            <div className="nd an__previa-pagina">
-              <span className="nd__categoria">{d.categoria || "Categoria"}</span>
-              <h1 className="nd__titulo">{d.titulo || "Título da notícia"}</h1>
-              {d.resumo && <p className="nd__linha-fina">{d.resumo}</p>}
+            <div className="an__previa-pagina bg-white">
+              <span className="inline-block rounded-full bg-brand px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-white">{d.categoria || "Categoria"}</span>
+              <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight text-ink [overflow-wrap:anywhere]">{d.titulo || "Título da notícia"}</h1>
+              {d.resumo && <p className="mt-3 border-l-4 border-brand-line pl-3 text-lg leading-relaxed text-zinc-700">{d.resumo}</p>}
               {d.imagem_url && (
-                <figure className="nd__figura">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <div className="nd__moldura"><img src={d.imagem_url} alt={d.imagem_alt || d.titulo} /></div>
-                  {(d.imagem_legenda || d.imagem_credito) && <figcaption>{d.imagem_legenda} {d.imagem_credito && <span className="nd__credito">Foto: {d.imagem_credito}</span>}</figcaption>}
+                <figure className="mt-6">
+                  <div className="flex h-72 items-center justify-center overflow-hidden rounded-card bg-zinc-200">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={d.imagem_url} alt={d.imagem_alt || d.titulo} className="size-full object-contain" />
+                  </div>
+                  {(d.imagem_legenda || d.imagem_credito) && <figcaption className="mt-2 text-sm italic text-ink-soft">{d.imagem_legenda} {d.imagem_credito && <span className="not-italic text-ink-muted">Foto: {d.imagem_credito}</span>}</figcaption>}
                 </figure>
               )}
-              <ConteudoNoticia texto={d.conteudo} className="nd__texto an__previa-texto" />
+              <ConteudoNoticia texto={d.conteudo} className="an__previa-texto" />
             </div>
           </div>
         </div>
