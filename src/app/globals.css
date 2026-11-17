@@ -1,14 +1,77 @@
 @import "tailwindcss";
 
+/* ==========================================================
+   TOKENS DE DESIGN (Tailwind v4 — @theme)
+   ----------------------------------------------------------
+   Aqui ficam as cores, fontes, raios e sombras da marca
+   ACMRB / Reciclaê. Cada token vira classe do Tailwind:
+     --color-brand        → bg-brand, text-brand, border-brand
+     --color-brand-dark   → bg-brand-dark ...
+     --radius-card        → rounded-card
+     --shadow-card        → shadow-card
+     --text-display       → text-display
+   Use sempre estes nomes em vez de cores soltas (#2e5e4e etc.).
+   ========================================================== */
+@theme {
+  /* Fonte principal (Inter, carregada com next/font no layout) */
+  --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Cores da marca */
+  --color-brand: #2e5e4e;        /* verde principal (botões, títulos, links) */
+  --color-brand-dark: #21463a;   /* hover / fundos escuros */
+  --color-brand-soft: #e8f3ee;   /* fundo suave verde */
+  --color-brand-mint: #ddf5ec;   /* fundo de ícones e selos */
+  --color-brand-line: #a7f3d0;   /* bordas verdes claras */
+  --color-leaf: #047857;         /* verde de destaque (números, links ativos) */
+  --color-leaf-bright: #10b981;  /* verde vivo (etiquetas, barras) */
+  --color-sun: #eab308;          /* amarelo de destaque */
+
+  /* Texto e superfícies */
+  --color-ink: #111827;          /* títulos */
+  --color-ink-soft: #4b5563;     /* parágrafos */
+  --color-ink-muted: #71717a;    /* textos de apoio */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f8fafc;  /* fundo geral da página */
+  --color-line: #e5e7eb;         /* bordas neutras */
+
+  /* Estados */
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fef2f2;
+  --color-warning: #b45309;
+  --color-warning-soft: #fffbeb;
+
+  /* Escala de títulos */
+  --text-display: clamp(2.1rem, 5vw, 4rem);
+  --text-display--line-height: 1.1;
+  --text-display--letter-spacing: -0.04em;
+  --text-headline: clamp(1.6rem, 3.2vw, 2.5rem);
+  --text-headline--line-height: 1.15;
+  --text-headline--letter-spacing: -0.03em;
+
+  /* Raios */
+  --radius-card: 1.25rem;
+  --radius-control: 0.9rem;
+
+  /* Sombras */
+  --shadow-card: 0 4px 18px rgb(4 120 87 / 0.06);
+  --shadow-card-hover: 0 15px 35px rgb(16 185 129 / 0.12);
+  --shadow-pop: 0 18px 40px rgb(4 120 87 / 0.25);
+  --shadow-focus: 0 0 0 3px rgb(46 94 78 / 0.15);
+
+  /* Largura máxima do conteúdo */
+  --container-page: 80rem;
+}
+
+/* Variáveis antigas (ainda usadas por alguns CSS) apontando para os tokens */
 :root {
-  --background: #f8fafc;
+  --background: var(--color-surface-alt);
   --foreground: #0f172a;
-  --primary: #166534;
+  --primary: var(--color-brand);
   --primary-light: #4ade80;
   --secondary: #14532d;
-  --accent: #eab308;
+  --accent: var(--color-sun);
   --muted: #64748b;
-  --card: #ffffff;
+  --card: var(--color-surface);
   --border: #e2e8f0;
 }
 
@@ -19,27 +82,27 @@
   --border: #334155;
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Inter", system_ui, sans-serif;
-  font-size: 1rem;
-}
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+  }
 
-.container-custom {
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  /* Foco visível e consistente em todo o site (acessibilidade) */
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
 }
 
 /* ==========================================================

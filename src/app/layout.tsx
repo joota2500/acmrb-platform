@@ -1,6 +1,4 @@
 import "@/app/globals.css";
-import "@/styles/logo.css";
-import "@/styles/navigation.css";
 import "@/styles/mobile-menu.css";
 import "@/styles/user-menu.css";
 
@@ -10,8 +8,16 @@ import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
 import GuardaAparelho from "@/components/bloqueio/GuardaAparelho";
 import RastreadorAcessos from "@/components/rastreio/RastreadorAcessos";
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import { siteUrl } from "@/lib/siteUrl";
 import { DESCRICAO_PADRAO, IMAGEM_PADRAO, NOME_MARCA, NOME_OFICIAL, PALAVRAS_CHAVE, SIGLA, TITULO_PADRAO } from "@/lib/seo";
+
+// Fonte do site (baixada pelo próprio Next, sem pedir nada ao Google no navegador)
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 /**
  * Metadata global (vale para todas as páginas; cada página pode sobrescrever)
@@ -70,7 +76,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
+    <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
       <body className="antialiased bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
         <AuthProvider>
           {children}

@@ -61,7 +61,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-linear-to-br from-emerald-950/90 via-emerald-900/80 to-transparent" />
       </div>
 
-      <div className="relative z-10 container-custom py-10 sm:py-16 md:py-24">
+      <div className="relative z-10 mx-auto w-full max-w-(--container-page) px-4 py-10 sm:py-16 md:py-24">
         <div className="max-w-5xl mx-auto text-left">
           {/* ===== Selo (menor no celular) ===== */}
           <motion.div
