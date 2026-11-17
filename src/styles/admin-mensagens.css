@@ -48,7 +48,6 @@
 .amsg-acao:hover { background: #DDF5EC; }
 .amsg-acao--whats { background: #16a34a; border-color: #16a34a; color: #fff; }
 .amsg-acao--whats:hover { background: #15803d; }
-.amsg-chat .cg-lista { height: clamp(320px, calc(100dvh - 22rem), 640px); }
 
 /* Tablet/celular: uma coluna por vez */
 @media (max-width: 900px) {

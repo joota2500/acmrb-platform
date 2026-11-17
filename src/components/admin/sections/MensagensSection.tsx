@@ -187,7 +187,7 @@ export default function MensagensSection() {
               usuarioId={user.id}
               lado="admin"
               nome={perfil?.nome ?? "Equipe ACMRB"}
-              className="amsg-chat"
+              alturaLista="h-[clamp(320px,calc(100dvh-22rem),640px)]"
               vazio="Nenhuma mensagem nesta conversa."
             />
           </>
