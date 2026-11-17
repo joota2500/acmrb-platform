@@ -20,7 +20,7 @@ src/
 ├── utils/          funções auxiliares sem tela (formatadores, validação de CPF, mapas, textos)
 ├── constants/      dados fixos (contato, menus, permissões, textos de reserva)
 ├── types/          tipos do TypeScript
-├── styles/         CSS do projeto
+├── styles/         CSS antigo que ainda falta migrar para Tailwind (cai aos poucos)
 └── middleware.ts   bloqueio de aparelhos (roda antes das páginas)
 ```
 
@@ -31,3 +31,14 @@ src/
 - Quem fala com o banco fica em `services/` (os hooks chamam os services).
 - Função que não usa React nem banco vai para `utils/`.
 - Textos e listas que não mudam vão para `constants/`.
+
+## Padrão visual (Tailwind v4)
+
+- Cores, fontes, raios e sombras ficam no `@theme` de `src/app/globals.css`
+  (ex.: `bg-brand`, `text-brand-dark`, `rounded-card`, `shadow-card`, `text-display`).
+- Peças reutilizáveis em `src/components/ui/` (`Button`, `Card`, `Badge`, `Container`,
+  `PageHero`, `SectionTitle`, `Campo`, `Input`, `Spinner`...). Use elas antes de criar classe nova.
+- Páginas internas do visitante usam `components/layout/PaginaInterna`.
+- Classes juntas com `cn()` (`src/utils/cn.ts`).
+- Cuidado: CSS antigo (sem `@layer`) ganha do Tailwind. Ao migrar um componente,
+  migre junto o que usa as mesmas classes e apague o `.css`.
