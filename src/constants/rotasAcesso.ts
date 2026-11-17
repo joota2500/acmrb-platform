@@ -1,21 +1,23 @@
 /**
  * Rotas das telas de login do painel
  * ------------------------------------------------------------
- * ADM DEUS: o endereço público é só o texto abaixo. Para trocar de
- * endereço basta mudar SLUG_ACESSO_DEUS (ex.: "entrada-x7k2"): o
- * middleware (src/middleware.ts) leva esse endereço para a página
- * interna ROTA_INTERNA_DEUS, que não abre se alguém digitar direto.
+ * O repositório é público, então os endereços secretos de login NÃO
+ * ficam no código: eles vêm das variáveis de ambiente (só do servidor)
+ *   ROTA_SECRETA_ADMIN → login dos administradores (admin ou deus)
+ *   ROTA_SECRETA_DEUS  → login só do ADM DEUS
+ * (coloque no .env.local e na Vercel, ex.: ROTA_SECRETA_ADMIN=painel-x7k2q9)
+ * O middleware (src/middleware.ts) leva esses endereços para as páginas
+ * internas abaixo, que dão 404 se alguém digitar direto.
  * Nenhuma página do site mostra link para estas telas.
- *
- * ADMIN comum: /admin/login (admin ou deus podem entrar por ela).
  * VISITANTE: /login (rejeita contas de administrador).
  */
 
-/** Único lugar para trocar o endereço do login do ADM DEUS */
-export const SLUG_ACESSO_DEUS = "acesso-deus";
-
-export const ROTA_LOGIN_DEUS = `/${SLUG_ACESSO_DEUS}`;
-export const ROTA_LOGIN_ADMIN = "/admin/login";
-
-/** Página que de fato existe em src/app (não é digitada por ninguém) */
+/** Páginas que de fato existem em src/app (não são digitadas por ninguém) */
+export const ROTA_INTERNA_ADMIN = "/admin/login";
 export const ROTA_INTERNA_DEUS = "/acesso-interno-deus";
+
+/** Lê o endereço secreto da env (só no servidor). Vazio = login desligado */
+export function rotaSecreta(valor: string | undefined): string | null {
+  const limpo = (valor ?? "").trim().replace(/^\/+|\/+$/g, "");
+  return /^[a-z0-9-]{6,60}$/i.test(limpo) ? `/${limpo}` : null;
+}

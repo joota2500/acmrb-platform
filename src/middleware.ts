@@ -23,7 +23,11 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { COOKIE_DISPOSITIVO, COOKIE_VALIDADE_SEG, ROBOS_LIBERADOS, UUID_RE, dispositivoDoCookie } from "@/lib/dispositivo";
 import { hashDoIpEdge } from "@/lib/hashEdge";
-import { ROTA_INTERNA_DEUS, ROTA_LOGIN_DEUS } from "@/constants/rotasAcesso";
+import { ROTA_INTERNA_ADMIN, ROTA_INTERNA_DEUS, rotaSecreta } from "@/constants/rotasAcesso";
+
+// endereços secretos de login (vêm da env, nunca do código)
+const ROTA_LOGIN_ADMIN = rotaSecreta(process.env.ROTA_SECRETA_ADMIN);
+const ROTA_LOGIN_DEUS = rotaSecreta(process.env.ROTA_SECRETA_DEUS);
 
 interface Bloqueio {
   dispositivo_id: string | null;
@@ -42,7 +46,9 @@ const VALIDADE_MS = 5_000;
 const ESPERA_MAX_MS = 1_500;
 /** Caminhos que nunca são barrados (a página de aviso precisa abrir para quem está bloqueado) */
 // O login do ADM DEUS também fica livre, para o dono nunca se trancar fora do painel
-const LIVRES = new RegExp(`^(/(acesso-bloqueado|admin|api/admin|api/cron|api/dispositivo/estado)|${ROTA_LOGIN_DEUS}|${ROTA_INTERNA_DEUS})(/|$)`);
+const LIVRES = new RegExp(
+  `^(/(acesso-bloqueado|admin|api/admin|api/cron|api/dispositivo/estado)|${[ROTA_INTERNA_DEUS, ROTA_LOGIN_DEUS, ROTA_LOGIN_ADMIN].filter(Boolean).join("|")})(/|$)`,
+);
 
 let foto: Foto | null = null;
 let buscando: Promise<Foto | null> | null = null;
@@ -139,16 +145,22 @@ export async function middleware(req: NextRequest) {
     return resp;
   }
 
-  // Login do ADM DEUS: o endereço público (SLUG_ACESSO_DEUS) mostra a página interna;
+  // Login do ADM DEUS: o endereço secreto (ROTA_SECRETA_DEUS) mostra a página interna;
   // a página interna digitada direto não existe (404)
-  const ehDeus = pathname === ROTA_LOGIN_DEUS || pathname === `${ROTA_LOGIN_DEUS}/`;
-  const ehInterna = pathname === ROTA_INTERNA_DEUS || pathname.startsWith(`${ROTA_INTERNA_DEUS}/`);
+  const ehDeus = !!ROTA_LOGIN_DEUS && (pathname === ROTA_LOGIN_DEUS || pathname === `${ROTA_LOGIN_DEUS}/`);
+  // mesma ideia para o login dos admins: endereço secreto mostra /admin/login
+  const ehAdmin = !!ROTA_LOGIN_ADMIN && (pathname === ROTA_LOGIN_ADMIN || pathname === `${ROTA_LOGIN_ADMIN}/`);
+  const ehInterna =
+    pathname === ROTA_INTERNA_DEUS || pathname.startsWith(`${ROTA_INTERNA_DEUS}/`) ||
+    pathname === ROTA_INTERNA_ADMIN || pathname.startsWith(`${ROTA_INTERNA_ADMIN}/`);
   const resp = ehDeus
     ? NextResponse.rewrite(new URL(ROTA_INTERNA_DEUS, req.url))
-    : ehInterna
-      ? NextResponse.rewrite(new URL("/nao-encontrado-404", req.url))
-      : NextResponse.next();
-  if (ehDeus || ehInterna) resp.headers.set("X-Robots-Tag", "noindex, nofollow");
+    : ehAdmin
+      ? NextResponse.rewrite(new URL(ROTA_INTERNA_ADMIN, req.url))
+      : ehInterna
+        ? NextResponse.rewrite(new URL("/nao-encontrado-404", req.url))
+        : NextResponse.next();
+  if (ehDeus || ehAdmin || ehInterna) resp.headers.set("X-Robots-Tag", "noindex, nofollow");
   if (criar && did && UUID_RE.test(did)) {
     // Legível pelo navegador (httpOnly desligado) para o id das estatísticas ser o mesmo
     resp.cookies.set(COOKIE_DISPOSITIVO, did, {

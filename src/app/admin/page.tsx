@@ -36,7 +36,6 @@ import AdminContent from "@/components/admin/layout/AdminContent";
 import AdminHeader from "@/components/admin/layout/AdminHeader";
 import AdminBottomNav from "@/components/admin/layout/AdminBottomNav";
 import { itemPorId, secaoValida, type SecaoId } from "@/constants/adminNav";
-import { ROTA_LOGIN_ADMIN } from "@/constants/rotasAcesso";
 
 /* Seções */
 import VisaoGeral from "@/components/admin/visao-geral/VisaoGeral";
@@ -101,8 +100,8 @@ function PainelAdmin() {
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      // sem login → tela de login dos administradores
-      router.replace(ROTA_LOGIN_ADMIN);
+      // sem login → volta pra home (não mostra o endereço secreto do login)
+      router.replace("/");
       return;
     }
     if (perfil?.tipo !== "admin") {

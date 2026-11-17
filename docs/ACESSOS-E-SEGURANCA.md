@@ -74,10 +74,10 @@ tem link para as telas de administrador**:
 | Quem | Endereço | Quem consegue entrar |
 |---|---|---|
 | Visitante | `/login` | só visitantes (contas de administrador são recusadas com a mesma mensagem de "conta inexistente") |
-| Administrador | `/admin/login` | admin **ou** deus |
-| ADM DEUS | `/acesso-deus` | **só** `admins.role = 'deus'` |
+| Administrador | `endereço secreto em `ROTA_SECRETA_ADMIN` (env)` | admin **ou** deus |
+| ADM DEUS | endereço secreto em `ROTA_SECRETA_DEUS` (env) | **só** `admins.role = 'deus'` |
 
-Quem abrir `/admin` sem estar logado vai para `/admin/login`.
+Quem abrir `/admin` sem estar logado vai para `endereço secreto em `ROTA_SECRETA_ADMIN` (env)`.
 
 **Como o login do painel funciona (as duas telas):**
 1. Antes de tentar, consulta o limite de tentativas (`/api/seguranca/login`: 5 erros por e-mail na mesma rede = 15 min de bloqueio).
@@ -95,7 +95,7 @@ O `src/middleware.ts` leva esse endereço para a página interna `/acesso-intern
 Depois de trocar, avise quem usa o endereço antigo (ele passa a dar 404).
 
 **Fora do Google:** as duas telas têm `noindex, nofollow` (meta e cabeçalho), ficam fora do `sitemap.xml` e não entram nas estatísticas de acesso.
-`/admin/login` já está coberto pelo `Disallow: /admin` do `robots.txt`. O endereço do ADM DEUS **não** foi colocado no `robots.txt`
+`endereço secreto em `ROTA_SECRETA_ADMIN` (env)` já está coberto pelo `Disallow: /admin` do `robots.txt`. O endereço do ADM DEUS **não** foi colocado no `robots.txt`
 de propósito: uma linha "Disallow" mostraria o endereço secreto para qualquer pessoa que abrisse o arquivo.
 
 ---

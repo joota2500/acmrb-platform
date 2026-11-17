@@ -15,7 +15,7 @@
  * Banco: migration 20261020270000_visitantes_atividade.sql.
  */
 
-import { ROTA_LOGIN_DEUS } from "@/constants/rotasAcesso";
+import { paginaSemRastreio } from "@/utils/semRastreio";
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -27,7 +27,7 @@ const LOTE_MS = 10_000;
 const LOTE_MAX = 20;
 const INTERVALO_CLIQUE_MS = 400;
 // Páginas que não são registradas
-const IGNORAR = [/^\/admin/, /^\/redefinir-senha/, new RegExp(`^${ROTA_LOGIN_DEUS}`)];
+const IGNORAR = [/^\/admin/, /^\/redefinir-senha/];
 
 type Evento = {
   sessao_id: string;
@@ -115,7 +115,7 @@ export default function RastreadorVisitante() {
   const registrar = useRef((tipo: Evento["tipo"], rotulo: string | null, alvo: string | null) => {
     if (!sessaoId.current || !userId.current) return;
     const caminho = window.location.pathname;
-    if (IGNORAR.some((r) => r.test(caminho))) return;
+    if ((IGNORAR.some((r) => r.test(caminho)) || paginaSemRastreio())) return;
     fila.current.push({
       sessao_id: sessaoId.current,
       auth_user_id: userId.current,

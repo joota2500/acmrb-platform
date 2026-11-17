@@ -6,5 +6,9 @@
 import LoginAdmin from "@/components/auth/LoginAdmin";
 
 export default function AdminLoginPage() {
-  return <LoginAdmin modo="admin" />;
+  return (
+    <div data-sem-rastreio>
+      <LoginAdmin modo="admin" />
+    </div>
+  );
 }

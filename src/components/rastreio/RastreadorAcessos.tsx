@@ -17,7 +17,7 @@
  * de visitantes cadastrados.
  */
 
-import { ROTA_LOGIN_DEUS } from "@/constants/rotasAcesso";
+import { paginaSemRastreio } from "@/utils/semRastreio";
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,7 +28,7 @@ import { idDoAparelho } from "@/utils/dispositivoCliente";
 const CHAVE_SESSAO = "acmrb_acesso_sessao";
 const BATIMENTO_MS = 30_000;
 const VALIDADE_SESSAO_MS = 30 * 60 * 1000;
-const IGNORAR = new RegExp(`^(/(admin|redefinir-senha)|${ROTA_LOGIN_DEUS})(/|$)`);
+const IGNORAR = /^\/(admin|redefinir-senha)(\/|$)/;
 const URL_API = "/api/acessos";
 
 const novoId = () => crypto.randomUUID();
@@ -95,7 +95,7 @@ export default function RastreadorAcessos() {
     const iniciar = async () => {
       if (!medicaoPermitida() || sessaoId.current) return;
       const caminho = window.location.pathname;
-      if (IGNORAR.test(caminho)) return;
+      if ((IGNORAR.test(caminho) || paginaSemRastreio())) return;
       if (!anonId()) return;
 
       // Mesma aba, recarregada há pouco: continua a mesma visita
@@ -181,7 +181,7 @@ export default function RastreadorAcessos() {
   // Troca de página
   useEffect(() => {
     if (!sessaoId.current || caminhoAtual.current === null || pathname === caminhoAtual.current) return;
-    if (IGNORAR.test(pathname)) {
+    if ((IGNORAR.test(pathname) || paginaSemRastreio())) {
       caminhoAtual.current = pathname;
       return;
     }
