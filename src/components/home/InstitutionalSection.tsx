@@ -1,15 +1,16 @@
 "use client";
 
 /**
- * Seção "Plataforma Institucional" da home.
- *
- * - Números rápidos vêm do banco via useESGMetrics (mesma fonte de antes).
- *   Valor zero aparece como "Em apuração" para não exibir dado falso.
- * - Colunas de links: grade no tablet/desktop e acordeão no celular.
- * - Documentos públicos: lista os publicados em transparencia_documentos;
- *   se a tabela não existir ou estiver vazia, mostra atalhos para
- *   /transparencia#documentos.
- * - Dados oficiais em cards: copiar CNPJ e abrir endereço no Google Maps.
+ * InstitutionalSection — "Plataforma Institucional" (página inicial)
+ * ------------------------------------------------------------
+ * O que mostra:
+ *  - Números rápidos (famílias, material reciclado e local de atuação).
+ *  - 4 grupos de links (Quem Somos, Sustentabilidade, Transparência,
+ *    Parcerias): grade no tablet/desktop e sanfona (abre e fecha) no celular.
+ *  - Documentos públicos (lidos da tabela transparencia_documentos do
+ *    Supabase; se não houver, mostra uma lista padrão).
+ *  - Dados oficiais: CNPJ (com botão de copiar), endereço e fundação.
+ *  - Faixa de chamada com 3 botões.
  */
 
 import { useEffect, useState } from "react";
@@ -20,12 +21,16 @@ import {
   ArrowRight, Users, Recycle, ChevronDown, Copy, Check, CalendarDays,
   ExternalLink,
 } from "lucide-react";
+
+import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import { useAparecer } from "@/hooks/useAparecer";
 import { useESGMetrics } from "@/hooks/useESGMetrics";
 import { supabase } from "@/lib/supabase";
-
 import { CONTATO, linkMapaBusca } from "@/constants/contato";
-import "@/styles/institutional-section.css";
-import Button from "@/components/ui/Button";
+import { cn } from "@/utils/cn";
+import FaixaCta from "./FaixaCta";
+import TituloSecao from "./TituloSecao";
 
 type LinkItem = { label: string; href: string };
 type Group = { title: string; icon: React.ElementType; items: LinkItem[] };
@@ -124,65 +129,81 @@ export default function InstitutionalSection() {
     { icon: MapPin, valor: "Baturité – CE", rotulo: "Atuação no Maciço de Baturité" },
   ];
 
-  return (
-    <section className="inst" aria-labelledby="inst-titulo" lang="pt-BR">
-      <div className="inst__container">
-        {/* Cabeçalho */}
-        <motion.header
-          className="inst__header"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <span className="inst__tag">Plataforma Institucional</span>
-          <h2 id="inst-titulo" className="inst__title">
-            Transparência, sustentabilidade e <span>impacto social</span>
-          </h2>
-          <p className="inst__description">
-            A ACMRB reúne catadores de materiais recicláveis de Baturité em uma
-            organização formal, com registro, prestação de contas e parcerias
-            com indústrias, empresas e poder público. Aqui você encontra os
-            principais caminhos para conhecer a associação, acompanhar os
-            dados públicos e propor parcerias.
-          </p>
-        </motion.header>
+  const aparecer = useAparecer();
 
-        {/* Números rápidos */}
-        <ul className="inst__stats" aria-label="Números da associação">
-          {stats.map(({ icon: Icon, valor, rotulo }) => (
-            <li key={rotulo} className="inst__stat">
-              <span className="inst__stat-icon" aria-hidden><Icon size={20} /></span>
+  // classe dos botõezinhos "Copiar" e "Mapa" da parte de dados oficiais
+  const botaoMini =
+    "inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-brand/20 bg-white px-3 py-1.5 text-xs font-bold text-brand transition hover:bg-brand-soft";
+
+  return (
+    <section className="bg-surface-alt py-16 sm:py-20 lg:py-24" aria-labelledby="inst-titulo" lang="pt-BR">
+      <Container>
+        {/* ===== Cabeçalho ===== */}
+        <motion.div {...aparecer()}>
+          <TituloSecao
+            id="inst-titulo"
+            etiqueta="Plataforma Institucional"
+            titulo={
+              <>
+                Transparência, sustentabilidade e <span>impacto social</span>
+              </>
+            }
+            descricao="A ACMRB reúne catadores de materiais recicláveis de Baturité em uma organização formal, com registro, prestação de contas e parcerias com indústrias, empresas e poder público. Aqui você encontra os principais caminhos para conhecer a associação, acompanhar os dados públicos e propor parcerias."
+          />
+        </motion.div>
+
+        {/* ===== Números rápidos ===== */}
+        <ul className="mb-8 grid gap-4 md:grid-cols-3" aria-label="Números da associação">
+          {stats.map(({ icon: Icon, valor, rotulo }, i) => (
+            <motion.li
+              key={rotulo}
+              {...aparecer(0.06 * i)}
+              className="flex items-center gap-4 rounded-card border border-black/5 bg-white p-5 shadow-card"
+            >
+              <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-mint text-leaf" aria-hidden="true">
+                <Icon size={22} />
+              </span>
               <div>
-                <strong>{valor}</strong>
-                <span>{rotulo}</span>
+                <strong className="block text-xl font-black text-brand">{valor}</strong>
+                <span className="text-sm text-ink-soft">{rotulo}</span>
               </div>
-            </li>
+            </motion.li>
           ))}
         </ul>
 
-        {/* Links: grade no desktop/tablet, acordeão no celular */}
-        <nav className="inst__grid" aria-label="Navegação institucional">
+        {/* ===== Grupos de links: grade (md+) e sanfona (celular) ===== */}
+        <nav className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Navegação institucional">
           {groups.map(({ title, icon: Icon, items }) => {
             const isOpen = aberto === title;
             const idLista = `inst-lista-${title.replace(/\s/g, "-").toLowerCase()}`;
             return (
-              <div key={title} className={`inst__card${isOpen ? " is-open" : ""}`}>
+              <div key={title} className="rounded-card border border-black/5 bg-white p-5 shadow-card">
                 <button
                   type="button"
-                  className="inst__card-head"
                   aria-expanded={isOpen}
                   aria-controls={idLista}
                   onClick={() => setAberto(isOpen ? null : title)}
+                  className="flex w-full items-center gap-3 text-left sm:cursor-default"
                 >
-                  <span className="inst__card-icon" aria-hidden><Icon size={20} /></span>
-                  <h3>{title}</h3>
-                  <ChevronDown className="inst__chevron" size={18} aria-hidden />
+                  <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand text-white" aria-hidden="true">
+                    <Icon size={20} />
+                  </span>
+                  <h3 className="flex-1 text-lg font-black text-ink">{title}</h3>
+                  <ChevronDown
+                    size={18}
+                    aria-hidden="true"
+                    className={cn("text-ink-muted transition sm:hidden", isOpen && "rotate-180")}
+                  />
                 </button>
-                <ul id={idLista} className="inst__links">
+                {/* no celular só aparece aberto; do tablet para cima sempre aparece */}
+                <ul id={idLista} className={cn("mt-4 space-y-1 border-t border-line pt-3", !isOpen && "max-sm:hidden")}>
                   {items.map((item) => (
                     <li key={item.label}>
-                      <Link href={item.href} className="inst__link">
-                        <ArrowRight size={14} aria-hidden />
+                      <Link
+                        href={item.href}
+                        className="group flex items-center gap-2 rounded-lg px-2 py-2 text-sm font-medium text-ink-soft transition hover:bg-brand-soft hover:text-brand"
+                      >
+                        <ArrowRight size={14} aria-hidden="true" className="text-leaf-bright transition group-hover:translate-x-1" />
                         {item.label}
                       </Link>
                     </li>
@@ -193,94 +214,102 @@ export default function InstitutionalSection() {
           })}
         </nav>
 
-        {/* Documentos públicos */}
-        <div className="inst__docs">
-          <div className="inst__docs-head">
-            <span className="inst__card-icon" aria-hidden><FileText size={20} /></span>
-            <div>
-              <h3>Documentos públicos</h3>
-              <p>Estatuto, relatórios e prestação de contas disponíveis para consulta.</p>
+        {/* ===== Documentos públicos ===== */}
+        <motion.div {...aparecer()} className="mt-8 rounded-card border border-black/5 bg-white p-6 shadow-card sm:p-8">
+          <div className="flex flex-wrap items-center gap-4">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-mint text-leaf" aria-hidden="true">
+              <FileText size={22} />
+            </span>
+            <div className="min-w-0 flex-1 basis-48">
+              <h3 className="text-lg font-black text-ink">Documentos públicos</h3>
+              <p className="text-sm text-ink-soft">Estatuto, relatórios e prestação de contas disponíveis para consulta.</p>
             </div>
-            <Link href="/transparencia#documentos" className="inst__docs-all">
-              Ver todos <ArrowRight size={15} aria-hidden />
+            <Link href="/transparencia#documentos" className="inline-flex items-center gap-1.5 text-sm font-bold text-leaf hover:underline max-sm:w-full">
+              Ver todos <ArrowRight size={15} aria-hidden="true" />
             </Link>
           </div>
-          <ul className="inst__docs-list">
+
+          <ul className="mt-5 grid gap-3 sm:grid-cols-2">
             {docs.length > 0
               ? docs.map((d) => (
                   <li key={d.id}>
-                    <a href={d.url_arquivo} target="_blank" rel="noopener noreferrer" className="inst__doc">
+                    <a
+                      href={d.url_arquivo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3 text-sm font-semibold text-ink transition hover:border-leaf-bright hover:bg-brand-soft"
+                    >
                       <span>{d.titulo}{d.ano ? ` (${d.ano})` : ""}</span>
-                      <ExternalLink size={15} aria-hidden />
+                      <ExternalLink size={15} aria-hidden="true" className="shrink-0 text-leaf" />
                     </a>
                   </li>
                 ))
               : docsPadrao.map((t) => (
                   <li key={t}>
-                    <Link href="/transparencia#documentos" className="inst__doc">
+                    <Link
+                      href="/transparencia#documentos"
+                      className="flex items-center justify-between gap-3 rounded-xl border border-line px-4 py-3 text-sm font-semibold text-ink transition hover:border-leaf-bright hover:bg-brand-soft"
+                    >
                       <span>{t}</span>
-                      <ArrowRight size={15} aria-hidden />
+                      <ArrowRight size={15} aria-hidden="true" className="shrink-0 text-leaf" />
                     </Link>
                   </li>
                 ))}
           </ul>
-        </div>
+        </motion.div>
 
-        {/* Dados oficiais */}
-        <ul className="inst__legal" aria-label="Dados oficiais">
-          <li className="inst__legal-item">
-            <span className="inst__legal-icon" aria-hidden><Hash size={18} /></span>
-            <div>
-              <span>CNPJ</span>
-              <strong>{CNPJ}</strong>
+        {/* ===== Dados oficiais ===== */}
+        <ul className="mt-6 grid gap-4 lg:grid-cols-3" aria-label="Dados oficiais">
+          <li className="flex items-center gap-3 rounded-card border border-black/5 bg-white p-5 shadow-card">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand" aria-hidden="true">
+              <Hash size={18} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <span className="block text-xs font-bold uppercase tracking-wider text-ink-muted">CNPJ</span>
+              <strong className="block truncate text-ink">{CNPJ}</strong>
             </div>
-            <button type="button" className="inst__legal-btn" onClick={copiarCnpj} aria-label="Copiar CNPJ">
-              {copiado ? <Check size={16} /> : <Copy size={16} />}
-              <span>{copiado ? "Copiado" : "Copiar"}</span>
+            <button type="button" className={botaoMini} onClick={copiarCnpj} aria-label="Copiar CNPJ">
+              {copiado ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+              {copiado ? "Copiado" : "Copiar"}
             </button>
           </li>
-          <li className="inst__legal-item">
-            <span className="inst__legal-icon" aria-hidden><MapPin size={18} /></span>
-            <div>
-              <span>Endereço</span>
-              <strong>{ENDERECO}</strong>
+
+          <li className="flex items-center gap-3 rounded-card border border-black/5 bg-white p-5 shadow-card">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand" aria-hidden="true">
+              <MapPin size={18} />
+            </span>
+            <div className="min-w-0 flex-1">
+              <span className="block text-xs font-bold uppercase tracking-wider text-ink-muted">Endereço</span>
+              <strong className="block text-sm leading-snug text-ink">{ENDERECO}</strong>
             </div>
-            <a href={MAPS} target="_blank" rel="noopener noreferrer" className="inst__legal-btn" aria-label="Abrir endereço no Google Maps">
-              <ExternalLink size={16} />
-              <span>Mapa</span>
+            <a href={MAPS} target="_blank" rel="noopener noreferrer" className={botaoMini} aria-label="Abrir endereço no Google Maps">
+              <ExternalLink size={14} aria-hidden="true" /> Mapa
             </a>
           </li>
-          <li className="inst__legal-item">
-            <span className="inst__legal-icon" aria-hidden><CalendarDays size={18} /></span>
+
+          <li className="flex items-center gap-3 rounded-card border border-black/5 bg-white p-5 shadow-card">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand" aria-hidden="true">
+              <CalendarDays size={18} />
+            </span>
             <div>
-              <span>Registro</span>
-              <strong>Fundada em 10/07/2025</strong>
+              <span className="block text-xs font-bold uppercase tracking-wider text-ink-muted">Registro</span>
+              <strong className="block text-ink">Fundada em 10/07/2025</strong>
             </div>
           </li>
         </ul>
 
-        {/* Chamada final */}
-        <motion.div
-          className="inst__cta"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div>
-            <h3>Construindo uma reciclagem mais justa no Maciço de Baturité</h3>
-            <p>
-              Fortalecemos a coleta seletiva, a logística reversa e o trabalho
-              digno dos catadores. Conheça a associação, acompanhe os dados
-              públicos ou fale com a gente para firmar uma parceria.
-            </p>
-          </div>
-          <div className="inst__cta-actions">
-            <Button href="/quem-somos" variante="claro" >Conhecer a associação</Button>
-            <Button href="/transparencia" variante="contornoClaro" >Ver transparência</Button>
-            <Button href="/#contato" variante="contornoClaro" >Seja parceiro</Button>
-          </div>
+        {/* ===== Chamada final ===== */}
+        <motion.div {...aparecer(0.1)}>
+          <FaixaCta
+            titulo="Construindo uma reciclagem mais justa no Maciço de Baturité"
+            texto="Fortalecemos a coleta seletiva, a logística reversa e o trabalho digno dos catadores. Conheça a associação, acompanhe os dados públicos ou fale com a gente para firmar uma parceria."
+          >
+            <Button href="/quem-somos" variante="claro" tamanho="grande">Conhecer a associação</Button>
+            <Button href="/transparencia" variante="contornoClaro" tamanho="grande">Ver transparência</Button>
+            <Button href="/#contato" variante="contornoClaro" tamanho="grande">Seja parceiro</Button>
+          </FaixaCta>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }

@@ -3,36 +3,26 @@
 /**
  * ReverseLogisticsSection — "Logística Reversa" (página inicial)
  * ------------------------------------------------------------
- * Contexto: a ACMRB faz parcerias com indústrias e empresas que operam
- * a logística reversa. A associação recebe/recolhe o material, identifica
- * e classifica os recicláveis e repassa corretamente para a destinação
- * adequada, com registro e comprovação.
- *
  * O que mostra:
- *  1. Cabeçalho: selo, título (parte em verde) e apresentação.
- *  2. Parceiros (Indústrias, Operadores de logística reversa, Empresas e
- *     comércio, Instituições e poder público) com benefícios curtos.
- *  3. Fluxo da parceria em 5 etapas (linha do tempo).
- *  4. O que a parceria entrega (rastreabilidade, documentação ESG/PNRS,
- *     impacto social, destinação correta).
- *  5. CTA "Solicitar parceria" → #contato e link para /transparencia.
+ *  1. Cabeçalho com texto e uma foto do centro de reciclagem.
+ *  2. Com quem fazemos parceria (indústrias, operadores, empresas, poder
+ *     público), cada um com uma lista curta de benefícios.
+ *  3. Passo a passo em 5 etapas (linha do tempo vertical) ao lado do
+ *     que a parceria entrega.
+ *  4. Faixa de chamada (CTA) para solicitar parceria.
  *
- * Dados: conteúdo fixo, sem números ou nomes de empresas inventados.
- * Classes com prefixo "revlog__" para não conflitar com outras seções.
- *
- * Responsividade (src/styles/reverse-logistics.css):
- *  - Celular (≤480px): 1 coluna, fontes menores, linha do tempo vertical.
- *  - Tablet (481–1024px): 2 colunas.
- *  - Desktop (>1024px): 4 colunas; etapas em linha com 5 colunas.
- * Animações: Framer Motion leve, desligadas com "reduzir movimento".
+ * Dados: conteúdo fixo (não consulta o Supabase).
+ * Responsivo: 1 coluna no celular, 2 no tablet e passo a passo + entregas
+ * lado a lado no desktop.
  */
 
-import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
   Building2,
+  Check,
   ClipboardList,
   Factory,
   FileCheck2,
@@ -46,10 +36,11 @@ import {
   Truck,
 } from "lucide-react";
 
-import { smoothScrollTo } from "@/utils/scroll";
-
-import "@/styles/reverse-logistics.css";
 import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import { useAparecer } from "@/hooks/useAparecer";
+import FaixaCta from "./FaixaCta";
+import TituloSecao from "./TituloSecao";
 
 /** Parceiros: editar aqui para mudar textos/benefícios. */
 const parceiros = [
@@ -164,60 +155,62 @@ const entregas = [
 ];
 
 export default function ReverseLogisticsSection() {
-  // Se o usuário pediu "reduzir movimento", as animações viram estáticas.
-  const reduzir = useReducedMotion();
-
-  /** Animação padrão de entrada (sobe e aparece), com atraso opcional. */
-  const entrada = (atraso = 0) =>
-    reduzir
-      ? {}
-      : {
-          initial: { opacity: 0, y: 24 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: "-60px" },
-          transition: { duration: 0.5, delay: atraso },
-        };
+  const aparecer = useAparecer();
 
   return (
-    <section
-      id="logistica-reversa"
-      className="revlog"
-      aria-labelledby="revlog-title"
-    >
-      <div className="revlog__container">
-        {/* ===== 1. Cabeçalho ===== */}
-        <motion.header {...entrada()} className="revlog__header">
-          <span className="revlog__tag">Logística Reversa</span>
-          <h2 id="revlog-title" className="revlog__title">
-            O elo entre quem gera o resíduo e{" "}
-            <span>quem o transforma em matéria-prima</span>
-          </h2>
-          <p className="revlog__description" lang="pt-BR">
-            A ACMRB atua em parceria com indústrias e empresas de logística
-            reversa: recebemos e recolhemos os materiais, identificamos e
-            classificamos cada tipo de reciclável e fazemos o repasse correto
-            para a destinação adequada, com registro, rastreabilidade e
-            comprovação para todos os envolvidos.
-          </p>
-        </motion.header>
+    <section id="logistica-reversa" className="bg-white py-16 sm:py-20 lg:py-24" aria-labelledby="revlog-title">
+      <Container>
+        {/* ===== 1. Cabeçalho com foto ===== */}
+        <div className="mb-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <motion.div {...aparecer()}>
+            <TituloSecao
+              id="revlog-title"
+              etiqueta="Logística Reversa"
+              alinhamento="esquerda"
+              className="mb-0 max-w-none sm:mb-0"
+              titulo={
+                <>
+                  O elo entre quem gera o resíduo e <span>quem o transforma em matéria-prima</span>
+                </>
+              }
+              descricao="A ACMRB atua em parceria com indústrias e empresas de logística reversa: recebemos e recolhemos os materiais, identificamos e classificamos cada tipo de reciclável e fazemos o repasse correto para a destinação adequada, com registro, rastreabilidade e comprovação para todos os envolvidos."
+            />
+          </motion.div>
+          <motion.div {...aparecer(0.1)} className="relative aspect-16/10 overflow-hidden rounded-3xl shadow-pop">
+            <Image
+              src="/images/reciclagem.jpg"
+              alt="Centro de reciclagem da ACMRB com equipe, contêineres de papel e plástico e empilhadeira"
+              fill
+              sizes="(min-width: 1024px) 560px, 100vw"
+              className="object-cover"
+            />
+          </motion.div>
+        </div>
 
         {/* ===== 2. Parceiros ===== */}
-        <h3 className="revlog__subtitle">Com quem fazemos parceria</h3>
-        <div className="revlog__partners">
+        <h3 className="mb-6 text-xl font-black text-ink sm:text-2xl">Com quem fazemos parceria</h3>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {parceiros.map((p, i) => {
             const Icone = p.icone;
             return (
-              <motion.article key={p.titulo} {...entrada(0.08 * i)} className="revlog__partner">
-                <div className="revlog__partner-head">
-                  <div className="revlog__icon" aria-hidden="true">
-                    <Icone size={22} />
-                  </div>
-                  <h4>{p.titulo}</h4>
-                </div>
-                <p lang="pt-BR">{p.texto}</p>
-                <ul>
+              <motion.article
+                key={p.titulo}
+                {...aparecer(0.08 * i)}
+                className="flex flex-col rounded-card border border-black/5 border-t-4 border-t-leaf-bright bg-surface-alt p-6 transition duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-card-hover"
+              >
+                <span className="grid size-12 place-items-center rounded-2xl bg-white text-leaf shadow-card" aria-hidden="true">
+                  <Icone size={24} />
+                </span>
+                <h4 className="mt-4 text-lg font-black leading-snug text-ink">{p.titulo}</h4>
+                <p lang="pt-BR" className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  {p.texto}
+                </p>
+                <ul className="mt-4 space-y-2 border-t border-line pt-4">
                   {p.beneficios.map((b) => (
-                    <li key={b}>{b}</li>
+                    <li key={b} className="flex items-start gap-2 text-sm font-medium text-ink">
+                      <Check size={16} className="mt-0.5 shrink-0 text-leaf-bright" aria-hidden="true" />
+                      {b}
+                    </li>
                   ))}
                 </ul>
               </motion.article>
@@ -225,73 +218,75 @@ export default function ReverseLogisticsSection() {
           })}
         </div>
 
-        {/* ===== 3. Fluxo da parceria ===== */}
-        <h3 className="revlog__subtitle">Como funciona a parceria</h3>
-        <ol className="revlog__timeline">
-          {etapas.map((e, i) => {
-            const Icone = e.icone;
-            return (
-              <motion.li key={e.numero} {...entrada(0.1 * i)} className="revlog__step">
-                <div className="revlog__step-marker" aria-hidden="true">
-                  <Icone size={24} />
-                  <span>{e.numero}</span>
-                </div>
-                <div className="revlog__step-body">
-                  <h4>{e.titulo}</h4>
-                  <p lang="pt-BR">{e.texto}</p>
-                </div>
-              </motion.li>
-            );
-          })}
-        </ol>
+        {/* ===== 3. Passo a passo + entregas ===== */}
+        <div className="mt-16 grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:gap-16">
+          <div>
+            <h3 className="mb-8 text-xl font-black text-ink sm:text-2xl">Como funciona, passo a passo</h3>
+            <ol className="relative space-y-8 border-l-2 border-leaf-bright/30 pl-8 sm:pl-10">
+              {etapas.map((e, i) => {
+                const Icone = e.icone;
+                return (
+                  <motion.li key={e.numero} {...aparecer(0.08 * i)} className="relative">
+                    {/* bolinha numerada sobre a linha */}
+                    <span className="absolute -left-13.25 top-0 grid size-10 place-items-center rounded-full border-4 border-white bg-brand text-sm font-black text-white shadow-md sm:-left-15.25" aria-hidden="true">
+                      {e.numero}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <Icone size={20} className="text-leaf" aria-hidden="true" />
+                      <h4 className="text-lg font-black text-ink">{e.titulo}</h4>
+                    </div>
+                    <p lang="pt-BR" className="mt-1.5 leading-relaxed text-ink-soft">
+                      {e.texto}
+                    </p>
+                  </motion.li>
+                );
+              })}
+            </ol>
+          </div>
 
-        {/* ===== 4. Entregas ===== */}
-        <h3 className="revlog__subtitle">O que a parceria entrega</h3>
-        <div className="revlog__deliverables">
-          {entregas.map((c, i) => {
-            const Icone = c.icone;
-            return (
-              <motion.div key={c.titulo} {...entrada(0.08 * i)} className="revlog__deliverable">
-                <Icone size={20} aria-hidden="true" />
-                <div>
-                  <h4>{c.titulo}</h4>
-                  <p lang="pt-BR">{c.texto}</p>
-                </div>
-              </motion.div>
-            );
-          })}
+          <div>
+            <h3 className="mb-8 text-xl font-black text-ink sm:text-2xl">O que a parceria entrega</h3>
+            <div className="space-y-4">
+              {entregas.map((c, i) => {
+                const Icone = c.icone;
+                return (
+                  <motion.div
+                    key={c.titulo}
+                    {...aparecer(0.08 * i)}
+                    className="flex gap-4 rounded-card bg-brand-soft p-5"
+                  >
+                    <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-brand text-white" aria-hidden="true">
+                      <Icone size={20} />
+                    </span>
+                    <div>
+                      <h4 className="font-black text-ink">{c.titulo}</h4>
+                      <p lang="pt-BR" className="mt-1 text-sm leading-relaxed text-ink-soft">
+                        {c.texto}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
         </div>
 
-        {/* ===== 5. Chamada para parceria ===== */}
-        <motion.div {...entrada(0.1)} className="revlog__cta">
-          <div className="revlog__cta-text">
-            <h3>Sua empresa precisa destinar recicláveis corretamente?</h3>
-            <p lang="pt-BR">
-              Converse com a ACMRB e estruture uma parceria de logística reversa
-              com recebimento, triagem, repasse e comprovação dos materiais.
-            </p>
-          </div>
-          <div className="revlog__cta-buttons">
-            {/* Rolagem suave até o contato (href funciona sem JS) */}
-            <Button
-              href="/#contato"
-              onClick={(ev) => {
-              if (document.getElementById("contato")) {
-              ev.preventDefault();
-              smoothScrollTo("contato");
-              }
-              }}
-              variante="claro"
-            >
+        {/* ===== 4. Chamada para parceria ===== */}
+        <motion.div {...aparecer(0.1)}>
+          <FaixaCta
+            titulo="Sua empresa precisa destinar recicláveis corretamente?"
+            texto="Converse com a ACMRB e estruture uma parceria de logística reversa com recebimento, triagem, repasse e comprovação dos materiais."
+          >
+            <Button href="/#contato" variante="claro" tamanho="grande">
               Solicitar parceria
               <ArrowRight size={18} aria-hidden="true" />
             </Button>
-            <Button href="/transparencia" variante="contornoClaro" >
+            <Button href="/transparencia" variante="contornoClaro" tamanho="grande">
               Ver transparência
             </Button>
-          </div>
+          </FaixaCta>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }
