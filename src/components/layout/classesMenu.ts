@@ -18,6 +18,16 @@ export const LINK_NAV = [
   "hover:after:w-full focus-visible:after:w-full",
 ].join(" ");
 
+/** Página atual: texto claro e sublinhado sempre visível */
+export const LINK_NAV_ATIVO = "text-emerald-200 after:w-full";
+
+/** Botão de destaque do cabeçalho ("Agendar coleta") */
+export const BOTAO_CTA = [
+  "inline-flex h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-sun px-5 text-[0.9rem] font-bold text-emerald-950 no-underline",
+  "shadow-[0_6px_18px_rgb(234_179_8/0.35)] transition duration-300 hover:-translate-y-0.5 hover:bg-yellow-300 motion-reduce:hover:translate-y-0",
+  FOCO_MENU,
+].join(" ");
+
 /** Selinho vermelho de mensagens não lidas */
 export const SELO_NAO_LIDAS =
   "inline-flex items-center justify-center rounded-full bg-red-600 font-extrabold leading-none text-white";

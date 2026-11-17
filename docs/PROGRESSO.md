@@ -32,6 +32,7 @@ Responsável: João Victor Rocha Costa
   - [x] 3. Notícia aberta
   - [x] 4. Transparência
   - [x] 5. Parceiros
+  - [x] Menu (nav): reorganizado com Parceiros, Associados e Calendário, botão "Agendar coleta", página atual destacada e menu mobile novo
   - [ ] 6. Associados
   - [ ] 7. Mapa
   - [ ] 8. Admin: estrutura (shell)

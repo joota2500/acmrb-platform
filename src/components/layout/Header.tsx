@@ -37,17 +37,18 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { Recycle } from "lucide-react";
 
 import { useSecretUnlock } from "@/hooks/useSecretUnlock";
 import { useAuth } from "@/contexts/AuthContext";
 
-import { hrefReal, navigation } from "@/constants/navegacao";
+import { CTA_MENU, hrefReal, itemAtivo, navigation } from "@/constants/navegacao";
 import NavDropdown from "@/components/layout/NavDropdown";
 import UserMenu from "@/components/layout/UserMenu";
 import MobileMenu from "@/components/layout/MobileMenu";
 import AdminModal from "@/components/auth/AdminModal";
 import { cn } from "@/utils/cn";
-import { LINK_NAV } from "@/components/layout/classesMenu";
+import { BOTAO_CTA, LINK_NAV, LINK_NAV_ATIVO } from "@/components/layout/classesMenu";
 
 import { smoothScrollTo } from "@/utils/scroll";
 
@@ -166,7 +167,7 @@ export default function Header() {
                 ACMRB
               </span>
               {/* Subtítulo escondido no celular para não apertar o hambúrguer */}
-              <span className="mt-[0.2rem] hidden whitespace-nowrap text-[0.8rem] font-medium tracking-[0.02em] text-emerald-200 sm:block xl:text-sm">
+              <span className="mt-[0.2rem] hidden whitespace-nowrap text-[0.8rem] font-medium tracking-[0.02em] text-emerald-200 sm:block lg:hidden xl:block xl:text-sm">
                 Associação dos Catadores
               </span>
             </span>
@@ -174,13 +175,13 @@ export default function Header() {
 
           {/* ===== Menu horizontal (somente desktop >=1024px) ===== */}
           <nav
-            className="hidden items-center gap-5 text-[15px] font-medium lg:flex xl:gap-9 xl:text-[15.5px]"
+            className="hidden items-center gap-5 text-[15px] font-medium lg:flex xl:gap-7 xl:text-[15.5px]"
             aria-label="Menu principal"
           >
-            {navigation.map((link) =>
+            {navigation.filter((link) => !link.soMobile).map((link) =>
               link.children?.length ? (
-                // Item com submenu (Coleta, Contato)
-                <NavDropdown key={link.id} item={link} onNavigate={navigateTo} />
+                // Item com submenu (A Associação, Coleta, Parceiros)
+                <NavDropdown key={link.id} item={link} onNavigate={navigateTo} ativo={itemAtivo(link, pathname)} />
               ) : (
                 <Link
                   key={link.id}
@@ -188,7 +189,8 @@ export default function Header() {
                   onClick={(e) => {
                     if (navigateTo(link.href)) e.preventDefault();
                   }}
-                  className={LINK_NAV}
+                  aria-current={itemAtivo(link, pathname) ? "page" : undefined}
+                  className={cn(LINK_NAV, itemAtivo(link, pathname) && LINK_NAV_ATIVO)}
                 >
                   {link.name}
                 </Link>
@@ -196,16 +198,24 @@ export default function Header() {
             )}
           </nav>
 
-          {/* ===== Área do usuário: login/perfil + botão hambúrguer ===== */}
-          <UserMenu
-            loading={loading}
-            user={user}
-            perfil={perfil}
-            logout={logout}
-            menuOpen={menuOpen}
-            setMenuOpen={setMenuOpen}
-            menuId={MOBILE_MENU_ID}
-          />
+          {/* ===== Ações: botão de destaque + login/perfil + hambúrguer ===== */}
+          <div className="flex items-center gap-3">
+            {/* ===== Botão de destaque (só telas largas; abaixo disso ele está no submenu Coleta e na gaveta) ===== */}
+            <Link href={CTA_MENU.href} className={cn(BOTAO_CTA, "hidden sm:inline-flex lg:hidden xl:inline-flex")}>
+              <Recycle size={17} aria-hidden="true" /> {CTA_MENU.name}
+            </Link>
+
+            {/* ===== Área do usuário: login/perfil + botão hambúrguer ===== */}
+            <UserMenu
+              loading={loading}
+              user={user}
+              perfil={perfil}
+              logout={logout}
+              menuOpen={menuOpen}
+              setMenuOpen={setMenuOpen}
+              menuId={MOBILE_MENU_ID}
+            />
+          </div>
         </div>
       </motion.header>
 

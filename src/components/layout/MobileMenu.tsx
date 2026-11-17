@@ -19,10 +19,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ClipboardList, LogOut, LogIn, MessageCircle, UserRound, X } from "lucide-react";
+import { ChevronDown, ClipboardList, LogOut, LogIn, MessageCircle, Recycle, UserRound, X } from "lucide-react";
 import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
-import { hrefReal, navigation } from "@/constants/navegacao";
+import { usePathname } from "next/navigation";
+import { CTA_MENU, hrefReal, itemAtivo, linkAtivo, navigation } from "@/constants/navegacao";
 import { smoothScrollTo } from "@/utils/scroll";
 
 import { cn } from "@/utils/cn";
@@ -34,6 +35,8 @@ const LINK_MOBILE = cn(
   "transition duration-300 hover:translate-x-2 hover:bg-emerald-500/20 hover:text-emerald-200 motion-reduce:hover:translate-x-0",
   FOCO_MENU,
 );
+// Item da página atual (destaque na gaveta)
+const ATIVO_MOBILE = "bg-emerald-500/20 text-emerald-200";
 // Botões largos da área do usuário (Minha conta, Painel, Sair, Acessar)
 const BOTAO_MOBILE = cn(
   "mt-2 w-full cursor-pointer rounded-[14px] border-0 p-4 text-center font-semibold no-underline transition duration-300",
@@ -91,7 +94,9 @@ export default function MobileMenu({
   // Clique num link: usa a navegação do Header; se não houver, faz o
   // comportamento antigo (rolagem suave para âncoras) e fecha o menu.
   // Submenu aberto no celular (id do item pai) — um por vez
-  const [subAberto, setSubAberto] = useState<string | null>(null);
+  const pathname = usePathname();
+  // ao abrir a gaveta, já deixa aberto o grupo da página em que a pessoa está
+  const [subAberto, setSubAberto] = useState<string | null>(() => navigation.find((l) => l.children && itemAtivo(l, pathname))?.id ?? null);
 
   const handleNavClick = (e: React.MouseEvent, href: string) => {
     if (onNavigate) {
@@ -160,7 +165,7 @@ export default function MobileMenu({
                     <div>
                       <button
                         type="button"
-                        className={cn(LINK_MOBILE, "w-full cursor-pointer justify-between border-0 bg-transparent text-left font-[inherit]")}
+                        className={cn(LINK_MOBILE, itemAtivo(link, pathname) && ATIVO_MOBILE, "w-full cursor-pointer justify-between border-0 bg-transparent text-left font-[inherit]")}
                         aria-expanded={subAberto === link.id}
                         aria-controls={`mobile-sub-${link.id}`}
                         onClick={() => setSubAberto((v) => (v === link.id ? null : link.id))}
@@ -174,8 +179,13 @@ export default function MobileMenu({
                             key={f.id}
                             href={hrefReal(f.href)}
                             onClick={(e) => handleNavClick(e, f.href)}
-                            className="flex min-h-11 items-center rounded-xl px-[0.9rem] py-2 text-[0.95rem] text-emerald-100 no-underline transition-colors duration-300 hover:bg-emerald-500/20 hover:text-emerald-200 focus-visible:bg-emerald-500/20 focus-visible:text-emerald-200 focus-visible:outline-none"
+                            aria-current={linkAtivo(f.href, pathname) ? "page" : undefined}
+                            className={cn(
+                              "flex min-h-11 items-center gap-2.5 rounded-xl px-[0.9rem] py-2 text-[0.95rem] no-underline transition-colors duration-300 hover:bg-emerald-500/20 hover:text-emerald-200 focus-visible:bg-emerald-500/20 focus-visible:text-emerald-200 focus-visible:outline-none",
+                              linkAtivo(f.href, pathname) ? "bg-emerald-500/20 text-emerald-200" : "text-emerald-100",
+                            )}
                           >
+                            {f.icone && <f.icone size={17} className="flex-none text-emerald-300" aria-hidden="true" />}
                             {f.name}
                           </Link>
                         ))}
@@ -185,13 +195,23 @@ export default function MobileMenu({
                     <Link
                       href={hrefReal(link.href)}
                       onClick={(e) => handleNavClick(e, link.href)}
-                      className={LINK_MOBILE}
+                      aria-current={itemAtivo(link, pathname) ? "page" : undefined}
+                      className={cn(LINK_MOBILE, itemAtivo(link, pathname) && ATIVO_MOBILE)}
                     >
                       {link.name}
                     </Link>
                   )}
                 </motion.div>
               ))}
+
+              {/* Botão de destaque */}
+              <Link
+                href={CTA_MENU.href}
+                onClick={(e) => handleNavClick(e, CTA_MENU.href)}
+                className={cn(BOTAO_MOBILE, "mt-4 flex items-center justify-center gap-2.5 bg-sun text-[1.05rem] font-bold text-emerald-950 hover:bg-yellow-300")}
+              >
+                <Recycle size={20} aria-hidden="true" /> {CTA_MENU.name}
+              </Link>
 
               {/* ===== Login / Perfil ===== */}
               {user && perfil ? (
