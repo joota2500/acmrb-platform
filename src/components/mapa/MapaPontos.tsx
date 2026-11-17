@@ -15,9 +15,9 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "@/styles/mapa.css";
 import { cartaoPopup, linkRotaGoogle, linkWhatsapp } from "@/utils/mapaPopup";
 import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/utils/mapaCamadas";
+import { htmlPin, MAPA_AREA, MAPA_BOTAO_ATIVAR, MAPA_MOLDURA, MAPA_PIN_CONTEINER } from "@/utils/mapaEstilo";
 import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, linkExterno, linkInstagram, type ApoiadorPublico } from "@/services/apoiadores";
 
 interface Props {
@@ -31,8 +31,8 @@ interface Props {
 export function iconeCategoria(categoria: string, destaque = false) {
   const cor = corCategoria(categoria);
   return L.divIcon({
-    className: "mapa-pin",
-    html: `<span class="mapa-pin__gota${destaque ? " mapa-pin__gota--ativo" : ""}" style="--pin:${cor}"><span class="mapa-pin__ponto"></span></span>`,
+    className: MAPA_PIN_CONTEINER,
+    html: htmlPin(cor, { ativo: destaque }),
     iconSize: [30, 40],
     iconAnchor: [15, 38],
     popupAnchor: [0, -34],
@@ -148,10 +148,10 @@ export default function MapaPontos({ pontos, selecionado, onSelecionar, rotulo =
   }, [selecionado]);
 
   return (
-    <div className="mapa-wrap">
-      <div ref={divRef} className="mapa-canvas" role="region" aria-label={rotulo} />
+    <div className={MAPA_MOLDURA}>
+      <div ref={divRef} className={MAPA_AREA} role="region" aria-label={rotulo} />
       {!ativo && (
-        <button type="button" className="mapa-ativar" onClick={() => setAtivo(true)}>
+        <button type="button" className={MAPA_BOTAO_ATIVAR} onClick={() => setAtivo(true)}>
           Toque para mover o mapa
         </button>
       )}

@@ -89,7 +89,7 @@ export function adicionarCamadas(mapa: L.Map, chave: string, padrao: CamadaId = 
 
 /**
  * Opções padrão dos popups. A largura real vem do CSS
- * (.mapa-popup .leaflet-popup-content: min(240px, 75vw)); aqui só
+ * (.mapa-popup .leaflet-popup-content, em globals.css); aqui só
  * damos limites coerentes para o Leaflet calcular a posição, e folga
  * no autoPan para o popup não ficar embaixo do header fixo.
  */

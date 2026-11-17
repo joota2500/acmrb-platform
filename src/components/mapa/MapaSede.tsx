@@ -12,9 +12,9 @@
 import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "@/styles/mapa.css";
 import { cartaoPopup, linkRotaGoogle } from "@/utils/mapaPopup";
 import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/utils/mapaCamadas";
+import { htmlPin, MAPA_BOTAO_ATIVAR, MAPA_PIN_CONTEINER } from "@/utils/mapaEstilo";
 
 interface Props {
   posicao: [number, number];
@@ -46,8 +46,8 @@ export default function MapaSede({ posicao, titulo, endereco, aproximada }: Prop
     adicionarCamadas(mapa, "acmrb-mapa-camada-contato", "mapa");
 
     const icone = L.divIcon({
-      className: "mapa-pin",
-      html: `<span class="mapa-pin__gota mapa-pin__gota--ativo" style="--pin:#047857"><span class="mapa-pin__ponto"></span></span>`,
+      className: MAPA_PIN_CONTEINER,
+      html: htmlPin("#047857", { ativo: true }),
       iconSize: [30, 40],
       iconAnchor: [15, 38],
       popupAnchor: [0, -34],
@@ -82,7 +82,7 @@ export default function MapaSede({ posicao, titulo, endereco, aproximada }: Prop
     <div className="absolute inset-0">
       <div ref={divRef} className="absolute inset-0 z-0" role="region" aria-label={`Mapa: ${titulo}`} />
       {toque && !ativo && (
-        <button type="button" className="absolute bottom-4 left-1/2 z-500 -translate-x-1/2 cursor-pointer rounded-full bg-ink/85 px-4 py-2 text-sm font-semibold text-white" onClick={() => setAtivo(true)}>
+        <button type="button" className={MAPA_BOTAO_ATIVAR} onClick={() => setAtivo(true)}>
           Toque para mover o mapa
         </button>
       )}

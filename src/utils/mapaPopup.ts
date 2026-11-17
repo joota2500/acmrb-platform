@@ -3,9 +3,10 @@
  * (home/parceiros, painel "Visão do mapa", coletas e mapa do contato).
  * ------------------------------------------------------------
  * Gera HTML em texto (o Leaflet recebe string). Todo texto passa por
- * escaparHtml. O visual fica em src/styles/mapa.css, no namespace
- * ".mapa-popup .mpc…", com tamanhos/margens explícitos para que regras
- * globais (h1–h6, overflow-wrap: anywhere, hyphens, justify) não vazem.
+ * escaparHtml. O visual é feito com classes Tailwind escritas aqui mesmo
+ * (o Leaflet recebe só texto). Como o leaflet.css não está em @layer e
+ * ganha dos utilitários, margens e cores que ele define usam "!" (important).
+ * A moldura do popup (.mapa-popup) é ajustada em src/app/globals.css.
  */
 
 import { escaparHtml } from "@/services/apoiadores";
@@ -47,29 +48,52 @@ export function linkRotaGoogle(lat?: number | null, lng?: number | null): string
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 }
 
+// Classes do cartão. O "!" (important) vence as regras do leaflet.css
+// (".leaflet-popup-content p" e ".leaflet-container a") e as globais
+// (hifenização, overflow-wrap: anywhere).
+const T = "text-left! hyphens-none! wrap-normal! break-normal! tracking-normal!";
+const CLASSE = {
+  cartao: "flex flex-col gap-1.5 pr-3.5",
+  topo: "flex min-w-0 items-center gap-2.5",
+  logo: "size-9 flex-none rounded-lg border border-line bg-white object-contain p-0.5",
+  cabecalho: "flex min-w-0 flex-1 flex-col items-start gap-1",
+  selo:
+    "inline-flex max-w-full items-center gap-1.5 truncate rounded-full px-2 py-0.5 text-[10.5px] font-bold leading-snug text-(--cor) bg-[color-mix(in_srgb,var(--cor)_12%,white)] " + T,
+  bolinha: "size-1.5 flex-none rounded-full bg-(--cor)",
+  nome: "m-0! line-clamp-2 text-[0.95rem] font-extrabold leading-tight text-brand-dark " + T,
+  info: "m-0! truncate text-xs leading-snug text-ink-muted " + T,
+  desc: "m-0! line-clamp-2 text-xs leading-snug text-ink-soft " + T,
+  nota: "m-0! text-[11px] italic leading-tight text-zinc-400 " + T,
+  acoes: "mt-0.5 flex flex-wrap gap-1.5",
+  acao:
+    "inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-brand-mint bg-brand-soft px-2.5 py-1 text-[11.5px] font-bold leading-snug text-brand! no-underline! " +
+    "transition-colors hover:bg-brand-mint hover:text-brand-dark! focus-visible:bg-brand-mint focus-visible:text-brand-dark! " + T,
+  acaoWhatsapp: "text-[#128c4a]!",
+};
+
 /** Monta o HTML do cartão do popup */
 export function cartaoPopup(c: CartaoPopup): string {
   const cor = c.cor ?? "#2E5E4E";
   const e = escaparHtml;
   const logo = c.logoUrl
-    ? `<img class="mpc__logo" src="${e(c.logoUrl)}" alt="" loading="lazy" />`
+    ? `<img class="${CLASSE.logo}" src="${e(c.logoUrl)}" alt="" loading="lazy" />`
     : "";
   const selo = c.categoria
-    ? `<span class="mpc__selo" style="--mpc-cor:${e(cor)}"><i aria-hidden="true"></i>${e(c.categoria)}</span>`
+    ? `<span class="${CLASSE.selo}" style="--cor:${e(cor)}"><i class="${CLASSE.bolinha}" aria-hidden="true"></i>${e(c.categoria)}</span>`
     : "";
   const info = (c.info ?? []).filter((x): x is string => !!x && !!x.trim());
   const acoes = (c.acoes ?? []).filter((a): a is AcaoPopup => !!a && !!a.href);
-  return `<div class="mpc">
-  <div class="mpc__topo">${logo}<div class="mpc__cab">${selo}<p class="mpc__nome" title="${e(c.nome)}">${e(c.nome)}</p></div></div>
-  ${info.length ? `<p class="mpc__info">${info.map(e).join(" · ")}</p>` : ""}
-  ${c.descricao ? `<p class="mpc__desc">${e(c.descricao)}</p>` : ""}
-  ${c.nota ? `<p class="mpc__nota">${e(c.nota)}</p>` : ""}
+  return `<div class="${CLASSE.cartao}">
+  <div class="${CLASSE.topo}">${logo}<div class="${CLASSE.cabecalho}">${selo}<p class="${CLASSE.nome}" title="${e(c.nome)}">${e(c.nome)}</p></div></div>
+  ${info.length ? `<p class="${CLASSE.info}">${info.map(e).join(" · ")}</p>` : ""}
+  ${c.descricao ? `<p class="${CLASSE.desc}">${e(c.descricao)}</p>` : ""}
+  ${c.nota ? `<p class="${CLASSE.nota}">${e(c.nota)}</p>` : ""}
   ${
     acoes.length
-      ? `<div class="mpc__acoes">${acoes
+      ? `<div class="${CLASSE.acoes}">${acoes
           .map(
             (a) =>
-              `<a class="mpc__acao mpc__acao--${a.tipo}" href="${e(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${ROTULO[a.tipo]} (abre em nova aba)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONES[a.tipo]}</svg>${ROTULO[a.tipo]}</a>`,
+              `<a class="${CLASSE.acao}${a.tipo === "whatsapp" ? " " + CLASSE.acaoWhatsapp : ""}" href="${e(a.href)}" target="_blank" rel="noopener noreferrer" aria-label="${ROTULO[a.tipo]} (abre em nova aba)"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-none" aria-hidden="true">${ICONES[a.tipo]}</svg>${ROTULO[a.tipo]}</a>`,
           )
           .join("")}</div>`
       : ""

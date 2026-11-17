@@ -12,10 +12,10 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "@/styles/mapa.css";
 import { cartaoPopup, linkRotaGoogle } from "@/utils/mapaPopup";
 import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria } from "@/services/apoiadores";
 import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/utils/mapaCamadas";
+import { htmlPin, MAPA_AREA, MAPA_MOLDURA, MAPA_PIN_CONTEINER } from "@/utils/mapaEstilo";
 
 export interface PontoVisao {
   id: string;
@@ -38,10 +38,10 @@ interface Props {
 
 const arred = (n: number) => Math.round(n * 1e6) / 1e6;
 
-function icone(cor: string, oculto: boolean, extra = "") {
+function icone(cor: string, oculto: boolean, ativo = false) {
   return L.divIcon({
-    className: "mapa-pin",
-    html: `<span class="mapa-pin__gota${oculto ? " mapa-pin__gota--oculto" : ""}${extra}" style="--pin:${cor}"><span class="mapa-pin__ponto"></span></span>`,
+    className: MAPA_PIN_CONTEINER,
+    html: htmlPin(cor, { oculto, ativo }),
     iconSize: [30, 40],
     iconAnchor: [15, 38],
     popupAnchor: [0, -34],
@@ -124,7 +124,7 @@ export default function MapaVisao({ pontos, selecionado, onSelecionar, sugestao,
     }
     if (!sugRef.current) {
       sugRef.current = L.marker([sugestao.lat, sugestao.lng], {
-        draggable: true, icon: icone("#dc2626", false, " mapa-pin__gota--ativo"), zIndexOffset: 1000, title: "Posição sugerida (arraste para ajustar)",
+        draggable: true, icon: icone("#dc2626", false, true), zIndexOffset: 1000, title: "Posição sugerida (arraste para ajustar)",
       })
         .on("dragend", (e) => {
           const p = (e.target as L.Marker).getLatLng();
@@ -138,8 +138,8 @@ export default function MapaVisao({ pontos, selecionado, onSelecionar, sugestao,
   }, [sugestao]);
 
   return (
-    <div className="mapa-wrap">
-      <div ref={divRef} className="mapa-canvas" role="region" aria-label="Mapa com todos os apoiadores e empresas" />
+    <div className={MAPA_MOLDURA}>
+      <div ref={divRef} className={MAPA_AREA} role="region" aria-label="Mapa com todos os apoiadores e empresas" />
     </div>
   );
 }

@@ -3,14 +3,14 @@
 /**
  * MapaColetas — pedidos de coleta no mapa do painel (cor = status)
  * Carregue com next/dynamic({ ssr: false }). Reaproveita camadas e
- * estilos do mapa (mapaCamadas.ts / mapa.css).
+ * estilos do mapa (mapaCamadas.ts / mapaEstilo.ts).
  */
 
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "@/styles/mapa.css";
 import { adicionarCamadas, opcoesPopup, ZOOM_MAXIMO } from "@/utils/mapaCamadas";
+import { htmlPin, MAPA_AREA, MAPA_MOLDURA, MAPA_PIN_CONTEINER } from "@/utils/mapaEstilo";
 import { cartaoPopup, linkRotaGoogle } from "@/utils/mapaPopup";
 import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/services/apoiadores";
 import { ROTULO_STATUS, type Solicitacao, type StatusColeta } from "@/services/coletas";
@@ -30,8 +30,8 @@ interface Props {
 
 const icone = (cor: string) =>
   L.divIcon({
-    className: "mapa-pin",
-    html: `<span class="mapa-pin__gota" style="--pin:${cor}"><span class="mapa-pin__ponto"></span></span>`,
+    className: MAPA_PIN_CONTEINER,
+    html: htmlPin(cor),
     iconSize: [30, 40],
     iconAnchor: [15, 38],
     popupAnchor: [0, -34],
@@ -83,8 +83,8 @@ export default function MapaColetas({ pedidos, onSelecionar }: Props) {
   }, [pedidos]);
 
   return (
-    <div className="mapa-wrap">
-      <div ref={divRef} className="mapa-canvas" role="region" aria-label="Mapa dos pedidos de coleta" />
+    <div className={MAPA_MOLDURA}>
+      <div ref={divRef} className={MAPA_AREA} role="region" aria-label="Mapa dos pedidos de coleta" />
     </div>
   );
 }

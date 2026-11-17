@@ -319,3 +319,132 @@ html[data-bloqueado] body {
 .admin-shell :is(button, [role="button"]):not(:disabled) {
   cursor: pointer;
 }
+
+/* ==========================================================
+   MAPAS (Leaflet)
+   ----------------------------------------------------------
+   Aqui ficam só os ajustes nos elementos que o PRÓPRIO Leaflet cria
+   (popup, botões de zoom, troca de camadas). Marcadores, cartão do
+   popup, botão "Toque para mover" e moldura usam classes Tailwind em
+   src/utils/mapaEstilo.ts e src/utils/mapaPopup.ts.
+   Fica fora de @layer de propósito: o leaflet.css também fica, e
+   regra de camada perde para regra sem camada. Os seletores abaixo
+   têm duas classes (ou usam !important) para ganhar do leaflet.css.
+   ========================================================== */
+
+/* ----- Popup (className "mapa-popup", ver opcoesPopup) -----
+   Largura FIXA: se o Leaflet medisse o conteúdo, o popup ficaria com
+   ~90px e o nome quebraria letra por letra. */
+.leaflet-popup.mapa-popup .leaflet-popup-content-wrapper {
+  padding: 0;
+  border: 1px solid var(--color-brand-mint);
+  border-radius: 1rem;
+  box-shadow: 0 14px 34px rgb(33 70 58 / 0.24);
+}
+.leaflet-popup.mapa-popup .leaflet-popup-content {
+  width: min(240px, calc(100vw - 8.5rem)) !important;
+  min-width: 0;
+  margin: 0.8rem 0.9rem;
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--color-ink-soft);
+}
+.leaflet-popup.mapa-popup .leaflet-popup-tip {
+  border: 1px solid var(--color-brand-mint);
+  box-shadow: none;
+}
+.leaflet-popup.mapa-popup a.leaflet-popup-close-button {
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  font-size: 18px;
+  line-height: 22px;
+  color: var(--color-ink-muted);
+  transition: background-color 0.2s, color 0.2s;
+}
+.leaflet-popup.mapa-popup a.leaflet-popup-close-button:hover {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-dark);
+}
+
+/* ----- Troca de camadas: Mapa | Satélite | Híbrido (vira botões lado a lado) ----- */
+.leaflet-container .leaflet-control-layers {
+  padding: 0.2rem;
+  border: 0 !important;
+  border-radius: 9999px !important;
+  background: rgb(255 255 255 / 0.95) !important;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18) !important;
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--color-brand-dark);
+  backdrop-filter: blur(6px);
+}
+.leaflet-control-layers-base {
+  display: flex;
+  gap: 0.15rem;
+}
+.leaflet-control-layers-base label {
+  margin: 0;
+}
+.leaflet-control-layers-base label > span {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.7rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+.leaflet-control-layers-base label:hover > span {
+  background: var(--color-brand-soft);
+}
+.leaflet-control-layers-base label:has(input:checked) > span {
+  background: var(--color-leaf);
+  color: #fff;
+}
+/* o botão de opção some; o fundo verde já mostra qual está marcada */
+.leaflet-control-layers-selector {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.leaflet-control-layers-base label:has(input:focus-visible) > span {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 1px;
+}
+.leaflet-control-layers-separator {
+  display: none;
+}
+@media (max-width: 480px) {
+  .leaflet-container .leaflet-control-layers {
+    font-size: 0.7rem;
+  }
+  .leaflet-control-layers-base label > span {
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+/* ----- Botões de zoom (+ / −) ----- */
+.leaflet-touch .leaflet-bar {
+  border: 0 !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.18) !important;
+}
+.leaflet-touch .leaflet-bar a {
+  color: var(--color-brand-dark);
+  font-weight: 700;
+  transition: background-color 0.2s;
+}
+.leaflet-touch .leaflet-bar a:hover {
+  background: var(--color-brand-soft);
+}
+
+/* Créditos do mapa discretos */
+.leaflet-container .leaflet-control-attribution {
+  background: rgb(255 255 255 / 0.8);
+  font-size: 10px;
+}

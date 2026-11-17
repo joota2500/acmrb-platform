@@ -11,8 +11,9 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "@/styles/mapa.css";
 import { adicionarCamadas, ZOOM_MAXIMO } from "@/utils/mapaCamadas";
+import { MAPA_AREA, MAPA_MOLDURA, MAPA_MOLDURA_SELETOR } from "@/utils/mapaEstilo";
+import { cn } from "@/utils/cn";
 import { BATURITE_CENTRO, BATURITE_ZOOM } from "@/services/apoiadores";
 import { iconeCategoria } from "@/components/mapa/MapaPontos";
 
@@ -86,8 +87,8 @@ export default function MapaSeletor({ latitude, longitude, categoria, onChange }
   }, [latitude, longitude, categoria]);
 
   return (
-    <div className="mapa-wrap mapa-wrap--seletor">
-      <div ref={divRef} className="mapa-canvas" role="application" aria-label="Clique no mapa para marcar o ponto do apoiador" />
+    <div className={cn(MAPA_MOLDURA, MAPA_MOLDURA_SELETOR)}>
+      <div ref={divRef} className={MAPA_AREA} role="application" aria-label="Clique no mapa para marcar o ponto do apoiador" />
     </div>
   );
 }
