@@ -4,36 +4,26 @@
  * OperationsSection — "Operação Integrada" (página inicial)
  * ------------------------------------------------------------
  * O que mostra:
- *  1. Cabeçalho: selo, título e texto de apresentação.
+ *  1. Cabeçalho com título e texto de apresentação.
  *  2. Públicos atendidos (Empresas, Comunidade, Poder Público, Escolas),
  *     cada um com uma lista curta de benefícios.
- *  3. Fluxo de trabalho em 4 etapas (linha do tempo com ícones e
- *     conectores entre as etapas).
- *  4. Compromissos da associação (transparência, rastreabilidade,
- *     trabalho digno, destinação correta).
- *  5. Chamada (CTA) para parceria → #contato e /transparencia.
+ *  3. Fluxo de trabalho em 4 etapas (linha do tempo numerada).
+ *  4. Compromissos da associação, em um painel verde escuro.
+ *  5. Faixa de chamada (CTA) para parceria → #contato e /transparencia.
  *
  * Dados: conteúdo fixo (não consulta o Supabase). Não há números
- * inventados aqui — indicadores reais ficam na seção ESGMetrics.
+ * inventados aqui: os indicadores reais ficam na seção de transparência.
  *
- * Responsividade (estilos em src/styles/operations-section.css):
- *  - Celular (≤480px): fontes menores, espaçamento compacto, 1 coluna;
- *    a linha do tempo fica vertical com conector à esquerda.
- *  - Tablet (481–1024px): públicos, etapas e compromissos em 2 colunas.
- *  - Desktop (>1024px): públicos e compromissos em 4 colunas; etapas em
- *    linha horizontal com conectores entre os ícones.
- *  - Parágrafos justificados (com hifenização, lang="pt-BR"); títulos não.
- *
- * Animações: Framer Motion leve; desligadas quando o usuário ativa
- * "reduzir movimento" no sistema (useReducedMotion).
+ * Responsivo: 1 coluna no celular, 2 no tablet e 4 no desktop.
+ * As animações respeitam "reduzir movimento" (hook useAparecer).
  */
 
-import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
   Building2,
+  Check,
   ClipboardCheck,
   Eye,
   Factory,
@@ -46,10 +36,11 @@ import {
   Users,
 } from "lucide-react";
 
-import { smoothScrollTo } from "@/utils/scroll";
-
-import "@/styles/operations-section.css";
 import Button from "@/components/ui/Button";
+import Container from "@/components/ui/Container";
+import { useAparecer } from "@/hooks/useAparecer";
+import FaixaCta from "./FaixaCta";
+import TituloSecao from "./TituloSecao";
 
 /** Públicos atendidos: editar aqui para mudar textos/benefícios. */
 const publicos = [
@@ -156,55 +147,49 @@ const compromissos = [
 ];
 
 export default function OperationsSection() {
-  // Se o usuário pediu "reduzir movimento", as animações viram estáticas.
-  const reduzir = useReducedMotion();
-
-  /** Animação padrão de entrada (sobe e aparece), com atraso opcional. */
-  const entrada = (atraso = 0) =>
-    reduzir
-      ? {}
-      : {
-          initial: { opacity: 0, y: 24 },
-          whileInView: { opacity: 1, y: 0 },
-          viewport: { once: true, margin: "-60px" },
-          transition: { duration: 0.5, delay: atraso },
-        };
+  const aparecer = useAparecer();
 
   return (
-    <section id="operacao" className="operations" aria-labelledby="operations-title">
-      <div className="operations__container">
+    <section id="operacao" className="bg-surface-alt py-16 sm:py-20 lg:py-24" aria-labelledby="operations-title">
+      <Container>
         {/* ===== 1. Cabeçalho ===== */}
-        <motion.header {...entrada()} className="operations__header">
-          <span className="operations__tag">Operação Integrada</span>
-          <h2 id="operations-title" className="operations__title">
-            Do resíduo ao indicador: <span>uma operação transparente</span> do
-            início ao fim
-          </h2>
-          <p className="operations__description" lang="pt-BR">
-            A ACMRB integra coleta seletiva, triagem, controle de materiais e
-            valorização do trabalho dos catadores em um processo organizado e
-            fácil de acompanhar. Cada etapa gera informação que fortalece
-            parcerias e a prestação de contas à sociedade.
-          </p>
-        </motion.header>
+        <motion.div {...aparecer()}>
+          <TituloSecao
+            id="operations-title"
+            etiqueta="Operação Integrada"
+            titulo={
+              <>
+                Do resíduo ao indicador: <span>uma operação transparente</span> do início ao fim
+              </>
+            }
+            descricao="A ACMRB integra coleta seletiva, triagem, controle de materiais e valorização do trabalho dos catadores em um processo organizado e fácil de acompanhar. Cada etapa gera informação que fortalece parcerias e a prestação de contas à sociedade."
+          />
+        </motion.div>
 
         {/* ===== 2. Públicos atendidos ===== */}
-        <h3 className="operations__subtitle">Para quem trabalhamos</h3>
-        <div className="operations__audiences">
+        <h3 className="mb-6 text-xl font-black text-ink sm:text-2xl">Para quem trabalhamos</h3>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {publicos.map((p, i) => {
             const Icone = p.icone;
             return (
-              <motion.article key={p.titulo} {...entrada(0.08 * i)} className="operations__audience">
-                <div className="operations__audience-head">
-                  <div className="operations__icon" aria-hidden="true">
-                    <Icone size={22} />
-                  </div>
-                  <h4>{p.titulo}</h4>
-                </div>
-                <p lang="pt-BR">{p.texto}</p>
-                <ul>
+              <motion.article
+                key={p.titulo}
+                {...aparecer(0.08 * i)}
+                className="flex flex-col rounded-card border border-black/5 bg-white p-6 shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+              >
+                <span className="grid size-12 place-items-center rounded-2xl bg-brand-mint text-leaf" aria-hidden="true">
+                  <Icone size={24} />
+                </span>
+                <h4 className="mt-4 text-lg font-black text-ink">{p.titulo}</h4>
+                <p lang="pt-BR" className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  {p.texto}
+                </p>
+                <ul className="mt-4 space-y-2 border-t border-line pt-4">
                   {p.beneficios.map((b) => (
-                    <li key={b}>{b}</li>
+                    <li key={b} className="flex items-start gap-2 text-sm font-medium text-ink">
+                      <Check size={16} className="mt-0.5 shrink-0 text-leaf-bright" aria-hidden="true" />
+                      {b}
+                    </li>
                   ))}
                 </ul>
               </motion.article>
@@ -213,73 +198,68 @@ export default function OperationsSection() {
         </div>
 
         {/* ===== 3. Linha do tempo das etapas ===== */}
-        <h3 className="operations__subtitle">Como funciona</h3>
-        <ol className="operations__timeline">
+        <h3 className="mb-8 mt-16 text-xl font-black text-ink sm:text-2xl">Como funciona</h3>
+        <ol className="relative grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          {/* linha que liga as etapas (só no desktop) */}
+          <span aria-hidden="true" className="absolute left-[12%] right-[12%] top-8 hidden h-0.5 bg-linear-to-r from-leaf-bright/20 via-leaf-bright to-leaf-bright/20 lg:block" />
           {etapas.map((e, i) => {
             const Icone = e.icone;
             return (
-              <motion.li key={e.numero} {...entrada(0.1 * i)} className="operations__step">
-                {/* Marcador: ícone + número; o conector é desenhado no CSS */}
-                <div className="operations__step-marker" aria-hidden="true">
-                  <Icone size={24} />
-                  <span>{e.numero}</span>
-                </div>
-                <div className="operations__step-body">
-                  <h4>{e.titulo}</h4>
-                  <p lang="pt-BR">{e.texto}</p>
-                </div>
+              <motion.li key={e.numero} {...aparecer(0.1 * i)} className="relative text-center sm:text-left lg:text-center">
+                <span className="relative mx-auto grid size-16 place-items-center rounded-full border-4 border-surface-alt bg-brand text-white shadow-lg sm:mx-0 lg:mx-auto" aria-hidden="true">
+                  <Icone size={26} />
+                  <span className="absolute -right-1 -top-1 grid size-6 place-items-center rounded-full bg-sun text-[11px] font-black text-ink">
+                    {e.numero}
+                  </span>
+                </span>
+                <h4 className="mt-4 text-lg font-black text-ink">{e.titulo}</h4>
+                <p lang="pt-BR" className="mt-2 text-sm leading-relaxed text-ink-soft">
+                  {e.texto}
+                </p>
               </motion.li>
             );
           })}
         </ol>
 
         {/* ===== 4. Compromissos ===== */}
-        <h3 className="operations__subtitle">Nossos compromissos</h3>
-        <div className="operations__commitments">
-          {compromissos.map((c, i) => {
-            const Icone = c.icone;
-            return (
-              <motion.div key={c.titulo} {...entrada(0.08 * i)} className="operations__commitment">
-                <Icone size={20} aria-hidden="true" />
-                <div>
-                  <h4>{c.titulo}</h4>
-                  <p lang="pt-BR">{c.texto}</p>
+        <motion.div {...aparecer()} className="mt-16 rounded-3xl bg-emerald-950 p-6 sm:p-10">
+          <h3 className="text-xl font-black text-white sm:text-2xl">Nossos compromissos</h3>
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {compromissos.map((c) => {
+              const Icone = c.icone;
+              return (
+                <div key={c.titulo} className="flex gap-4">
+                  <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-emerald-500/20 text-emerald-300" aria-hidden="true">
+                    <Icone size={22} />
+                  </span>
+                  <div>
+                    <h4 className="font-black text-white">{c.titulo}</h4>
+                    <p lang="pt-BR" className="mt-1 text-sm leading-relaxed text-emerald-100/80">
+                      {c.texto}
+                    </p>
+                  </div>
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </motion.div>
 
         {/* ===== 5. Chamada para parceria ===== */}
-        <motion.div {...entrada(0.1)} className="operations__cta">
-          <div className="operations__cta-text">
-            <h3>Quer levar a coleta seletiva para sua organização?</h3>
-            <p lang="pt-BR">
-              Fale com a ACMRB e construa uma parceria sob medida para a
-              realidade da sua empresa, escola ou instituição.
-            </p>
-          </div>
-          <div className="operations__cta-buttons">
-            {/* Rolagem suave até o formulário de contato (href funciona sem JS) */}
-            <Button
-              href="#contato"
-              onClick={(ev) => {
-              if (document.getElementById("contato")) {
-              ev.preventDefault();
-              smoothScrollTo("contato");
-              }
-              }}
-              variante="claro"
-            >
+        <motion.div {...aparecer(0.1)}>
+          <FaixaCta
+            titulo="Quer levar a coleta seletiva para sua organização?"
+            texto="Fale com a ACMRB e construa uma parceria sob medida para a realidade da sua empresa, escola ou instituição."
+          >
+            <Button href="#contato" variante="claro" tamanho="grande">
               Seja parceiro
               <ArrowRight size={18} aria-hidden="true" />
             </Button>
-            <Button href="/transparencia" variante="contornoClaro" >
+            <Button href="/transparencia" variante="contornoClaro" tamanho="grande">
               Ver transparência
             </Button>
-          </div>
+          </FaixaCta>
         </motion.div>
-      </div>
+      </Container>
     </section>
   );
 }

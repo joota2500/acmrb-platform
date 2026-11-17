@@ -1,14 +1,15 @@
 "use client";
 
 /**
- * ColetaCalendarioSection — "Coleta seletiva no seu bairro" (home, id="coleta")
+ * ColetaCalendarioSection — "Coleta seletiva" (âncora #coleta)
  * ------------------------------------------------------------
- * Esquerda: chamada + botão "Agende sua coleta" (/agendar-coleta).
- * Direita: calendário por bairro (CalendarioBairros, modo compacto).
- * Visual: Tailwind + Button.
+ * Texto + botões à esquerda e, à direita, o calendário compacto por bairro
+ * (componente CalendarioBairros, que lê os dados do Supabase).
+ * Responsivo: o calendário vai para baixo do texto em telas menores que 1024px.
  */
 
 import { ArrowRight, CalendarDays, Truck } from "lucide-react";
+
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import CalendarioBairros from "@/components/calendario/CalendarioBairros";
@@ -17,30 +18,39 @@ export default function ColetaCalendarioSection() {
   return (
     <section
       id="coleta"
-      className="scroll-mt-20 bg-linear-to-b from-[#f0fdf4] to-white py-16 max-lg:py-12 max-[480px]:py-9"
       aria-labelledby="colsec-titulo"
+      className="relative isolate overflow-hidden bg-brand-soft py-16 sm:py-20 lg:py-24"
     >
-      <Container className="grid items-center gap-10 lg:grid-cols-2 max-lg:gap-7">
+      {/* círculo decorativo */}
+      <span aria-hidden="true" className="pointer-events-none absolute -left-24 -top-24 -z-10 size-80 rounded-full bg-leaf-bright/10" />
+
+      <Container className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-mint px-3.5 py-1.5 text-[0.8rem] font-extrabold text-brand">
-            <Truck size={15} aria-hidden="true" /> Coleta seletiva
+          <span className="inline-flex items-center gap-2 rounded-full border border-leaf-bright/25 bg-white px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-leaf">
+            <Truck size={14} aria-hidden="true" /> Coleta seletiva
           </span>
-          <h2 id="colsec-titulo" className="mt-3.5 text-left text-[2rem] font-black leading-tight text-ink max-lg:text-[1.7rem] max-[480px]:text-[1.4rem]">
-            Separe, agende e <span className="text-emerald-600">a ACMRB busca</span>
+
+          <h2 id="colsec-titulo" className="mt-4 text-balance text-left text-headline font-black text-ink">
+            Separe, agende e <span className="text-leaf">a ACMRB busca</span>
           </h2>
-          <p className="texto-justo mt-3.5 text-[1.02rem] leading-relaxed text-ink-soft max-[480px]:text-[0.92rem]">
-            Veja os dias de coleta do seu bairro ou peça uma coleta no seu endereço. Você acompanha o pedido e conversa com a equipe pelo site.
+
+          <p lang="pt-BR" className="mt-4 max-w-xl text-base leading-relaxed text-ink-soft sm:text-lg">
+            Veja os dias de coleta do seu bairro ou peça uma coleta no seu endereço. Você acompanha o pedido e conversa
+            com a equipe pelo site.
           </p>
-          <div className="mt-6 flex flex-wrap gap-2.5 max-[480px]:flex-col">
-            <Button href="/agendar-coleta" className="h-12 rounded-[0.95rem] px-5 font-extrabold">
-              Agende sua coleta <ArrowRight size={17} aria-hidden="true" />
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button href="/agendar-coleta" tamanho="grande">
+              Agende sua coleta <ArrowRight size={18} aria-hidden="true" />
             </Button>
-            <Button href="/calendario-coleta" variante="contorno" className="h-12 rounded-[0.95rem] px-5 font-extrabold">
-              <CalendarDays size={17} aria-hidden="true" /> Calendário completo
+            <Button href="/calendario-coleta" variante="contorno" tamanho="grande">
+              <CalendarDays size={18} aria-hidden="true" /> Calendário completo
             </Button>
           </div>
         </div>
-        <div className="min-w-0 rounded-3xl border border-emerald-100 bg-white/85 p-5.5 shadow-[0_18px_40px_-24px_rgb(46_94_78/0.45)] max-[480px]:rounded-[1.15rem] max-[480px]:p-4">
+
+        {/* Calendário por bairro dentro de um cartão */}
+        <div className="min-w-0 rounded-3xl border border-white bg-white p-4 shadow-pop sm:p-6">
           <CalendarioBairros compacto />
         </div>
       </Container>
