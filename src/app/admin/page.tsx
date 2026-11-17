@@ -54,6 +54,7 @@ import RelatoriosSection from "@/components/admin/sections/RelatoriosSection";
 import ConfiguracoesSection from "@/components/admin/sections/ConfiguracoesSection";
 import NoticiasSection from "@/components/admin/sections/NoticiasSection";
 import MaterialsSection from "@/components/admin/materials/MaterialsSection";
+import { avisar } from "@/utils/alertas";
 
 const CHAVE_RECOLHIDA = "acmrb-admin-menu-recolhido";
 
@@ -135,7 +136,7 @@ function PainelAdmin() {
 
   // Sai sozinho após MINUTOS_INATIVIDADE sem uso (segurança em viagem)
   const expirar = useCallback(() => {
-    alert(`Sessão encerrada após ${MINUTOS_INATIVIDADE} minutos sem uso.`);
+    void avisar(`Sessão encerrada após ${MINUTOS_INATIVIDADE} minutos sem uso.`, "info", "Sessão encerrada");
     logout();
   }, [logout]);
   useInatividade(!!user && perfil?.tipo === "admin", expirar);

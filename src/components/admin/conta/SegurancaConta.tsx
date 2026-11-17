@@ -14,6 +14,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Loader2, LogOut, Mail, MailCheck, ShieldCheck, ShieldOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { chamarApi, ESPERA_EMAIL_SEG, urlRedefinir } from "@/services/apiAdmin";
+import { confirmar } from "@/utils/alertas";
 
 type Mostrar = (tipo: "sucesso" | "erro" | "aviso", mensagem: string) => void;
 
@@ -126,7 +127,14 @@ export default function SegurancaConta({ email, mostrar, onEmailTrocado }: {
   }
 
   async function desativarMfa() {
-    if (!fatorAtivo || !confirm("Desativar a verificação em duas etapas?")) return;
+    if (!fatorAtivo) return;
+    const confirmou = await confirmar({
+      titulo: "Desativar a verificação em duas etapas?",
+      mensagem: "Sua conta ficará protegida só pela senha.",
+      textoConfirmar: "Desativar",
+      perigo: true,
+    });
+    if (!confirmou) return;
     setMfaOcupado(true);
     const { error } = await supabase.auth.mfa.unenroll({ factorId: fatorAtivo });
     setMfaOcupado(false);

@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
+import { avisar } from "@/utils/alertas";
 
 type Props = {
   tipos: any[];
@@ -110,9 +111,7 @@ export default function MaterialsForm({
       !peso
     ) {
 
-      alert(
-        "Material e peso são obrigatórios.",
-      );
+      void avisar("Material e peso são obrigatórios.", "aviso");
 
       return;
 
@@ -164,7 +163,7 @@ export default function MaterialsForm({
 
       if (error) {
 
-        alert(error.message);
+        void avisar(error.message, "erro");
 
         return;
 
@@ -190,9 +189,7 @@ export default function MaterialsForm({
 
       onSuccess();
 
-      alert(
-        "Registro adicionado com sucesso.",
-      );
+      void avisar("Registro adicionado com sucesso.", "sucesso");
 
     } finally {
 

@@ -244,3 +244,61 @@ html[data-bloqueado] body > *:not([data-camada-bloqueio]) {
 html[data-bloqueado] body {
   overflow: hidden;
 }
+
+/* ---------- Caixas de aviso (SweetAlert2) nas cores da ACMRB ----------
+   Fica fora de @layer de propósito: o CSS do sweetalert2 também fica,
+   e o seletor com duas classes garante que o nosso ganhe. */
+.swal2-popup.swal-acmrb {
+  padding: 1.75rem 1.5rem 1.5rem;
+  border-radius: 1.5rem;
+  font-family: var(--font-sans);
+  box-shadow: 0 24px 60px -20px rgb(33 70 58 / 0.45);
+}
+.swal2-popup.swal-acmrb .swal-acmrb-titulo {
+  color: var(--color-brand-dark);
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+.swal2-popup.swal-acmrb .swal-acmrb-texto {
+  color: var(--color-ink-soft);
+  font-size: 0.97rem;
+  line-height: 1.55;
+  text-align: center;
+}
+.swal2-popup.swal-acmrb .swal-acmrb-acoes {
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.swal2-popup.swal-acmrb .swal-acmrb-confirmar,
+.swal2-popup.swal-acmrb .swal-acmrb-perigo,
+.swal2-popup.swal-acmrb .swal-acmrb-cancelar {
+  min-width: 7rem;
+  height: 2.9rem;
+  padding: 0 1.4rem;
+  border-radius: var(--radius-control);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+.swal2-popup.swal-acmrb .swal-acmrb-confirmar { background: var(--color-brand); color: #fff; border: 0; }
+.swal2-popup.swal-acmrb .swal-acmrb-confirmar:hover { background: var(--color-brand-dark); }
+.swal2-popup.swal-acmrb .swal-acmrb-perigo { background: #dc2626; color: #fff; border: 0; }
+.swal2-popup.swal-acmrb .swal-acmrb-perigo:hover { background: #b91c1c; }
+.swal2-popup.swal-acmrb .swal-acmrb-cancelar { background: #fff; color: var(--color-ink-soft); border: 1px solid var(--color-line); }
+.swal2-popup.swal-acmrb .swal-acmrb-cancelar:hover { background: var(--color-surface-alt); }
+.swal2-popup.swal-acmrb button:focus-visible { outline: 3px solid var(--color-brand-line); outline-offset: 2px; box-shadow: none; }
+/* ícones nas cores do site */
+.swal2-popup.swal-acmrb .swal2-icon.swal2-success { color: var(--color-leaf-bright); border-color: var(--color-leaf-bright); }
+.swal2-popup.swal-acmrb .swal2-icon.swal2-success [class^="swal2-success-line"] { background-color: var(--color-leaf-bright); }
+.swal2-popup.swal-acmrb .swal2-icon.swal2-success .swal2-success-ring { border-color: rgb(16 185 129 / 0.3); }
+.swal2-popup.swal-acmrb .swal2-icon.swal2-question,
+.swal2-popup.swal-acmrb .swal2-icon.swal2-info { color: var(--color-brand); border-color: var(--color-brand-line); }
+.swal2-popup.swal-acmrb .swal2-icon.swal2-warning { color: var(--color-sun); border-color: #fde68a; }
+.swal2-popup.swal-acmrb .swal2-icon.swal2-error { color: var(--color-danger); border-color: #fecaca; }
+.swal2-popup.swal-acmrb .swal2-icon.swal2-error [class^="swal2-x-mark-line"] { background-color: var(--color-danger); }
+.swal2-popup.swal-acmrb .swal2-timer-progress-bar { background: var(--color-brand); }
+.swal2-popup.swal-acmrb.swal-acmrb-toast { padding: 0.75rem 1rem; border-radius: 1rem; }
+.swal2-popup.swal-acmrb.swal-acmrb-toast .swal-acmrb-titulo { font-size: 0.95rem; font-weight: 700; }
+.swal2-container { z-index: 2000; }

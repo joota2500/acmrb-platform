@@ -12,6 +12,7 @@ import {
 } from "react";
 
 import { supabase } from "@/lib/supabase";
+import { avisar, confirmar } from "@/utils/alertas";
 
 type Props = {
   open: boolean;
@@ -74,7 +75,7 @@ export default function MaterialEditModal({
 
   if (!material?.id) {
 
-    alert("Material inválido.");
+    void avisar("Material inválido.", "aviso");
 
     return;
 
@@ -124,17 +125,13 @@ export default function MaterialEditModal({
 
     if (error) {
 
-      alert(
-        `Erro: ${error.message}`,
-      );
+      void avisar(`Erro: ${error.message}`, "erro");
 
       return;
 
     }
 
-    alert(
-      "Material atualizado com sucesso.",
-    );
+    void avisar("Material atualizado com sucesso.", "sucesso");
 
     onSuccess();
 
@@ -147,9 +144,7 @@ export default function MaterialEditModal({
       err,
     );
 
-    alert(
-      "Erro inesperado ao atualizar.",
-    );
+    void avisar("Erro inesperado ao atualizar.", "erro");
 
   } finally {
 
@@ -161,12 +156,9 @@ export default function MaterialEditModal({
 
   async function excluir() {
 
-    const confirmar =
-      confirm(
-        "Deseja excluir este tipo?",
-      );
+    const confirmou = await confirmar({ titulo: "Excluir este tipo?", mensagem: "Essa ação não pode ser desfeita.", textoConfirmar: "Excluir", perigo: true });
 
-    if (!confirmar) return;
+    if (!confirmou) return;
 
     const { error } =
       await supabase
@@ -181,7 +173,7 @@ export default function MaterialEditModal({
 
     if (error) {
 
-      alert(error.message);
+      void avisar(error.message, "erro");
 
       return;
 

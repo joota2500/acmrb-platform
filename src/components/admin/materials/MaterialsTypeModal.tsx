@@ -10,6 +10,7 @@ import {
 } from "react";
 
 import { supabase } from "@/lib/supabase";
+import { avisar } from "@/utils/alertas";
 
 type Props = {
   open: boolean;
@@ -49,9 +50,7 @@ export default function MaterialTypeModal({
 
     if (!nome) {
 
-      alert(
-        "Nome obrigatório.",
-      );
+      void avisar("Nome obrigatório.", "aviso");
 
       return;
 
@@ -78,7 +77,7 @@ export default function MaterialTypeModal({
 
       if (error) {
 
-        alert(error.message);
+        void avisar(error.message, "erro");
 
         return;
 
@@ -94,9 +93,7 @@ export default function MaterialTypeModal({
 
       onClose();
 
-      alert(
-        "Tipo criado com sucesso.",
-      );
+      void avisar("Tipo criado com sucesso.", "sucesso");
 
     } finally {
 

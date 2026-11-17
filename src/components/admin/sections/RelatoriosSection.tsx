@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { Eye, EyeOff, FileText, Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { CATEGORIAS_DOC } from "@/components/transparencia/TranspDocumentos";
+import { confirmar } from "@/utils/alertas";
 
 type Doc = {
   id: string;
@@ -95,7 +96,13 @@ export default function RelatoriosSection() {
   }
 
   async function excluir(d: Doc) {
-    if (!confirm(`Excluir o documento “${d.titulo}”?`)) return;
+    const confirmou = await confirmar({
+      titulo: "Excluir o documento?",
+      mensagem: `“${d.titulo}” será removido da página de transparência.`,
+      textoConfirmar: "Excluir",
+      perigo: true,
+    });
+    if (!confirmou) return;
     await supabase.from("transparencia_documentos").delete().eq("id", d.id);
     carregar();
   }

@@ -16,6 +16,7 @@ import {
 } from "react";
 
 import { supabase } from "@/lib/supabase";
+import { avisar, confirmar } from "@/utils/alertas";
 
 type Registro = {
 
@@ -214,7 +215,7 @@ export default function MaterialsTable({
 
       if (error) {
 
-        alert(error.message);
+        void avisar(error.message, "erro");
 
         return;
 
@@ -236,12 +237,9 @@ export default function MaterialsTable({
     id: string,
   ) {
 
-    const confirmar =
-      confirm(
-        "Deseja excluir este registro?",
-      );
+    const confirmou = await confirmar({ titulo: "Excluir este registro?", mensagem: "Essa ação não pode ser desfeita.", textoConfirmar: "Excluir", perigo: true });
 
-    if (!confirmar) return;
+    if (!confirmou) return;
 
     const { error } =
       await supabase
@@ -253,7 +251,7 @@ export default function MaterialsTable({
 
     if (error) {
 
-      alert(error.message);
+      void avisar(error.message, "erro");
 
       return;
 
