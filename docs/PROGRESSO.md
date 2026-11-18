@@ -36,7 +36,7 @@ Responsável: João Victor Rocha Costa
   - [x] 6. Associados
   - [x] 7. Mapa
   - [x] 8. Admin: estrutura (shell) — menu lateral recolhível, gaveta no celular, topo, barra inferior e área de conteúdo em Tailwind; `admin-shell.css` apagado
-  - [ ] 9. Admin: visão geral
+  - [x] 9. Admin: visão geral — cards de indicadores, gráficos, pendências, atalhos e a Visão do Mapa em Tailwind; `admin-visao-geral.css` e `admin-visao-mapa.css` apagados
   - [ ] 10. Admin: notícias
   - [ ] 11. Admin: apoiadores
   - [ ] 12. Admin: coletas e calendário
