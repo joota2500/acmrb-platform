@@ -3,9 +3,10 @@
 /**
  * AdminSidebar — navegação do painel
  * ------------------------------------------------------------
- * - Desktop (>=1024px): barra fixa à esquerda, 260px, que pode ser
- *   recolhida para só ícones (80px). A preferência fica salva no
- *   localStorage (controlado pela página).
+ * - Desktop (>=1024px): barra fixa à esquerda, 16,5rem, que pode ser
+ *   recolhida para só ícones (5rem). A preferência fica salva no
+ *   localStorage (controlado pela página). A largura vem da variável
+ *   --admin-sidebar definida no AdminContainer.
  * - Tablet e celular (<1024px): gaveta lateral (off-canvas) com fundo
  *   escuro. Fecha com Esc, clique fora ou ao escolher um item; trava a
  *   rolagem da página e devolve o foco ao botão que abriu.
@@ -14,12 +15,20 @@
  */
 
 import { useEffect, useRef } from "react";
-import { ChevronsLeft, ChevronsRight, LogOut, X } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, LogOut, Recycle, X } from "lucide-react";
 
 import { GRUPOS_NAV, type SecaoId } from "@/constants/adminNav";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import { podeVer } from "@/constants/permissoes";
 import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
+import { cn } from "@/utils/cn";
+
+// Fundo verde escuro da barra e da gaveta (o mesmo nos dois)
+const FUNDO_MENU = "bg-linear-to-b from-brand-dark via-brand-dark to-[#14302a]";
+
+// Botões pequenos redondos do menu (recolher, fechar, expandir)
+const BOTAO_ICONE =
+  "flex shrink-0 items-center justify-center rounded-xl text-emerald-100 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-emerald-300";
 
 interface Usuario {
   nome: string;
@@ -43,15 +52,15 @@ function Marca({ compacta }: { compacta?: boolean }) {
   return (
     <div className="flex items-center gap-3 min-w-0">
       <span
-        className="w-11 h-11 shrink-0 rounded-2xl bg-linear-to-br from-emerald-500 to-brand text-white flex items-center justify-center text-2xl shadow-lg"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-400 to-emerald-600 text-white shadow-lg ring-1 ring-white/20"
         aria-hidden="true"
       >
-        ♻
+        <Recycle size={24} />
       </span>
       {!compacta && (
         <span className="min-w-0 leading-tight">
-          <span className="block font-black text-white text-lg tracking-tight">ACMRB</span>
-          <span className="block text-xs text-emerald-200/80 truncate">Painel administrativo</span>
+          <span className="block text-lg font-black tracking-tight text-white">ACMRB</span>
+          <span className="block truncate text-xs text-emerald-200/80">Painel administrativo</span>
         </span>
       )}
     </div>
@@ -77,13 +86,13 @@ function Menu({
   );
 
   return (
-    <nav aria-label="Seções do painel" className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
+    <nav aria-label="Seções do painel" className="flex-1 space-y-5 overflow-y-auto overscroll-contain px-3 py-4 [scrollbar-color:rgb(255_255_255/0.2)_transparent] [scrollbar-width:thin]">
       {grupos.map((grupo) => (
         <div key={grupo.titulo}>
           {compacta ? (
             <div className="mx-3 mb-2 h-px bg-white/10" aria-hidden="true" />
           ) : (
-            <p className="px-3 mb-2 text-[11px] font-bold uppercase tracking-widest text-emerald-200/60">
+            <p className="mb-2 px-3 text-[11px] font-bold uppercase tracking-widest text-emerald-200/70">
               {grupo.titulo}
             </p>
           )}
@@ -99,15 +108,19 @@ function Menu({
                     aria-current={ativo ? "page" : undefined}
                     title={compacta ? item.rotulo : undefined}
                     aria-label={compacta ? item.rotulo : undefined}
-                    className={`group w-full min-h-11 rounded-xl flex items-center gap-3 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300 ${
-                      compacta ? "justify-center px-0" : "px-3"
-                    } ${
+                    className={cn(
+                      "group relative flex min-h-11 w-full items-center gap-3 rounded-xl transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-300",
+                      compacta ? "justify-center px-0" : "px-3",
                       ativo
-                        ? "bg-white text-brand-dark shadow-md"
-                        : "text-emerald-50/85 hover:bg-white/10 hover:text-white"
-                    }`}
+                        ? "bg-white/15 text-white shadow-sm ring-1 ring-white/15"
+                        : "text-emerald-50/85 hover:bg-white/10 hover:text-white",
+                    )}
                   >
-                    <span className="relative shrink-0">
+                    {/* Barrinha verde que marca o item da seção aberta */}
+                    {ativo && (
+                      <span className="absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-emerald-300" aria-hidden="true" />
+                    )}
+                    <span className={cn("relative shrink-0 transition-colors", ativo && "text-emerald-300")}>
                       <Icone size={20} aria-hidden="true" />
                       {/* Bolinha de não lidas no modo recolhido */}
                       {compacta && item.id === "mensagens" && naoLidas > 0 && (
@@ -116,12 +129,12 @@ function Menu({
                     </span>
                     {!compacta && (
                       <>
-                        <span className="flex-1 text-left text-sm font-semibold truncate">
+                        <span className="flex-1 truncate text-left text-sm font-semibold">
                           {item.rotulo}
                         </span>
                         {item.id === "mensagens" && naoLidas > 0 && (
                           <span
-                            className="min-w-5 h-5 px-1.5 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center"
+                            className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1.5 text-[11px] font-bold text-white"
                             aria-label={`${naoLidas} não lidas`}
                           >
                             {naoLidas > 99 ? "99+" : naoLidas}
@@ -129,9 +142,10 @@ function Menu({
                         )}
                         {!item.pronto && (
                           <span
-                            className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${
-                              ativo ? "bg-brand-mint text-brand" : "bg-white/10 text-emerald-200"
-                            }`}
+                            className={cn(
+                              "rounded-full px-2 py-0.5 text-[10px] font-bold uppercase",
+                              ativo ? "bg-brand-mint text-brand" : "bg-white/10 text-emerald-200",
+                            )}
                           >
                             em breve
                           </span>
@@ -162,8 +176,8 @@ function CartaoUsuario({
   const inicial = (usuario.nome || "A").charAt(0).toUpperCase();
   if (compacta) {
     return (
-      <div className="p-3 border-t border-white/10 flex flex-col items-center gap-2">
-        <span className="w-11 h-11 rounded-2xl bg-emerald-500 text-white font-black flex items-center justify-center" title={usuario.nome}>
+      <div className="flex flex-col items-center gap-2 border-t border-white/10 p-3">
+        <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500 font-black text-white" title={usuario.nome}>
           {inicial}
         </span>
         <button
@@ -171,7 +185,7 @@ function CartaoUsuario({
           onClick={onSair}
           aria-label="Sair do painel"
           title="Sair do painel"
-          className="w-11 h-11 rounded-xl text-red-200 hover:bg-red-500/20 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-red-300"
+          className="flex h-11 w-11 items-center justify-center rounded-xl text-red-200 transition-colors hover:bg-red-500/20 focus-visible:outline-2 focus-visible:outline-red-300"
         >
           <LogOut size={20} />
         </button>
@@ -179,16 +193,16 @@ function CartaoUsuario({
     );
   }
   return (
-    <div className="p-3 border-t border-white/10">
-      <div className="rounded-2xl bg-white/5 p-3 flex items-center gap-3">
-        <span className="w-11 h-11 shrink-0 rounded-2xl bg-emerald-500 text-white font-black flex items-center justify-center text-lg">
+    <div className="border-t border-white/10 p-3">
+      <div className="flex items-center gap-3 rounded-2xl bg-white/8 p-3 ring-1 ring-white/10">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-400 to-emerald-600 text-lg font-black text-white">
           {inicial}
         </span>
         <div className="min-w-0 flex-1">
-          <span className="inline-block text-[10px] font-black uppercase tracking-wider bg-amber-400 text-ink px-2 py-0.5 rounded-full">
+          <span className="inline-block rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-ink">
             {usuario.papel}
           </span>
-          <p className="mt-1 text-sm font-bold text-white truncate">{usuario.nome}</p>
+          <p className="mt-1 truncate text-sm font-bold text-white">{usuario.nome}</p>
           <p className="text-xs text-emerald-200/70 truncate" title={usuario.email}>
             {usuario.email}
           </p>
@@ -197,7 +211,7 @@ function CartaoUsuario({
       <button
         type="button"
         onClick={onSair}
-        className="mt-2 w-full min-h-11 rounded-xl flex items-center justify-center gap-2 text-sm font-bold text-red-100 bg-red-500/15 hover:bg-red-500/30 focus-visible:outline-2 focus-visible:outline-red-300"
+        className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-red-500/15 text-sm font-bold text-red-100 transition-colors hover:bg-red-500/30 focus-visible:outline-2 focus-visible:outline-red-300"
       >
         <LogOut size={18} aria-hidden="true" /> Sair do painel
       </button>
@@ -241,8 +255,14 @@ export default function AdminSidebar({
   return (
     <>
       {/* ===== Desktop: barra fixa (some abaixo de 1024px) ===== */}
-      <aside className="admin-sidebar" aria-label="Menu do painel">
-        <div className={`h-20 flex items-center border-b border-white/10 ${recolhida ? "justify-center px-2" : "justify-between px-4"}`}>
+      <aside
+        aria-label="Menu do painel"
+        className={cn(
+          "fixed inset-y-0 left-0 z-40 hidden w-(--admin-sidebar) flex-col shadow-[4px_0_24px_rgb(0_0_0/0.08)] transition-[width] duration-300 motion-reduce:transition-none lg:flex",
+          FUNDO_MENU,
+        )}
+      >
+        <div className={cn("flex h-20 items-center border-b border-white/10", recolhida ? "justify-center px-2" : "justify-between px-4")}>
           <Marca compacta={recolhida} />
           {!recolhida && (
             <button
@@ -250,7 +270,7 @@ export default function AdminSidebar({
               onClick={onAlternarRecolhida}
               aria-label="Recolher menu"
               title="Recolher menu"
-              className="w-10 h-10 rounded-xl text-emerald-100 hover:bg-white/10 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-emerald-300"
+              className={cn(BOTAO_ICONE, "h-10 w-10")}
             >
               <ChevronsLeft size={20} />
             </button>
@@ -262,7 +282,7 @@ export default function AdminSidebar({
             onClick={onAlternarRecolhida}
             aria-label="Expandir menu"
             title="Expandir menu"
-            className="mx-auto mt-3 w-11 h-11 rounded-xl text-emerald-100 hover:bg-white/10 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-emerald-300"
+            className={cn(BOTAO_ICONE, "mx-auto mt-3 h-11 w-11")}
           >
             <ChevronsRight size={20} />
           </button>
@@ -273,23 +293,30 @@ export default function AdminSidebar({
 
       {/* ===== Tablet/celular: gaveta ===== */}
       {gavetaAberta && (
-        <div className="admin-gaveta lg:hidden">
-          <div className="admin-gaveta__fundo" onClick={onFecharGaveta} aria-hidden="true" />
+        <div className="fixed inset-0 z-70 lg:hidden">
+          <div
+            className="absolute inset-0 animate-aparecer bg-black/55 backdrop-blur-xs motion-reduce:animate-none"
+            onClick={onFecharGaveta}
+            aria-hidden="true"
+          />
           <div
             id="admin-gaveta"
             role="dialog"
             aria-modal="true"
             aria-label="Menu do painel"
-            className="admin-gaveta__painel"
+            className={cn(
+              "absolute inset-y-0 left-0 flex w-[min(300px,86vw)] animate-entrar-esquerda flex-col overscroll-contain shadow-[8px_0_40px_rgb(0_0_0/0.35)] motion-reduce:animate-none",
+              FUNDO_MENU,
+            )}
           >
-            <div className="h-16 flex items-center justify-between px-4 border-b border-white/10">
+            <div className="flex h-16 items-center justify-between border-b border-white/10 px-4">
               <Marca />
               <button
                 ref={fecharRef}
                 type="button"
                 onClick={onFecharGaveta}
                 aria-label="Fechar menu"
-                className="w-11 h-11 rounded-xl text-emerald-100 hover:bg-white/10 flex items-center justify-center focus-visible:outline-2 focus-visible:outline-emerald-300"
+                className={cn(BOTAO_ICONE, "h-11 w-11")}
               >
                 <X size={22} />
               </button>

@@ -14,12 +14,13 @@
  *  - Gaveta no tablet/celular e barra rápida inferior no celular.
  *  - Sair pede confirmação.
  *
- * Responsividade: ver src/styles/admin-shell.css.
+ * Responsividade: celular, tablet e notebook são tratados nos componentes de
+ * src/components/admin/layout (classes Tailwind).
  */
 
 import { Suspense, useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
+import { Lock, ShieldCheck } from "lucide-react";
 
 import { useAuth } from "@/contexts/AuthContext";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
@@ -61,13 +62,13 @@ const CHAVE_RECOLHIDA = "acmrb-admin-menu-recolhido";
 /** Tela de espera (mesma mensagem de antes) */
 function Validando() {
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-[#F5F7F4] p-4">
-      <div className="bg-white rounded-3xl border border-black/5 px-8 py-7 shadow-sm text-center max-w-md w-full">
-        <div className="w-14 h-14 rounded-2xl bg-brand-soft text-brand flex items-center justify-center mx-auto mb-5">
-          <ShieldCheck size={24} />
+    <div className="flex min-h-dvh items-center justify-center bg-[#f5f7f4] p-4">
+      <div className="w-full max-w-md rounded-3xl border border-line bg-white px-8 py-8 text-center shadow-card">
+        <div className="mx-auto mb-5 flex h-14 w-14 animate-pulse items-center justify-center rounded-2xl bg-brand-mint text-brand motion-reduce:animate-none">
+          <ShieldCheck size={26} aria-hidden="true" />
         </div>
         <h2 className="text-2xl font-black text-ink">Carregando painel</h2>
-        <p className="text-zinc-500 mt-3 text-sm leading-7">Validando permissões administrativas...</p>
+        <p className="mt-3 text-sm leading-7 text-ink-muted">Validando permissões administrativas...</p>
       </div>
     </div>
   );
@@ -76,9 +77,12 @@ function Validando() {
 /** Seção bloqueada para o papel logado (ex.: link direto ?secao=esg) */
 function SemPermissao() {
   return (
-    <div role="alert" className="bg-white rounded-3xl border border-black/5 p-6 sm:p-10 text-center">
-      <h2 className="text-xl sm:text-2xl font-black text-zinc-900">Acesso restrito</h2>
-      <p className="mt-2 text-zinc-500 max-w-md mx-auto">Esta área é exclusiva do ADM DEUS.</p>
+    <div role="alert" className="rounded-3xl border border-line bg-white p-6 text-center shadow-card sm:p-10">
+      <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-warning-soft text-warning">
+        <Lock size={26} aria-hidden="true" />
+      </div>
+      <h2 className="text-xl font-black text-ink sm:text-2xl">Acesso restrito</h2>
+      <p className="mx-auto mt-2 max-w-md text-ink-muted">Esta área é exclusiva do ADM DEUS.</p>
     </div>
   );
 }
@@ -169,10 +173,12 @@ function PainelAdmin() {
         onSair={() => setConfirmarSaida(true)}
       />
 
-      <div className="admin-coluna">
+      {/* Coluna principal: no desktop deixa espaço (margem) para a barra fixa */}
+      <div className="min-w-0 transition-[margin-left] duration-300 motion-reduce:transition-none lg:ml-(--admin-sidebar)">
         <AdminHeader
           titulo={item.rotulo}
           descricao={item.descricao}
+          icone={item.icone}
           emBreve={!item.pronto}
           onAbrirGaveta={() => setGaveta(true)}
           gavetaAberta={gaveta}

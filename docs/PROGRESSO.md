@@ -35,7 +35,7 @@ Responsável: João Victor Rocha Costa
   - [x] Menu (nav): reorganizado com Parceiros, Associados e Calendário, botão "Agendar coleta", página atual destacada e menu mobile novo; ajustado no computador (Associação, Contato com denúncia, mais espaço do logo)
   - [x] 6. Associados
   - [x] 7. Mapa
-  - [ ] 8. Admin: estrutura (shell)
+  - [x] 8. Admin: estrutura (shell) — menu lateral recolhível, gaveta no celular, topo, barra inferior e área de conteúdo em Tailwind; `admin-shell.css` apagado
   - [ ] 9. Admin: visão geral
   - [ ] 10. Admin: notícias
   - [ ] 11. Admin: apoiadores

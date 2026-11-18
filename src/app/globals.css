@@ -68,6 +68,18 @@
     to { opacity: 1; transform: none; }
   }
 
+  /* gaveta do painel admin: o menu entra pela esquerda e o fundo escurece */
+  --animate-entrar-esquerda: entrar-esquerda 0.25s ease-out;
+  @keyframes entrar-esquerda {
+    from { transform: translateX(-100%); }
+    to { transform: none; }
+  }
+  --animate-aparecer: aparecer 0.2s ease-out;
+  @keyframes aparecer {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
   /* Verdes e vermelhos do CSS antigo do site (os do Tailwind v4 são um pouco diferentes).
      Assim o que já existia continua com a mesma cor. */
   --color-emerald-50: #ecfdf5;

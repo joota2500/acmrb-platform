@@ -109,8 +109,7 @@ export default function MaterialTypeModal({
   return (
 
     <div
-      className="admin-modal
-        fixed
+      className="fixed
         inset-0
         z-50
         bg-black/70
@@ -119,16 +118,27 @@ export default function MaterialTypeModal({
         items-center
         justify-center
         p-6
+        max-sm:items-stretch
+        max-sm:p-0
       "
     >
 
       <div
-        className="admin-modal__painel
+        className="max-h-[90dvh]
+          overscroll-contain
+          overflow-x-hidden
+          overflow-y-auto
+          max-sm:h-dvh
+          max-sm:max-h-dvh
+          max-sm:max-w-none
+          max-sm:rounded-none
+          max-sm:[&_.p-8]:p-5
+          max-sm:[&_.text-4xl]:text-2xl
+          max-sm:[&_.text-5xl]:text-[1.75rem]
           w-full
           max-w-2xl
           bg-white
           rounded-4xl
-          overflow-hidden
         "
       >
 
