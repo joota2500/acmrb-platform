@@ -37,7 +37,7 @@ src/
 - Cores, fontes, raios e sombras ficam no `@theme` de `src/app/globals.css`
   (ex.: `bg-brand`, `text-brand-dark`, `rounded-card`, `shadow-card`, `text-display`).
 - Peças reutilizáveis em `src/components/ui/` (`Button`, `Card`, `Badge`, `Container`,
-  `PageHero`, `SectionTitle`, `Campo`, `Input`, `Spinner`...). Use elas antes de criar classe nova.
+  `Campo`, `Input`, `Spinner`...). Use elas antes de criar classe nova.
 - Páginas internas do visitante usam `components/layout/PaginaInterna`.
 - Classes juntas com `cn()` (`src/utils/cn.ts`).
 - Cuidado: CSS antigo (sem `@layer`) ganha do Tailwind. Ao migrar um componente,
@@ -47,7 +47,7 @@ src/
 
 - Todo botão/link com cara de botão usa `components/ui/Button` (variantes: primario, secundario,
   contorno, fantasma, perigo e, para fundo verde escuro, destaque, claro e contornoClaro).
-- Nada de `alert()`/`confirm()` do navegador: use `utils/alertas.ts` (`avisar`, `confirmar`,
-  `avisoRapido`), que usa SweetAlert2 com as cores da ACMRB (estilo em `globals.css`).
+- Nada de `alert()`/`confirm()` do navegador: use `utils/alertas.ts` (`avisar` e `confirmar`),
+  que usa SweetAlert2 com as cores da ACMRB (estilo em `globals.css`).
   O `ConfirmDialog` também chama esse helper.
 - Cores fixas do tipo `bg-[#2E5E4E]` viraram tokens (`bg-brand`, `bg-brand-dark`...).

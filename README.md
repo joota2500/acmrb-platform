@@ -32,11 +32,9 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
-Prepare o banco usando o arquivo:
+As outras variáveis (servidor, cron, captcha, rotas) estão explicadas no `.env.example`.
 
-```text
-supabase/schema.sql
-```
+Para montar o banco do zero, veja `supabase/README.md`.
 
 ## Desenvolvimento
 
@@ -45,19 +43,8 @@ npm install
 npm run dev
 ```
 
-Guia passo a passo para o VS Code:
-
-```text
-docs/INICIAR_NO_VSCODE.md
-```
-
-Atalho Windows para iniciar:
-
-```text
-INICIAR_ACMRB.ps1
-```
-
-Como rodar no Linux (Ubuntu): `docs/COMO-RODAR.txt`.
+Guia passo a passo (Linux e VS Code): `docs/COMO-RODAR.md`.
+No Windows, o atalho `INICIAR_ACMRB.ps1` faz tudo sozinho.
 
 ## Estrutura de pastas
 
