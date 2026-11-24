@@ -35,6 +35,9 @@ interface OpcoesTurnstile {
   callback: (token: string) => void;
   "expired-callback": () => void;
   "error-callback": () => void;
+  "timeout-callback"?: () => void;
+  "refresh-expired"?: "auto" | "manual" | "never";
+  appearance?: "always" | "execute" | "interaction-only";
   language?: string;
   theme?: "light" | "dark" | "auto";
   size?: "normal" | "flexible" | "compact";
@@ -109,6 +112,9 @@ export default function Captcha({ controle, className }: Props) {
     let ativo = true;
     setFalhou(false);
 
+    // se o script do Cloudflare não chegar em 15s (rede ruim ou bloqueador), avisa
+    const limite = setTimeout(() => ativo && !window.turnstile && setFalhou(true), 15000);
+
     carregarScript()
       .then(() => {
         if (!ativo || !caixa.current || !window.turnstile) return;
@@ -117,8 +123,11 @@ export default function Captcha({ controle, className }: Props) {
           language: "pt-br",
           theme: "light",
           size: "flexible",
+          appearance: "always", // sempre mostra o quadrinho (nunca fica invisível)
+          "refresh-expired": "auto",
           callback: (t) => setToken(t),
           "expired-callback": () => setToken(null), // código vence em ~5 min
+          "timeout-callback": () => setToken(null),
           "error-callback": () => {
             setToken(null);
             setFalhou(true);
@@ -130,6 +139,7 @@ export default function Captcha({ controle, className }: Props) {
     // ao sair (ou ao resetar), apaga o quadrinho antigo
     return () => {
       ativo = false;
+      clearTimeout(limite);
       if (id && window.turnstile) window.turnstile.remove(id);
     };
   }, [versao, setToken]);
@@ -138,8 +148,15 @@ export default function Captcha({ controle, className }: Props) {
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      {/* o Cloudflare desenha a caixinha aqui dentro */}
-      <div ref={caixa} className="min-h-[65px] w-full" />
+      <div className="relative min-h-[65px] w-full">
+        {/* aparece enquanto o Cloudflare não desenha a caixinha por cima */}
+        <span className="absolute inset-0 flex items-center gap-2 rounded-lg border border-dashed border-line bg-surface-alt px-3 text-xs text-ink-muted">
+          <span className="size-3.5 animate-spin rounded-full border-2 border-brand/30 border-t-brand" aria-hidden="true" />
+          Carregando verificação “não sou um robô”…
+        </span>
+        {/* o Cloudflare desenha a caixinha aqui dentro */}
+        <div ref={caixa} className="relative min-h-[65px] w-full" />
+      </div>
       {falhou && (
         <p role="alert" className="text-xs text-danger">
           Não foi possível carregar a verificação. Confira sua internet ou desative bloqueadores e recarregue a página.

@@ -14,7 +14,8 @@
  *  - Esqueci minha senha: envia o link para /redefinir-senha.
  * Visual (Tailwind): no computador, 2 colunas que cabem na tela sem
  * rolagem (painel verde da marca à esquerda + cartão do formulário à
- * direita). No celular, só o cartão, com rolagem vertical natural.
+ * direita). No celular, só o formulário, compacto para caber em 100dvh
+ * sem rolagem; o cadastro é feito em 2 passos (dados → senha).
  */
 
 import { useEffect, useState, type FormEvent } from "react";
@@ -87,10 +88,10 @@ function mensagemErroCadastro(error: { status?: number; code?: string; message: 
 
 // Classes que se repetem no formulário
 const CAIXA_CAMPO =
-  "flex h-11 items-center gap-2.5 rounded-control border bg-white px-3.5 text-ink-muted transition focus-within:border-brand focus-within:text-brand focus-within:shadow-focus";
+  "flex h-11 items-center max-sm:h-10.5 gap-2.5 rounded-control border bg-white px-3.5 text-ink-muted transition focus-within:border-brand focus-within:text-brand focus-within:shadow-focus";
 const ENTRADA =
   "h-full w-full min-w-0 flex-1 border-0 bg-transparent text-base text-ink outline-none placeholder:text-zinc-400 sm:text-[0.95rem]";
-const ROTULO = "text-[0.82rem] font-bold text-ink-soft";
+const ROTULO = "text-[0.8rem] font-bold leading-tight text-ink-soft sm:text-[0.82rem]";
 const LINK =
   "inline-flex items-center justify-center gap-1.5 rounded-md text-[0.85rem] font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
 
@@ -100,6 +101,9 @@ const VANTAGENS = [
   { icone: Truck, texto: "Peça e acompanhe a coleta de recicláveis" },
   { icone: ShieldCheck, texto: "Seus dados protegidos e sem anúncios" },
 ];
+
+// Campos que ficam no passo 1 do cadastro
+const CAMPOS_PASSO1 = ["nome", "telefone", "nascimento", "cidade", "email"] as const;
 
 const AVISO_VISITANTE =
   "Sem conta você pode navegar e ler todo o site. Com a conta de visitante você também pode enviar mensagens e interagir com a ACMRB.";
@@ -115,6 +119,7 @@ export default function LoginPage() {
   const [erros, setErros] = useState<ErrosCampos>({});
   const [verSenha, setVerSenha] = useState(false);
   const [espera, setEspera] = useState(0);
+  const [passo, setPasso] = useState<1 | 2>(1); // passos do cadastro
 
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -142,6 +147,21 @@ export default function LoginPage() {
     setErros({});
     setSenha("");
     setConfirmar("");
+    setPasso(1);
+  }
+
+  // ---------- CADASTRO: passo 1 → passo 2 ----------
+  // Usa o mesmo esquema zod do cadastro, mas só olha os campos do passo 1.
+  function avancarCadastro() {
+    const r = esquemaCadastro.safeParse({ nome, telefone, cidade, nascimento, email, senha, confirmar });
+    const errosPasso1: ErrosCampos = {};
+    if (!r.success) {
+      const todos = errosDoZod(r.error);
+      for (const k of CAMPOS_PASSO1) if (todos[k]) errosPasso1[k] = todos[k];
+    }
+    setErros(errosPasso1);
+    setAviso(null);
+    if (Object.keys(errosPasso1).length === 0) setPasso(2);
   }
 
   // ---------- ENTRAR ----------
@@ -210,7 +230,12 @@ export default function LoginPage() {
   // ---------- CADASTRO ----------
   async function cadastrar() {
     const r = esquemaCadastro.safeParse({ nome, telefone, cidade, nascimento, email, senha, confirmar });
-    if (!r.success) return setErros(errosDoZod(r.error));
+    if (!r.success) {
+      const todos = errosDoZod(r.error);
+      // se o erro é de um campo do passo 1, volta para ele
+      if (CAMPOS_PASSO1.some((k) => todos[k])) setPasso(1);
+      return setErros(todos);
+    }
     const d = r.data;
 
     // Proteção: limite de cadastros por rede
@@ -276,6 +301,8 @@ export default function LoginPage() {
   async function enviar(ev: FormEvent) {
     ev.preventDefault();
     if (carregando) return;
+    // no passo 1 do cadastro o Enter/botão só confere os dados e avança
+    if (modo === "cadastro" && passo === 1) return avancarCadastro();
     setAviso(null);
     setErros({});
     // "não sou um robô" precisa estar marcado (quando o captcha está ligado)
@@ -301,8 +328,9 @@ export default function LoginPage() {
   ) {
     const erro = erros[id];
     return (
-      <div className="flex min-w-0 flex-col gap-1.5">
-        <label htmlFor={`login-${id}`} className={ROTULO}>{rotulo}</label>
+      <div className="flex min-w-0 flex-col gap-1 sm:gap-1.5">
+        {/* no celular, com erro, a mensagem vermelha toma o lugar do rótulo (não aumenta a altura) */}
+        <label htmlFor={`login-${id}`} className={cn(ROTULO, erro && "max-sm:sr-only")}>{rotulo}</label>
         <div className={cn(CAIXA_CAMPO, erro ? "border-red-400" : "border-line")}>
           <Icone size={17} className="shrink-0" aria-hidden="true" />
           <input
@@ -313,7 +341,7 @@ export default function LoginPage() {
             {...props}
           />
         </div>
-        {erro && <ErroCampo id={`login-${id}-erro`} texto={erro} />}
+        {erro && <ErroCampo id={`login-${id}-erro`} texto={erro} className="max-sm:order-first" />}
       </div>
     );
   }
@@ -323,8 +351,8 @@ export default function LoginPage() {
 
   return (
     // Computador (lg): altura exata da tela e nada de rolagem na página.
-    // Celular: altura mínima da tela e só rolagem vertical (overflow-x-hidden).
-    <main className="min-h-dvh overflow-x-hidden bg-surface-alt lg:grid lg:h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:overflow-hidden">
+    // Celular: tudo compacto para caber em 100dvh (sem rolagem), nunca na horizontal.
+    <main className="min-h-dvh overflow-x-hidden bg-white sm:bg-surface-alt lg:grid lg:h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:overflow-hidden">
       {/* ===== Painel da marca (só no computador) ===== */}
       <aside className="relative hidden overflow-hidden bg-linear-to-br from-brand-dark via-brand to-emerald-700 text-white lg:flex lg:flex-col lg:justify-between lg:p-10 xl:p-14">
         <Image
@@ -385,7 +413,7 @@ export default function LoginPage() {
       {/* no computador, se uma tela bem baixa não couber, rola só esta coluna (nunca a página) */}
       <div className="flex min-h-dvh flex-col lg:min-h-0 lg:overflow-y-auto">
         {/* topo do celular/tablet: voltar + marca */}
-        <div className="flex items-center justify-between px-4 pt-4 sm:px-6 lg:hidden">
+        <div className="flex items-center justify-between px-4 pt-3 sm:px-6 sm:pt-4 lg:hidden">
           <Link href="/" className={cn(LINK, "text-ink-soft")}>
             <ArrowLeft size={17} aria-hidden="true" /> Voltar ao site
           </Link>
@@ -394,10 +422,11 @@ export default function LoginPage() {
           </span>
         </div>
 
-        <div className="flex flex-1 items-start justify-center px-4 py-5 sm:items-center sm:px-6 sm:py-8 lg:px-10 lg:py-6">
+        <div className="flex flex-1 items-start justify-center px-4 pb-4 pt-4 sm:items-center sm:px-6 sm:py-8 lg:px-10 lg:py-6">
+          {/* no celular o formulário ocupa a tela toda (sem moldura de cartão) */}
           <motion.section
             className={cn(
-              "w-full rounded-[1.5rem] border border-black/5 bg-white p-5 shadow-[0_20px_50px_-24px_rgb(46_94_78/0.35)] sm:p-7",
+              "w-full sm:rounded-[1.5rem] sm:border sm:border-black/5 sm:bg-white sm:p-7 sm:shadow-[0_20px_50px_-24px_rgb(46_94_78/0.35)]",
               modo === "cadastro" ? "max-w-[34rem]" : "max-w-[27rem]",
             )}
             initial={reduzir ? false : { opacity: 0, y: 16 }}
@@ -406,15 +435,15 @@ export default function LoginPage() {
             aria-labelledby="login-titulo"
           >
             <header>
-              <h1 id="login-titulo" className="text-2xl font-black tracking-tight text-ink sm:text-[1.7rem]">
+              <h1 id="login-titulo" className="text-[1.4rem] font-black leading-tight tracking-tight text-ink sm:text-[1.7rem]">
                 {t.titulo}
               </h1>
-              <p className="mt-1 text-sm leading-relaxed text-ink-soft">{t.sub}</p>
+              <p className="mt-1 text-[0.82rem] leading-snug text-ink-soft sm:text-sm sm:leading-relaxed">{t.sub}</p>
             </header>
 
             {/* Abas: Entrar / Criar conta (em "recuperar" aparece o botão de voltar no lugar) */}
             {modo !== "recuperar" ? (
-              <div className="mt-5 grid grid-cols-2 gap-1 rounded-2xl bg-surface-alt p-1 ring-1 ring-line" role="tablist" aria-label="Entrar ou criar conta">
+              <div className="mt-3 grid grid-cols-2 gap-1 rounded-2xl bg-surface-alt p-1 ring-1 ring-line sm:mt-5" role="tablist" aria-label="Entrar ou criar conta">
                 {(["entrar", "cadastro"] as const).map((m) => (
                   <button
                     key={m}
@@ -422,7 +451,7 @@ export default function LoginPage() {
                     role="tab"
                     aria-selected={modo === m}
                     className={cn(
-                      "h-10 cursor-pointer rounded-xl text-[0.9rem] font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
+                      "h-9 cursor-pointer rounded-xl text-[0.9rem] font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand sm:h-10",
                       modo === m ? "bg-white text-brand shadow-sm ring-1 ring-black/5" : "text-ink-muted hover:text-brand",
                     )}
                     onClick={() => trocarModo(m)}
@@ -432,10 +461,13 @@ export default function LoginPage() {
                 ))}
               </div>
             ) : (
-              <button type="button" className={cn(LINK, "mt-4 cursor-pointer")} onClick={() => trocarModo("entrar")}>
+              <button type="button" className={cn(LINK, "mt-3 cursor-pointer sm:mt-4")} onClick={() => trocarModo("entrar")}>
                 <ArrowLeft size={15} aria-hidden="true" /> Voltar para entrar
               </button>
             )}
+
+            {/* Indicador de passo do cadastro */}
+            {modo === "cadastro" && <IndicadorPasso passo={passo} />}
 
             <AnimatePresence mode="wait">
               {aviso && (
@@ -443,7 +475,7 @@ export default function LoginPage() {
                   key={aviso.texto}
                   role={aviso.tipo === "erro" ? "alert" : "status"}
                   className={cn(
-                    "mt-4 flex items-start gap-2.5 rounded-2xl border px-3.5 py-3 text-[0.88rem] leading-snug [&>svg]:mt-0.5 [&>svg]:shrink-0",
+                    "mt-3 flex items-start gap-2.5 rounded-2xl border px-3.5 py-2.5 text-[0.85rem] leading-snug sm:mt-4 sm:py-3 sm:text-[0.88rem] [&>svg]:mt-0.5 [&>svg]:shrink-0",
                     aviso.tipo === "erro"
                       ? "border-red-200 bg-danger-soft text-danger"
                       : "border-brand-line bg-brand-mint text-brand-dark",
@@ -458,23 +490,29 @@ export default function LoginPage() {
               )}
             </AnimatePresence>
 
-            <form className="mt-4 flex flex-col gap-3" onSubmit={enviar} noValidate>
-              {/* Cadastro: campos em 2 colunas a partir do tablet, para caber na tela */}
-              {modo === "cadastro" && (
-                <div className="grid gap-3 sm:grid-cols-2">
+            <form className="mt-3 flex flex-col gap-2.5 sm:mt-4 sm:gap-3" onSubmit={enviar} noValidate>
+              {/* ---- Cadastro, passo 1: dados pessoais ---- */}
+              {modo === "cadastro" && passo === 1 && (
+                <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
                   {campo("nome", "Nome completo", User, { type: "text", autoComplete: "name", maxLength: 100, value: nome, onChange: (e) => setNome(e.target.value), placeholder: "Seu nome e sobrenome" })}
                   {campo("telefone", "Telefone", Phone, { type: "tel", inputMode: "numeric", autoComplete: "tel-national", value: telefone, onChange: (e) => setTelefone(mascaraTelefone(e.target.value)), placeholder: "(85) 98888-7777" })}
                   {campo("nascimento", "Data de nascimento", CalendarDays, { type: "date", autoComplete: "bday", max: new Date().toISOString().slice(0, 10), value: nascimento, onChange: (e) => setNascimento(e.target.value) })}
                   {campo("cidade", "Cidade", MapPin, { type: "text", autoComplete: "address-level2", maxLength: 80, value: cidade, onChange: (e) => setCidade(e.target.value), placeholder: "Ex.: Baturité" })}
+                  <div className="sm:col-span-2">
+                    {campo("email", "E-mail", Mail, { type: "email", autoComplete: "email", inputMode: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "voce@email.com" })}
+                  </div>
                 </div>
               )}
 
-              {campo("email", "E-mail", Mail, { type: "email", autoComplete: "email", inputMode: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "voce@email.com" })}
+              {/* Entrar e Recuperar pedem o e-mail aqui */}
+              {modo !== "cadastro" &&
+                campo("email", "E-mail", Mail, { type: "email", autoComplete: "email", inputMode: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "voce@email.com" })}
 
-              {modo !== "recuperar" && (
-                <div className={cn("grid gap-3", modo === "cadastro" && "sm:grid-cols-2")}>
-                  <div className="flex min-w-0 flex-col gap-1.5">
-                    <label htmlFor="login-senha" className={ROTULO}>Senha</label>
+              {/* Senha: no Entrar e no passo 2 do cadastro */}
+              {(modo === "entrar" || (modo === "cadastro" && passo === 2)) && (
+                <div className="grid gap-2.5 sm:gap-3">
+                  <div className="flex min-w-0 flex-col gap-1 sm:gap-1.5">
+                    <label htmlFor="login-senha" className={cn(ROTULO, erros.senha && "max-sm:sr-only")}>{modo === "cadastro" ? "Crie uma senha" : "Senha"}</label>
                     <div className={cn(CAIXA_CAMPO, "pr-1.5", erros.senha ? "border-red-400" : "border-line")}>
                       <Lock size={17} className="shrink-0" aria-hidden="true" />
                       <input
@@ -498,44 +536,53 @@ export default function LoginPage() {
                         {verSenha ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
                       </button>
                     </div>
-                    {erros.senha && <ErroCampo id="login-senha-erro" texto={erros.senha} />}
+                    {erros.senha ? (
+                      <ErroCampo id="login-senha-erro" texto={erros.senha} className="max-sm:order-first" />
+                    ) : (
+                      modo === "cadastro" && (
+                        <span id="login-senha-dica" className="text-[0.75rem] text-ink-muted">
+                          Mínimo 8 caracteres, com maiúscula, minúscula e número.
+                        </span>
+                      )
+                    )}
                   </div>
 
                   {modo === "cadastro" &&
                     campo("confirmar", "Confirmar senha", Lock, { type: tipoSenha, autoComplete: "new-password", value: confirmar, onChange: (e) => setConfirmar(e.target.value), placeholder: "Repita a senha" })}
-
-                  {modo === "cadastro" && !erros.senha && (
-                    <span id="login-senha-dica" className="-mt-1 text-[0.76rem] text-ink-muted sm:col-span-2">
-                      Mínimo 8 caracteres, com maiúscula, minúscula e número.
-                    </span>
-                  )}
                 </div>
               )}
 
               {modo === "entrar" && (
-                <button type="button" className={cn(LINK, "-mt-1 cursor-pointer self-end")} onClick={() => trocarModo("recuperar")}>
+                <button type="button" className={cn(LINK, "-mt-0.5 cursor-pointer self-end")} onClick={() => trocarModo("recuperar")}>
                   Esqueci minha senha
                 </button>
               )}
 
-              {/* verificação anti-robô (aparece só com o Turnstile configurado) */}
-              <Captcha controle={captcha} />
+              {/* verificação anti-robô (some no passo 1 do cadastro; aparece só com o Turnstile configurado) */}
+              {!(modo === "cadastro" && passo === 1) && <Captcha controle={captcha} />}
 
               <Button
                 type="submit"
                 larguraTotal
                 carregando={carregando}
-                className="h-12 rounded-control text-[0.95rem] font-extrabold"
+                className="h-11 rounded-control text-[0.95rem] font-extrabold sm:h-12"
                 disabled={carregando || (modo === "recuperar" && espera > 0)}
               >
                 {modo === "entrar" && (carregando ? "Entrando…" : "Entrar")}
-                {modo === "cadastro" && (carregando ? "Criando conta…" : "Criar minha conta")}
+                {modo === "cadastro" && passo === 1 && "Continuar"}
+                {modo === "cadastro" && passo === 2 && (carregando ? "Criando conta…" : "Criar minha conta")}
                 {modo === "recuperar" && (espera > 0 ? `Reenviar em ${espera}s` : carregando ? "Enviando…" : "Enviar link")}
               </Button>
+
+              {modo === "cadastro" && passo === 2 && (
+                <button type="button" className={cn(LINK, "cursor-pointer")} onClick={() => { setPasso(1); setErros({}); setAviso(null); }}>
+                  <ArrowLeft size={15} aria-hidden="true" /> Voltar aos meus dados
+                </button>
+              )}
             </form>
 
-            {/* no computador este aviso fica no painel verde */}
-            <p className="mt-5 border-t border-line pt-4 text-[0.8rem] leading-normal text-ink-muted lg:hidden">
+            {/* aviso extra: só no tablet (no celular falta espaço; no computador fica no painel verde) */}
+            <p className="mt-5 hidden border-t border-line pt-4 text-[0.8rem] leading-normal text-ink-muted sm:block lg:hidden">
               {AVISO_VISITANTE}
             </p>
           </motion.section>
@@ -545,10 +592,38 @@ export default function LoginPage() {
   );
 }
 
-/** Mensagem de erro embaixo de um campo */
-function ErroCampo({ id, texto }: { id: string; texto: string }) {
+/** Bolinhas "1 Seus dados — 2 Senha" do cadastro */
+function IndicadorPasso({ passo }: { passo: 1 | 2 }) {
+  const etapas = ["Seus dados", "Senha"];
   return (
-    <span id={id} className="flex items-start gap-1 text-xs font-medium text-danger">
+    <ol className="mt-3 flex items-center gap-2 sm:mt-4" aria-label={`Passo ${passo} de 2`}>
+      {etapas.map((nome, i) => {
+        const n = i + 1;
+        const feito = passo > n;
+        const atual = passo === n;
+        return (
+          <li key={nome} className="flex flex-1 items-center gap-2" aria-current={atual ? "step" : undefined}>
+            <span
+              className={cn(
+                "grid size-6 shrink-0 place-items-center rounded-full text-xs font-extrabold",
+                atual || feito ? "bg-brand text-white" : "bg-surface-alt text-ink-muted ring-1 ring-line",
+              )}
+            >
+              {feito ? <CheckCircle2 size={14} aria-hidden="true" /> : n}
+            </span>
+            <span className={cn("text-[0.8rem] font-bold", atual ? "text-ink" : "text-ink-muted")}>{nome}</span>
+            {n === 1 && <span className={cn("h-0.5 flex-1 rounded-full", feito ? "bg-brand" : "bg-line")} aria-hidden="true" />}
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+/** Mensagem de erro embaixo de um campo */
+function ErroCampo({ id, texto, className }: { id: string; texto: string; className?: string }) {
+  return (
+    <span id={id} className={cn("flex items-start gap-1 text-xs font-medium leading-tight text-danger", className)}>
       <AlertCircle size={13} className="mt-px shrink-0" aria-hidden="true" />
       {texto}
     </span>
