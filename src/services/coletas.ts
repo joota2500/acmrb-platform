@@ -156,7 +156,8 @@ export async function listarCalendario(incluirInativos = false) {
   let q = supabase.from("coleta_calendario").select("*").order("ordem").order("bairro");
   if (!incluirInativos) q = q.eq("ativo", true);
   const { data, error } = await q;
-  if (error) throw new Error("Calendário indisponível (a migration já foi rodada?).");
+  // 42501 = o banco recusou (sem permissão); o painel mostra o aviso certo
+  if (error) throw new Error(error.code === "42501" ? "Sem permissão (42501)." : "Calendário indisponível (a migration já foi rodada?).");
   return (data ?? []) as CalendarioBairro[];
 }
 
