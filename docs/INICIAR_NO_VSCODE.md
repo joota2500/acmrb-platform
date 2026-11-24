@@ -25,7 +25,7 @@ File > Open Folder
 Escolha esta pasta:
 
 ```text
-C:\Users\User\Desktop\MeusProjetos\acmrb-platform
+~/Documentos/1 - Meus Projetos Programação/acmrb-platform-oficial
 ```
 
 Confirme que o arquivo `package.json` aparece na raiz da pasta aberta.

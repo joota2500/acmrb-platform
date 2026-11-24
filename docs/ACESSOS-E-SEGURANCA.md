@@ -1,6 +1,6 @@
 # ACMRB — Acessos, privacidade e segurança (guia do João Victor)
 
-Linguagem simples, passo a passo. Tudo aqui foi feito na branch `acmrb-terceira-branch`.
+Linguagem simples, passo a passo. Isso começou na antiga branch `acmrb-terceira-branch` e hoje está todo na `branch-oficial`.
 
 ---
 

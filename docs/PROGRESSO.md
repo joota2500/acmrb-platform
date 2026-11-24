@@ -1,7 +1,7 @@
 # Progresso da melhoria do site (ACMRB)
 
 Lista para acompanhar o que já foi feito e o que falta, na ordem em que vamos fazendo.
-Trabalho feito na branch `branch-oficial` (a `main` e as outras branches não são mexidas).
+Trabalho feito na branch `branch-oficial`, que é a única branch do projeto (as antigas já estão dentro dela).
 
 Responsável: João Victor Rocha Costa
 

@@ -23,7 +23,7 @@ nvm install --lts
 --------------------------------------------
 2. COMANDOS PARA RODAR O PROJETO (sempre)
 --------------------------------------------
-cd ~/Documentos/1\ -\ Meus\ Projetos\ Programação/acmrb-platform
+cd ~/Documentos/1\ -\ Meus\ Projetos\ Programação/acmrb-platform-oficial
 npm install          # só se ainda não tiver node_modules ou se der erro de dependência
 npm run dev
 
@@ -39,11 +39,11 @@ npm run dev
 --------------------------------------------
 4. BRANCH ATUAL DE TRABALHO
 --------------------------------------------
-Estamos trabalhando na branch: melhorias-acmrb
-A branch main continua intacta.
+O projeto usa só uma branch: branch-oficial
+(as antigas main, melhorias-acmrb e acmrb-terceira-branch já estão dentro dela).
 
-Para trocar de branch no terminal:
-git checkout melhorias-acmrb
+Para conferir ou voltar para ela no terminal:
+git checkout branch-oficial
 
 --------------------------------------------
 5. OBSERVAÇÕES
