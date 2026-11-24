@@ -16,7 +16,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Ban, Clock, Copy, Loader2, LogOut, Pencil, ShieldCheck, Smartphone, X } from "lucide-react";
 
 import "@/styles/admin-aparelhos.css";
-import "@/styles/admin-visitante-detalhe.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import { dataHoraCurta, duracao } from "@/types/visitantes";

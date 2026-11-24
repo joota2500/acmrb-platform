@@ -17,6 +17,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Ban, ChevronLeft, ChevronRight, Clock, Loader2, Pencil, RefreshCw, Search, ShieldCheck, Smartphone } from "lucide-react";
 
 import "@/styles/admin-aparelhos.css";
+import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import { dataHoraCurta } from "@/types/visitantes";

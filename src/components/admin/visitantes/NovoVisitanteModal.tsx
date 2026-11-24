@@ -3,19 +3,20 @@
 /**
  * NovoVisitanteModal — o deus cadastra um visitante pelo painel
  * ------------------------------------------------------------
+ * Abre na gaveta (PainelLateral) com o formulário em blocos e o botão
+ * de cadastrar no rodapé fixo.
  * Envia para POST /api/admin/visitantes { acao: "criar" } (service role no
  * servidor). A conta já nasce com o e-mail confirmado.
- * CSS: src/styles/admin-visitante-novo.css (prefixo "advn-").
  */
 
-import { useEffect, useState, type FormEvent } from "react";
-import { Loader2, UserPlus, X } from "lucide-react";
-
-import "@/styles/admin-visitante-novo.css";
+import { useState, type FormEvent } from "react";
+import { Loader2, UserPlus } from "lucide-react";
 import { chamarApi } from "@/services/apiAdmin";
 import { mascaraTelefone } from "@/utils/validacao";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import Button from "@/components/ui/Button";
+import PainelLateral from "@/components/admin/apoiadores/PainelLateral";
+import { BLOCO, CAMPO, CONTROLE, DICA, ERRO, LINHA, ROTULO, TITULO_BLOCO } from "@/components/admin/apoiadores/estilos";
 
 interface Props {
   onFechar: () => void;
@@ -26,12 +27,6 @@ export default function NovoVisitanteModal({ onFechar, onCriado }: Props) {
   const [form, setForm] = useState({ nome: "", email: "", senha: "", telefone: "", cidade: "", data_nascimento: "" });
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState("");
-
-  useEffect(() => {
-    const tecla = (e: KeyboardEvent) => e.key === "Escape" && onFechar();
-    window.addEventListener("keydown", tecla);
-    return () => window.removeEventListener("keydown", tecla);
-  }, [onFechar]);
 
   async function enviar(ev: FormEvent) {
     ev.preventDefault();
@@ -53,35 +48,56 @@ export default function NovoVisitanteModal({ onFechar, onCriado }: Props) {
   const muda = (campo: keyof typeof form, valor: string) => setForm((f) => ({ ...f, [campo]: valor }));
 
   return (
-    <div className="advn-fundo" onClick={onFechar} role="presentation">
-      <div className="advn" role="dialog" aria-modal="true" aria-labelledby="advn-titulo" onClick={(e) => e.stopPropagation()}>
-        <div className="advn-topo">
-          <h2 id="advn-titulo"><UserPlus size={18} aria-hidden="true" /> Novo visitante</h2>
-          <button type="button" className="advn-fechar" onClick={onFechar} aria-label="Fechar"><X size={20} /></button>
-        </div>
-        <form className="advn-form" onSubmit={enviar}>
-          <label>Nome completo<input className="advn-input" value={form.nome} maxLength={100} onChange={(e) => muda("nome", e.target.value)} required /></label>
-          <label>E-mail (será o login)<input className="advn-input" type="email" value={form.email} onChange={(e) => muda("email", e.target.value)} required /></label>
-          <label>
-            Senha provisória
-            <input className="advn-input" type="text" autoComplete="new-password" value={form.senha} onChange={(e) => muda("senha", e.target.value)} required />
-            <RegrasSenha senha={form.senha} />
+    <PainelLateral
+      aberto
+      titulo="Novo visitante"
+      onFechar={onFechar}
+      rodape={
+        <>
+          <Button type="button" variante="contorno" tamanho="pequeno" onClick={onFechar}>Cancelar</Button>
+          <Button type="submit" form="form-novo-visitante" tamanho="pequeno" disabled={salvando}>
+            {salvando ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <UserPlus size={16} aria-hidden="true" />} Cadastrar
+          </Button>
+        </>
+      }
+    >
+      <form id="form-novo-visitante" className="flex flex-col gap-4" onSubmit={enviar} noValidate>
+        <fieldset className={BLOCO}>
+          <legend className={TITULO_BLOCO}>Acesso</legend>
+          <label className={CAMPO}>
+            <span className={ROTULO}>Nome completo</span>
+            <input className={CONTROLE} value={form.nome} maxLength={100} onChange={(e) => muda("nome", e.target.value)} required />
           </label>
-          <div className="advn-linha">
-            <label>Telefone<input className="advn-input" value={form.telefone} onChange={(e) => muda("telefone", mascaraTelefone(e.target.value))} /></label>
-            <label>Nascimento<input className="advn-input" type="date" value={form.data_nascimento} onChange={(e) => muda("data_nascimento", e.target.value)} /></label>
+          <label className={CAMPO}>
+            <span className={ROTULO}>E-mail (será o login)</span>
+            <input className={CONTROLE} type="email" value={form.email} onChange={(e) => muda("email", e.target.value)} required />
+          </label>
+          <label className={CAMPO}>
+            <span className={ROTULO}>Senha provisória</span>
+            <input className={CONTROLE} type="text" autoComplete="new-password" value={form.senha} onChange={(e) => muda("senha", e.target.value)} required />
+          </label>
+          <RegrasSenha senha={form.senha} />
+        </fieldset>
+        <fieldset className={BLOCO}>
+          <legend className={TITULO_BLOCO}>Contato (opcional)</legend>
+          <div className={LINHA}>
+            <label className={CAMPO}>
+              <span className={ROTULO}>Telefone</span>
+              <input className={CONTROLE} inputMode="tel" value={form.telefone} onChange={(e) => muda("telefone", mascaraTelefone(e.target.value))} />
+            </label>
+            <label className={CAMPO}>
+              <span className={ROTULO}>Nascimento</span>
+              <input className={CONTROLE} type="date" value={form.data_nascimento} onChange={(e) => muda("data_nascimento", e.target.value)} />
+            </label>
           </div>
-          <label>Cidade<input className="advn-input" value={form.cidade} maxLength={80} onChange={(e) => muda("cidade", e.target.value)} /></label>
-          <p className="advn-dica">A conta já nasce com o e-mail confirmado. Depois você pode enviar um link para o visitante trocar a senha.</p>
-          {erro && <p role="alert" style={{ color: "#b91c1c", fontSize: "0.86rem", fontWeight: 700 }}>{erro}</p>}
-          <div className="advn-acoes">
-            <Button type="button" variante="secundario" tamanho="pequeno" onClick={onFechar}>Cancelar</Button>
-            <Button type="submit" tamanho="pequeno" disabled={salvando}>
-              {salvando ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <UserPlus size={16} aria-hidden="true" />} Cadastrar
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+          <label className={CAMPO}>
+            <span className={ROTULO}>Cidade</span>
+            <input className={CONTROLE} value={form.cidade} maxLength={80} onChange={(e) => muda("cidade", e.target.value)} />
+          </label>
+          <p className={DICA}>A conta já nasce com o e-mail confirmado. Depois você pode enviar um link para o visitante trocar a senha.</p>
+        </fieldset>
+        {erro && <p role="alert" className={ERRO}>{erro}</p>}
+      </form>
+    </PainelLateral>
   );
 }

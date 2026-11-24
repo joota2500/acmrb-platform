@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { Ban, Clock, Loader2, LogOut, Pencil, ShieldCheck, X } from "lucide-react";
 
 import "@/styles/admin-aparelhos.css";
+import "@/styles/admin-acessos.css";
 import { chamarApi } from "@/services/apiAdmin";
 import { calcularAte, type PrazoEntrada } from "@/utils/prazo";
 import SeletorPrazo, { paraCampoData } from "@/components/admin/aparelhos/SeletorPrazo";

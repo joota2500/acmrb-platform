@@ -8,6 +8,8 @@
  */
 
 import { calcularAte, dataFortaleza, type ModoPrazo, type PrazoEntrada, type UnidadePrazo } from "@/utils/prazo";
+import "@/styles/admin-aparelhos.css";
+import "@/styles/admin-acessos.css";
 
 interface Props {
   valor: PrazoEntrada;
