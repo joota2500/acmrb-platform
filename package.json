@@ -1,5 +1,6 @@
 {
   "name": "acmrb-platform",
+  "author": "João Victor Rocha Costa",
   "version": "1.1.0",
   "private": true,
   "scripts": {

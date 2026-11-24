@@ -59,3 +59,7 @@ ligado. Rode `npm run dev` e mantenha o terminal aberto.
 npm run build
 npm run start
 ```
+
+## Autor
+
+Desenvolvido por **João Victor Rocha Costa** ([@joota2500](https://github.com/joota2500)).

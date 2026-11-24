@@ -160,7 +160,7 @@ export default function Footer() {
           <p className="m-0 max-[768px]:text-center max-[768px]:leading-snug">
             Desenvolvido por{" "}
             <a href="https://github.com/joota2500" target="_blank" rel="noopener noreferrer" className="font-bold text-white no-underline transition-colors hover:text-green-400">
-              DevJ-2500
+              João Victor Rocha Costa
             </a>
             {/* Links discretos para páginas secundárias */}
             <span aria-hidden="true"> · </span>
