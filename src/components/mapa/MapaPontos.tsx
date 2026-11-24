@@ -18,7 +18,7 @@ import "leaflet/dist/leaflet.css";
 import { cartaoPopup, linkRotaGoogle, linkWhatsapp } from "@/utils/mapaPopup";
 import { adicionarCamadas, ZOOM_MAXIMO, opcoesPopup } from "@/utils/mapaCamadas";
 import { htmlPin, MAPA_AREA, MAPA_BOTAO_ATIVAR, MAPA_MOLDURA, MAPA_PIN_CONTEINER } from "@/utils/mapaEstilo";
-import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, linkExterno, linkInstagram, type ApoiadorPublico } from "@/services/apoiadores";
+import { BATURITE_CENTRO, BATURITE_ZOOM, corCategoria, ehPontoEntrega, linkExterno, linkInstagram, type ApoiadorPublico } from "@/services/apoiadores";
 
 interface Props {
   pontos: ApoiadorPublico[];
@@ -32,7 +32,7 @@ export function iconeCategoria(categoria: string, destaque = false) {
   const cor = corCategoria(categoria);
   return L.divIcon({
     className: MAPA_PIN_CONTEINER,
-    html: htmlPin(cor, { ativo: destaque }),
+    html: htmlPin(cor, { ativo: destaque || ehPontoEntrega(categoria) }),
     iconSize: [30, 40],
     iconAnchor: [15, 38],
     popupAnchor: [0, -34],

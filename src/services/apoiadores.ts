@@ -19,6 +19,8 @@ export const BATURITE_CENTRO: [number, number] = [-4.3286, -38.8848];
 export const BATURITE_ZOOM = 14;
 
 export const CATEGORIAS = [
+  // item 17: locais onde a população entrega recicláveis (marcador vermelho no mapa)
+  "Ponto de entrega",
   "Comércio",
   "Restaurante",
   "Pousada/Hotel",
@@ -44,6 +46,7 @@ export type TipoApoio = (typeof TIPOS_APOIO)[number];
 
 /** Cor de cada categoria (marcadores, chips e legenda) — tons da paleta */
 const COR_CATEGORIA: Record<string, string> = {
+  "Ponto de entrega": "#dc2626",
   "Comércio": "#059669",
   "Restaurante": "#d97706",
   "Pousada/Hotel": "#7c3aed",
@@ -56,6 +59,9 @@ const COR_CATEGORIA: Record<string, string> = {
   // empresas de logística reversa exibidas no mapa (não é categoria de apoiador)
   "Logística reversa": "#0f766e",
 };
+/** Pontos de entrega ganham marcador maior (destaque) no mapa */
+export const ehPontoEntrega = (c?: string | null) => c === "Ponto de entrega";
+
 export const corCategoria = (c?: string | null) => COR_CATEGORIA[c ?? ""] ?? "#10b981";
 
 export const STATUS_LOGISTICA: Record<string, string> = {

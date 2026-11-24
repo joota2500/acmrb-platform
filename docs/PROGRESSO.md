@@ -57,7 +57,7 @@ Combinado: termina um item, marca aqui com [x] e passa para o próximo.
 - [ ] 14. **Selo de parceiro** — selo na página de Parceiros e certificado em PDF para cada empresa parceira
 - [ ] 15. **Rastreio da coleta** — quem pediu a coleta acompanha: solicitada → confirmada → a caminho → concluída
 - [ ] 16. **Projetos e campanhas** — página `/projetos` de verdade (hoje é "em breve") e a seção Projetos do painel
-- [ ] 17. **Mapa de pontos de entrega** — locais onde a população pode deixar recicláveis
+- [x] 17. **Mapa de pontos de entrega** — locais onde a população pode deixar recicláveis. Categoria nova "Ponto de entrega" em Apoiadores (marcador vermelho e maior no mapa, popup com endereço e "como chegar"). SQL: `supabase/migrations/20261124110000_ponto_entrega.sql` (cria a categoria e o ponto "CMR – Ponto de entrega ACMRB", próximo ao CMTR/antigo lixão, sem coordenadas — marcar o local pelo painel)
 - [ ] 18. **Doações** — página "em desenvolvimento" com contato dos associados e e-mail (Pix fica para depois)
 - [ ] 19. **Catálogo de materiais (só preparar)** — o catálogo com estoque já existe no app do celular; deixar a rota e os tipos prontos para ligar quando os bancos forem unificados
 - [ ] 20. **Acabamento** — imagens com `next/image`, SEO (metadados e dados estruturados das páginas novas), PWA (instalar no celular) e revisão do responsivo em celular, tablet e notebook
