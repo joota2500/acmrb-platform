@@ -19,7 +19,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ClipboardList, LogOut, LogIn, MessageCircle, Recycle, UserRound, X } from "lucide-react";
+import { ChevronDown, ClipboardList, LayoutDashboard, LogOut, LogIn, MessageCircle, Recycle, UserRound, X } from "lucide-react";
+import { AvatarUsuario, nomePapel } from "@/components/layout/UserMenu";
 import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
 
 import { usePathname } from "next/navigation";
@@ -33,6 +34,11 @@ import { FOCO_MENU, SELO_NAO_LIDAS } from "@/components/layout/classesMenu";
 const LINK_MOBILE = cn(
   "flex min-h-12 items-center rounded-[14px] px-[1.1rem] py-[0.7rem] text-base font-medium text-emerald-50 no-underline",
   "transition duration-300 hover:translate-x-2 hover:bg-emerald-500/20 hover:text-emerald-200 motion-reduce:hover:translate-x-0",
+  FOCO_MENU,
+);
+// Atalhos da conta dentro do cartão do usuário
+const ITEM_CONTA = cn(
+  "flex min-h-12 items-center gap-3 rounded-xl px-3 font-semibold text-white no-underline transition hover:bg-white/10",
   FOCO_MENU,
 );
 // Item da página atual (destaque na gaveta)
@@ -215,59 +221,56 @@ export default function MobileMenu({
 
               {/* ===== Login / Perfil ===== */}
               {user && perfil ? (
-                <div className="mt-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/15 p-7">
-                  <div className="mb-5 flex items-center gap-4">
-                    <div className="flex size-15.5 items-center justify-center overflow-hidden rounded-[14px] bg-emerald-500 text-[1.4rem] font-bold text-white">
-                      {perfil.avatar_url ? (
-                        <img src={perfil.avatar_url} alt={perfil.nome} className="size-full rounded-[14px] object-cover" />
-                      ) : (
-                        <span>
-                          {(perfil.nome ?? "U").charAt(0).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-white">{perfil.nome}</p>
-                      <p className="text-sm text-emerald-300">{perfil.tipo}</p>
+                <div className="mt-8 overflow-hidden rounded-2xl border border-white/15 bg-white/[0.07]">
+                  {/* cartão do usuário: avatar, nome, e-mail e papel */}
+                  <div className="flex items-center gap-3.5 p-4">
+                    <AvatarUsuario perfil={perfil} className="size-12 text-lg" />
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-white">{perfil.nome ?? "Usuário"}</p>
+                      {user?.email && <p className="truncate text-sm text-emerald-200/80">{user.email}</p>}
+                      <span className="mt-1 inline-block rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-wide text-emerald-200">{nomePapel(perfil.tipo)}</span>
                     </div>
                   </div>
 
-                  {perfil.tipo === "visitante" && (
-                    <>
-                      <Link href="/minha-conta" className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")} onClick={onClose}>
-                        <UserRound size={18} aria-hidden="true" /> Minha conta
+                  {/* atalhos da conta */}
+                  <div className="flex flex-col border-t border-white/10 p-2">
+                    {perfil.tipo === "visitante" && (
+                      <>
+                        <Link href="/minha-conta" className={ITEM_CONTA} onClick={onClose}>
+                          <UserRound size={19} aria-hidden="true" /> Minha conta
+                        </Link>
+                        <Link href="/mensagens" className={ITEM_CONTA} onClick={onClose}>
+                          <MessageCircle size={19} aria-hidden="true" /> Mensagens
+                          {naoLidas > 0 && <span className={cn(SELO_NAO_LIDAS, "ml-auto h-[1.35rem] min-w-[1.35rem] px-1.5 text-[0.72rem]")} aria-label={`${naoLidas} não lidas`}>{naoLidas > 9 ? "9+" : naoLidas}</span>}
+                        </Link>
+                        <Link href="/minhas-coletas" className={ITEM_CONTA} onClick={onClose}>
+                          <ClipboardList size={19} aria-hidden="true" /> Minhas coletas
+                        </Link>
+                      </>
+                    )}
+                    {perfil.tipo === "admin" && (
+                      <Link href="/admin" className={ITEM_CONTA} onClick={onClose}>
+                        <LayoutDashboard size={19} aria-hidden="true" /> Painel admin
                       </Link>
-                      <Link href="/mensagens" className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")} onClick={onClose}>
-                        <MessageCircle size={18} aria-hidden="true" /> Mensagens
-                        {naoLidas > 0 && <span className={cn(SELO_NAO_LIDAS, "ml-auto h-[1.35rem] min-w-[1.35rem] px-1.5 text-[0.72rem]")} aria-label={`${naoLidas} não lidas`}>{naoLidas > 9 ? "9+" : naoLidas}</span>}
-                      </Link>
-                      <Link href="/minhas-coletas" className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")} onClick={onClose}>
-                        <ClipboardList size={18} aria-hidden="true" /> Minhas coletas
-                      </Link>
-                    </>
-                  )}
+                    )}
+                  </div>
 
-                  {perfil.tipo === "admin" && (
-                    <Link
-                      href="/admin"
-                      className={cn(BOTAO_MOBILE, "block bg-emerald-500 text-white")}
-                      onClick={onClose}
+                  {/* Sair: botão largo só com contorno */}
+                  <div className="border-t border-white/10 p-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        logout?.();
+                      }}
+                      className={cn(
+                        "flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-red-400/60 bg-transparent font-bold text-red-300 transition hover:border-red-400 hover:bg-red-500/15",
+                        FOCO_MENU,
+                      )}
                     >
-                      Painel Admin
-                    </Link>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      logout?.();
-                      onClose();
-                    }}
-                    className={cn(BOTAO_MOBILE, "flex items-center justify-center gap-2.5 bg-red-500/20 text-red-300 hover:bg-red-500/35")}
-                  >
-                    <LogOut size={20} />
-                    Sair
-                  </button>
+                      <LogOut size={19} aria-hidden="true" /> Sair da conta
+                    </button>
+                  </div>
                 </div>
               ) : (
                 /* Mesmo destino do botão do desktop: /login */

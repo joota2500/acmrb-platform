@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 
 import { supabase } from "@/lib/supabase";
+import { aviso } from "@/components/ui/Toast";
 
 interface Perfil {
   tipo: "admin" | "visitante" | null;
@@ -113,9 +114,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   async function logout() {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      aviso("erro", "Não deu para sair agora. Tente de novo.");
+      return;
+    }
+    // a página recarrega, então guardo um sinal para mostrar o aviso depois
+    try { sessionStorage.setItem("acmrb-saiu", "1"); } catch {}
     window.location.href = "/";
   }
+
+  // mostra "você saiu" depois do recarregamento do logout
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("acmrb-saiu")) {
+        sessionStorage.removeItem("acmrb-saiu");
+        // espera o Toaster montar
+        setTimeout(() => aviso("sucesso", "Você saiu da sua conta."), 400);
+      }
+    } catch {}
+  }, []);
 
   const isAdmin = perfil?.tipo === "admin";
   const isGod = perfil?.isGod === true;
