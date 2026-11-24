@@ -8,18 +8,18 @@
  * dia e rankings (aparelho, origem, país, cidade, páginas).
  * Dados: função acessos_painel (migration 20261027100000). Números de dias
  * antigos vêm de totais diários; "visitantes" é aproximado nesses dias.
- * CSS: src/styles/admin-acessos.css (prefixo "aac-").
  */
 
 import { useCallback, useEffect, useState } from "react";
 import { Clock, FileText, Loader2, RefreshCw, Smartphone, UserCheck, Users } from "lucide-react";
 
-import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { duracao } from "@/types/visitantes";
 import Ranking from "@/components/admin/acessos/Ranking";
 import { mensagemErro, type PainelAcessos } from "@/types/acessos";
 import Button from "@/components/ui/Button";
+import * as E from "@/components/admin/acessos/estilos";
+import { cn } from "@/utils/cn";
 
 const PERIODOS = [
   { dias: 1, rotulo: "Hoje" },
@@ -62,11 +62,11 @@ export default function AcessosResumo() {
   const maxSerie = Math.max(1, ...(p?.serie.map((s) => s.sessoes) ?? [1]));
 
   return (
-    <div className="aac">
-      <div className="aac-barra">
-        <div className="aac-periodos" role="group" aria-label="Período">
+    <div className={E.RAIZ}>
+      <div className={E.BARRA}>
+        <div className={E.GRUPO} role="group" aria-label="Período">
           {PERIODOS.map((x) => (
-            <button key={x.dias} type="button" className={x.dias === dias ? "aac-chip aac-chip--ativo" : "aac-chip"} onClick={() => setDias(x.dias)}>{x.rotulo}</button>
+            <button key={x.dias} type="button" className={x.dias === dias ? cn(E.CHIP, E.CHIP_ATIVO) : E.CHIP} onClick={() => setDias(x.dias)}>{x.rotulo}</button>
           ))}
         </div>
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}>
@@ -74,59 +74,59 @@ export default function AcessosResumo() {
         </Button>
       </div>
 
-      {erro && <p className="aac-erro" role="alert">{erro}</p>}
-      {carregando && !p && <p className="aac-vazio"><Loader2 className="advis-giro" aria-hidden="true" /> Carregando…</p>}
+      {erro && <p className={E.ERRO} role="alert">{erro}</p>}
+      {carregando && !p && <p className={E.VAZIO}><Loader2 className={E.GIRO} aria-hidden="true" /> Carregando…</p>}
 
       {p && t && (
         <>
-          <div className="aac-cards">
-            <div className="aac-card"><Users size={18} aria-hidden="true" /><strong>{t.sessoes}</strong><span>visitas</span></div>
-            <div className="aac-card"><UserCheck size={18} aria-hidden="true" /><strong>{t.visitantes}</strong><span>visitantes (aprox.)</span></div>
-            <div className="aac-card"><FileText size={18} aria-hidden="true" /><strong>{t.paginas}</strong><span>páginas vistas</span></div>
-            <div className="aac-card"><Clock size={18} aria-hidden="true" /><strong>{duracao(mediaSeg)}</strong><span>tempo médio por visita</span></div>
+          <div className={E.CARTOES}>
+            <div className={E.CARTAO_NUM}><Users size={18} aria-hidden="true" /><strong>{t.sessoes}</strong><span>visitas</span></div>
+            <div className={E.CARTAO_NUM}><UserCheck size={18} aria-hidden="true" /><strong>{t.visitantes}</strong><span>visitantes (aprox.)</span></div>
+            <div className={E.CARTAO_NUM}><FileText size={18} aria-hidden="true" /><strong>{t.paginas}</strong><span>páginas vistas</span></div>
+            <div className={E.CARTAO_NUM}><Clock size={18} aria-hidden="true" /><strong>{duracao(mediaSeg)}</strong><span>tempo médio por visita</span></div>
           </div>
 
-          <div className="aac-grade">
-            <section className="aac-bloco">
+          <div className={E.GRADE}>
+            <section className={E.BLOCO}>
               <h3><Smartphone size={16} aria-hidden="true" /> Quem visitou</h3>
-              <div className="aac-pilha" role="img" aria-label={`${t.anonimas} visitas anônimas e ${t.logadas} de pessoas logadas`}>
-                <i className="aac-pilha__anon" style={{ flexGrow: t.anonimas }} />
-                <i className="aac-pilha__logado" style={{ flexGrow: t.logadas }} />
+              <div className={E.PILHA} role="img" aria-label={`${t.anonimas} visitas anônimas e ${t.logadas} de pessoas logadas`}>
+                <i className={E.COR_ANONIMO} style={{ flexGrow: t.anonimas }} />
+                <i className={E.COR_LOGADO} style={{ flexGrow: t.logadas }} />
               </div>
-              <ul className="aac-legenda">
-                <li><span className="aac-ponto aac-ponto--anon" /> Sem login (anônimos): <b>{t.anonimas}</b></li>
-                <li><span className="aac-ponto aac-ponto--logado" /> Logados: <b>{t.logadas}</b></li>
+              <ul className={E.LEGENDA}>
+                <li><span className={cn(E.PONTO_LEGENDA, E.COR_ANONIMO)} /> Sem login (anônimos): <b>{t.anonimas}</b></li>
+                <li><span className={cn(E.PONTO_LEGENDA, E.COR_LOGADO)} /> Logados: <b>{t.logadas}</b></li>
                 <li>Cadastrados no total: <b>{p.cadastrados_total}</b> ({p.cadastrados_ativos} ativos)</li>
                 <li>Novos cadastros no período: <b>{p.novos_cadastros}</b> · conversão aprox. <b>{conversao}%</b></li>
               </ul>
-              <p className="aac-nota">Anônimos ficam registrados por 24 h; depois só restam os totais do dia.</p>
+              <p className={E.NOTA}>Anônimos ficam registrados por 24 h; depois só restam os totais do dia.</p>
             </section>
 
-            <section className="aac-bloco">
+            <section className={E.BLOCO}>
               <h3>Visitas por dia</h3>
-              <div className="aac-colunas" role="img" aria-label="Gráfico de visitas por dia">
+              <div className={E.COLUNAS} role="img" aria-label="Gráfico de visitas por dia">
                 {p.serie.map((s) => (
-                  <div key={s.dia} className="aac-coluna" title={`${diaCurto(s.dia)}: ${s.sessoes} visitas (${s.logadas} logadas)`}>
-                    <span className="aac-coluna__valor">{s.sessoes || ""}</span>
-                    <span className="aac-coluna__barra">
-                      <i className="aac-coluna__total" style={{ height: `${(s.sessoes / maxSerie) * 100}%` }}>
+                  <div key={s.dia} className={E.COLUNA} title={`${diaCurto(s.dia)}: ${s.sessoes} visitas (${s.logadas} logadas)`}>
+                    <span className={E.COLUNA_VALOR}>{s.sessoes || ""}</span>
+                    <span className={E.COLUNA_BARRA}>
+                      <i className={E.COLUNA_TOTAL} style={{ height: `${(s.sessoes / maxSerie) * 100}%` }}>
                         <b style={{ height: s.sessoes ? `${(s.logadas / s.sessoes) * 100}%` : 0 }} />
                       </i>
                     </span>
-                    <span className="aac-coluna__dia">{p.serie.length > 14 ? diaCurto(s.dia).slice(0, 2) : diaCurto(s.dia)}</span>
+                    <span className={E.COLUNA_DIA}>{p.serie.length > 14 ? diaCurto(s.dia).slice(0, 2) : diaCurto(s.dia)}</span>
                   </div>
                 ))}
               </div>
-              <p className="aac-nota">A parte escura de cada barra são as visitas de pessoas logadas.</p>
+              <p className={E.NOTA}>A parte escura de cada barra são as visitas de pessoas logadas.</p>
             </section>
           </div>
 
-          <div className="aac-grade aac-grade--3">
+          <div className={cn(E.GRADE, E.GRADE_3)}>
             <Ranking titulo="Aparelhos" itens={p.dispositivos} />
             <Ranking titulo="De onde vieram" itens={p.origens} />
             <Ranking titulo="Países" itens={p.paises} vazio="A região só aparece depois de publicado na Vercel." />
           </div>
-          <div className="aac-grade">
+          <div className={E.GRADE}>
             <Ranking titulo="Cidades" itens={p.cidades} vazio="A cidade só aparece depois de publicado na Vercel." />
             <Ranking titulo="Páginas mais vistas" itens={p.paginas} extra={(i) => (i.media_seg ? `${duracao(i.media_seg)} em média` : null)} />
           </div>

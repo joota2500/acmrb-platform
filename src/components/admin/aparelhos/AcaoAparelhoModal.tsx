@@ -8,19 +8,18 @@
  * e desbloquear. O deus escolhe o prazo (indeterminado, tempo ou data e
  * hora). O MOTIVO é mostrado para a pessoa na tela de bloqueio e vai para
  * a auditoria. Chama POST /api/admin/dispositivos.
- * CSS: src/styles/admin-aparelhos.css (prefixo "apa-").
  */
 
 import { useEffect, useState } from "react";
 import { Ban, Clock, Loader2, LogOut, Pencil, ShieldCheck, X } from "lucide-react";
 
-import "@/styles/admin-aparelhos.css";
-import "@/styles/admin-acessos.css";
 import { chamarApi } from "@/services/apiAdmin";
 import { calcularAte, type PrazoEntrada } from "@/utils/prazo";
 import SeletorPrazo, { paraCampoData } from "@/components/admin/aparelhos/SeletorPrazo";
 import type { AcaoAparelho } from "@/types/aparelhos";
 import Button from "@/components/ui/Button";
+import * as E from "@/components/admin/acessos/estilos";
+import { cn } from "@/utils/cn";
 
 interface Props {
   acao: AcaoAparelho;
@@ -136,45 +135,45 @@ export default function AcaoAparelhoModal({ acao, alvo, inicial, onFechar, onFei
   }
 
   return (
-    <div className="apa-fundo" onClick={() => !enviando && onFechar()} role="presentation">
-      <div className="apa-modal" role="dialog" aria-modal="true" aria-labelledby="apa-titulo" onClick={(e) => e.stopPropagation()}>
-        <div className="apa-modal__topo">
-          <h3 id="apa-titulo" className={t.perigo ? "apa-modal__titulo apa-modal__titulo--perigo" : "apa-modal__titulo"}>
+    <div className={E.FUNDO_CONFIRMA} onClick={() => !enviando && onFechar()} role="presentation">
+      <div className={E.CONFIRMA} role="dialog" aria-modal="true" aria-labelledby="apa-titulo" onClick={(e) => e.stopPropagation()}>
+        <div className={E.CONFIRMA_TOPO}>
+          <h3 id="apa-titulo" className={t.perigo ? cn(E.CONFIRMA_TITULO, E.CONFIRMA_TITULO_PERIGO) : E.CONFIRMA_TITULO}>
             <Icone size={18} aria-hidden="true" /> {t.titulo}
           </h3>
-          <button type="button" className="advd-fechar" onClick={onFechar} disabled={enviando} aria-label="Fechar"><X size={20} /></button>
+          <button type="button" className={E.FECHAR} onClick={onFechar} disabled={enviando} aria-label="Fechar"><X size={20} /></button>
         </div>
 
-        <p className="apa-modal__alvo">{alvo.descricao}</p>
-        <p className="apa-modal__efeito">{t.efeito}</p>
+        <p className={E.CONFIRMA_ALVO}>{alvo.descricao}</p>
+        <p className={E.CONFIRMA_EFEITO}>{t.efeito}</p>
 
         {acao === "editar" && (
-          <label className="apa-campo">
+          <label className={E.CAMPO}>
             Tela mostrada
-            <select className="advis-select" value={tipoEditado} onChange={(e) => setTipoEditado(e.target.value as "bloqueio" | "suspensao")}>
+            <select className={E.SELECT} value={tipoEditado} onChange={(e) => setTipoEditado(e.target.value as "bloqueio" | "suspensao")}>
               <option value="bloqueio">Aparelho bloqueado</option>
               <option value="suspensao">Aparelho suspenso</option>
             </select>
           </label>
         )}
 
-        <label className="apa-campo">
+        <label className={E.CAMPO}>
           Motivo {t.pedeMotivo ? "(obrigatório)" : "(opcional)"}
           <textarea
-            className="advd-input apa-texto"
+            className={cn(E.CONTROLE, E.TEXTO_LONGO)}
             rows={3}
             maxLength={300}
             value={motivo}
             onChange={(e) => setMotivo(e.target.value)}
             placeholder={acao === "desbloquear" ? "Ex.: foi um engano" : "Ex.: tentativas repetidas de invadir o formulário"}
           />
-          <span className="apa-contador">
+          <span className={E.CONTADOR}>
             {acao === "desbloquear" ? `${motivo.length}/300 · fica só na auditoria` : `${motivo.length}/300 · a pessoa vai ler este texto na tela e ele fica na auditoria`}
           </span>
         </label>
 
         {acao === "expulsar" && (
-          <label className="apa-check apa-check--neutro">
+          <label className={cn(E.CHECK, E.CHECK_NEUTRO)}>
             <input type="checkbox" checked={impedir} onChange={(e) => setImpedir(e.target.checked)} />
             <span>
               Impedir de voltar por um tempo.
@@ -186,7 +185,7 @@ export default function AcaoAparelhoModal({ acao, alvo, inicial, onFechar, onFei
         {usaPrazo && <SeletorPrazo valor={prazo} onChange={setPrazo} rotuloIndeterminado={acao === "expulsar" ? "Indeterminado (até eu liberar)" : undefined} />}
 
         {(acao === "bloquear" || acao === "suspender") && (
-          <label className="apa-check">
+          <label className={E.CHECK}>
             <input type="checkbox" checked={rede} onChange={(e) => setRede(e.target.checked)} />
             <span>
               Bloquear também a <strong>rede (IP)</strong> deste aparelho.
@@ -195,12 +194,12 @@ export default function AcaoAparelhoModal({ acao, alvo, inicial, onFechar, onFei
           </label>
         )}
 
-        {erro && <p className="apa-erro" role="alert">{erro}</p>}
+        {erro && <p className={E.ERRO} role="alert">{erro}</p>}
 
-        <div className="apa-modal__botoes">
+        <div className={E.CONFIRMA_BOTOES}>
           <Button type="button" variante="contorno" tamanho="pequeno" onClick={onFechar} disabled={enviando}>Cancelar</Button>
-          <button type="button" className={t.perigo ? "advis-btn apa-btn--perigo" : "advis-btn"} onClick={() => void confirmar()} disabled={enviando || !motivoOk || !prazoOk}>
-            {enviando ? <Loader2 size={16} className="advis-giro" aria-hidden="true" /> : <Icone size={16} aria-hidden="true" />} {t.botao}
+          <button type="button" className={t.perigo ? cn(E.BOTAO, E.BOTAO_PERIGO) : E.BOTAO} onClick={() => void confirmar()} disabled={enviando || !motivoOk || !prazoOk}>
+            {enviando ? <Loader2 size={16} className={E.GIRO} aria-hidden="true" /> : <Icone size={16} aria-hidden="true" />} {t.botao}
           </button>
         </div>
       </div>

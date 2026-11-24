@@ -4,12 +4,11 @@
  * SeletorPrazo — o deus escolhe até quando vale um bloqueio, suspensão ou
  * impedimento de retorno: indeterminado, daqui a N minutos/horas/dias, ou
  * uma data e hora exatas. Mostra uma prévia clara do término.
- * CSS: src/styles/admin-aparelhos.css (prefixo "apa-").
  */
 
 import { calcularAte, dataFortaleza, type ModoPrazo, type PrazoEntrada, type UnidadePrazo } from "@/utils/prazo";
-import "@/styles/admin-aparelhos.css";
-import "@/styles/admin-acessos.css";
+import * as E from "@/components/admin/acessos/estilos";
+import { cn } from "@/utils/cn";
 
 interface Props {
   valor: PrazoEntrada;
@@ -39,11 +38,11 @@ export default function SeletorPrazo({ valor, onChange, rotuloIndeterminado = "I
   const campoData = valor.modo === "data" ? paraCampoData(valor.ate) : "";
 
   return (
-    <div className="apa-prazo">
-      <label className="apa-campo">
+    <div className={E.PRAZO}>
+      <label className={E.CAMPO}>
         Duração
         <select
-          className="advis-select"
+          className={E.SELECT}
           value={valor.modo}
           onChange={(e) => {
             const modo = e.target.value as ModoPrazo;
@@ -60,9 +59,9 @@ export default function SeletorPrazo({ valor, onChange, rotuloIndeterminado = "I
 
       {valor.modo === "relativo" && (
         <>
-          <div className="apa-prazo__linha">
+          <div className={E.PRAZO_LINHA}>
             <input
-              className="advd-input"
+              className={E.CONTROLE}
               type="number"
               min={1}
               inputMode="numeric"
@@ -70,15 +69,15 @@ export default function SeletorPrazo({ valor, onChange, rotuloIndeterminado = "I
               value={valor.quantidade ?? ""}
               onChange={(e) => onChange({ ...valor, quantidade: e.target.value === "" ? undefined : Number(e.target.value) })}
             />
-            <select className="advis-select" aria-label="Unidade" value={valor.unidade ?? "horas"} onChange={(e) => onChange({ ...valor, unidade: e.target.value as UnidadePrazo })}>
+            <select className={E.SELECT} aria-label="Unidade" value={valor.unidade ?? "horas"} onChange={(e) => onChange({ ...valor, unidade: e.target.value as UnidadePrazo })}>
               <option value="minutos">minutos</option>
               <option value="horas">horas</option>
               <option value="dias">dias</option>
             </select>
           </div>
-          <div className="apa-chips" role="group" aria-label="Atalhos de duração">
+          <div className={E.CHIPS} role="group" aria-label="Atalhos de duração">
             {ATALHOS.map((a) => (
-              <button key={a.r} type="button" className={valor.quantidade === a.q && valor.unidade === a.u ? "apa-chip apa-chip--ativo" : "apa-chip"} onClick={() => onChange({ modo: "relativo", quantidade: a.q, unidade: a.u })}>{a.r}</button>
+              <button key={a.r} type="button" className={valor.quantidade === a.q && valor.unidade === a.u ? cn(E.CHIP, E.CHIP_ATIVO) : E.CHIP} onClick={() => onChange({ modo: "relativo", quantidade: a.q, unidade: a.u })}>{a.r}</button>
             ))}
           </div>
         </>
@@ -86,7 +85,7 @@ export default function SeletorPrazo({ valor, onChange, rotuloIndeterminado = "I
 
       {valor.modo === "data" && (
         <input
-          className="advd-input"
+          className={E.CONTROLE}
           type="datetime-local"
           aria-label="Data e hora de término"
           min={paraCampoData(new Date(Date.now() + 60_000).toISOString())}
@@ -95,7 +94,7 @@ export default function SeletorPrazo({ valor, onChange, rotuloIndeterminado = "I
         />
       )}
 
-      <p className={"erro" in resultado ? "apa-prazo__previa apa-prazo__previa--erro" : "apa-prazo__previa"}>
+      <p className={"erro" in resultado ? cn(E.PRAZO_PREVIA, E.PRAZO_PREVIA_ERRO) : E.PRAZO_PREVIA}>
         {"erro" in resultado
           ? resultado.erro
           : resultado.ate

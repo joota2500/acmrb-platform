@@ -8,18 +8,18 @@
  * para ver as páginas e o tempo em cada uma.
  * Lembrete na tela: anônimos somem em 24 h.
  * Dados: tabelas acessos_sessoes / acessos_paginas (RLS: só is_deus()).
- * CSS: src/styles/admin-acessos.css (prefixo "aac-").
  */
 
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2, RefreshCw, Search, Smartphone, X } from "lucide-react";
 
-import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { dataHoraCurta, duracao } from "@/types/visitantes";
 import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import { aparelhoDe, idCurto, localDe, mensagemErro, origemDe } from "@/types/acessos";
 import Button from "@/components/ui/Button";
+import * as E from "@/components/admin/acessos/estilos";
+import { cn } from "@/utils/cn";
 
 interface Linha {
   id: string;
@@ -114,56 +114,56 @@ export default function AcessosLista() {
   const agora = (l: Linha) => !l.encerrada_em && Date.now() - new Date(l.ultima_atividade).getTime() < 120_000;
 
   return (
-    <div className="aac">
-      <p className="aac-nota">Visitas de pessoas sem login ficam registradas por 24 h. As de pessoas logadas ficam enquanto a conta existir.</p>
+    <div className={E.RAIZ}>
+      <p className={E.NOTA}>Visitas de pessoas sem login ficam registradas por 24 h. As de pessoas logadas ficam enquanto a conta existir.</p>
 
-      <div className="aac-filtros">
-        <label className="advis-busca">
+      <div className={E.FILTROS}>
+        <label className={E.BUSCA}>
           <Search size={16} aria-hidden="true" />
-          <span className="advis-sr">Buscar por cidade ou id do navegador</span>
+          <span className={E.SR}>Buscar por cidade ou id do navegador</span>
           <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Cidade ou id completo" />
         </label>
-        <select className="advis-select" aria-label="Quem" value={quem} onChange={(e) => mudar(setQuem)(e.target.value as typeof quem)}>
+        <select className={E.SELECT} aria-label="Quem" value={quem} onChange={(e) => mudar(setQuem)(e.target.value as typeof quem)}>
           <option value="todos">Todos</option><option value="anonimos">Sem login (anônimos)</option><option value="logados">Logados</option>
         </select>
-        <select className="advis-select" aria-label="Período" value={periodo} onChange={(e) => mudar(setPeriodo)(Number(e.target.value))}>
+        <select className={E.SELECT} aria-label="Período" value={periodo} onChange={(e) => mudar(setPeriodo)(Number(e.target.value))}>
           <option value={1}>Últimas 24 h</option><option value={7}>7 dias</option><option value={30}>30 dias</option><option value={90}>90 dias</option>
         </select>
-        <select className="advis-select" aria-label="Aparelho" value={aparelho} onChange={(e) => mudar(setAparelho)(e.target.value)}>
+        <select className={E.SELECT} aria-label="Aparelho" value={aparelho} onChange={(e) => mudar(setAparelho)(e.target.value)}>
           <option value="">Todos os aparelhos</option><option value="celular">Celular</option><option value="tablet">Tablet</option><option value="computador">Computador</option>
         </select>
-        <select className="advis-select" aria-label="Origem" value={origem} onChange={(e) => mudar(setOrigem)(e.target.value)}>
+        <select className={E.SELECT} aria-label="Origem" value={origem} onChange={(e) => mudar(setOrigem)(e.target.value)}>
           <option value="">Todas as origens</option><option value="direto">Direto</option><option value="busca">Busca</option><option value="rede social">Rede social</option>
           <option value="e-mail">E-mail</option><option value="outros sites">Outros sites</option><option value="campanha">Campanha</option>
         </select>
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
 
-      {erro && <p className="aac-erro" role="alert">{erro}</p>}
-      <p className="advis-contagem" aria-live="polite">{carregando ? "Carregando…" : `${total} visita${total === 1 ? "" : "s"}`}</p>
+      {erro && <p className={E.ERRO} role="alert">{erro}</p>}
+      <p className={E.CONTAGEM} aria-live="polite">{carregando ? "Carregando…" : `${total} visita${total === 1 ? "" : "s"}`}</p>
 
       {carregando ? (
-        <p className="aac-vazio"><Loader2 className="advis-giro" aria-hidden="true" /> Carregando…</p>
+        <p className={E.VAZIO}><Loader2 className={E.GIRO} aria-hidden="true" /> Carregando…</p>
       ) : linhas.length === 0 ? (
-        <p className="aac-vazio">Nenhuma visita com esses filtros.</p>
+        <p className={E.VAZIO}>Nenhuma visita com esses filtros.</p>
       ) : (
-        <div className="advis-tabela-wrap">
-          <table className="advis-tabela">
-            <thead><tr><th>Quando</th><th>Quem</th><th>Onde</th><th>Aparelho</th><th>Origem</th><th>Páginas</th><th>Tempo</th><th><span className="advis-sr">Detalhes</span></th></tr></thead>
+        <div className={E.TABELA_CAIXA}>
+          <table className={E.TABELA}>
+            <thead><tr><th>Quando</th><th>Quem</th><th>Onde</th><th>Aparelho</th><th>Origem</th><th>Páginas</th><th>Tempo</th><th><span className={E.SR}>Detalhes</span></th></tr></thead>
             <tbody>
               {linhas.map((l) => (
                 <tr key={l.id}>
-                  <td data-rotulo="Quando">{dataHoraCurta(l.iniciada_em)} {agora(l) && <span className="aac-selo aac-selo--agora">agora</span>}</td>
+                  <td data-rotulo="Quando">{dataHoraCurta(l.iniciada_em)} {agora(l) && <span className={cn(E.SELO, E.SELO_AGORA)}>agora</span>}</td>
                   <td data-rotulo="Quem">
-                    <strong className="advis-nome">{l.auth_user_id ? nomes[l.auth_user_id] ?? "Cadastrado" : "Anônimo"}</strong>
-                    <span className="advis-email">id {idCurto(l.anon_id)}</span>
+                    <strong className={E.NOME}>{l.auth_user_id ? nomes[l.auth_user_id] ?? "Cadastrado" : "Anônimo"}</strong>
+                    <span className={E.DETALHE}>id {idCurto(l.anon_id)}</span>
                   </td>
                   <td data-rotulo="Onde">{localDe(l)}</td>
                   <td data-rotulo="Aparelho">{aparelhoDe(l)}</td>
                   <td data-rotulo="Origem">{origemDe(l)}{l.utm_campaign ? ` · ${l.utm_campaign}` : ""}</td>
                   <td data-rotulo="Páginas">{l.paginas}</td>
                   <td data-rotulo="Tempo">{duracao(l.duracao_seg)}</td>
-                  <td className="advis-acao">
+                  <td className={E.ACAO_TD}>
                     <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void abrir(l)}>Ver</Button>{" "}
                     <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setAparelhoAberto(l.anon_id)}><Smartphone size={15} aria-hidden="true" /> Aparelho</Button>
                   </td>
@@ -174,7 +174,7 @@ export default function AcessosLista() {
         </div>
       )}
 
-      <nav className="advis-paginacao" aria-label="Paginação">
+      <nav className={E.PAGINACAO} aria-label="Paginação">
         <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</Button>
         <span>Página {pagina + 1} de {nTotal}</span>
         <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina + 1 >= nTotal} onClick={() => setPagina((p) => p + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></Button>
@@ -183,19 +183,19 @@ export default function AcessosLista() {
       {aparelhoAberto && <AparelhoDetalhe anonId={aparelhoAberto} onFechar={() => setAparelhoAberto(null)} onAlterado={() => void carregar()} />}
 
       {aberta && (
-        <div className="aac-fundo" onClick={() => setAberta(null)} role="presentation">
-          <div className="aac-modal" role="dialog" aria-modal="true" aria-labelledby="aac-visita" onClick={(e) => e.stopPropagation()}>
-            <div className="aac-barra">
+        <div className={E.FUNDO_JANELA} onClick={() => setAberta(null)} role="presentation">
+          <div className={E.JANELA} role="dialog" aria-modal="true" aria-labelledby="aac-visita" onClick={(e) => e.stopPropagation()}>
+            <div className={E.BARRA}>
               <h3 id="aac-visita">Visita de {aberta.auth_user_id ? nomes[aberta.auth_user_id] ?? "cadastrado" : `anônimo (id ${idCurto(aberta.anon_id)})`}</h3>
-              <button type="button" className="advd-fechar" onClick={() => setAberta(null)} aria-label="Fechar"><X size={20} /></button>
+              <button type="button" className={E.FECHAR} onClick={() => setAberta(null)} aria-label="Fechar"><X size={20} /></button>
             </div>
-            <p className="aac-nota">
+            <p className={E.NOTA}>
               {dataHoraCurta(aberta.iniciada_em)} · {localDe(aberta)} · {aparelhoDe(aberta)} · origem: {origemDe(aberta)} · {duracao(aberta.duracao_seg)} no total
             </p>
             <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => { setAparelhoAberto(aberta.anon_id); setAberta(null); }}><Smartphone size={15} aria-hidden="true" /> Gerenciar este aparelho (bloquear, suspender, expulsar)</Button>
-            <ul className="aac-linha-tempo">
+            <ul className={E.LISTA_PAGINAS}>
               {paginas.length === 0 ? <li>Carregando páginas…</li> : paginas.map((p) => (
-                <li key={p.id}><code className="aac-codigo">{p.caminho}</code><span>{new Date(p.entrou_em).toLocaleTimeString("pt-BR")} · {duracao(p.duracao_seg)}</span></li>
+                <li key={p.id}><code className={E.CODIGO}>{p.caminho}</code><span>{new Date(p.entrou_em).toLocaleTimeString("pt-BR")} · {duracao(p.duracao_seg)}</span></li>
               ))}
             </ul>
           </div>

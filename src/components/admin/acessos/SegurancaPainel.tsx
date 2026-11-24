@@ -10,19 +10,19 @@
  *    (gravado pelo banco, não pelo navegador).
  *  - Limpeza: apaga agora os acessos anônimos com mais de 24 h.
  * Dados: login_tentativas e admin_auditoria (RLS: só is_deus()).
- * CSS: src/styles/admin-acessos.css (prefixo "aac-").
  */
 
 import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Loader2, LockOpen, RefreshCw, Trash2 } from "lucide-react";
 
-import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { chamarApi } from "@/services/apiAdmin";
 import { dataHoraCurta } from "@/types/visitantes";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { localDe, mensagemErro } from "@/types/acessos";
 import Button from "@/components/ui/Button";
+import * as E from "@/components/admin/acessos/estilos";
+import { cn } from "@/utils/cn";
 
 interface Tentativa {
   id: number;
@@ -63,13 +63,13 @@ export default function SegurancaPainel() {
   const [aviso, setAviso] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
 
   return (
-    <div className="aac">
-      <div className="aac-periodos" role="tablist" aria-label="Segurança">
+    <div className={E.RAIZ}>
+      <div className={E.GRUPO} role="tablist" aria-label="Segurança">
         {([["logins", "Tentativas de login"], ["auditoria", "Auditoria do painel"], ["limpeza", "Limpeza"]] as [Visao, string][]).map(([id, rotulo]) => (
-          <button key={id} type="button" role="tab" aria-selected={visao === id} className={visao === id ? "aac-chip aac-chip--ativo" : "aac-chip"} onClick={() => setVisao(id)}>{rotulo}</button>
+          <button key={id} type="button" role="tab" aria-selected={visao === id} className={visao === id ? cn(E.CHIP, E.CHIP_ATIVO) : E.CHIP} onClick={() => setVisao(id)}>{rotulo}</button>
         ))}
       </div>
-      {aviso && <p className={aviso.tipo === "ok" ? "aac-nota" : "aac-erro"} role="status">{aviso.texto}</p>}
+      {aviso && <p className={aviso.tipo === "ok" ? E.NOTA : E.ERRO} role="status">{aviso.texto}</p>}
       {visao === "logins" && <Logins onAviso={setAviso} />}
       {visao === "auditoria" && <AuditoriaLista />}
       {visao === "limpeza" && <Limpeza onAviso={setAviso} />}
@@ -127,37 +127,37 @@ function Logins({ onAviso }: { onAviso: (a: { tipo: "ok" | "erro"; texto: string
   const nTotal = Math.max(1, Math.ceil(total / POR_PAGINA));
   return (
     <>
-      <div className="aac-cards">
-        <div className="aac-card"><strong>{resumo.falhas}</strong><span>logins errados em 24 h</span></div>
-        <div className="aac-card"><strong>{resumo.acertos}</strong><span>logins certos em 24 h</span></div>
-        <div className="aac-card" style={{ gridColumn: "span 2" }}>
+      <div className={E.CARTOES}>
+        <div className={E.CARTAO_NUM}><strong>{resumo.falhas}</strong><span>logins errados em 24 h</span></div>
+        <div className={E.CARTAO_NUM}><strong>{resumo.acertos}</strong><span>logins certos em 24 h</span></div>
+        <div className={E.CARTAO_NUM} style={{ gridColumn: "span 2" }}>
           <span>Regras: 5 senhas erradas do mesmo e-mail na mesma rede bloqueiam por 15 min; 20 falhas de uma mesma rede bloqueiam a rede. Não guardamos IP.</span>
         </div>
       </div>
-      <div className="aac-filtros">
-        <select className="advis-select" aria-label="Resultado" value={resultado} onChange={(e) => { setResultado(e.target.value as typeof resultado); setPagina(0); }}>
+      <div className={E.FILTROS}>
+        <select className={E.SELECT} aria-label="Resultado" value={resultado} onChange={(e) => { setResultado(e.target.value as typeof resultado); setPagina(0); }}>
           <option value="todos">Certos e errados</option><option value="falhas">Só erros</option><option value="acertos">Só acertos</option>
         </select>
-        <select className="advis-select" aria-label="Tipo" value={tipo} onChange={(e) => { setTipo(e.target.value); setPagina(0); }}>
+        <select className={E.SELECT} aria-label="Tipo" value={tipo} onChange={(e) => { setTipo(e.target.value); setPagina(0); }}>
           <option value="">Login, cadastro e senha</option><option value="login">Login</option><option value="cadastro">Cadastro</option><option value="recuperar">Recuperar senha</option>
         </select>
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
-      {erro && <p className="aac-erro" role="alert">{erro}</p>}
-      {carregando ? <p className="aac-vazio"><Loader2 className="advis-giro" aria-hidden="true" /> Carregando…</p> : linhas.length === 0 ? <p className="aac-vazio">Nenhum registro ainda.</p> : (
-        <div className="advis-tabela-wrap">
-          <table className="advis-tabela">
-            <thead><tr><th>Quando</th><th>Tipo</th><th>Resultado</th><th>E-mail</th><th>Local</th><th>Aparelho</th><th><span className="advis-sr">Ações</span></th></tr></thead>
+      {erro && <p className={E.ERRO} role="alert">{erro}</p>}
+      {carregando ? <p className={E.VAZIO}><Loader2 className={E.GIRO} aria-hidden="true" /> Carregando…</p> : linhas.length === 0 ? <p className={E.VAZIO}>Nenhum registro ainda.</p> : (
+        <div className={E.TABELA_CAIXA}>
+          <table className={E.TABELA}>
+            <thead><tr><th>Quando</th><th>Tipo</th><th>Resultado</th><th>E-mail</th><th>Local</th><th>Aparelho</th><th><span className={E.SR}>Ações</span></th></tr></thead>
             <tbody>
               {linhas.map((t) => (
                 <tr key={t.id}>
                   <td data-rotulo="Quando">{dataHoraCurta(t.criado_em)}</td>
                   <td data-rotulo="Tipo">{t.tipo === "recuperar" ? "recuperar senha" : t.tipo}</td>
-                  <td data-rotulo="Resultado"><span className={`aac-selo ${t.sucesso ? "aac-selo--ok" : "aac-selo--erro"}`}>{t.sucesso ? "certo" : "errado"}</span>{t.motivo && <span className="advis-email">{t.motivo}</span>}</td>
+                  <td data-rotulo="Resultado"><span className={cn(E.SELO, t.sucesso ? E.SELO_OK : E.SELO_ERRO)}>{t.sucesso ? "certo" : "errado"}</span>{t.motivo && <span className={E.DETALHE}>{t.motivo}</span>}</td>
                   <td data-rotulo="E-mail">{t.email_mascarado ?? "—"}</td>
                   <td data-rotulo="Local">{localDe(t)}</td>
                   <td data-rotulo="Aparelho">{[t.dispositivo, t.navegador].filter(Boolean).join(" · ") || "—"}</td>
-                  <td className="advis-acao">{!t.sucesso && t.tipo === "login" && <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void liberar(t)}><LockOpen size={15} aria-hidden="true" /> Liberar</Button>}</td>
+                  <td className={E.ACAO_TD}>{!t.sucesso && t.tipo === "login" && <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void liberar(t)}><LockOpen size={15} aria-hidden="true" /> Liberar</Button>}</td>
                 </tr>
               ))}
             </tbody>
@@ -203,18 +203,18 @@ function AuditoriaLista() {
   const nTotal = Math.max(1, Math.ceil(total / POR_PAGINA));
   return (
     <>
-      <p className="aac-nota">O banco registra sozinho quem criou, alterou ou excluiu conteúdo no painel. Os valores dos campos não são guardados, só quais campos mudaram.</p>
-      <div className="aac-filtros">
-        <select className="advis-select" aria-label="Quem fez" value={ator} onChange={(e) => { setAtor(e.target.value); setPagina(0); }}>
+      <p className={E.NOTA}>O banco registra sozinho quem criou, alterou ou excluiu conteúdo no painel. Os valores dos campos não são guardados, só quais campos mudaram.</p>
+      <div className={E.FILTROS}>
+        <select className={E.SELECT} aria-label="Quem fez" value={ator} onChange={(e) => { setAtor(e.target.value); setPagina(0); }}>
           <option value="">Todos os administradores</option>
           {atores.map((a) => <option key={a} value={a}>{a}</option>)}
         </select>
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
-      {erro && <p className="aac-erro" role="alert">{erro}</p>}
-      {carregando ? <p className="aac-vazio"><Loader2 className="advis-giro" aria-hidden="true" /> Carregando…</p> : linhas.length === 0 ? <p className="aac-vazio">Nenhuma ação registrada ainda.</p> : (
-        <div className="advis-tabela-wrap">
-          <table className="advis-tabela">
+      {erro && <p className={E.ERRO} role="alert">{erro}</p>}
+      {carregando ? <p className={E.VAZIO}><Loader2 className={E.GIRO} aria-hidden="true" /> Carregando…</p> : linhas.length === 0 ? <p className={E.VAZIO}>Nenhuma ação registrada ainda.</p> : (
+        <div className={E.TABELA_CAIXA}>
+          <table className={E.TABELA}>
             <thead><tr><th>Quando</th><th>Quem</th><th>O que fez</th><th>Sobre</th><th>Campos</th></tr></thead>
             <tbody>
               {linhas.map((a) => {
@@ -224,7 +224,7 @@ function AuditoriaLista() {
                   <tr key={a.id}>
                     <td data-rotulo="Quando">{dataHoraCurta(a.created_at)}</td>
                     <td data-rotulo="Quem">{a.ator_email}</td>
-                    <td data-rotulo="O que fez"><strong className="advis-nome">{descreverAcao(a)}</strong></td>
+                    <td data-rotulo="O que fez"><strong className={E.NOME}>{descreverAcao(a)}</strong></td>
                     <td data-rotulo="Sobre">{(d.rotulo as string) || a.alvo_email || "—"}</td>
                     <td data-rotulo="Campos">{campos || "—"}</td>
                   </tr>
@@ -272,13 +272,13 @@ function Limpeza({ onAviso }: { onAviso: (a: { tipo: "ok" | "erro"; texto: strin
 
   return (
     <>
-      <div className="aac-cards">
-        <div className="aac-card"><strong>{anonimos ?? "—"}</strong><span>acessos anônimos guardados</span></div>
-        <div className="aac-card"><strong>{vencidos ?? "—"}</strong><span>já passaram de 24 h</span></div>
+      <div className={E.CARTOES}>
+        <div className={E.CARTAO_NUM}><strong>{anonimos ?? "—"}</strong><span>acessos anônimos guardados</span></div>
+        <div className={E.CARTAO_NUM}><strong>{vencidos ?? "—"}</strong><span>já passaram de 24 h</span></div>
       </div>
-      <section className="aac-bloco">
+      <section className={E.BLOCO}>
         <h3>Como a limpeza funciona</h3>
-        <p className="aac-nota">
+        <p className={E.NOTA}>
           Todo acesso de quem não fez login é apagado 24 horas depois da última atividade. Antes de apagar, o banco guarda só os totais do dia
           (visitas, aparelho, origem, cidade), que não identificam ninguém. A limpeza roda sozinha de hora em hora (pg_cron) ou uma vez por dia
           (Vercel Cron). Se os números acima de &ldquo;já passaram de 24 h&rdquo; não zerarem, o agendamento não está ativo: veja o guia de configuração.
@@ -294,7 +294,7 @@ function Limpeza({ onAviso }: { onAviso: (a: { tipo: "ok" | "erro"; texto: strin
 
 function Paginacao({ pagina, total, onMudar }: { pagina: number; total: number; onMudar: (p: number) => void }) {
   return (
-    <nav className="advis-paginacao" aria-label="Paginação">
+    <nav className={E.PAGINACAO} aria-label="Paginação">
       <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina === 0} onClick={() => onMudar(pagina - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</Button>
       <span>Página {pagina + 1} de {total}</span>
       <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina + 1 >= total} onClick={() => onMudar(pagina + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></Button>

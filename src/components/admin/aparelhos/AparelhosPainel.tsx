@@ -10,14 +10,11 @@
  * gaveta com histórico e a ação de expulsar.
  * Mostra também aparelhos bloqueados cujas visitas já expiraram (24 h).
  * Dados: função aparelhos_lista (migration 20261027130000).
- * CSS: src/styles/admin-aparelhos.css (prefixo "apa-").
  */
 
 import { useCallback, useEffect, useState } from "react";
 import { Ban, ChevronLeft, ChevronRight, Clock, Loader2, Pencil, RefreshCw, Search, ShieldCheck, Smartphone } from "lucide-react";
 
-import "@/styles/admin-aparelhos.css";
-import "@/styles/admin-acessos.css";
 import { supabase } from "@/lib/supabase";
 import { ToastArea, useToast } from "@/components/ui/Toast";
 import { dataHoraCurta } from "@/types/visitantes";
@@ -27,6 +24,8 @@ import AparelhoDetalhe from "@/components/admin/aparelhos/AparelhoDetalhe";
 import SeloSituacao from "@/components/admin/aparelhos/SeloSituacao";
 import { curto, type AcaoAparelho, type AparelhoItem } from "@/types/aparelhos";
 import Button from "@/components/ui/Button";
+import * as E from "@/components/admin/acessos/estilos";
+import { cn } from "@/utils/cn";
 
 const POR_PAGINA = 15;
 type Filtro = "todos" | "ativos" | "bloqueados" | "suspensos" | "online";
@@ -78,60 +77,60 @@ export default function AparelhosPainel() {
   const quemRotulo = (i: AparelhoItem) => (i.nome ? i.nome : i.logado ? "Cadastrado" : "Anônimo");
 
   return (
-    <div className="aac">
-      <div className="aac-barra">
-        <p className="aac-nota">
+    <div className={E.RAIZ}>
+      <div className={E.BARRA}>
+        <p className={E.NOTA}>
           Aparelhos que visitaram o site. O bloqueio vale na próxima navegação e a página aberta é trocada em até ~10 segundos. Visitas de anônimos somem em 24 h, mas os bloqueios continuam até você desbloquear.
         </p>
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => void carregar()}><RefreshCw size={16} aria-hidden="true" /> Atualizar</Button>
       </div>
 
-      <div className="apa-chips" role="group" aria-label="Filtrar por situação">
+      <div className={E.CHIPS} role="group" aria-label="Filtrar por situação">
         {([["todos", "Todos"], ["online", "No site agora"], ["ativos", "Ativos"], ["suspensos", "Suspensos"], ["bloqueados", "Bloqueados"]] as [Filtro, string][]).map(([v, r]) => (
-          <button key={v} type="button" className={filtro === v ? "aac-chip aac-chip--ativo" : "aac-chip"} aria-pressed={filtro === v} onClick={() => { setFiltro(v); setPagina(0); }}>{r}</button>
+          <button key={v} type="button" className={filtro === v ? cn(E.CHIP, E.CHIP_ATIVO) : E.CHIP} aria-pressed={filtro === v} onClick={() => { setFiltro(v); setPagina(0); }}>{r}</button>
         ))}
       </div>
 
-      <div className="apa-filtros">
-        <label className="advis-busca">
+      <div className={E.FILTROS_APA}>
+        <label className={E.BUSCA}>
           <Search size={16} aria-hidden="true" />
-          <span className="advis-sr">Buscar por id, cidade ou nome</span>
+          <span className={E.SR}>Buscar por id, cidade ou nome</span>
           <input value={busca} onChange={(e) => setBusca(e.target.value)} placeholder="Id do aparelho, cidade ou nome" />
         </label>
-        <select className="advis-select" aria-label="Quem" value={quem} onChange={(e) => { setQuem(e.target.value as Quem); setPagina(0); }}>
+        <select className={E.SELECT} aria-label="Quem" value={quem} onChange={(e) => { setQuem(e.target.value as Quem); setPagina(0); }}>
           <option value="todos">Anônimos e logados</option>
           <option value="anonimos">Só anônimos</option>
           <option value="logados">Só logados</option>
         </select>
       </div>
 
-      {erro && <p className="aac-erro" role="alert">{erro}</p>}
-      <p className="advis-contagem" aria-live="polite">{carregando ? "Carregando…" : `${total} aparelho${total === 1 ? "" : "s"}`}</p>
+      {erro && <p className={E.ERRO} role="alert">{erro}</p>}
+      <p className={E.CONTAGEM} aria-live="polite">{carregando ? "Carregando…" : `${total} aparelho${total === 1 ? "" : "s"}`}</p>
 
       {carregando ? (
-        <p className="aac-vazio"><Loader2 className="advis-giro" aria-hidden="true" /> Carregando…</p>
+        <p className={E.VAZIO}><Loader2 className={E.GIRO} aria-hidden="true" /> Carregando…</p>
       ) : itens.length === 0 ? (
-        <p className="aac-vazio"><Smartphone aria-hidden="true" /> Nenhum aparelho com esses filtros.</p>
+        <p className={E.VAZIO}><Smartphone aria-hidden="true" /> Nenhum aparelho com esses filtros.</p>
       ) : (
-        <div className="advis-tabela-wrap">
-          <table className="advis-tabela">
-            <thead><tr><th>Aparelho</th><th>Situação</th><th>Onde</th><th>Última atividade</th><th>Visitas</th><th><span className="advis-sr">Ações</span></th></tr></thead>
+        <div className={E.TABELA_CAIXA}>
+          <table className={E.TABELA}>
+            <thead><tr><th>Aparelho</th><th>Situação</th><th>Onde</th><th>Última atividade</th><th>Visitas</th><th><span className={E.SR}>Ações</span></th></tr></thead>
             <tbody>
               {itens.map((i) => (
-                <tr key={i.anon_id} className={i.situacao !== "ativo" ? `apa-linha apa-linha--${i.situacao}` : "apa-linha"}>
+                <tr key={i.anon_id} className={E.COR_LINHA_SITUACAO[i.situacao] || undefined}>
                   <td data-rotulo="Aparelho">
-                    <strong className="advis-nome">{quemRotulo(i)}</strong>
-                    <span className="advis-email">id {idCurto(i.anon_id)} · {aparelhoDe(i)}</span>
+                    <strong className={E.NOME}>{quemRotulo(i)}</strong>
+                    <span className={E.DETALHE}>id {idCurto(i.anon_id)} · {aparelhoDe(i)}</span>
                   </td>
                   <td data-rotulo="Situação">
                     <SeloSituacao situacao={i.situacao} ate={i.ate} />
-                    {i.online && <span className="apa-selo apa-selo--online">no site agora</span>}
-                    {i.situacao !== "ativo" && i.motivo && <span className="advis-email">Motivo: {curto(i.motivo)}</span>}
+                    {i.online && <span className={cn(E.SELO_SITUACAO, E.SELO_ONLINE)}>no site agora</span>}
+                    {i.situacao !== "ativo" && i.motivo && <span className={E.DETALHE}>Motivo: {curto(i.motivo)}</span>}
                   </td>
                   <td data-rotulo="Onde">{localDe(i)}</td>
                   <td data-rotulo="Última atividade">{dataHoraCurta(i.ultima_atividade)}</td>
                   <td data-rotulo="Visitas">{i.sessoes ?? 0}</td>
-                  <td className="advis-acao apa-acoes-linha">
+                  <td className={cn(E.ACAO_TD, E.ACOES_LINHA)}>
                     {i.situacao === "ativo" ? (
                       <>
                         <Button type="button" variante="contorno" tamanho="pequeno" onClick={() => setAcao({ tipo: "suspender", item: i })} title="Suspender por um tempo"><Clock size={15} aria-hidden="true" /> Suspender</Button>
@@ -152,7 +151,7 @@ export default function AparelhosPainel() {
         </div>
       )}
 
-      <nav className="advis-paginacao" aria-label="Paginação">
+      <nav className={E.PAGINACAO} aria-label="Paginação">
         <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina === 0} onClick={() => setPagina((p) => p - 1)}><ChevronLeft size={16} aria-hidden="true" /> Anterior</Button>
         <span>Página {pagina + 1} de {nPaginas}</span>
         <Button type="button" variante="contorno" tamanho="pequeno" disabled={pagina + 1 >= nPaginas} onClick={() => setPagina((p) => p + 1)}>Próxima <ChevronRight size={16} aria-hidden="true" /></Button>
