@@ -157,7 +157,8 @@ export default function MobileMenu({
               </button>
             </div>
 
-            <nav className="flex flex-col gap-1 p-6" aria-label="Menu principal">
+            {/* pb-24: sobra espaço no fim para o botão flutuante do chat não cobrir o Sair */}
+            <nav className="flex flex-col gap-1 p-6 pb-24" aria-label="Menu principal">
               {/* Links (entrada escalonada) */}
               {navigation.map((link, i) => (
                 <motion.div
