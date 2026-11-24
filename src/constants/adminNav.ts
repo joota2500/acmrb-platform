@@ -120,3 +120,6 @@ export function secaoValida(valor: string | null): SecaoId {
 }
 
 export const itemPorId = (id: SecaoId) => ITENS_NAV.find((i) => i.id === id)!;
+
+/** Nome do grupo do item (usado no "caminho" do cabeçalho: Painel / Pessoas) */
+export const grupoDe = (id: SecaoId) => GRUPOS_NAV.find((g) => g.itens.some((i) => i.id === id))?.titulo ?? "";

@@ -6,11 +6,21 @@
  * recolhida 5rem): a barra e a coluna principal leem essa mesma variável,
  * então os dois andam juntos quando o menu é recolhido.
  * Também tem o link "Pular para o conteúdo" (aparece com a tecla Tab).
- * A classe "admin-shell" não tem CSS próprio: é só a marca usada pelas regras
- * de foco do painel em globals.css.
+ * ACABAMENTO (antes era CSS solto em globals.css, ".admin-shell"): foco
+ * verde nos botões, links e campos, títulos equilibrados e cursor de mãozinha.
  */
 
 import { cn } from "@/utils/cn";
+
+// Acabamento de tudo que fica dentro do painel (escrito inteiro para o Tailwind achar)
+const ACABAMENTO = [
+  "[&_:is(h1,h2,h3)]:text-balance",
+  "[&_:is(button,[role=button]):not(:disabled)]:cursor-pointer",
+  "[&_:is(button,a):focus-visible]:outline-2 [&_:is(button,a):focus-visible]:outline-offset-2 [&_:is(button,a):focus-visible]:outline-brand",
+  "[&_:is(input,select,textarea):not([type=checkbox],[type=radio],[type=file],[type=range]):focus-visible]:border-brand",
+  "[&_:is(input,select,textarea):not([type=checkbox],[type=radio],[type=file],[type=range]):focus-visible]:shadow-focus",
+  "[&_:is(input,select,textarea):not([type=checkbox],[type=radio],[type=file],[type=range]):focus-visible]:outline-none",
+];
 
 type Props = {
   children: React.ReactNode;
@@ -21,7 +31,8 @@ export default function AdminContainer({ children, recolhida = false }: Props) {
   return (
     <div
       className={cn(
-        "admin-shell min-h-dvh overflow-x-hidden bg-[#f5f7f4] text-ink",
+        "min-h-dvh overflow-x-clip bg-[#f5f7f4] text-ink",
+        ...ACABAMENTO,
         recolhida ? "[--admin-sidebar:5rem]" : "[--admin-sidebar:16.5rem]",
       )}
     >

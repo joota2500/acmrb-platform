@@ -298,22 +298,6 @@ html[data-bloqueado] body {
 .swal2-popup.swal-acmrb .swal2-icon.swal2-error [class^="swal2-x-mark-line"] { background-color: var(--color-danger); }
 .swal2-container { z-index: 2000; }
 
-/* ---------- Painel admin: campos e títulos com o mesmo acabamento do resto do site ---------- */
-.admin-shell :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="file"], [type="range"]):focus-visible {
-  border-color: var(--color-brand);
-  box-shadow: var(--shadow-focus);
-  outline: none;
-}
-.admin-shell :is(h1, h2, h3) {
-  text-wrap: balance;
-}
-.admin-shell :is(button, a):focus-visible {
-  outline: 2px solid var(--color-brand);
-  outline-offset: 2px;
-}
-.admin-shell :is(button, [role="button"]):not(:disabled) {
-  cursor: pointer;
-}
 
 /* ==========================================================
    MAPAS (Leaflet)

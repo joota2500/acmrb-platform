@@ -13,6 +13,8 @@
  *  - Barra lateral recolhível no desktop (salva no localStorage).
  *  - Gaveta no tablet/celular e barra rápida inferior no celular.
  *  - Sair pede confirmação.
+ *  - Busca de seção "Ir para…" (Ctrl+K / ⌘K), sino de mensagens não lidas
+ *    no cabeçalho e caminho "Painel / Grupo" (novo visual, item 12.1).
  *
  * Responsividade: celular, tablet e notebook são tratados nos componentes de
  * src/components/admin/layout (classes Tailwind).
@@ -36,7 +38,9 @@ import AdminContainer from "@/components/admin/layout/AdminContainer";
 import AdminContent from "@/components/admin/layout/AdminContent";
 import AdminHeader from "@/components/admin/layout/AdminHeader";
 import AdminBottomNav from "@/components/admin/layout/AdminBottomNav";
-import { itemPorId, secaoValida, type SecaoId } from "@/constants/adminNav";
+import BuscaSecoes from "@/components/admin/layout/BuscaSecoes";
+import { useChatNaoLidas } from "@/hooks/useChatNaoLidas";
+import { grupoDe, itemPorId, secaoValida, type SecaoId } from "@/constants/adminNav";
 
 /* Seções */
 import VisaoGeral from "@/components/admin/visao-geral/VisaoGeral";
@@ -99,6 +103,25 @@ function PainelAdmin() {
   const [recolhida, setRecolhida] = useState(false);
   const [gaveta, setGaveta] = useState(false);
   const [confirmarSaida, setConfirmarSaida] = useState(false);
+  const [busca, setBusca] = useState(false);
+
+  // Mensagens não lidas: um só contador para o menu e o sino do cabeçalho
+  const ehAdmin = !!user && perfil?.tipo === "admin";
+  const podeMensagens = ehAdmin && podeVer(isGod ? "deus" : "admin", "mensagens");
+  const naoLidas = useChatNaoLidas(podeMensagens);
+
+  // Atalho Ctrl+K (ou ⌘K no Mac) abre a busca de seção
+  useEffect(() => {
+    if (!ehAdmin) return;
+    const tecla = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setBusca((b) => !b);
+      }
+    };
+    document.addEventListener("keydown", tecla);
+    return () => document.removeEventListener("keydown", tecla);
+  }, [ehAdmin]);
 
   // Permissões: mesma regra da versão anterior
   useEffect(() => {
@@ -138,6 +161,7 @@ function PainelAdmin() {
 
   const fecharGaveta = useCallback(() => setGaveta(false), []);
   const cancelarSaida = useCallback(() => setConfirmarSaida(false), []);
+  const fecharBusca = useCallback(() => setBusca(false), []);
 
   // Sai sozinho após MINUTOS_INATIVIDADE sem uso (segurança em viagem)
   const expirar = useCallback(() => {
@@ -171,6 +195,8 @@ function PainelAdmin() {
         onFecharGaveta={fecharGaveta}
         usuario={usuario}
         onSair={() => setConfirmarSaida(true)}
+        onBuscar={() => setBusca(true)}
+        naoLidas={naoLidas}
       />
 
       {/* Coluna principal: no desktop deixa espaço (margem) para a barra fixa */}
@@ -179,6 +205,11 @@ function PainelAdmin() {
           titulo={item.rotulo}
           descricao={item.descricao}
           icone={item.icone}
+          grupo={grupoDe(ativa)}
+          deus={papel === "deus"}
+          onBuscar={() => setBusca(true)}
+          naoLidas={podeMensagens ? naoLidas : null}
+          onAbrirMensagens={() => selecionar("mensagens")}
           emBreve={!item.pronto}
           onAbrirGaveta={() => setGaveta(true)}
           gavetaAberta={gaveta}
@@ -187,6 +218,8 @@ function PainelAdmin() {
         />
 
         <AdminContent>
+          {/* key = seção: a troca de seção entra com um fade suave */}
+          <div key={ativa} className="animate-aparecer motion-reduce:animate-none">
           {!permitido ? (
             <SemPermissao />
           ) : (
@@ -211,11 +244,13 @@ function PainelAdmin() {
               {ativa === "minha-conta" && <MinhaContaSection />}
             </>
           )}
+          </div>
         </AdminContent>
       </div>
 
       <AdminBottomNav ativa={ativa} onSelecionar={selecionar} onMais={() => setGaveta(true)} />
 
+      <BuscaSecoes aberta={busca} onFechar={fecharBusca} onSelecionar={selecionar} />
       <ConfirmDialog
         aberto={confirmarSaida}
         titulo="Sair do painel?"
