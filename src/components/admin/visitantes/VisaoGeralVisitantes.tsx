@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import {
   CalendarPlus, FileText, Inbox, LogIn, MapPin, MessageCircle, RefreshCw, Smartphone, Truck, UserCheck, Users, Wifi,
 } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import Button from "@/components/ui/Button";
 import { CAIXA_VAZIA, CARTAO } from "@/components/admin/apoiadores/estilos";
 import { carregarPainelVisitantes, type PainelVisitantes } from "@/services/visitantesAdmin";
@@ -121,9 +122,16 @@ export default function VisaoGeralVisitantes({ onVerCadastrados }: Props) {
   );
 }
 
-/* ---------- gráfico de barras feito só com divs ---------- */
+/* ---------- gráficos com Recharts (passar o mouse/tocar mostra os números) ---------- */
+// cores da ACMRB (o SVG do Recharts não lê as variáveis do CSS, então vão em hexa)
+const COR_VERDE = "#2e5e4e";
+const COR_AMARELO = "#fbbf24";
+const COR_FOLHA = "#34d399";
+const DICA = { borderRadius: 12, border: "1px solid #e4e4e7", fontSize: 12, boxShadow: "0 8px 24px rgb(0 0 0 / 0.08)" };
+
+const rotuloDia = (dia: string) => dia.slice(8, 10) + "/" + dia.slice(5, 7);
+
 function Grafico({ dias }: { dias: PainelVisitantes["porDia"] }) {
-  const maior = Math.max(1, ...dias.map((x) => Math.max(x.cadastros, x.logins)));
   const total = dias.reduce((s, x) => s + x.cadastros + x.logins, 0);
   if (!total) {
     return (
@@ -133,29 +141,26 @@ function Grafico({ dias }: { dias: PainelVisitantes["porDia"] }) {
       </div>
     );
   }
-  const rotulo = (dia: string) => dia.slice(8, 10) + "/" + dia.slice(5, 7);
   return (
-    <div className="min-w-0">
-      <div className="flex h-40 items-end gap-px sm:gap-0.5" role="img" aria-label="Gráfico de cadastros e logins por dia">
-        {dias.map((x) => (
-          <div key={x.dia} className="group relative flex h-full min-w-0 flex-1 items-end justify-center gap-px" title={`${rotulo(x.dia)}: ${x.cadastros} cadastro(s), ${x.logins} login(s)`}>
-            <span className="w-1/2 rounded-t-sm bg-brand transition group-hover:opacity-80" style={{ height: `${(x.cadastros / maior) * 100}%` }} />
-            <span className="w-1/2 rounded-t-sm bg-amber-400 transition group-hover:opacity-80" style={{ height: `${(x.logins / maior) * 100}%` }} />
-          </div>
-        ))}
-      </div>
-      <div className="mt-1.5 flex justify-between border-t border-line pt-1.5 text-[0.7rem] text-ink-muted">
-        <span>{rotulo(dias[0].dia)}</span>
-        <span>{rotulo(dias[Math.floor(dias.length / 2)].dia)}</span>
-        <span>hoje</span>
-      </div>
+    <div className="h-56 min-w-0 sm:h-64" role="img" aria-label="Gráfico de cadastros e logins por dia nos últimos 30 dias">
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={dias} margin={{ top: 8, right: 4, left: -24, bottom: 0 }} barGap={1}>
+          <CartesianGrid vertical={false} stroke="#eef2f0" />
+          <XAxis dataKey="dia" tickFormatter={rotuloDia} tick={{ fontSize: 11, fill: "#71717a" }} tickLine={false} axisLine={false} minTickGap={18} />
+          <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#71717a" }} tickLine={false} axisLine={false} />
+          <Tooltip contentStyle={DICA} cursor={{ fill: "#eef6f2" }} labelFormatter={(d) => rotuloDia(String(d))} />
+          <Bar dataKey="cadastros" name="Cadastros" fill={COR_VERDE} radius={[4, 4, 0, 0]} />
+          <Bar dataKey="logins" name="Logins" fill={COR_AMARELO} radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
 
-/* ---------- lista "top" com barrinha ---------- */
+/* ---------- "top" em barras deitadas (Recharts) ---------- */
 function Ranking({ titulo, icone: Icone, itens, vazio }: { titulo: string; icone: typeof Users; itens?: [string, number][]; vazio: string }) {
-  const maior = itens?.[0]?.[1] ?? 1;
+  const dados = (itens ?? []).map(([nome, total]) => ({ nome, total }));
+  const curto = (t: string) => (t.length > 16 ? t.slice(0, 15) + "…" : t);
   return (
     <section className={cn(CARTAO, "min-w-0 p-4 sm:p-5")}>
       <h3 className="mb-3 flex items-center gap-2 text-[0.9rem] font-extrabold text-ink">
@@ -166,17 +171,22 @@ function Ranking({ titulo, icone: Icone, itens, vazio }: { titulo: string; icone
       ) : itens.length === 0 ? (
         <p className="text-sm text-ink-muted">{vazio}</p>
       ) : (
-        <ul className="flex flex-col gap-2">
-          {itens.map(([nome, n]) => (
-            <li key={nome} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 text-[0.82rem]">
-              <span className="truncate font-semibold text-zinc-700" title={nome}>{nome}</span>
-              <b className="text-ink">{n}</b>
-              <span className="col-span-2 h-1.5 overflow-hidden rounded-full bg-brand-soft">
-                <i className="block h-full rounded-full bg-leaf-bright" style={{ width: `${(n / maior) * 100}%` }} />
-              </span>
-            </li>
-          ))}
-        </ul>
+        <>
+          <div className="min-w-0" style={{ height: dados.length * 34 + 8 }} aria-hidden="true">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={dados} layout="vertical" margin={{ top: 0, right: 28, left: 0, bottom: 0 }}>
+                <XAxis type="number" hide allowDecimals={false} />
+                <YAxis type="category" dataKey="nome" width={118} tickFormatter={curto} tick={{ fontSize: 12, fill: "#3f3f46" }} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={DICA} cursor={{ fill: "#eef6f2" }} formatter={(v) => [v, "Total"]} />
+                <Bar dataKey="total" fill={COR_FOLHA} radius={[0, 6, 6, 0]} barSize={16} label={{ position: "right", fontSize: 12, fontWeight: 700, fill: "#18181b" }} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          {/* a mesma lista em texto, para leitores de tela */}
+          <ul className="sr-only">
+            {dados.map((d) => <li key={d.nome}>{d.nome}: {d.total}</li>)}
+          </ul>
+        </>
       )}
     </section>
   );
