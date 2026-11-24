@@ -76,6 +76,8 @@ export async function contarNaoLidasChat(): Promise<number> {
 
 export async function listarConversasAdmin(): Promise<ConversaAdmin[]> {
   const { data, error } = await supabase.rpc("chat_admin_conversas");
+  // 42501 = o banco recusou (sem permissão): a tela mostra o aviso próprio
+  if (error?.code === "42501") throw new Error("Sem permissão (42501).");
   if (error) throw erroChat(error.message);
   return (data ?? []) as ConversaAdmin[];
 }
