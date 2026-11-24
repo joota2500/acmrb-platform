@@ -56,7 +56,7 @@ import Button from "@/components/ui/Button";
 import Contador from "@/components/ui/Contador";
 import Container from "@/components/ui/Container";
 import EmptyState from "@/components/ui/EmptyState";
-import LoadingState from "@/components/ui/LoadingState";
+import { EsqueletoCartoes } from "@/components/ui/Esqueleto";
 import { useAparecer } from "@/hooks/useAparecer";
 import { useESGMetrics } from "@/hooks/useESGMetrics";
 import { useQuemSomos } from "@/hooks/useQuemSomos";
@@ -403,7 +403,7 @@ export default function QuemSomosPage() {
             </motion.div>
 
             {loading ? (
-              <LoadingState text="Carregando diretoria..." />
+              <EsqueletoCartoes quantidade={4} foto="redonda" rotulo="Carregando diretoria" />
             ) : associados.length === 0 ? (
               <EmptyState
                 title="Diretoria em breve"
@@ -465,7 +465,7 @@ export default function QuemSomosPage() {
             </motion.div>
 
             {loading ? (
-              <LoadingState text="Carregando parceiros..." />
+              <EsqueletoCartoes quantidade={5} foto="logo" rotulo="Carregando parceiros" />
             ) : parceiros.length === 0 ? (
               <EmptyState
                 title="Seja o primeiro parceiro"

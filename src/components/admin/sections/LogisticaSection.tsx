@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import PainelLateral from "@/components/admin/apoiadores/PainelLateral";
 import LogoUpload from "@/components/admin/apoiadores/LogoUpload";
@@ -74,7 +74,7 @@ const num = (v: string) => (v.trim() === "" ? NaN : Number(v.replace(",", ".")))
 
 export default function LogisticaSection() {
   const papel = usePapelAdmin();
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [empresas, setEmpresas] = useState<EmpresaLogistica[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
@@ -328,7 +328,6 @@ export default function LogisticaSection() {
 
   return (
     <div className="flex flex-col gap-5">
-      <ToastArea toasts={toasts} onFechar={fechar} />
 
       {/* Cabeçalho */}
       <div className="flex flex-wrap items-start justify-between gap-4">

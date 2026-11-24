@@ -21,7 +21,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import { podeEditar } from "@/constants/permissoes";
-import { useToast, ToastArea } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import CompartilharNoticia from "@/components/noticias/CompartilharNoticia";
 import { resumoCurto } from "@/utils/compartilharNoticia";
@@ -58,7 +58,7 @@ type Editor = { modo: "nova" } | { modo: "editar"; noticia: Noticia } | { modo: 
 export default function NoticiasSection() {
   const papel = usePapelAdmin();
   const permitido = podeEditar(papel, "noticias");
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
 
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -195,7 +195,6 @@ export default function NoticiasSection() {
           onCancelar={() => setEditor(null)}
           onAviso={mostrar}
         />
-        <ToastArea toasts={toasts} onFechar={fechar} />
       </>
     );
   }
@@ -371,7 +370,6 @@ export default function NoticiasSection() {
         onConfirmar={confirmarExclusao}
         onCancelar={() => setExcluir(null)}
       />
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

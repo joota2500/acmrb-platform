@@ -23,6 +23,7 @@ import ChatColeta from "@/components/coletas/ChatColeta";
 import LinhaTempoColeta from "@/components/coletas/LinhaTempoColeta";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { PERIODOS, ROTULO_STATUS, dataBR, dataHoraBR, urlFoto, type Solicitacao } from "@/services/coletas";
+import { EsqueletoLista } from "@/components/ui/Esqueleto";
 
 export default function MinhasColetas() {
   const { user, perfil, loading } = useAuth();
@@ -108,9 +109,7 @@ export default function MinhasColetas() {
           </Link>
         </div>
         {carregando ? (
-          <p className={VAZIO}>
-            <Spinner tamanho={16} /> Carregando…
-          </p>
+          <EsqueletoLista quantidade={3} rotulo="Carregando seus pedidos" />
         ) : erro ? (
           <p className={VAZIO}>{erro}</p>
         ) : lista.length === 0 ? (

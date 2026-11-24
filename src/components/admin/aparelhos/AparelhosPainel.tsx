@@ -16,7 +16,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Ban, ChevronLeft, ChevronRight, Clock, Loader2, Pencil, RefreshCw, Search, ShieldCheck, Smartphone } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import { dataHoraCurta } from "@/types/visitantes";
 import { aparelhoDe, idCurto, localDe, mensagemErro } from "@/types/acessos";
 import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
@@ -32,7 +32,7 @@ type Filtro = "todos" | "ativos" | "bloqueados" | "suspensos" | "online";
 type Quem = "todos" | "anonimos" | "logados";
 
 export default function AparelhosPainel() {
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [itens, setItens] = useState<AparelhoItem[]>([]);
   const [total, setTotal] = useState(0);
   const [pagina, setPagina] = useState(0);
@@ -168,7 +168,6 @@ export default function AparelhosPainel() {
           onFeito={(msg) => { setAcao(null); mostrar("sucesso", msg); void carregar(); }}
         />
       )}
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

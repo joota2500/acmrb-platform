@@ -22,7 +22,7 @@ import {
   Check, Download, Eye, EyeOff, Loader2, MapPin, MapPinOff, RefreshCw, ShieldAlert, SkipForward, Sparkles, Truck, Users, Wand2, type LucideIcon,
 } from "lucide-react";
 
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import ResultadosGeo from "@/components/admin/apoiadores/ResultadosGeo";
 import type { PontoVisao } from "@/components/mapa/MapaVisao";
@@ -150,7 +150,7 @@ function Numero({ icone: Icone, valor, rotulo, alerta }: { icone: LucideIcon; va
 
 export default function VisaoMapaSection() {
   const papel = usePapelAdmin();
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [itens, setItens] = useState<Item[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
@@ -288,7 +288,6 @@ export default function VisaoMapaSection() {
 
   return (
     <div className="flex flex-col gap-4">
-      <ToastArea toasts={toasts} onFechar={fechar} />
 
       {/* Números principais */}
       <ul className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 xl:grid-cols-5" aria-label="Resumo do mapa">

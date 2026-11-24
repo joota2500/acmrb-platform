@@ -11,10 +11,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { CalendarDays, Clock, MapPin, Recycle } from "lucide-react";
-import Spinner from "@/components/ui/Spinner";
 import { Select } from "@/components/ui/Input";
 import { cn } from "@/utils/cn";
 import { DIAS_CURTOS, DIAS_SEMANA, janelaHorario, listarCalendario, type CalendarioBairro } from "@/services/coletas";
+import { Esqueleto, EsqueletoLista } from "@/components/ui/Esqueleto";
 
 export default function CalendarioBairros({ compacto = false }: { compacto?: boolean }) {
   const [itens, setItens] = useState<CalendarioBairro[]>([]);
@@ -36,7 +36,16 @@ export default function CalendarioBairros({ compacto = false }: { compacto?: boo
   const doBairro = itens.filter((i) => i.bairro.trim() === bairro);
   const hoje = new Date().getDay();
 
-  if (carregando) return <p className={ESTADO}><Spinner tamanho={18} /> Carregando calendário…</p>;
+  // esqueleto: campo do bairro + lista de dias
+  if (carregando) {
+    return (
+      <div className="flex flex-col gap-4" role="status" aria-busy="true" aria-label="Carregando calendário">
+        <Esqueleto className="h-4 w-28" />
+        <Esqueleto className="h-12 w-full rounded-[0.9rem]" />
+        <EsqueletoLista quantidade={3} rotulo="Carregando calendário" />
+      </div>
+    );
+  }
   if (erro) return <p className={ESTADO}>{erro}</p>;
   if (!bairros.length) {
     return (

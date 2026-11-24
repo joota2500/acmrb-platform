@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Ban, Clock, Copy, Loader2, LogOut, Pencil, ShieldCheck, Smartphone, X } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import { dataHoraCurta, duracao } from "@/types/visitantes";
 import { aparelhoDe, idCurto, localDe, origemDe } from "@/types/acessos";
 import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
@@ -50,7 +50,7 @@ interface Props {
 }
 
 export default function AparelhoDetalhe({ anonId, onFechar, onAlterado }: Props) {
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [item, setItem] = useState<AparelhoItem | null>(null);
   const [bloqueios, setBloqueios] = useState<BloqueioReg[]>([]);
   const [expulsoes, setExpulsoes] = useState<ExpulsaoReg[]>([]);
@@ -248,7 +248,6 @@ export default function AparelhoDetalhe({ anonId, onFechar, onAlterado }: Props)
           />
         </div>
       )}
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

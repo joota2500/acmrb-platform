@@ -14,7 +14,7 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { CalendarDays, CalendarPlus, Eye, EyeOff, Loader2, Lock, MapPinned, Pencil, RefreshCw, Save, Trash2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { DIAS_CURTOS, DIAS_SEMANA, MATERIAIS_COLETA, janelaHorario, listarCalendario, type CalendarioBairro } from "@/services/coletas";
 import Button from "@/components/ui/Button";
@@ -43,7 +43,7 @@ type Form = {
 const VAZIO: Form = { bairro: "", dias_semana: [], hora_inicio: "", hora_fim: "", materiais: [], observacoes: "", ativo: true, ordem: 0 };
 
 export default function CalendarioSection() {
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [lista, setLista] = useState<CalendarioBairro[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
@@ -341,7 +341,6 @@ export default function CalendarioSection() {
         onConfirmar={confirmarExclusao}
         onCancelar={() => setExcluir(null)}
       />
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

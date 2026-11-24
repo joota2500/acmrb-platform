@@ -5,6 +5,8 @@ import RastreadorVisitante from "@/components/rastreio/RastreadorVisitante";
 import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
 import GuardaAparelho from "@/components/bloqueio/GuardaAparelho";
 import RastreadorAcessos from "@/components/rastreio/RastreadorAcessos";
+import { Avisos } from "@/components/ui/Toast";
+import { DicasFlutuantes } from "@/components/ui/Tooltip";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { siteUrl } from "@/lib/siteUrl";
@@ -86,6 +88,9 @@ export default function RootLayout({
           <GuardaAparelho />
           {/* Visitante logado: aviso de contato + botão flutuante de chat */}
           <ExtrasVisitante />
+          {/* Avisos rápidos (toast) e balões dos botões só com ícone — um só para o site todo */}
+          <Avisos />
+          <DicasFlutuantes />
         </AuthProvider>
       </body>
     </html>

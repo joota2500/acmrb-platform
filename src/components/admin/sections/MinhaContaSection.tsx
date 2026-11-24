@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Camera, KeyRound, Loader2, Save } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { mascaraTelefone } from "@/utils/validacao";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import { dataHora } from "@/components/admin/sections/AdministradoresSection";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import SegurancaConta from "@/components/admin/conta/SegurancaConta";
@@ -38,7 +38,7 @@ const campo =
   "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-brand/40";
 
 export default function MinhaContaSection() {
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const captcha = useCaptcha(); // a troca de senha confere a senha atual com um novo login
   const [conta, setConta] = useState<Conta | null>(null);
   const [carregando, setCarregando] = useState(true);
@@ -142,7 +142,7 @@ export default function MinhaContaSection() {
       </div>
     );
   }
-  if (!conta) return <ToastArea toasts={toasts} onFechar={fechar} />;
+  if (!conta) return null;
 
   const previa = foto ? URL.createObjectURL(foto) : conta.avatar_url;
 
@@ -219,7 +219,6 @@ export default function MinhaContaSection() {
 
       <SegurancaConta email={conta.email} mostrar={mostrar} onEmailTrocado={carregar} />
 
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

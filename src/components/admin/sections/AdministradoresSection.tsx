@@ -11,7 +11,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Crown, Eye, EyeOff, Loader2, ShieldCheck, Trash2, UserPlus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import { chamarApi } from "@/services/apiAdmin";
@@ -37,7 +37,7 @@ const campo =
   "w-full h-12 rounded-2xl border border-zinc-200 px-4 bg-white focus:outline-none focus:ring-2 focus:ring-brand/40";
 
 export default function AdministradoresSection() {
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [lista, setLista] = useState<AdminLinha[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -213,7 +213,6 @@ export default function AdministradoresSection() {
         onConfirmar={confirmarExclusao}
         onCancelar={() => setExcluir(null)}
       />
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

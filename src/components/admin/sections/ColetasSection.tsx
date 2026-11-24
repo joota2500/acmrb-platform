@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import ChatColeta from "@/components/coletas/ChatColeta";
 import LinhaTempoColeta from "@/components/coletas/LinhaTempoColeta";
 import {
@@ -80,7 +80,7 @@ const diaLocal = (iso: string) => {
 
 export default function ColetasSection() {
   const { user, perfil } = useAuth();
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [aba, setAba] = useState<Aba>("pedidos");
   const [lista, setLista] = useState<Solicitacao[]>([]);
   const [naoLidas, setNaoLidas] = useState<Record<string, number>>({});
@@ -366,7 +366,6 @@ export default function ColetasSection() {
           onLidas={() => setNaoLidas((m) => ({ ...m, [aberto.id]: 0 }))}
         />
       )}
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

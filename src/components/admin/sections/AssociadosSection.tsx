@@ -41,7 +41,7 @@ import {
 import { mascaraCPF, mascaraTelefone, somenteDigitos, validarCPF } from "@/utils/validacao";
 import { normalizar } from "@/services/associados";
 import type { AssociadoAdmin, StatusAssociado } from "@/types/associados";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import Button from "@/components/ui/Button";
 
@@ -148,7 +148,7 @@ export default function AssociadosSection() {
   const [confirmar, setConfirmar] = useState<{ a: AssociadoAdmin; novo: StatusAssociado } | null>(null);
   const [processando, setProcessando] = useState(false);
 
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
 
   const {
     register,
@@ -330,7 +330,6 @@ export default function AssociadosSection() {
 
   return (
     <div className="space-y-8 md:space-y-10">
-      <ToastArea toasts={toasts} onFechar={fechar} />
 
       <ConfirmDialog
         aberto={Boolean(confirmar)}

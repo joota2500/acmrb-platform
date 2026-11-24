@@ -1,7 +1,9 @@
 /**
- * LoadingState — círculo girando enquanto os dados carregam
+ * LoadingState — esqueleto genérico enquanto os dados carregam
+ * (antes era um círculo girando; agora mostra o formato de um bloco de conteúdo)
  */
-import Card from "@/components/ui/Card";
+
+import { Esqueleto } from "@/components/ui/Esqueleto";
 
 type Props = {
   text?: string;
@@ -9,9 +11,16 @@ type Props = {
 
 export default function LoadingState({ text = "Carregando..." }: Props) {
   return (
-    <Card espaco="grande" className="text-center sm:p-16" role="status" aria-live="polite">
-      <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-zinc-200 border-t-brand" />
-      <p className="mt-6 text-ink-soft">{text}</p>
-    </Card>
+    <div role="status" aria-busy="true" aria-label={text} className="mx-auto flex w-full max-w-5xl flex-col gap-4 rounded-card border border-black/5 bg-white p-5 shadow-card sm:p-8">
+      <Esqueleto className="h-6 w-1/3" />
+      <Esqueleto className="h-4 w-full" />
+      <Esqueleto className="h-4 w-5/6" />
+      <div className="mt-2 grid gap-4 sm:grid-cols-3">
+        <Esqueleto className="h-28 rounded-xl" />
+        <Esqueleto className="h-28 rounded-xl" />
+        <Esqueleto className="h-28 rounded-xl" />
+      </div>
+      <span className="sr-only">{text}</span>
+    </div>
   );
 }

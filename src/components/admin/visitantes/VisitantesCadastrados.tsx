@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import { chamarApi } from "@/services/apiAdmin";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import AcaoAparelhoModal from "@/components/admin/aparelhos/AcaoAparelhoModal";
@@ -39,7 +39,7 @@ type Situacao = "todos" | "ativos" | "inativos";
 const ehNovo = (iso: string) => Date.now() - new Date(iso).getTime() < 7 * 24 * 60 * 60 * 1000;
 
 export default function VisitantesCadastrados() {
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [lista, setLista] = useState<Visitante[]>([]);
   const [resumos, setResumos] = useState<Record<string, ResumoAtividade>>({});
   const [extras, setExtras] = useState<Record<string, ExtrasVisitante>>({});
@@ -340,7 +340,6 @@ export default function VisitantesCadastrados() {
         />
       )}
 
-      <ToastArea toasts={toasts} onFechar={fechar} />
     </div>
   );
 }

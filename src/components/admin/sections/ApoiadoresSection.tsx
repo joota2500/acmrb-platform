@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
-import { ToastArea, useToast } from "@/components/ui/Toast";
+import { useToast } from "@/components/ui/Toast";
 import { usePapelAdmin } from "@/components/admin/layout/PapelAdmin";
 import PainelLateral from "@/components/admin/apoiadores/PainelLateral";
 import LogoUpload from "@/components/admin/apoiadores/LogoUpload";
@@ -96,7 +96,7 @@ function paraForm(a: Apoiador): Form {
 
 export default function ApoiadoresSection() {
   const papel = usePapelAdmin();
-  const { toasts, mostrar, fechar } = useToast();
+  const { mostrar } = useToast();
   const [lista, setLista] = useState<Apoiador[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erroCarga, setErroCarga] = useState<string | null>(null);
@@ -309,7 +309,6 @@ export default function ApoiadoresSection() {
 
   return (
     <div className="flex flex-col gap-5">
-      <ToastArea toasts={toasts} onFechar={fechar} />
 
       {/* Cabeçalho */}
       <div className="flex flex-wrap items-start justify-between gap-4">

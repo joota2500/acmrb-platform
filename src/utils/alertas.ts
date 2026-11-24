@@ -1,39 +1,28 @@
 /**
- * alertas — avisos e confirmações do site com SweetAlert2
+ * alertas — avisos e confirmações do site
  * ------------------------------------------------------------
- * Troca o alert() e o confirm() do navegador por caixas bonitas, nas
- * cores da ACMRB (o visual está em globals.css, classes "swal-acmrb").
+ * avisar(): virou o aviso rápido único (toast) do canto da tela, igual
+ *           em todo o site. Não precisa mais apertar "OK".
+ * confirmar(): continua com SweetAlert2, só para perguntas de verdade
+ *           ("excluir?", "sair?"), com a cara da ACMRB (globals.css, "swal-acmrb").
  *
- *   avisar("Salvo!", "sucesso")            → caixa com botão OK
+ *   avisar("Salvo!", "sucesso")
  *   avisar("Algo deu errado", "erro")
  *   if (await confirmar({ titulo: "Excluir?", mensagem: "...", perigo: true })) { ... }
  *
  * Só funciona no navegador (use dentro de eventos/efeitos, não na renderização).
  */
 
-import Swal, { type SweetAlertIcon } from "sweetalert2";
+import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import type { ReactElement } from "react";
+import { aviso } from "@/components/ui/Toast";
 
 type Conteudo = string | ReactElement;
 
 const Alerta = withReactContent(Swal);
 
 export type TipoAlerta = "sucesso" | "erro" | "aviso" | "info";
-
-const ICONES: Record<TipoAlerta, SweetAlertIcon> = {
-  sucesso: "success",
-  erro: "error",
-  aviso: "warning",
-  info: "info",
-};
-
-const TITULOS: Record<TipoAlerta, string> = {
-  sucesso: "Tudo certo",
-  erro: "Ops, algo deu errado",
-  aviso: "Atenção",
-  info: "Aviso",
-};
 
 // Classes (definidas em globals.css) que dão a cara da ACMRB
 const CLASSES = {
@@ -45,16 +34,10 @@ const CLASSES = {
   actions: "swal-acmrb-acoes",
 };
 
-/** Caixa de aviso com botão OK. A mensagem pode ser texto ou um elemento React. */
+/** Aviso rápido no canto da tela (toast). A mensagem pode ser texto ou um elemento React. */
 export function avisar(mensagem: Conteudo, tipo: TipoAlerta = "info", titulo?: string): Promise<void> {
-  return Alerta.fire({
-    icon: ICONES[tipo],
-    title: titulo ?? TITULOS[tipo],
-    html: mensagem,
-    confirmButtonText: "Ok",
-    buttonsStyling: false,
-    customClass: CLASSES,
-  }).then(() => undefined);
+  aviso(tipo, mensagem, titulo);
+  return Promise.resolve();
 }
 
 type OpcoesConfirmar = {
