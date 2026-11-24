@@ -27,7 +27,10 @@ import { cn } from "@/utils/cn";
 const CHAVE_SITE = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 const CAPTCHA_ATIVO = CHAVE_SITE.length > 0;
 
-export const MSG_CAPTCHA = "Confirme a verificação “não sou um robô” antes de continuar.";
+export const MSG_CAPTCHA = "Confirme que você não é um robô (marque a caixinha da verificação).";
+
+/** Mensagem curta para erro do captcha nas telas da conta (Minha conta / Segurança) */
+export const MSG_CAPTCHA_FALHOU = "Falha na verificação de segurança, recarregue a página e tente de novo.";
 
 /** Mensagem quando o Supabase recusa o login/cadastro por causa do captcha */
 export const MSG_CAPTCHA_RECUSADO =
@@ -36,7 +39,7 @@ export const MSG_CAPTCHA_RECUSADO =
 /** O erro do Supabase Auth foi por causa do captcha? (ex.: captcha_failed) */
 export function ehErroCaptcha(error: { code?: string; message?: string } | null | undefined): boolean {
   if (!error) return false;
-  return /captcha/i.test(error.code ?? "") || /captcha/i.test(error.message ?? "");
+  return /captcha|110\d{3}/i.test(error.code ?? "") || /captcha|110\d{3}/i.test(error.message ?? "");
 }
 
 /** Traduz o código de erro do Turnstile para o visitante (doc: Cloudflare → Turnstile → Error codes) */

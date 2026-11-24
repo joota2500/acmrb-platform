@@ -16,7 +16,7 @@ import { supabase } from "@/lib/supabase";
 import { chamarApi, ESPERA_EMAIL_SEG, urlRedefinir } from "@/services/apiAdmin";
 import { confirmar } from "@/utils/alertas";
 import Button from "@/components/ui/Button";
-import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
+import Captcha, { MSG_CAPTCHA, MSG_CAPTCHA_FALHOU, ehErroCaptcha, useCaptcha } from "@/components/ui/Captcha";
 
 type Mostrar = (tipo: "sucesso" | "erro" | "aviso", mensagem: string) => void;
 
@@ -75,7 +75,8 @@ export default function SegurancaConta({ email, mostrar, onEmailTrocado }: {
     const captchaToken = captcha.token;
     captcha.resetar();
     const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: urlRedefinir(), captchaToken });
-    if (error) mostrar("erro", /rate|limit/i.test(error.message)
+    if (ehErroCaptcha(error)) mostrar("erro", MSG_CAPTCHA_FALHOU); // o widget já foi resetado acima
+    else if (error) mostrar("erro", /rate|limit/i.test(error.message)
       ? "Muitos envios em pouco tempo. Aguarde alguns minutos."
       : "Não foi possível enviar o e-mail.");
     else mostrar("sucesso", `Enviamos um link de redefinição para ${email}.`);

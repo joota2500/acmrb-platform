@@ -21,7 +21,7 @@ import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import SegurancaConta from "@/components/admin/conta/SegurancaConta";
 import { ROTULO_PAPEL, papelDe } from "@/constants/permissoes";
 import Button from "@/components/ui/Button";
-import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
+import Captcha, { MSG_CAPTCHA, MSG_CAPTCHA_FALHOU, ehErroCaptcha, useCaptcha } from "@/components/ui/Captcha";
 
 interface Conta {
   id: string;
@@ -123,6 +123,8 @@ export default function MinhaContaSection() {
       const captchaToken = captcha.token;
       captcha.resetar(); // o código do captcha vale uma vez
       const { error: erroLogin } = await supabase.auth.signInWithPassword({ email: conta.email, password: senhas.atual, options: { captchaToken } });
+      // erro do captcha tem mensagem própria (o widget já foi resetado acima)
+      if (ehErroCaptcha(erroLogin)) throw new Error(MSG_CAPTCHA_FALHOU);
       if (erroLogin) throw new Error("Senha atual incorreta.");
       const { error } = await supabase.auth.updateUser({ password: senhas.nova });
       if (error) throw new Error("Não foi possível trocar a senha. Tente novamente.");
