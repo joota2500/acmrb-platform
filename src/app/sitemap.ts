@@ -23,6 +23,7 @@ const PAGINAS: { caminho: string; prioridade: number; frequencia: MetadataRoute.
   { caminho: "/transparencia", prioridade: 0.7, frequencia: "weekly" },
   // /projetos fica fora enquanto a página está "em construção" (pouco conteúdo)
   { caminho: "/parceiros", prioridade: 0.6, frequencia: "monthly" },
+  { caminho: "/para-empresas", prioridade: 0.6, frequencia: "monthly" },
   { caminho: "/associados", prioridade: 0.6, frequencia: "monthly" },
   { caminho: "/privacidade", prioridade: 0.2, frequencia: "yearly" },
 ];

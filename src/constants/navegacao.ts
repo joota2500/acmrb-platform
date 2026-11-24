@@ -64,6 +64,7 @@ export const navigation: NavItem[] = [
     descricao: "Quem caminha com a gente",
     children: [
       { id: "nossos-parceiros", name: "Nossos parceiros", href: "/parceiros", icone: Handshake, descricao: "Logística reversa e apoiadores" },
+      { id: "para-empresas", name: "Para empresas", href: "/para-empresas", icone: Building2, descricao: "Doe recicláveis ou seja parceira" },
       // Mapa de apoiadores da home (ApoiadoresMapaSection, id="parceiros").
       { id: "mapa", name: "Mapa de apoiadores", href: "#parceiros", icone: MapPin, descricao: "Pontos de entrega e apoio no mapa" },
     ],

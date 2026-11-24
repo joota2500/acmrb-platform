@@ -56,6 +56,7 @@ const COLUNAS: { titulo: string; itens: Item[] }[] = [
       { rotulo: "Calendário de coleta", href: "/calendario-coleta" },
       { rotulo: "Mapa de apoiadores", href: "/#parceiros" },
       { rotulo: "Parceiros", href: "/parceiros" },
+      { rotulo: "Para empresas", href: "/para-empresas" },
       { rotulo: "Denúncia ambiental", href: "/#denuncias" },
       { rotulo: "Contato", href: "/#contato" },
     ],
