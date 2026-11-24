@@ -89,9 +89,9 @@ Em ordem de prioridade:
 - [x] **Sentry** — código pronto, falta o DSN do João (`NEXT_PUBLIC_SENTRY_DSN` na Vercel). Avisa quando der erro no site em produção; sem a variável fica desligado. Versão mínima: sem source maps e sem token
 - [ ] **React Hook Form + zod** — formulários mais leves e com mensagens de erro bonitas (junto do item 21)
 - [ ] **TanStack Query no admin** — dados em cache que atualizam sozinhos
-- [ ] **Recharts no painel de visitantes** — gráficos mais bonitos e interativos
-- [ ] **Leaflet / react-leaflet** — mapa grátis para os pontos de entrega (resolve o item 17)
-- [ ] **Framer Motion nas páginas públicas** — animações suaves
+- [x] **Recharts no painel de visitantes** — gráfico de cadastros/logins dos 30 dias e os tops (cidades, bairros, aparelhos, páginas) em barras do Recharts, com balão dos números ao passar o mouse/tocar
+- [x] **Leaflet** — o mapa do site já era Leaflet com OpenStreetMap (grátis, sem chave), carregado só no navegador, com popups e marcadores próprios (sem ícone quebrado) e liberado na CSP; o react-leaflet não foi necessário. Falta só o item 17 (cadastrar os pontos de entrega)
+- [x] **Framer Motion nas páginas públicas** — seções e cartões já entravam com fade/subida; agora também a troca de página (`app/template.tsx`) e reducedMotion "user" para quem pede menos movimento
 - [ ] **jsPDF: certificado/selo de parceiro** (item 14) — página "em desenvolvimento" que gera o selo e pede para entrar em contato com a autarquia AMAB; sem Resend por enquanto
 - [ ] **Capacitor: app de celular** (item 28, no fim)
 
