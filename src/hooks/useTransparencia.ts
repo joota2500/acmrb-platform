@@ -41,7 +41,7 @@ export type DocumentoPublico = {
 export type Metas = { residuos: number; co2: number; familias: number; arvores: number };
 
 /** Metas usadas quando o banco ainda não tem as colunas meta_* */
-export const METAS_PADRAO: Metas = { residuos: 5000, co2: 10000, familias: 300, arvores: 500 };
+const METAS_PADRAO: Metas = { residuos: 5000, co2: 10000, familias: 300, arvores: 500 };
 
 export const num = (v: unknown) => {
   const n = Number(v);
@@ -98,7 +98,7 @@ export function useTransparencia() {
       };
 
       if (regs.error) {
-        console.log("ERRO MATERIAIS:", regs.error);
+        console.error("Erro ao carregar materiais:", regs.error);
       } else {
         const lista = (regs.data || []).map((r: Record<string, unknown>) => {
           const t = (Array.isArray(r.materiais_tipos) ? r.materiais_tipos[0] : r.materiais_tipos) as Tipo;
@@ -117,7 +117,7 @@ export function useTransparencia() {
       }
 
       if (dash.error) {
-        console.log("ERRO INDICADORES:", dash.error);
+        console.error("Erro ao carregar indicadores:", dash.error);
       } else if (dash.data) {
         const d = dash.data as Record<string, unknown>;
         setMetricas(d);
@@ -138,7 +138,7 @@ export function useTransparencia() {
       setAtualizadoEm(ultima);
       if (regs.error && dash.error) setErro("Não foi possível carregar os dados de transparência agora.");
     } catch (e) {
-      console.log("ERRO GERAL:", e);
+      console.error("Erro ao carregar dados:", e);
       setErro("Não foi possível carregar os dados de transparência agora.");
     } finally {
       clearTimeout(limite);

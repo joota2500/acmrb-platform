@@ -259,7 +259,7 @@ export const excluirRepasse = (id: string) => exec(supabase.from("repasses_logis
 
 // ---------- Upload de logo (bucket "parceiros", até 2 MB) ----------
 
-export const LIMITE_LOGO = 2 * 1024 * 1024;
+const LIMITE_LOGO = 2 * 1024 * 1024;
 const TIPOS_LOGO = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
 
 export async function enviarLogo(arquivo: File, pasta: "apoiadores" | "logistica") {

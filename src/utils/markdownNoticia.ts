@@ -50,7 +50,7 @@ const RE_ITALICO = /\*([^*\s](?:[^*]*[^*\s])?)\*/;
 const RE_URL = /https?:\/\/[^\s<>()]+/;
 
 /** Trechos inline: negrito, itálico, links e quebras de linha */
-export function trechos(texto: string): Trecho[] {
+function trechos(texto: string): Trecho[] {
   const saida: Trecho[] = [];
   let resto = texto;
 

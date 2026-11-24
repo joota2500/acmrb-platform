@@ -19,7 +19,7 @@ export interface PrazoEntrada {
 
 const MIN_MS = 60_000;
 const MULT: Record<UnidadePrazo, number> = { minutos: MIN_MS, horas: 60 * MIN_MS, dias: 24 * 60 * MIN_MS };
-export const PRAZO_MAXIMO_DIAS = 3650;
+const PRAZO_MAXIMO_DIAS = 3650;
 
 /** Devolve o instante final (ISO) ou null = indeterminado; ou { erro } em português */
 export function calcularAte(p: PrazoEntrada | undefined | null, agora = Date.now()): { ate: string | null } | { erro: string } {

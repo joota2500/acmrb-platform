@@ -40,7 +40,7 @@ export const ROTULO_STATUS: Record<StatusColeta, string> = {
   cancelado: "Cancelado",
 };
 
-export const BUCKET_COLETAS = "coletas";
+const BUCKET_COLETAS = "coletas";
 
 /* ---------- Tipos ---------- */
 
@@ -94,7 +94,7 @@ export interface Mensagem {
 /* ---------- Formatação ---------- */
 
 /** "08:00:00" → "08h" ; "08:30:00" → "08h30" */
-export const hora = (h: string | null) => {
+const hora = (h: string | null) => {
   if (!h) return "";
   const [hh, mm] = h.split(":");
   return mm && mm !== "00" ? `${hh}h${mm}` : `${hh}h`;
@@ -143,7 +143,7 @@ export const esquemaSolicitacao = z.object({
 });
 export type DadosSolicitacao = z.infer<typeof esquemaSolicitacao>;
 
-export const FOTO_MAX_MB = 5;
+const FOTO_MAX_MB = 5;
 export function validarFoto(f: File): string | null {
   if (!["image/jpeg", "image/png", "image/webp"].includes(f.type)) return "Envie uma foto JPG, PNG ou WEBP.";
   if (f.size > FOTO_MAX_MB * 1024 * 1024) return `A foto pode ter no máximo ${FOTO_MAX_MB} MB.`;

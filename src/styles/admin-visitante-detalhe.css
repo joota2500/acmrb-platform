@@ -58,7 +58,6 @@
 .advd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.6rem 1rem; border-radius: 0.8rem; background: var(--color-brand); color: #fff; font-weight: 700; font-size: 0.86rem; white-space: nowrap; }
 .advd-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 .advd-btn--soft { background: var(--color-brand-soft); color: var(--color-brand); }
-.advd-btn--perigo { background: #dc2626; }
 
 .advd-perigo { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem; border-radius: 1rem; background: #fff; border: 1px solid rgba(0, 0, 0, 0.05); }
 .advd-perigo h3 { font-size: 0.9rem; font-weight: 800; color: #18181b; }

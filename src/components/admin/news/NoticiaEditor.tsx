@@ -76,7 +76,7 @@ function paraInput(iso: string | null) {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
 }
 
-export function dadosIniciais(n?: Noticia | null): DadosNoticia {
+function dadosIniciais(n?: Noticia | null): DadosNoticia {
   return {
     titulo: n?.titulo ?? "",
     slug: n?.slug ?? "",

@@ -41,7 +41,7 @@ export type Metas = {
 };
 
 /** Metas usadas quando o banco ainda não tem as colunas meta_*. */
-export const METAS_PADRAO: Metas = {
+const METAS_PADRAO: Metas = {
   residuos: 5000,
   co2: 10000,
   familias: 300,
@@ -110,7 +110,7 @@ export function useESGMetrics() {
       /* ---------- Materiais (calculados) ---------- */
       if (regs.error) {
         falhas++;
-        console.log("ERRO MATERIAIS:", regs.error);
+        console.error("Erro ao carregar materiais:", regs.error);
       } else {
         const lista = (regs.data || []) as unknown as MaterialRegistro[];
         const grupos: Record<string, MaterialAgrupado> = {};
@@ -141,7 +141,7 @@ export function useESGMetrics() {
       /* ---------- Indicadores manuais + metas ---------- */
       if (dash.error) {
         falhas++;
-        console.log("ERRO DASHBOARD:", dash.error);
+        console.error("Erro ao carregar indicadores:", dash.error);
       } else if (dash.data) {
         const d = dash.data as Record<string, unknown>;
         setFamiliasImpactadas(num(d.familias_impactadas));
@@ -162,7 +162,7 @@ export function useESGMetrics() {
       setAtualizadoEm(ultima);
       if (falhas === 2) setErro("Não foi possível carregar os indicadores agora.");
     } catch (e) {
-      console.log("ERRO GERAL:", e);
+      console.error("Erro ao carregar dados:", e);
       setErro("Não foi possível carregar os indicadores agora.");
     } finally {
       clearTimeout(limite);

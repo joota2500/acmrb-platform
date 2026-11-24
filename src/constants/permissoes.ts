@@ -45,7 +45,7 @@ export function papelDe(role?: string | null): PapelAdmin {
   return role === "deus" ? "deus" : "admin";
 }
 
-export function acesso(papel: PapelAdmin, secao: SecaoId): Acesso {
+function acesso(papel: PapelAdmin, secao: SecaoId): Acesso {
   return MATRIZ[secao]?.[papel] ?? "nenhum";
 }
 

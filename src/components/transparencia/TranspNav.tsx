@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import Container from "@/components/ui/Container";
 import { cn } from "@/utils/cn";
 
-export const SECOES = [
+const SECOES = [
   { id: "indicadores", rotulo: "Indicadores" },
   { id: "operacional", rotulo: "Materiais" },
   { id: "evolucao", rotulo: "Evolução" },

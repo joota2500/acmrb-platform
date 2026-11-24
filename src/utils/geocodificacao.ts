@@ -38,7 +38,7 @@ export interface ConsultaGeo {
   cep?: string;
 }
 
-export const CENTRO_BATURITE = { lat: -4.3286, lng: -38.8848 };
+const CENTRO_BATURITE = { lat: -4.3286, lng: -38.8848 };
 const RAIO_KM = 40;
 // caixa da região do Maciço de Baturité (lon_min, lat_max, lon_max, lat_min)
 const VIEWBOX = "-39.15,-4.10,-38.60,-4.55";

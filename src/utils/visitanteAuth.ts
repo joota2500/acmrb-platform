@@ -27,7 +27,7 @@ export const esquemaEntrar = z.object({
 export const esquemaRecuperar = z.object({ email });
 
 /** Idade em anos completos a partir de "AAAA-MM-DD" */
-export function calcularIdade(data: string): number {
+function calcularIdade(data: string): number {
   const n = new Date(`${data}T00:00:00`);
   if (Number.isNaN(n.getTime())) return -1;
   const h = new Date();

@@ -8,7 +8,7 @@
  * "Do Not Track" ligado também desliga a medição.
  */
 
-export const CHAVE_PRIVACIDADE = "acmrb_privacidade";
+const CHAVE_PRIVACIDADE = "acmrb_privacidade";
 export const CHAVE_ANON = "acmrb_anon_id";
 export const EVENTO_PRIVACIDADE = "acmrb:privacidade";
 

@@ -86,14 +86,7 @@ export default function MaterialEditModal({
 
     setLoading(true);
 
-    console.log("EDITANDO:", {
-      id: material.id,
-      nome,
-      cor,
-      descricao,
-    });
-
-    const { data, error } =
+    const { error } =
       await supabase
         .from(
           "materiais_tipos",
@@ -114,16 +107,6 @@ export default function MaterialEditModal({
         )
         .select();
 
-    console.log(
-      "RESULTADO UPDATE:",
-      data,
-    );
-
-    console.log(
-      "ERRO UPDATE:",
-      error,
-    );
-
     if (error) {
 
       void avisar(`Erro: ${error.message}`, "erro");
@@ -140,10 +123,7 @@ export default function MaterialEditModal({
 
   } catch (err) {
 
-    console.log(
-      "ERRO GERAL:",
-      err,
-    );
+    console.error("Erro ao atualizar material:", err);
 
     void avisar("Erro inesperado ao atualizar.", "erro");
 

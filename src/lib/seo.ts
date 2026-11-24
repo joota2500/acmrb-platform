@@ -14,7 +14,7 @@ import { siteUrl } from "@/lib/siteUrl";
 export const NOME_OFICIAL = "Associação dos Catadores de Materiais Recicláveis de Baturité";
 export const SIGLA = "ACMRB";
 export const NOME_MARCA = "Reciclaê";
-export const NOMES_ALTERNATIVOS = [SIGLA, "Reciclaê", "Reciclae", "Associação Reciclaê", "Associação Reciclae"];
+const NOMES_ALTERNATIVOS = [SIGLA, "Reciclaê", "Reciclae", "Associação Reciclaê", "Associação Reciclae"];
 
 /** Título completo (página inicial) e descrição padrão do site */
 export const TITULO_PADRAO = "ACMRB Reciclaê | Associação de Catadores de Baturité – CE";
@@ -45,7 +45,7 @@ export const IMAGEM_PADRAO = {
 };
 
 /** Endereço absoluto de um caminho do site (ex.: "/quem-somos") */
-export const urlAbsoluta = (caminho = "/") => `${siteUrl()}${caminho.startsWith("/") ? caminho : `/${caminho}`}`;
+const urlAbsoluta = (caminho = "/") => `${siteUrl()}${caminho.startsWith("/") ? caminho : `/${caminho}`}`;
 
 type OpcoesPagina = {
   titulo: string;

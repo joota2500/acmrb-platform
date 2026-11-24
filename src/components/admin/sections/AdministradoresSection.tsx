@@ -30,9 +30,6 @@ interface AdminLinha {
   created_at?: string | null;
 }
 
-// Regras de senha e chamada à API ficam em arquivos compartilhados
-export { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
-
 export const dataHora = (iso: string | null) =>
   iso ? new Date(iso).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" }) : "nunca";
 

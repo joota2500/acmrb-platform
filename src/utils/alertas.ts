@@ -7,7 +7,6 @@
  *   avisar("Salvo!", "sucesso")            → caixa com botão OK
  *   avisar("Algo deu errado", "erro")
  *   if (await confirmar({ titulo: "Excluir?", mensagem: "...", perigo: true })) { ... }
- *   avisoRapido("Copiado")                 → balãozinho no canto, some sozinho
  *
  * Só funciona no navegador (use dentro de eventos/efeitos, não na renderização).
  */
@@ -88,18 +87,4 @@ export async function confirmar({
     customClass: { ...CLASSES, confirmButton: perigo ? "swal-acmrb-perigo" : CLASSES.confirmButton },
   });
   return r.isConfirmed;
-}
-
-/** Balãozinho no canto da tela (sucesso por padrão), some em 3 segundos. */
-export function avisoRapido(mensagem: string, tipo: TipoAlerta = "sucesso") {
-  return Alerta.fire({
-    toast: true,
-    position: "top-end",
-    icon: ICONES[tipo],
-    title: mensagem,
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    customClass: { popup: "swal-acmrb swal-acmrb-toast", title: "swal-acmrb-titulo" },
-  });
 }

@@ -101,24 +101,10 @@
   --color-red-600: #dc2626;
 }
 
-/* Variáveis antigas (ainda usadas por alguns CSS) apontando para os tokens */
+/* Cores de fundo e texto da página (usadas no body, logo abaixo) */
 :root {
   --background: var(--color-surface-alt);
   --foreground: #0f172a;
-  --primary: var(--color-brand);
-  --primary-light: #4ade80;
-  --secondary: #14532d;
-  --accent: var(--color-sun);
-  --muted: #64748b;
-  --card: var(--color-surface);
-  --border: #e2e8f0;
-}
-
-.dark {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
-  --card: #1e2937;
-  --border: #334155;
 }
 
 /* Texto justificado (volta para a esquerda em telas muito estreitas, ver abaixo) */
@@ -310,9 +296,6 @@ html[data-bloqueado] body {
 .swal2-popup.swal-acmrb .swal2-icon.swal2-warning { color: var(--color-sun); border-color: #fde68a; }
 .swal2-popup.swal-acmrb .swal2-icon.swal2-error { color: var(--color-danger); border-color: #fecaca; }
 .swal2-popup.swal-acmrb .swal2-icon.swal2-error [class^="swal2-x-mark-line"] { background-color: var(--color-danger); }
-.swal2-popup.swal-acmrb .swal2-timer-progress-bar { background: var(--color-brand); }
-.swal2-popup.swal-acmrb.swal-acmrb-toast { padding: 0.75rem 1rem; border-radius: 1rem; }
-.swal2-popup.swal-acmrb.swal-acmrb-toast .swal-acmrb-titulo { font-size: 0.95rem; font-weight: 700; }
 .swal2-container { z-index: 2000; }
 
 /* ---------- Painel admin: campos e títulos com o mesmo acabamento do resto do site ---------- */

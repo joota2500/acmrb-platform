@@ -12,7 +12,7 @@ import { supabase } from "@/lib/supabase";
 import type { AssociadoPublico, CargoDiretoria } from "@/types/associados";
 
 /** Colunas públicas (as mesmas da view). */
-export const COLUNAS_PUBLICAS =
+const COLUNAS_PUBLICAS =
   "id, nome, slug, cargo, tipo_associado, foto_url, bio, instagram, linkedin, facebook, destaque, ordem_exibicao";
 
 /** Colunas que existem em qualquer versão da tabela (antes da migration). */

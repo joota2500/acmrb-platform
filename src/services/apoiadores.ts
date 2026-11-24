@@ -43,7 +43,7 @@ export const TIPOS_APOIO = [
 export type TipoApoio = (typeof TIPOS_APOIO)[number];
 
 /** Cor de cada categoria (marcadores, chips e legenda) — tons da paleta */
-export const COR_CATEGORIA: Record<string, string> = {
+const COR_CATEGORIA: Record<string, string> = {
   "Comércio": "#059669",
   "Restaurante": "#d97706",
   "Pousada/Hotel": "#7c3aed",

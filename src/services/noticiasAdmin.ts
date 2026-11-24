@@ -12,8 +12,8 @@
 import { supabase } from "@/lib/supabase";
 import { gerarSlug, type ItemGaleria, type StatusNoticia } from "@/utils/noticias";
 
-export const TIPOS_IMAGEM = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-export const TAMANHO_MAX_MB = 5;
+const TIPOS_IMAGEM = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const TAMANHO_MAX_MB = 5;
 
 export interface DadosNoticia {
   titulo: string;

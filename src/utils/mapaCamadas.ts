@@ -13,7 +13,7 @@ import L from "leaflet";
 
 export type CamadaId = "mapa" | "satelite" | "hibrido";
 
-export const ROTULO_CAMADA: Record<CamadaId, string> = {
+const ROTULO_CAMADA: Record<CamadaId, string> = {
   mapa: "Mapa",
   satelite: "Satélite",
   hibrido: "Híbrido",

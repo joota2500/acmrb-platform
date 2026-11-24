@@ -16,7 +16,7 @@ import { NextResponse } from "next/server";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { clienteServidor } from "@/lib/supabaseServidor";
 
-export function ipDaRequisicao(req: Request): string | null {
+function ipDaRequisicao(req: Request): string | null {
   const h = req.headers;
   const bruto = h.get("x-real-ip") ?? h.get("x-vercel-forwarded-for") ?? h.get("x-forwarded-for") ?? "";
   const ip = bruto.split(",")[0]?.trim();

@@ -25,7 +25,7 @@ import { cn } from "@/utils/cn";
 
 // Chave pública do site no Turnstile (pode ficar no navegador)
 const CHAVE_SITE = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
-export const CAPTCHA_ATIVO = CHAVE_SITE.length > 0;
+const CAPTCHA_ATIVO = CHAVE_SITE.length > 0;
 
 export const MSG_CAPTCHA = "Confirme a verificação “não sou um robô” antes de continuar.";
 

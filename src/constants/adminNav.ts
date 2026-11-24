@@ -112,7 +112,7 @@ export const GRUPOS_NAV: GrupoNav[] = [
 
 export const ITENS_NAV: ItemNav[] = GRUPOS_NAV.flatMap((g) => g.itens);
 
-export const SECAO_PADRAO: SecaoId = "dashboard";
+const SECAO_PADRAO: SecaoId = "dashboard";
 
 /** Converte o valor da URL em uma seção válida (ou a padrão). */
 export function secaoValida(valor: string | null): SecaoId {

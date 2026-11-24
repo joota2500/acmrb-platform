@@ -27,10 +27,6 @@
 
 .advis-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.55rem 0.95rem; border-radius: 0.8rem; border: 0; background: var(--color-brand); color: #fff; font-weight: 700; font-size: 0.86rem; cursor: pointer; white-space: nowrap; }
 .advis-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.advis-btn--soft { background: var(--color-brand-soft); color: var(--color-brand); }
-.advis-btn--soft:hover:not(:disabled) { background: var(--color-brand-mint); }
-.advis-btn--ghost { background: #fff; color: #52525b; border: 1px solid #e4e4e7; }
-.advis-btn--ghost:hover:not(:disabled) { background: #f4f4f5; }
 
 .advis-vazio { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 2.5rem 1rem; border-radius: 1.25rem; background: #fff; border: 1px solid rgba(0, 0, 0, 0.05); color: #71717a; }
 .advis-giro { animation: advis-giro 0.9s linear infinite; }
@@ -45,7 +41,6 @@
 .advis-email { display: block; font-size: 0.8rem; color: #71717a; word-break: break-all; }
 .advis-acao { text-align: right; }
 
-.advis-selo { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 800; }
 
 .advis-paginacao { display: flex; align-items: center; justify-content: center; gap: 0.8rem; font-size: 0.86rem; color: #52525b; }
 

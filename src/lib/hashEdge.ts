@@ -8,7 +8,7 @@
  * (não existe mais valor fixo no código).
  */
 
-export async function hashEdge(valor: string): Promise<string> {
+async function hashEdge(valor: string): Promise<string> {
   const segredo = process.env.HASH_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!segredo) throw new Error("HASH_SECRET não configurado");
   const enc = new TextEncoder();
