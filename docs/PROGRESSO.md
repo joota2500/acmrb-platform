@@ -37,6 +37,7 @@ Combinado: termina um item, marca aqui com [x] e passa para o próximo.
 - [ ] 3. **Login mais protegido no Supabase** — ligar CAPTCHA (Turnstile) e revisar os limites do Supabase Auth (o bloqueio do site é feito antes do login, mas dá para chamar o Supabase direto)
   - [x] Código pronto: quadrinho "não sou um robô" (Turnstile) no login, cadastro, recuperação, login do painel e troca de senha; liga sozinho com `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
   - [ ] *(tarefa do João)* criar o Turnstile, pôr as chaves na Vercel e no Supabase e ajustar os limites — passo a passo em `docs/ACESSOS-E-SEGURANCA.md` (seção 7)
+- [x] 3.1. **Tela de login do usuário nova** *(pedido do João)* — `/login` em 2 colunas no computador (painel verde da marca + cartão do formulário), sem rolagem nenhuma em 1366x768, 1280x800 e 1920x1080; no celular só a rolagem vertical natural; abas, ícones, mostrar senha e foco acessível
 - [ ] 4. **Revisão do banco** — rodar `supabase/diagnosticos/revisao_rls.sql` no SQL Editor e corrigir o que aparecer
 
 ### Front (visual e componentes)

@@ -12,11 +12,14 @@
  *    senha e confirmação (zod). O perfil é criado pelo gatilho do banco
  *    (migration 20261020260000_visitantes_perfil.sql).
  *  - Esqueci minha senha: envia o link para /redefinir-senha.
- * Visual: Tailwind + Button.
+ * Visual (Tailwind): no computador, 2 colunas que cabem na tela sem
+ * rolagem (painel verde da marca à esquerda + cartão do formulário à
+ * direita). No celular, só o cartão, com rolagem vertical natural.
  */
 
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
@@ -30,7 +33,10 @@ import {
   Lock,
   Mail,
   MapPin,
+  MessagesSquare,
   Phone,
+  ShieldCheck,
+  Truck,
   User,
 } from "lucide-react";
 
@@ -81,11 +87,22 @@ function mensagemErroCadastro(error: { status?: number; code?: string; message: 
 
 // Classes que se repetem no formulário
 const CAIXA_CAMPO =
-  "flex h-12 items-center gap-2.5 rounded-[0.9rem] border bg-white px-3.5 text-zinc-500 transition focus-within:border-brand focus-within:text-brand focus-within:shadow-[0_0_0_3px_rgb(46_94_78/0.15)] max-[480px]:h-11.5";
+  "flex h-11 items-center gap-2.5 rounded-control border bg-white px-3.5 text-ink-muted transition focus-within:border-brand focus-within:text-brand focus-within:shadow-focus";
 const ENTRADA =
-  "h-full min-w-0 flex-1 border-0 bg-transparent text-[0.95rem] text-zinc-900 outline-none max-[480px]:text-base";
-const ROTULO = "text-[0.82rem] font-bold text-zinc-700";
-const LINK = "inline-flex items-center justify-center gap-1.5 text-[0.85rem] font-bold text-brand hover:underline";
+  "h-full w-full min-w-0 flex-1 border-0 bg-transparent text-base text-ink outline-none placeholder:text-zinc-400 sm:text-[0.95rem]";
+const ROTULO = "text-[0.82rem] font-bold text-ink-soft";
+const LINK =
+  "inline-flex items-center justify-center gap-1.5 rounded-md text-[0.85rem] font-bold text-brand hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+
+// Vantagens da conta (painel verde do computador)
+const VANTAGENS = [
+  { icone: MessagesSquare, texto: "Converse direto com a associação" },
+  { icone: Truck, texto: "Peça e acompanhe a coleta de recicláveis" },
+  { icone: ShieldCheck, texto: "Seus dados protegidos e sem anúncios" },
+];
+
+const AVISO_VISITANTE =
+  "Sem conta você pode navegar e ler todo o site. Com a conta de visitante você também pode enviar mensagens e interagir com a ACMRB.";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -286,8 +303,8 @@ export default function LoginPage() {
     return (
       <div className="flex min-w-0 flex-col gap-1.5">
         <label htmlFor={`login-${id}`} className={ROTULO}>{rotulo}</label>
-        <div className={cn(CAIXA_CAMPO, erro ? "border-red-400" : "border-zinc-200")}>
-          <Icone size={17} aria-hidden="true" />
+        <div className={cn(CAIXA_CAMPO, erro ? "border-red-400" : "border-line")}>
+          <Icone size={17} className="shrink-0" aria-hidden="true" />
           <input
             id={`login-${id}`}
             className={ENTRADA}
@@ -296,7 +313,7 @@ export default function LoginPage() {
             {...props}
           />
         </div>
-        {erro && <span id={`login-${id}-erro`} className="text-xs text-red-600">{erro}</span>}
+        {erro && <ErroCampo id={`login-${id}-erro`} texto={erro} />}
       </div>
     );
   }
@@ -305,164 +322,235 @@ export default function LoginPage() {
   const t = TITULOS[modo];
 
   return (
-    <main className="relative flex min-h-dvh items-center justify-center overflow-hidden bg-surface-alt px-5 pb-12 pt-20 max-[768px]:pt-18 max-[480px]:items-start max-[480px]:px-3.5 max-[480px]:pb-6 max-[480px]:pt-15">
-      <div
-        className="pointer-events-none absolute -top-48 left-1/2 size-160 -translate-x-1/2 rounded-full bg-emerald-400/12 blur-[120px]"
-        aria-hidden="true"
-      />
+    // Computador (lg): altura exata da tela e nada de rolagem na página.
+    // Celular: altura mínima da tela e só rolagem vertical (overflow-x-hidden).
+    <main className="min-h-dvh overflow-x-hidden bg-surface-alt lg:grid lg:h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:overflow-hidden">
+      {/* ===== Painel da marca (só no computador) ===== */}
+      <aside className="relative hidden overflow-hidden bg-linear-to-br from-brand-dark via-brand to-emerald-700 text-white lg:flex lg:flex-col lg:justify-between lg:p-10 xl:p-14">
+        <Image
+          src="/images/hero-reciclagem.jpg"
+          alt=""
+          fill
+          priority
+          sizes="50vw"
+          className="object-cover opacity-15 mix-blend-luminosity"
+        />
+        {/* luz verde de fundo (só decoração) */}
+        <span className="pointer-events-none absolute -right-24 -top-24 h-80 w-80 rounded-full bg-emerald-300/20 blur-3xl" aria-hidden="true" />
 
-      <Link
-        href="/"
-        className="absolute left-6 top-6 z-10 inline-flex items-center gap-1.5 text-[0.9rem] font-semibold text-zinc-600 transition-colors hover:text-brand max-[480px]:left-4 max-[480px]:top-4 max-[480px]:text-[0.85rem]"
-      >
-        <ArrowLeft size={17} aria-hidden="true" /> Voltar ao site
-      </Link>
-
-      <motion.section
-        className="relative z-1 w-full max-w-120 rounded-[1.75rem] border border-black/5 bg-white/90 p-8 shadow-[0_20px_50px_-20px_rgb(46_94_78/0.25)] backdrop-blur-lg max-[768px]:p-7 max-[480px]:rounded-[1.25rem] max-[480px]:p-5"
-        initial={reduzir ? false : { opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-        aria-labelledby="login-titulo"
-      >
-        <header className="text-center">
-          <span className="inline-flex size-13 items-center justify-center rounded-2xl bg-brand-mint text-brand max-[480px]:size-11">
+        <Link
+          href="/"
+          className="relative inline-flex w-fit items-center gap-3 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+        >
+          <span className="grid size-11 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/25">
             <Leaf size={22} aria-hidden="true" />
           </span>
-          <p className="mt-3 text-[0.72rem] font-extrabold tracking-[0.14em] text-brand">RECICLAÊ • ACMRB</p>
-          <h1 id="login-titulo" className="mt-1 text-center text-[1.75rem] font-black text-zinc-900 max-[480px]:text-[1.45rem]">
-            {t.titulo}
-          </h1>
-          <p className="texto-justo mt-1.5 text-[0.92rem] text-zinc-600 [text-align-last:center] max-[480px]:text-[0.85rem]">{t.sub}</p>
-        </header>
+          <span className="leading-tight">
+            <span className="block text-lg font-black tracking-tight">Reciclaê</span>
+            <span className="block text-xs font-semibold text-emerald-100/80">ACMRB · Baturité – CE</span>
+          </span>
+        </Link>
 
-        {modo !== "recuperar" && (
-          <div className="mt-6 grid grid-cols-2 gap-1 rounded-2xl bg-surface-alt p-1" role="tablist" aria-label="Entrar ou criar conta">
-            {(["entrar", "cadastro"] as const).map((m) => (
-              <button
-                key={m}
-                type="button"
-                role="tab"
-                aria-selected={modo === m}
-                className={cn(
-                  "h-10 cursor-pointer rounded-[0.8rem] text-[0.9rem] font-bold transition-colors",
-                  modo === m ? "bg-white text-brand shadow-[0_2px_8px_rgb(0_0_0/0.06)]" : "text-zinc-600",
-                )}
-                onClick={() => trocarModo(m)}
-              >
-                {m === "entrar" ? "Entrar" : "Criar conta"}
-              </button>
+        <div className="relative max-w-md">
+          <h2 className="text-4xl font-black leading-tight tracking-tight xl:text-5xl">
+            Reciclar transforma a nossa cidade.
+          </h2>
+          <p className="mt-4 text-base leading-relaxed text-emerald-50/90">
+            Crie sua conta de visitante e fique mais perto da associação dos catadores de Baturité.
+          </p>
+          <ul className="mt-7 flex flex-col gap-3.5">
+            {VANTAGENS.map(({ icone: Icone, texto }) => (
+              <li key={texto} className="flex items-center gap-3 text-[0.95rem] font-semibold">
+                <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-white/15">
+                  <Icone size={18} aria-hidden="true" />
+                </span>
+                {texto}
+              </li>
             ))}
-          </div>
-        )}
+          </ul>
+        </div>
 
-        <AnimatePresence mode="wait">
-          {aviso && (
-            <motion.div
-              key={aviso.texto}
-              role={aviso.tipo === "erro" ? "alert" : "status"}
-              className={cn(
-                "texto-justo mt-5 flex items-start gap-2.5 rounded-2xl border px-4 py-3 text-[0.88rem] leading-snug [&>svg]:mt-0.5 [&>svg]:shrink-0",
-                aviso.tipo === "erro"
-                  ? "border-red-200 bg-red-50 text-danger"
-                  : "border-[#a7e3cb] bg-brand-mint text-[#1f4a3c]",
-              )}
-              initial={reduzir ? false : { opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-            >
-              {aviso.tipo === "erro" ? <AlertCircle size={18} aria-hidden="true" /> : <CheckCircle2 size={18} aria-hidden="true" />}
-              <span>{aviso.texto}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <form className="mt-5 flex flex-col gap-3.5" onSubmit={enviar} noValidate>
-          {modo === "cadastro" && (
-            <>
-              {campo("nome", "Nome completo", User, { type: "text", autoComplete: "name", maxLength: 100, value: nome, onChange: (e) => setNome(e.target.value), placeholder: "Seu nome e sobrenome" })}
-              <div className="grid grid-cols-2 gap-3.5 max-[480px]:grid-cols-1">
-                {campo("telefone", "Telefone", Phone, { type: "tel", inputMode: "numeric", autoComplete: "tel-national", value: telefone, onChange: (e) => setTelefone(mascaraTelefone(e.target.value)), placeholder: "(85) 98888-7777" })}
-                {campo("nascimento", "Data de nascimento", CalendarDays, { type: "date", autoComplete: "bday", max: new Date().toISOString().slice(0, 10), value: nascimento, onChange: (e) => setNascimento(e.target.value) })}
-              </div>
-              {campo("cidade", "Cidade", MapPin, { type: "text", autoComplete: "address-level2", maxLength: 80, value: cidade, onChange: (e) => setCidade(e.target.value), placeholder: "Ex.: Baturité" })}
-            </>
-          )}
-
-          {campo("email", "E-mail", Mail, { type: "email", autoComplete: "email", inputMode: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "voce@email.com" })}
-
-          {modo !== "recuperar" && (
-            <div className="flex min-w-0 flex-col gap-1.5">
-              <label htmlFor="login-senha" className={ROTULO}>Senha</label>
-              <div className={cn(CAIXA_CAMPO, erros.senha ? "border-red-400" : "border-zinc-200")}>
-                <Lock size={17} aria-hidden="true" />
-                <input
-                  id="login-senha"
-                  className={ENTRADA}
-                  type={tipoSenha}
-                  autoComplete={modo === "entrar" ? "current-password" : "new-password"}
-                  value={senha}
-                  onChange={(e) => setSenha(e.target.value)}
-                  aria-invalid={!!erros.senha}
-                  aria-describedby={erros.senha ? "login-senha-erro" : modo === "cadastro" ? "login-senha-dica" : undefined}
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  className="inline-flex cursor-pointer p-1 text-zinc-500 hover:text-brand"
-                  onClick={() => setVerSenha((v) => !v)}
-                  aria-label={verSenha ? "Ocultar senha" : "Mostrar senha"}
-                >
-                  {verSenha ? <EyeOff size={17} /> : <Eye size={17} />}
-                </button>
-              </div>
-              {erros.senha ? (
-                <span id="login-senha-erro" className="text-xs text-red-600">{erros.senha}</span>
-              ) : (
-                modo === "cadastro" && (
-                  <span id="login-senha-dica" className="text-[0.76rem] text-zinc-500">
-                    Mínimo 8 caracteres, com maiúscula, minúscula e número.
-                  </span>
-                )
-              )}
-            </div>
-          )}
-
-          {modo === "cadastro" &&
-            campo("confirmar", "Confirmar senha", Lock, { type: tipoSenha, autoComplete: "new-password", value: confirmar, onChange: (e) => setConfirmar(e.target.value), placeholder: "Repita a senha" })}
-
-          {modo === "entrar" && (
-            <button type="button" className={cn(LINK, "-mt-1 cursor-pointer self-end")} onClick={() => trocarModo("recuperar")}>
-              Esqueci minha senha
-            </button>
-          )}
-
-          {/* verificação anti-robô (aparece só com o Turnstile configurado) */}
-          <Captcha controle={captcha} />
-
-          <Button
-            type="submit"
-            larguraTotal
-            carregando={carregando}
-            className="h-12.5 rounded-[0.9rem] text-[0.95rem] font-extrabold max-[480px]:h-11.5"
-            disabled={carregando || (modo === "recuperar" && espera > 0)}
+        <div className="relative flex items-center justify-between gap-4 text-sm text-emerald-50/80">
+          <p className="max-w-sm leading-relaxed">{AVISO_VISITANTE}</p>
+          <Link
+            href="/"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md font-bold text-white hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
-            {modo === "entrar" && (carregando ? "Entrando…" : "Entrar")}
-            {modo === "cadastro" && (carregando ? "Criando conta…" : "Criar minha conta")}
-            {modo === "recuperar" && (espera > 0 ? `Reenviar em ${espera}s` : carregando ? "Enviando…" : "Enviar link")}
-          </Button>
+            <ArrowLeft size={16} aria-hidden="true" /> Voltar ao site
+          </Link>
+        </div>
+      </aside>
 
-          {modo === "recuperar" && (
-            <button type="button" className={cn(LINK, "cursor-pointer")} onClick={() => trocarModo("entrar")}>
-              <ArrowLeft size={15} aria-hidden="true" /> Voltar para entrar
-            </button>
-          )}
-        </form>
+      {/* ===== Coluna do formulário ===== */}
+      {/* no computador, se uma tela bem baixa não couber, rola só esta coluna (nunca a página) */}
+      <div className="flex min-h-dvh flex-col lg:min-h-0 lg:overflow-y-auto">
+        {/* topo do celular/tablet: voltar + marca */}
+        <div className="flex items-center justify-between px-4 pt-4 sm:px-6 lg:hidden">
+          <Link href="/" className={cn(LINK, "text-ink-soft")}>
+            <ArrowLeft size={17} aria-hidden="true" /> Voltar ao site
+          </Link>
+          <span className="inline-flex items-center gap-1.5 text-xs font-extrabold tracking-[0.14em] text-brand">
+            <Leaf size={15} aria-hidden="true" /> RECICLAÊ
+          </span>
+        </div>
 
-        <p className="texto-justo mt-5.5 border-t border-zinc-100 pt-4.5 text-[0.8rem] leading-normal text-zinc-500">
-          Sem conta você pode navegar e ler todo o site. Com a conta de visitante você também pode enviar mensagens e interagir com a ACMRB.
-        </p>
-      </motion.section>
+        <div className="flex flex-1 items-start justify-center px-4 py-5 sm:items-center sm:px-6 sm:py-8 lg:px-10 lg:py-6">
+          <motion.section
+            className={cn(
+              "w-full rounded-[1.5rem] border border-black/5 bg-white p-5 shadow-[0_20px_50px_-24px_rgb(46_94_78/0.35)] sm:p-7",
+              modo === "cadastro" ? "max-w-[34rem]" : "max-w-[27rem]",
+            )}
+            initial={reduzir ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            aria-labelledby="login-titulo"
+          >
+            <header>
+              <h1 id="login-titulo" className="text-2xl font-black tracking-tight text-ink sm:text-[1.7rem]">
+                {t.titulo}
+              </h1>
+              <p className="mt-1 text-sm leading-relaxed text-ink-soft">{t.sub}</p>
+            </header>
+
+            {/* Abas: Entrar / Criar conta (em "recuperar" aparece o botão de voltar no lugar) */}
+            {modo !== "recuperar" ? (
+              <div className="mt-5 grid grid-cols-2 gap-1 rounded-2xl bg-surface-alt p-1 ring-1 ring-line" role="tablist" aria-label="Entrar ou criar conta">
+                {(["entrar", "cadastro"] as const).map((m) => (
+                  <button
+                    key={m}
+                    type="button"
+                    role="tab"
+                    aria-selected={modo === m}
+                    className={cn(
+                      "h-10 cursor-pointer rounded-xl text-[0.9rem] font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand",
+                      modo === m ? "bg-white text-brand shadow-sm ring-1 ring-black/5" : "text-ink-muted hover:text-brand",
+                    )}
+                    onClick={() => trocarModo(m)}
+                  >
+                    {m === "entrar" ? "Entrar" : "Criar conta"}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <button type="button" className={cn(LINK, "mt-4 cursor-pointer")} onClick={() => trocarModo("entrar")}>
+                <ArrowLeft size={15} aria-hidden="true" /> Voltar para entrar
+              </button>
+            )}
+
+            <AnimatePresence mode="wait">
+              {aviso && (
+                <motion.div
+                  key={aviso.texto}
+                  role={aviso.tipo === "erro" ? "alert" : "status"}
+                  className={cn(
+                    "mt-4 flex items-start gap-2.5 rounded-2xl border px-3.5 py-3 text-[0.88rem] leading-snug [&>svg]:mt-0.5 [&>svg]:shrink-0",
+                    aviso.tipo === "erro"
+                      ? "border-red-200 bg-danger-soft text-danger"
+                      : "border-brand-line bg-brand-mint text-brand-dark",
+                  )}
+                  initial={reduzir ? false : { opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {aviso.tipo === "erro" ? <AlertCircle size={18} aria-hidden="true" /> : <CheckCircle2 size={18} aria-hidden="true" />}
+                  <span>{aviso.texto}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <form className="mt-4 flex flex-col gap-3" onSubmit={enviar} noValidate>
+              {/* Cadastro: campos em 2 colunas a partir do tablet, para caber na tela */}
+              {modo === "cadastro" && (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {campo("nome", "Nome completo", User, { type: "text", autoComplete: "name", maxLength: 100, value: nome, onChange: (e) => setNome(e.target.value), placeholder: "Seu nome e sobrenome" })}
+                  {campo("telefone", "Telefone", Phone, { type: "tel", inputMode: "numeric", autoComplete: "tel-national", value: telefone, onChange: (e) => setTelefone(mascaraTelefone(e.target.value)), placeholder: "(85) 98888-7777" })}
+                  {campo("nascimento", "Data de nascimento", CalendarDays, { type: "date", autoComplete: "bday", max: new Date().toISOString().slice(0, 10), value: nascimento, onChange: (e) => setNascimento(e.target.value) })}
+                  {campo("cidade", "Cidade", MapPin, { type: "text", autoComplete: "address-level2", maxLength: 80, value: cidade, onChange: (e) => setCidade(e.target.value), placeholder: "Ex.: Baturité" })}
+                </div>
+              )}
+
+              {campo("email", "E-mail", Mail, { type: "email", autoComplete: "email", inputMode: "email", value: email, onChange: (e) => setEmail(e.target.value), placeholder: "voce@email.com" })}
+
+              {modo !== "recuperar" && (
+                <div className={cn("grid gap-3", modo === "cadastro" && "sm:grid-cols-2")}>
+                  <div className="flex min-w-0 flex-col gap-1.5">
+                    <label htmlFor="login-senha" className={ROTULO}>Senha</label>
+                    <div className={cn(CAIXA_CAMPO, "pr-1.5", erros.senha ? "border-red-400" : "border-line")}>
+                      <Lock size={17} className="shrink-0" aria-hidden="true" />
+                      <input
+                        id="login-senha"
+                        className={ENTRADA}
+                        type={tipoSenha}
+                        autoComplete={modo === "entrar" ? "current-password" : "new-password"}
+                        value={senha}
+                        onChange={(e) => setSenha(e.target.value)}
+                        aria-invalid={!!erros.senha}
+                        aria-describedby={erros.senha ? "login-senha-erro" : modo === "cadastro" ? "login-senha-dica" : undefined}
+                        placeholder="••••••••"
+                      />
+                      <button
+                        type="button"
+                        className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-lg text-ink-muted hover:bg-brand-soft hover:text-brand focus-visible:outline-2 focus-visible:outline-brand"
+                        onClick={() => setVerSenha((v) => !v)}
+                        aria-label={verSenha ? "Ocultar senha" : "Mostrar senha"}
+                        aria-pressed={verSenha}
+                      >
+                        {verSenha ? <EyeOff size={17} aria-hidden="true" /> : <Eye size={17} aria-hidden="true" />}
+                      </button>
+                    </div>
+                    {erros.senha && <ErroCampo id="login-senha-erro" texto={erros.senha} />}
+                  </div>
+
+                  {modo === "cadastro" &&
+                    campo("confirmar", "Confirmar senha", Lock, { type: tipoSenha, autoComplete: "new-password", value: confirmar, onChange: (e) => setConfirmar(e.target.value), placeholder: "Repita a senha" })}
+
+                  {modo === "cadastro" && !erros.senha && (
+                    <span id="login-senha-dica" className="-mt-1 text-[0.76rem] text-ink-muted sm:col-span-2">
+                      Mínimo 8 caracteres, com maiúscula, minúscula e número.
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {modo === "entrar" && (
+                <button type="button" className={cn(LINK, "-mt-1 cursor-pointer self-end")} onClick={() => trocarModo("recuperar")}>
+                  Esqueci minha senha
+                </button>
+              )}
+
+              {/* verificação anti-robô (aparece só com o Turnstile configurado) */}
+              <Captcha controle={captcha} />
+
+              <Button
+                type="submit"
+                larguraTotal
+                carregando={carregando}
+                className="h-12 rounded-control text-[0.95rem] font-extrabold"
+                disabled={carregando || (modo === "recuperar" && espera > 0)}
+              >
+                {modo === "entrar" && (carregando ? "Entrando…" : "Entrar")}
+                {modo === "cadastro" && (carregando ? "Criando conta…" : "Criar minha conta")}
+                {modo === "recuperar" && (espera > 0 ? `Reenviar em ${espera}s` : carregando ? "Enviando…" : "Enviar link")}
+              </Button>
+            </form>
+
+            {/* no computador este aviso fica no painel verde */}
+            <p className="mt-5 border-t border-line pt-4 text-[0.8rem] leading-normal text-ink-muted lg:hidden">
+              {AVISO_VISITANTE}
+            </p>
+          </motion.section>
+        </div>
+      </div>
     </main>
+  );
+}
+
+/** Mensagem de erro embaixo de um campo */
+function ErroCampo({ id, texto }: { id: string; texto: string }) {
+  return (
+    <span id={id} className="flex items-start gap-1 text-xs font-medium text-danger">
+      <AlertCircle size={13} className="mt-px shrink-0" aria-hidden="true" />
+      {texto}
+    </span>
   );
 }
