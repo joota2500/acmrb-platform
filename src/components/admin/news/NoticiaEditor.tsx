@@ -11,6 +11,7 @@
  * - Agendamento (status "agendado" + data futura)
  * - Pré-visualização de como fica no site
  * - Validação com zod antes de salvar
+ * Visual: só Tailwind (classes em constantes logo abaixo).
  */
 
 import { useEffect, useMemo, useState } from "react";
@@ -28,6 +29,25 @@ import {
 import { enviarImagem, slugEmUso, validarImagem, type DadosNoticia } from "@/services/noticiasAdmin";
 
 import Button from "@/components/ui/Button";
+import { cn } from "@/utils/cn";
+
+// ---------- Classes que se repetem no editor ----------
+const BLOCO = "flex min-w-0 flex-col gap-4 rounded-card border border-black/5 bg-white p-4 shadow-card sm:p-5";
+const TITULO_BLOCO = "float-left w-full border-b border-line pb-3 text-[0.95rem] font-extrabold text-brand";
+const CAMPO = "relative flex min-w-0 flex-col gap-1.5";
+const ROTULO = "text-[0.8rem] font-bold text-zinc-700";
+const CONTROLE =
+  "w-full rounded-control border border-line bg-white px-3.5 py-2.5 text-[0.92rem] text-ink outline-none transition focus:border-brand focus:shadow-focus";
+const LINHA = "grid items-end gap-4 sm:grid-cols-2";
+const DICA = "text-[0.8rem] text-ink-muted";
+const ERRO = "text-[0.78rem] font-semibold text-danger";
+const ICONE =
+  "grid size-10 shrink-0 cursor-pointer place-items-center rounded-xl bg-zinc-100 text-zinc-600 transition hover:bg-brand-mint hover:text-brand focus-visible:outline-2 focus-visible:outline-brand";
+// botão claro feito com <label> (para abrir o seletor de arquivo)
+const BOTAO_CLARO =
+  "inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-control border border-emerald-100 bg-emerald-50 px-4 text-[0.9rem] font-bold text-emerald-800 transition hover:bg-emerald-100 focus-within:outline-2 focus-within:outline-leaf-bright has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-60";
+const BOTAO_GALERIA =
+  "flex cursor-pointer rounded-lg border border-line bg-white p-1.5 text-zinc-600 transition hover:bg-brand-soft hover:text-brand";
 
 const esquema = z
   .object({
@@ -47,7 +67,7 @@ const esquema = z
     path: ["publicado_em"],
   });
 
-/** ISO → valor do <input type="datetime-local"> (hora local) */
+/** ISO → valor do <input className={CONTROLE} type="datetime-local"> (hora local) */
 function paraInput(iso: string | null) {
   if (!iso) return "";
   const d = new Date(iso);
@@ -91,7 +111,11 @@ interface Props {
 }
 
 function Contador({ atual, limite }: { atual: number; limite: number }) {
-  const cls = atual > limite ? "an__contador an__contador--over" : atual > limite * 0.9 ? "an__contador an__contador--quase" : "an__contador";
+  const cls = cn(
+    "self-end text-[0.72rem] text-ink-muted",
+    atual > limite * 0.9 && "text-warning",
+    atual > limite && "font-extrabold text-danger",
+  );
   return <span className={cls} aria-live="polite">{atual}/{limite}</span>;
 }
 
@@ -192,7 +216,7 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
     onSalvar(final);
   }
 
-  const erro = (k: string) => erros[k] && <span className="an__erro" role="alert">{erros[k]}</span>;
+  const erro = (k: string) => erros[k] && <span className={ERRO} role="alert">{erros[k]}</span>;
 
   // objeto usado na pré-visualização
   const previaNoticia: Noticia = {
@@ -208,84 +232,86 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
   };
 
   return (
-    <div className="an__editor">
-      <div className="an__editor-topo">
-        <h3>{editandoId ? "Editar notícia" : "Nova notícia"}</h3>
-        <button type="button" className="an__icone" onClick={onCancelar} aria-label="Fechar editor"><X size={18} /></button>
+    <div className="flex flex-col gap-5">
+      <div className="flex items-center justify-between gap-4">
+        <h3 className="text-xl font-black tracking-tight text-ink sm:text-[1.35rem]">{editandoId ? "Editar notícia" : "Nova notícia"}</h3>
+        <button type="button" className={ICONE} onClick={onCancelar} aria-label="Fechar editor"><X size={18} /></button>
       </div>
 
-      <div className="an__form">
+      <div className="flex flex-col gap-4">
         {/* ---------- Conteúdo ---------- */}
-        <fieldset className="an__bloco">
-          <legend>Conteúdo</legend>
+        <fieldset className={BLOCO}>
+          <legend className={TITULO_BLOCO}>Conteúdo</legend>
 
-          <label className="an__campo">
-            <span>Título *</span>
-            <input value={d.titulo} onChange={(e) => set("titulo", e.target.value)} maxLength={160} placeholder="Ex.: ACMRB recebe nova prensa para papelão" />
+          <label className={CAMPO}>
+            <span className={ROTULO}>Título *</span>
+            <input className={CONTROLE} value={d.titulo} onChange={(e) => set("titulo", e.target.value)} maxLength={160} placeholder="Ex.: ACMRB recebe nova prensa para papelão" />
             <Contador atual={d.titulo.length} limite={160} />
             {erro("titulo")}
           </label>
 
-          <label className="an__campo">
-            <span>Endereço (slug) *</span>
-            <div className="an__slug">
-              <small>/noticias/</small>
+          <label className={CAMPO}>
+            <span className={ROTULO}>Endereço (slug) *</span>
+            <div className="flex items-center gap-1.5 rounded-control border border-line bg-white px-3.5 transition focus-within:border-brand focus-within:shadow-focus">
+              <small className="whitespace-nowrap text-ink-muted">/noticias/</small>
               <input
+                className="min-w-0 flex-1 border-0 bg-transparent py-2.5 text-[0.92rem] text-ink outline-none"
                 value={d.slug}
                 onChange={(e) => { setSlugManual(true); set("slug", gerarSlug(e.target.value)); }}
                 aria-invalid={slugOcupado}
               />
               {slugManual && (
-                <button type="button" className="an__link" onClick={() => setSlugManual(false)}>Gerar do título</button>
+                <button type="button" className="cursor-pointer whitespace-nowrap border-0 bg-transparent text-[0.8rem] font-bold text-leaf hover:underline" onClick={() => setSlugManual(false)}>Gerar do título</button>
               )}
             </div>
-            {slugOcupado && <span className="an__erro">Esse endereço já está em uso por outra notícia.</span>}
+            {slugOcupado && <span className={ERRO}>Esse endereço já está em uso por outra notícia.</span>}
             {erro("slug")}
           </label>
 
-          <label className="an__campo">
-            <span>Resumo (aparece nos cartões e na linha fina)</span>
-            <textarea rows={3} value={d.resumo} onChange={(e) => set("resumo", e.target.value)} />
+          <label className={CAMPO}>
+            <span className={ROTULO}>Resumo (aparece nos cartões e na linha fina)</span>
+            <textarea className={CONTROLE} rows={3} value={d.resumo} onChange={(e) => set("resumo", e.target.value)} />
             <Contador atual={d.resumo.length} limite={LIMITE_RESUMO} />
             {erro("resumo")}
           </label>
 
-          <div className="an__campo">
-            <span>Texto da notícia *</span>
+          <div className={CAMPO}>
+            <span className={ROTULO}>Texto da notícia *</span>
             <EditorTextoNoticia
               valor={d.conteudo}
               onChange={(v) => set("conteudo", v)}
               placeholder={"Escreva aqui. Use a barra acima para títulos, negrito, listas, citações e links.\n\nDeixe uma linha em branco entre os parágrafos."}
             />
-            <small className="an__dica">{palavras} palavras • cerca de {tempo} min de leitura</small>
+            <small className={DICA}>{palavras} palavras • cerca de {tempo} min de leitura</small>
             {erro("conteudo")}
           </div>
 
-          <div className="an__linha">
-            <label className="an__campo">
-              <span>Categoria *</span>
-              <input list="an-categorias" value={d.categoria} onChange={(e) => set("categoria", e.target.value)} placeholder="Escolha ou digite" />
+          <div className={LINHA}>
+            <label className={CAMPO}>
+              <span className={ROTULO}>Categoria *</span>
+              <input className={CONTROLE} list="an-categorias" value={d.categoria} onChange={(e) => set("categoria", e.target.value)} placeholder="Escolha ou digite" />
               <datalist id="an-categorias">
                 {CATEGORIAS_NOTICIA.map((c) => <option key={c} value={c} />)}
               </datalist>
               {erro("categoria")}
             </label>
-            <label className="an__campo">
-              <span>Autor</span>
-              <input value={d.autor_nome} onChange={(e) => set("autor_nome", e.target.value)} />
+            <label className={CAMPO}>
+              <span className={ROTULO}>Autor</span>
+              <input className={CONTROLE} value={d.autor_nome} onChange={(e) => set("autor_nome", e.target.value)} />
             </label>
           </div>
 
-          <div className="an__campo">
-            <span>Tags (separe por vírgula ou Enter)</span>
-            <div className="an__tags">
+          <div className={CAMPO}>
+            <span className={ROTULO}>Tags (separe por vírgula ou Enter)</span>
+            <div className="flex flex-wrap items-center gap-1.5 rounded-control border border-line bg-white p-2 transition focus-within:border-brand focus-within:shadow-focus">
               {d.tags.map((t) => (
-                <span key={t} className="an__tag">
+                <span key={t} className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-[0.78rem] font-bold text-leaf">
                   #{t}
-                  <button type="button" onClick={() => set("tags", d.tags.filter((x) => x !== t))} aria-label={`Remover tag ${t}`}><X size={12} /></button>
+                  <button type="button" className="flex cursor-pointer rounded-full hover:text-danger" onClick={() => set("tags", d.tags.filter((x) => x !== t))} aria-label={`Remover tag ${t}`}><X size={12} /></button>
                 </span>
               ))}
               <input
+                className="min-w-36 flex-1 border-0 bg-transparent p-1 text-[0.92rem] text-ink outline-none"
                 value={tagTexto}
                 onChange={(e) => (e.target.value.includes(",") ? adicionarTags(e.target.value) : setTagTexto(e.target.value))}
                 onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); adicionarTags(tagTexto); } }}
@@ -296,28 +322,28 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
             </div>
           </div>
 
-          <label className="an__campo">
-            <span>Link da fonte (opcional)</span>
-            <input value={d.fonte_url} onChange={(e) => set("fonte_url", e.target.value)} placeholder="https://..." inputMode="url" />
+          <label className={CAMPO}>
+            <span className={ROTULO}>Link da fonte (opcional)</span>
+            <input className={CONTROLE} value={d.fonte_url} onChange={(e) => set("fonte_url", e.target.value)} placeholder="https://..." inputMode="url" />
             {erro("fonte_url")}
           </label>
         </fieldset>
 
         {/* ---------- Capa ---------- */}
-        <fieldset className="an__bloco">
-          <legend>Imagem de capa</legend>
-          <div className="an__capa">
-            <div className="an__capa-previa">
+        <fieldset className={BLOCO}>
+          <legend className={TITULO_BLOCO}>Imagem de capa</legend>
+          <div className="grid items-center gap-4 sm:grid-cols-[16rem_minmax(0,1fr)]">
+            <div className="flex aspect-[16/10] items-center justify-center overflow-hidden rounded-2xl border border-dashed border-brand-line bg-[repeating-linear-gradient(45deg,#f3f4f6_0_10px,#eef2f1_10px_20px)] text-ink-muted">
               {d.imagem_url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={d.imagem_url} alt="Pré-visualização da capa" />
+                <img src={d.imagem_url} alt="Pré-visualização da capa" className="size-full object-contain" />
               ) : (
-                <span><ImagePlus size={28} aria-hidden="true" /> Sem imagem</span>
+                <span className="flex flex-col items-center gap-1.5 text-[0.8rem]"><ImagePlus size={28} aria-hidden="true" /> Sem imagem</span>
               )}
             </div>
-            <div className="an__capa-acoes">
-              <label className="an__btn an__btn--claro">
-                {enviandoCapa ? <Loader2 size={16} className="an__girando" /> : <Upload size={16} />}
+            <div className="flex flex-wrap items-center gap-2.5">
+              <label className={BOTAO_CLARO}>
+                {enviandoCapa ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
                 {d.imagem_url ? "Trocar imagem" : "Enviar imagem"}
                 <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden disabled={enviandoCapa}
                   onChange={(e) => { trocarCapa(e.target.files?.[0]); e.target.value = ""; }} />
@@ -327,48 +353,48 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
                   <Trash2 size={16} /> Remover
                 </Button>
               )}
-              <small className="an__dica">JPG, PNG, WEBP ou GIF até 5 MB. A imagem aparece inteira, sem cortes.</small>
+              <small className={cn(DICA, "basis-full")}>JPG, PNG, WEBP ou GIF até 5 MB. A imagem aparece inteira, sem cortes.</small>
             </div>
           </div>
-          <div className="an__linha">
-            <label className="an__campo">
-              <span>Texto alternativo (acessibilidade)</span>
-              <input value={d.imagem_alt} onChange={(e) => set("imagem_alt", e.target.value)} placeholder="Descreva a foto" />
+          <div className={LINHA}>
+            <label className={CAMPO}>
+              <span className={ROTULO}>Texto alternativo (acessibilidade)</span>
+              <input className={CONTROLE} value={d.imagem_alt} onChange={(e) => set("imagem_alt", e.target.value)} placeholder="Descreva a foto" />
             </label>
-            <label className="an__campo">
-              <span>Crédito da foto</span>
-              <input value={d.imagem_credito} onChange={(e) => set("imagem_credito", e.target.value)} placeholder="Ex.: Acervo ACMRB" />
+            <label className={CAMPO}>
+              <span className={ROTULO}>Crédito da foto</span>
+              <input className={CONTROLE} value={d.imagem_credito} onChange={(e) => set("imagem_credito", e.target.value)} placeholder="Ex.: Acervo ACMRB" />
             </label>
           </div>
-          <label className="an__campo">
-            <span>Legenda</span>
-            <input value={d.imagem_legenda} onChange={(e) => set("imagem_legenda", e.target.value)} />
+          <label className={CAMPO}>
+            <span className={ROTULO}>Legenda</span>
+            <input className={CONTROLE} value={d.imagem_legenda} onChange={(e) => set("imagem_legenda", e.target.value)} />
           </label>
         </fieldset>
 
         {/* ---------- Galeria ---------- */}
-        <fieldset className="an__bloco">
-          <legend>Galeria de fotos ({d.galeria.length}/12)</legend>
+        <fieldset className={BLOCO}>
+          <legend className={TITULO_BLOCO}>Galeria de fotos ({d.galeria.length}/12)</legend>
           {d.galeria.length > 0 && (
-            <ul className="an__galeria">
+            <ul className="grid list-none grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] gap-3 p-0">
               {d.galeria.map((g, i) => (
-                <li key={g.url + i}>
+                <li key={g.url + i} className="flex flex-col gap-2 rounded-control border border-line bg-white p-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={g.url} alt={`Foto ${i + 1}`} />
-                  <input value={g.legenda ?? ""} placeholder="Legenda"
+                  <img src={g.url} alt={`Foto ${i + 1}`} className="aspect-[4/3] w-full rounded-lg bg-zinc-100 object-contain" />
+                  <input className="rounded-lg border border-line px-2.5 py-1.5 text-[0.8rem] outline-none focus:border-brand" value={g.legenda ?? ""} placeholder="Legenda"
                     onChange={(e) => set("galeria", d.galeria.map((x, j) => (j === i ? { ...x, legenda: e.target.value } : x)))} />
-                  <div className="an__galeria-acoes">
-                    <button type="button" onClick={() => moverGaleria(i, -1)} aria-label="Mover para cima"><ArrowUp size={14} /></button>
-                    <button type="button" onClick={() => moverGaleria(i, 1)} aria-label="Mover para baixo"><ArrowDown size={14} /></button>
-                    <button type="button" onClick={() => set("galeria", d.galeria.filter((_, j) => j !== i))} aria-label="Remover foto"><Trash2 size={14} /></button>
+                  <div className="flex justify-end gap-1">
+                    <button type="button" className={BOTAO_GALERIA} onClick={() => moverGaleria(i, -1)} aria-label="Mover para cima"><ArrowUp size={14} /></button>
+                    <button type="button" className={BOTAO_GALERIA} onClick={() => moverGaleria(i, 1)} aria-label="Mover para baixo"><ArrowDown size={14} /></button>
+                    <button type="button" className={BOTAO_GALERIA} onClick={() => set("galeria", d.galeria.filter((_, j) => j !== i))} aria-label="Remover foto"><Trash2 size={14} /></button>
                   </div>
                 </li>
               ))}
             </ul>
           )}
           {d.galeria.length < 12 && (
-            <label className="an__btn an__btn--claro">
-              {enviandoGaleria ? <Loader2 size={16} className="an__girando" /> : <ImagePlus size={16} />}
+            <label className={BOTAO_CLARO}>
+              {enviandoGaleria ? <Loader2 size={16} className="animate-spin" /> : <ImagePlus size={16} />}
               Adicionar fotos
               <input type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" hidden disabled={enviandoGaleria}
                 onChange={(e) => { adicionarGaleria(e.target.files); e.target.value = ""; }} />
@@ -377,34 +403,34 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
         </fieldset>
 
         {/* ---------- Publicação ---------- */}
-        <fieldset className="an__bloco">
-          <legend>Publicação</legend>
-          <div className="an__linha">
-            <label className="an__campo">
-              <span>Situação</span>
-              <select value={d.status} onChange={(e) => set("status", e.target.value as StatusNoticia)}>
+        <fieldset className={BLOCO}>
+          <legend className={TITULO_BLOCO}>Publicação</legend>
+          <div className={LINHA}>
+            <label className={CAMPO}>
+              <span className={ROTULO}>Situação</span>
+              <select className={CONTROLE} value={d.status} onChange={(e) => set("status", e.target.value as StatusNoticia)}>
                 {(Object.keys(ROTULO_STATUS) as StatusNoticia[]).map((s) => <option key={s} value={s}>{ROTULO_STATUS[s]}</option>)}
               </select>
             </label>
-            <label className="an__campo">
-              <span>{d.status === "agendado" ? "Publicar em *" : "Data de publicação"}</span>
-              <input type="datetime-local" value={paraInput(d.publicado_em)}
+            <label className={CAMPO}>
+              <span className={ROTULO}>{d.status === "agendado" ? "Publicar em *" : "Data de publicação"}</span>
+              <input className={CONTROLE} type="datetime-local" value={paraInput(d.publicado_em)}
                 onChange={(e) => set("publicado_em", e.target.value ? new Date(e.target.value).toISOString() : null)} />
               {erro("publicado_em")}
             </label>
           </div>
           {d.status === "agendado" && d.publicado_em && (
-            <small className="an__dica">A notícia entra no ar sozinha em {formatarData(d.publicado_em, true)} às {new Date(d.publicado_em).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}.</small>
+            <small className={DICA}>A notícia entra no ar sozinha em {formatarData(d.publicado_em, true)} às {new Date(d.publicado_em).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}.</small>
           )}
-          <div className="an__linha">
-            <label className="an__check">
-              <input type="checkbox" checked={d.destaque} onChange={(e) => { set("destaque", e.target.checked); if (e.target.checked && !d.ordem_destaque) set("ordem_destaque", 1); }} />
+          <div className={LINHA}>
+            <label className="flex min-h-11 items-center gap-2 text-[0.9rem] font-semibold text-zinc-700">
+              <input type="checkbox" className="size-[1.15rem] accent-leaf" checked={d.destaque} onChange={(e) => { set("destaque", e.target.checked); if (e.target.checked && !d.ordem_destaque) set("ordem_destaque", 1); }} />
               <span>Destacar na página inicial</span>
             </label>
             {d.destaque && (
-              <label className="an__campo">
-                <span>Posição no destaque</span>
-                <select value={d.ordem_destaque ?? 1} onChange={(e) => set("ordem_destaque", Number(e.target.value))}>
+              <label className={CAMPO}>
+                <span className={ROTULO}>Posição no destaque</span>
+                <select className={CONTROLE} value={d.ordem_destaque ?? 1} onChange={(e) => set("ordem_destaque", Number(e.target.value))}>
                   <option value={1}>1ª (cartão grande)</option>
                   <option value={2}>2ª</option>
                   <option value={3}>3ª</option>
@@ -415,52 +441,52 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
         </fieldset>
 
         {/* ---------- SEO ---------- */}
-        <fieldset className="an__bloco">
-          <legend>SEO (Google e redes sociais)</legend>
-          <label className="an__campo">
-            <span>Título para o Google (se vazio, usa o título)</span>
-            <input value={d.seo_titulo} onChange={(e) => set("seo_titulo", e.target.value)} />
+        <fieldset className={BLOCO}>
+          <legend className={TITULO_BLOCO}>SEO (Google e redes sociais)</legend>
+          <label className={CAMPO}>
+            <span className={ROTULO}>Título para o Google (se vazio, usa o título)</span>
+            <input className={CONTROLE} value={d.seo_titulo} onChange={(e) => set("seo_titulo", e.target.value)} />
             <Contador atual={d.seo_titulo.length} limite={LIMITE_SEO_TITULO} />
             {erro("seo_titulo")}
           </label>
-          <label className="an__campo">
-            <span>Descrição para o Google (se vazia, usa o resumo)</span>
-            <textarea rows={2} value={d.seo_descricao} onChange={(e) => set("seo_descricao", e.target.value)} />
+          <label className={CAMPO}>
+            <span className={ROTULO}>Descrição para o Google (se vazia, usa o resumo)</span>
+            <textarea className={CONTROLE} rows={2} value={d.seo_descricao} onChange={(e) => set("seo_descricao", e.target.value)} />
             <Contador atual={d.seo_descricao.length} limite={LIMITE_SEO_DESCRICAO} />
             {erro("seo_descricao")}
           </label>
-          <div className="an__google" aria-label="Como aparece no Google">
-            <span className="an__google-url">acmrb.org.br › noticias › {d.slug || "..."}</span>
-            <strong>{(d.seo_titulo || d.titulo || "Título da notícia").slice(0, 70)}</strong>
-            <p>{(d.seo_descricao || d.resumo || "Descrição da notícia...").slice(0, 160)}</p>
+          <div className="rounded-control border border-line bg-zinc-50 px-4 py-3.5" aria-label="Como aparece no Google">
+            <span className="block text-[0.75rem] text-leaf">acmrb.org.br › noticias › {d.slug || "..."}</span>
+            <strong className="my-0.5 block text-[1.05rem] font-semibold text-[#1a0dab]">{(d.seo_titulo || d.titulo || "Título da notícia").slice(0, 70)}</strong>
+            <p className="text-left text-[0.83rem] text-ink-soft">{(d.seo_descricao || d.resumo || "Descrição da notícia...").slice(0, 160)}</p>
           </div>
         </fieldset>
       </div>
 
-      <div className="an__rodape">
+      <div className="sticky bottom-0 z-5 flex flex-wrap gap-2.5 rounded-card border border-line bg-white/95 p-3 shadow-[0_-8px_24px_-18px_rgb(0_0_0/0.35)] backdrop-blur max-sm:[&>button]:flex-[1_1_45%]">
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => setPrevia(true)}><Eye size={16} /> Pré-visualizar</Button>
-        <span className="an__espaco" />
+        <span className="flex-1 max-sm:hidden" />
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={onCancelar} disabled={salvando}>Cancelar</Button>
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => enviar("rascunho")} disabled={salvando}>
           <Save size={16} /> Salvar rascunho
         </Button>
         <Button type="button" tamanho="pequeno" onClick={() => enviar(d.status === "rascunho" ? "publicado" : undefined)} disabled={salvando}>
-          {salvando ? <Loader2 size={16} className="an__girando" /> : <Send size={16} />}
+          {salvando ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
           {d.status === "agendado" ? "Agendar" : d.status === "arquivado" ? "Salvar arquivada" : "Publicar"}
         </Button>
       </div>
 
       {previa && (
-        <div className="an__modal" role="dialog" aria-modal="true" aria-label="Pré-visualização">
-          <div className="an__modal-caixa">
-            <div className="an__editor-topo">
-              <h3>Pré-visualização</h3>
-              <button type="button" className="an__icone" onClick={() => setPrevia(false)} aria-label="Fechar"><X size={18} /></button>
+        <div className="fixed inset-0 z-95 flex items-start justify-center overflow-y-auto bg-ink/60 px-4 py-8" role="dialog" aria-modal="true" aria-label="Pré-visualização">
+          <div className="flex w-full max-w-4xl flex-col gap-3.5 rounded-3xl bg-white p-4 shadow-pop sm:p-6">
+            <div className="flex items-center justify-between gap-4">
+              <h3 className="text-xl font-black tracking-tight text-ink">Pré-visualização</h3>
+              <button type="button" className={ICONE} onClick={() => setPrevia(false)} aria-label="Fechar"><X size={18} /></button>
             </div>
-            <p className="an__dica">Cartão (home e lista de notícias):</p>
-            <div className="an__previa-card"><NoticiaCard noticia={previaNoticia} /></div>
-            <p className="an__dica">Página da notícia:</p>
-            <div className="an__previa-pagina bg-white">
+            <p className={DICA}>Cartão (home e lista de notícias):</p>
+            <div className="max-w-[22rem]"><NoticiaCard noticia={previaNoticia} /></div>
+            <p className={DICA}>Página da notícia:</p>
+            <div className="rounded-card border border-emerald-100 bg-white p-4 sm:p-6">
               <span className="inline-block rounded-full bg-brand px-3.5 py-1 text-xs font-extrabold uppercase tracking-wider text-white">{d.categoria || "Categoria"}</span>
               <h1 className="mt-3 text-3xl font-black leading-tight tracking-tight text-ink [overflow-wrap:anywhere]">{d.titulo || "Título da notícia"}</h1>
               {d.resumo && <p className="mt-3 border-l-4 border-brand-line pl-3 text-lg leading-relaxed text-zinc-700">{d.resumo}</p>}
@@ -473,7 +499,7 @@ export default function NoticiaEditor({ inicial, editandoId, salvando, onSalvar,
                   {(d.imagem_legenda || d.imagem_credito) && <figcaption className="mt-2 text-sm italic text-ink-soft">{d.imagem_legenda} {d.imagem_credito && <span className="not-italic text-ink-muted">Foto: {d.imagem_credito}</span>}</figcaption>}
                 </figure>
               )}
-              <ConteudoNoticia texto={d.conteudo} className="an__previa-texto" />
+              <ConteudoNoticia texto={d.conteudo} className="mt-6" />
             </div>
           </div>
         </div>

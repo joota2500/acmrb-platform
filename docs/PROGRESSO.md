@@ -39,10 +39,11 @@ Combinado: termina um item, marca aqui com [x] e passa para o próximo.
   - [ ] *(tarefa do João)* criar o Turnstile, pôr as chaves na Vercel e no Supabase e ajustar os limites — passo a passo em `docs/ACESSOS-E-SEGURANCA.md` (seção 7)
 - [x] 3.1. **Tela de login do usuário nova** *(pedido do João)* — `/login` em 2 colunas no computador (painel verde da marca + cartão do formulário), sem rolagem nenhuma em 1366x768, 1280x800 e 1920x1080; no celular também sem rolagem (360x640 até 412x915), cadastro em 2 passos; abas, ícones, mostrar senha e foco acessível
 - [x] 4. **Revisão do banco** — regras (RLS) e permissões revisadas; correções em `supabase/migrations/20261124100000_revisao_rls.sql` (views públicas só leitura — antes dava para apagar apoiadores pela view —, anon sem escrita nem leitura de dados pessoais, funções com search_path fixo). Diagnóstico em `supabase/diagnosticos/revisao_rls.sql`
-  - [ ] *(tarefa do João)* colar e rodar `supabase/migrations/20261124100000_revisao_rls.sql` no SQL Editor; o resultado tem que ser "tudo certo"
+  - [x] *(tarefa do João)* colar e rodar `supabase/migrations/20261124100000_revisao_rls.sql` no SQL Editor; o resultado tem que ser "tudo certo" — rodado em 24/11, deu "tudo certo"
+  - [x] conferido no site real: apagar pelas views agora dá "permissão negada", páginas públicas (home, parceiros, notícias, calendário) continuam mostrando os dados
 
 ### Front (visual e componentes)
-- [ ] 5. Admin: notícias (Tailwind, apagar `admin-noticias.css`)
+- [x] 5. **Admin: notícias** — lista e editor refeitos só com Tailwind (cartões de números com ícone, filtros num cartão, lista com miniatura e botões de ação, editor em blocos com rodapé fixo); `admin-noticias.css` apagado. Todas as funções continuam iguais
 - [ ] 6. Admin: apoiadores
 - [ ] 7. Admin: coletas e calendário
 - [ ] 8. Admin: mensagens
