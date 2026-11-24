@@ -196,3 +196,55 @@ Rode `supabase/diagnosticos/revisao_rls.sql` (só leitura) e compare. Resultado 
 | Aba mostra "A estrutura do banco ainda não existe" | migration não rodada | rode a migration indicada na mensagem |
 | Cidade/estado vazios | normal no `localhost` | só aparece na Vercel |
 | Excluir visitante falha com motivo do Supabase | algo no banco impede apagar a conta | a conta é só bloqueada e o motivo aparece na tela; me mande a mensagem |
+
+## 7. CAPTCHA (Cloudflare Turnstile) e limites do login
+
+O código já está pronto: login do visitante, cadastro, "esqueci minha senha", login do admin/deus,
+troca de senha e link de redefinição no painel mostram o quadrinho "não sou um robô" **só quando**
+existe a variável `NEXT_PUBLIC_TURNSTILE_SITE_KEY`. O Supabase confere o código com o Cloudflare.
+
+**A ordem importa:** primeiro a chave no site (Vercel), depois ligar no Supabase.
+Se ligar no Supabase antes, ninguém consegue entrar.
+
+### Passo 1 — Criar o Turnstile (grátis)
+1. Entre em https://dash.cloudflare.com (crie a conta se não tiver).
+2. Menu da esquerda → **Turnstile** → **Add widget**.
+3. Nome: `ACMRB site`.
+4. Hostnames (um por linha): `acmrb-platform.vercel.app`,
+   `acmrb-platform-git-branch-oficial-joota2500s-projects.vercel.app` e `localhost`
+   (se tiver domínio próprio no futuro, adicione também).
+5. Widget mode: **Managed** (recomendado). "Pre-clearance": **No**.
+6. Clique em **Create**. Aparecem duas chaves: **Site Key** (pública) e **Secret Key** (secreta).
+
+### Passo 2 — Site Key na Vercel e no notebook
+1. Vercel → projeto → **Settings → Environment Variables → Add**.
+2. Key `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, Value = a **Site Key**, ambientes **Production** e **Preview** → Save.
+3. No notebook, no `.env.local`, adicione a mesma linha `NEXT_PUBLIC_TURNSTILE_SITE_KEY=...` e reinicie o `npm run dev`.
+4. **Deployments → Redeploy** do último deploy. Quando ficar Ready, abra `/login`:
+   o quadrinho "Verificando..." / "Sucesso!" tem que aparecer acima do botão Entrar.
+
+### Passo 3 — Ligar no Supabase (Authentication → Attack Protection)
+1. Supabase → projeto ACMRB → **Authentication → Attack Protection**.
+2. **Enable Captcha protection**: ligado. Provider: **Turnstile by Cloudflare**.
+3. **Captcha secret**: cole a **Secret Key** do Turnstile → **Save**.
+4. Teste: entre no site, saia e entre de novo; peça "Esqueci minha senha"; crie uma conta de teste.
+
+### Passo 4 — Limites (Authentication → Rate Limits) — valores recomendados
+| Limite | Valor |
+|---|---|
+| Sign-ups and sign-ins (por IP) | **20 a cada 5 min** |
+| Token verifications (códigos/links) | **30 a cada 5 min** |
+| Token refreshes | deixe o padrão |
+| Sending emails | deixe o padrão (com o e-mail grátis do Supabase o máximo é baixo; para aumentar, configure SMTP próprio) |
+| Anonymous sign-ins | **desligado** em Authentication → Sign In / Providers (o site não usa) |
+
+### Passo 5 — Senhas (Authentication → Sign In / Providers → Email)
+- Minimum password length: **8**; Password requirements: **letras minúsculas, maiúsculas e números** (mesma regra do site).
+- **Confirm email**: ligado. **Secure email change**: ligado.
+- "Prevent use of leaked passwords" só existe no plano pago; se um dia tiver, ligue.
+
+### Se der problema
+- Ninguém consegue entrar ("captcha protection: request disallowed"): desligue o captcha no Supabase
+  (Passo 3) e confira se a Site Key está na Vercel e se o endereço está nos Hostnames do Turnstile.
+- Deploy de Preview com endereço diferente: adicione esse endereço nos Hostnames do Turnstile.
+

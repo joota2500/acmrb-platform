@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Crown, Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
 
 import Button from "@/components/ui/Button";
+import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
 import Campo from "@/components/ui/Campo";
 import Input from "@/components/ui/Input";
 import MfaPortao from "@/components/admin/MfaPortao";
@@ -69,6 +70,7 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
   const [entrou, setEntrou] = useState(false);
   const [recuperando, setRecuperando] = useState(false);
   const [espera, setEspera] = useState(0);
+  const captcha = useCaptcha(); // "não sou um robô" (Turnstile)
 
   // contagem entre envios do e-mail de recuperação
   useEffect(() => {
@@ -84,6 +86,10 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
       void avisar("Informe e-mail e senha.", "aviso");
       return;
     }
+    if (!captcha.pronto) {
+      void avisar(MSG_CAPTCHA, "aviso");
+      return;
+    }
     setEnviando(true);
     try {
       const liberado = await podeTentar("login", alvo);
@@ -92,7 +98,10 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
         return;
       }
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email: alvo, password: senha });
+      // cada código do captcha vale uma vez: usa e já pede outro
+      const captchaToken = captcha.token;
+      captcha.resetar();
+      const { data, error } = await supabase.auth.signInWithPassword({ email: alvo, password: senha, options: { captchaToken } });
       if (error || !data.session) {
         void registrarResultado("login", alvo, false, `senha ou conta inválida (${modo})`);
         void avisar(MSG_INVALIDO, "erro", "Não foi possível entrar");
@@ -130,6 +139,10 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
       void avisar("Digite o seu e-mail no campo acima e toque de novo em “Esqueci minha senha”.", "aviso");
       return;
     }
+    if (!captcha.pronto) {
+      void avisar(MSG_CAPTCHA, "aviso");
+      return;
+    }
     setRecuperando(true);
     try {
       const liberado = await podeTentar("recuperar", alvo);
@@ -138,7 +151,9 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
         return;
       }
       setEspera(ESPERA_EMAIL_SEG);
-      const { error } = await supabase.auth.resetPasswordForEmail(alvo, { redirectTo: urlRedefinir() });
+      const captchaToken = captcha.token;
+      captcha.resetar();
+      const { error } = await supabase.auth.resetPasswordForEmail(alvo, { redirectTo: urlRedefinir(), captchaToken });
       if (error && /rate|limit/i.test(error.message)) {
         void avisar("Muitos envios em pouco tempo. Aguarde alguns minutos.", "aviso");
         return;
@@ -233,6 +248,9 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
                 </button>
               </div>
             </Campo>
+
+            {/* verificação anti-robô (aparece só com o Turnstile configurado) */}
+            <Captcha controle={captcha} />
 
             <Button type="submit" tamanho="grande" larguraTotal carregando={enviando} className="mt-1">
               Entrar

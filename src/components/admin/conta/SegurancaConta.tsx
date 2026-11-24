@@ -16,6 +16,7 @@ import { supabase } from "@/lib/supabase";
 import { chamarApi, ESPERA_EMAIL_SEG, urlRedefinir } from "@/services/apiAdmin";
 import { confirmar } from "@/utils/alertas";
 import Button from "@/components/ui/Button";
+import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
 
 type Mostrar = (tipo: "sucesso" | "erro" | "aviso", mensagem: string) => void;
 
@@ -67,9 +68,13 @@ export default function SegurancaConta({ email, mostrar, onEmailTrocado }: {
 
   /* ---------- E-mail de redefinição ---------- */
   const [resta, iniciarEspera] = useEspera();
+  const captcha = useCaptcha(); // o Supabase pede o captcha também para enviar o link
   async function enviarRedefinicao() {
+    if (!captcha.pronto) return mostrar("aviso", MSG_CAPTCHA);
     iniciarEspera();
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: urlRedefinir() });
+    const captchaToken = captcha.token;
+    captcha.resetar();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: urlRedefinir(), captchaToken });
     if (error) mostrar("erro", /rate|limit/i.test(error.message)
       ? "Muitos envios em pouco tempo. Aguarde alguns minutos."
       : "Não foi possível enviar o e-mail.");
@@ -166,6 +171,7 @@ export default function SegurancaConta({ email, mostrar, onEmailTrocado }: {
           <div>
             <h3 className="font-bold text-zinc-800 flex items-center gap-2"><MailCheck size={16} aria-hidden="true" /> Redefinir por e-mail</h3>
             <p className="text-sm text-zinc-500 mt-1">Envia um link de redefinição de senha para {email}.</p>
+            <Captcha controle={captcha} className="mt-2 max-w-sm" />
             <button type="button" onClick={enviarRedefinicao} disabled={resta > 0}
               className={`${botao} mt-2 border border-zinc-200 hover:bg-zinc-50`}>
               {resta > 0 ? `Aguarde ${resta}s` : "Enviar link"}

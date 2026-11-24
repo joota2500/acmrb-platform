@@ -92,11 +92,17 @@ export async function auditar(
   if (error) console.warn("[auditoria] não gravou:", error.message);
 }
 
-/** Confere a senha atual sem criar sessão no servidor */
+/**
+ * Confere a senha atual sem criar sessão no servidor.
+ * Usa a chave do servidor de propósito: com o CAPTCHA ligado no Supabase,
+ * um login feito pelo servidor não tem como passar o "não sou um robô".
+ * Só é chamada depois de autorizar() (admin logado + limite de uso).
+ */
 export async function senhaConfere(email: string, senha: string) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-  const c = createClient(url, anon, semSessao);
+  const chave = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!chave) return false;
+  const c = createClient(url, chave, semSessao);
   const { data, error } = await c.auth.signInWithPassword({ email, password: senha });
   if (data.session) await c.auth.signOut({ scope: "local" }).catch(() => {});
   return !error;

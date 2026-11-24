@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 
 import Button from "@/components/ui/Button";
+import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
 import { cn } from "@/utils/cn";
 import { supabase } from "@/lib/supabase";
 import { podeTentar, registrarResultado } from "@/services/loginSeguro";
@@ -91,6 +92,7 @@ export default function LoginPage() {
   const reduzir = useReducedMotion();
 
   const [modo, setModo] = useState<Modo>("entrar");
+  const captcha = useCaptcha(); // "não sou um robô" (Turnstile)
   const [carregando, setCarregando] = useState(false);
   const [aviso, setAviso] = useState<Aviso>(null);
   const [erros, setErros] = useState<ErrosCampos>({});
@@ -134,7 +136,14 @@ export default function LoginPage() {
     const liberado = await podeTentar("login", r.data.email);
     if (!liberado.ok) return setAviso({ tipo: "erro", texto: liberado.mensagem ?? "Muitas tentativas. Aguarde." });
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email: r.data.email, password: r.data.senha });
+    // captcha (só quando o Turnstile estiver configurado); cada código vale uma vez
+    const captchaToken = captcha.token;
+    captcha.resetar();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: r.data.email,
+      password: r.data.senha,
+      options: { captchaToken },
+    });
     if (error || !data.user) {
       void registrarResultado("login", r.data.email, false, error && /confirm/i.test(error.message) ? "e-mail não confirmado" : "senha ou conta inválida");
       if (error && /confirm/i.test(error.message)) {
@@ -191,10 +200,13 @@ export default function LoginPage() {
     const liberado = await podeTentar("cadastro", d.email);
     if (!liberado.ok) return setAviso({ tipo: "erro", texto: liberado.mensagem ?? "Muitos cadastros. Aguarde." });
 
+    const captchaToken = captcha.token;
+    captcha.resetar();
     const { data, error } = await supabase.auth.signUp({
       email: d.email,
       password: d.senha,
       options: {
+        captchaToken,
         emailRedirectTo: `${window.location.origin}/login`,
         data: {
           nome_completo: d.nome,
@@ -233,7 +245,9 @@ export default function LoginPage() {
     const liberado = await podeTentar("recuperar", r.data.email);
     if (!liberado.ok) return setAviso({ tipo: "erro", texto: liberado.mensagem ?? "Muitos pedidos. Aguarde." });
     setEspera(ESPERA_EMAIL_SEG);
-    const { error } = await supabase.auth.resetPasswordForEmail(r.data.email, { redirectTo: urlRedefinir() });
+    const captchaToken = captcha.token;
+    captcha.resetar();
+    const { error } = await supabase.auth.resetPasswordForEmail(r.data.email, { redirectTo: urlRedefinir(), captchaToken });
     if (error && /rate|limit/i.test(error.message)) {
       return setAviso({ tipo: "erro", texto: "Muitos envios em pouco tempo. Aguarde alguns minutos." });
     }
@@ -247,6 +261,8 @@ export default function LoginPage() {
     if (carregando) return;
     setAviso(null);
     setErros({});
+    // "não sou um robô" precisa estar marcado (quando o captcha está ligado)
+    if (!captcha.pronto) return setAviso({ tipo: "erro", texto: MSG_CAPTCHA });
     setCarregando(true);
     try {
       if (modo === "entrar") await entrar();
@@ -420,6 +436,9 @@ export default function LoginPage() {
               Esqueci minha senha
             </button>
           )}
+
+          {/* verificação anti-robô (aparece só com o Turnstile configurado) */}
+          <Captcha controle={captcha} />
 
           <Button
             type="submit"

@@ -21,6 +21,7 @@ import { RegrasSenha, senhaValida } from "@/components/ui/RegrasSenha";
 import SegurancaConta from "@/components/admin/conta/SegurancaConta";
 import { ROTULO_PAPEL, papelDe } from "@/constants/permissoes";
 import Button from "@/components/ui/Button";
+import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
 
 interface Conta {
   id: string;
@@ -38,6 +39,7 @@ const campo =
 
 export default function MinhaContaSection() {
   const { toasts, mostrar, fechar } = useToast();
+  const captcha = useCaptcha(); // a troca de senha confere a senha atual com um novo login
   const [conta, setConta] = useState<Conta | null>(null);
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
@@ -113,11 +115,14 @@ export default function MinhaContaSection() {
     if (!senhaValida(senhas.nova)) return mostrar("aviso", "A nova senha não atende aos requisitos.");
     if (senhas.nova !== senhas.confirmar) return mostrar("aviso", "A confirmação não confere com a nova senha.");
     if (senhas.nova === senhas.atual) return mostrar("aviso", "A nova senha deve ser diferente da atual.");
+    if (!captcha.pronto) return mostrar("aviso", MSG_CAPTCHA);
 
     setTrocandoSenha(true);
     try {
       // Reautentica para provar que é o dono da conta
-      const { error: erroLogin } = await supabase.auth.signInWithPassword({ email: conta.email, password: senhas.atual });
+      const captchaToken = captcha.token;
+      captcha.resetar(); // o código do captcha vale uma vez
+      const { error: erroLogin } = await supabase.auth.signInWithPassword({ email: conta.email, password: senhas.atual, options: { captchaToken } });
       if (erroLogin) throw new Error("Senha atual incorreta.");
       const { error } = await supabase.auth.updateUser({ password: senhas.nova });
       if (error) throw new Error("Não foi possível trocar a senha. Tente novamente.");
@@ -204,6 +209,7 @@ export default function MinhaContaSection() {
           <input className={campo} type="password" autoComplete="new-password" value={senhas.confirmar}
             onChange={(e) => setSenhas({ ...senhas, confirmar: e.target.value })} />
         </label>
+        <Captcha controle={captcha} className="max-w-sm" />
         <button type="submit" disabled={trocandoSenha}
           className="w-full sm:w-auto h-12 px-6 rounded-2xl bg-[#1E3A34] text-white font-bold inline-flex items-center justify-center gap-2 hover:bg-[#142824] disabled:opacity-60">
           {trocandoSenha ? <Loader2 size={18} className="animate-spin" /> : <KeyRound size={18} aria-hidden="true" />}

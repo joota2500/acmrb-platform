@@ -35,6 +35,8 @@ Combinado: termina um item, marca aqui com [x] e passa para o próximo.
 - [x] 1. **Páginas de erro** — 404 própria em português, `error.tsx` e `global-error.tsx` (mensagem amigável, detalhes só no log, nada de stack trace na tela); respostas da API sem texto cru do banco
 - [x] 2. **Segredos na Vercel** *(tarefa do João)* — criar `CRON_SECRET` e `HASH_SECRET` (valores aleatórios longos) em Production e Preview e no `.env.local`; fazer Redeploy (hoje a limpeza diária `/api/cron/limpeza` está desligada). Depois tirar do código o valor reserva fixo do hash
 - [ ] 3. **Login mais protegido no Supabase** — ligar CAPTCHA (Turnstile) e revisar os limites do Supabase Auth (o bloqueio do site é feito antes do login, mas dá para chamar o Supabase direto)
+  - [x] Código pronto: quadrinho "não sou um robô" (Turnstile) no login, cadastro, recuperação, login do painel e troca de senha; liga sozinho com `NEXT_PUBLIC_TURNSTILE_SITE_KEY`
+  - [ ] *(tarefa do João)* criar o Turnstile, pôr as chaves na Vercel e no Supabase e ajustar os limites — passo a passo em `docs/ACESSOS-E-SEGURANCA.md` (seção 7)
 - [ ] 4. **Revisão do banco** — rodar `supabase/diagnosticos/revisao_rls.sql` no SQL Editor e corrigir o que aparecer
 
 ### Front (visual e componentes)

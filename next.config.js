@@ -8,6 +8,7 @@
 //  - Mapa Leaflet (tiles OpenStreetMap e Esri) → img-src https:
 //  - Busca de endereço (Nominatim, Photon, ArcGIS, BrasilAPI) → connect-src
 //  - Vídeo do YouTube e posts do Instagram     → frame-src
+//  - CAPTCHA Cloudflare Turnstile (login)      → script-src, frame-src e connect-src
 //  - Estilos e scripts embutidos do Next.js    → 'unsafe-inline'
 //    (um nonce por requisição é o próximo passo, mas exige tornar todas
 //    as páginas dinâmicas; por isso fica como melhoria futura)
@@ -29,7 +30,7 @@ const emDesenvolvimento = process.env.NODE_ENV !== "production";
 const csp = [
   "default-src 'self'",
   // 'unsafe-eval' só no modo de desenvolvimento (o Next precisa para o recarregamento rápido)
-  `script-src 'self' 'unsafe-inline'${emDesenvolvimento ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com${emDesenvolvimento ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
@@ -42,9 +43,10 @@ const csp = [
     "https://geocode.arcgis.com",
     "https://brasilapi.com.br",
     "https://publica.cnpj.ws",
+    "https://challenges.cloudflare.com",
     emDesenvolvimento ? "ws://localhost:* http://localhost:*" : "",
   ].filter(Boolean).join(" "),
-  "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://www.instagram.com",
+  "frame-src https://www.youtube.com https://www.youtube-nocookie.com https://www.instagram.com https://challenges.cloudflare.com",
   "media-src 'self' blob: https:",
   "worker-src 'self' blob:",
   "object-src 'none'",
