@@ -6,6 +6,8 @@ import ExtrasVisitante from "@/components/conta/ExtrasVisitante";
 import GuardaAparelho from "@/components/bloqueio/GuardaAparelho";
 import RastreadorAcessos from "@/components/rastreio/RastreadorAcessos";
 import { Avisos } from "@/components/ui/Toast";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { DicasFlutuantes } from "@/components/ui/Tooltip";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
@@ -91,6 +93,9 @@ export default function RootLayout({
           {/* Avisos rápidos (toast) e balões dos botões só com ícone — um só para o site todo */}
           <Avisos />
           <DicasFlutuantes />
+          {/* Medição de visitas e velocidade real da Vercel (só conta em produção) */}
+          <Analytics />
+          <SpeedInsights />
         </AuthProvider>
       </body>
     </html>

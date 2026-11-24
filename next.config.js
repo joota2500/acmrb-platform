@@ -41,6 +41,9 @@ const csp = [
     "https://nominatim.openstreetmap.org",
     "https://photon.komoot.io",
     "https://geocode.arcgis.com",
+    // Sentry (avisos de erro em produção) e Vercel Speed Insights
+    "https://*.sentry.io",
+    "https://vitals.vercel-insights.com",
     "https://brasilapi.com.br",
     "https://publica.cnpj.ws",
     "https://challenges.cloudflare.com",

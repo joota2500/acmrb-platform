@@ -80,6 +80,23 @@ Combinado: termina um item, marca aqui com [x] e passa para o próximo.
 ### Fora da lista (decidido não fazer agora)
 Formulário de cotação no painel, painel de impacto, área do catador e kit de imprensa. Denúncias com foto/mapa: não, fica só o link da AMAB.
 
+## Novas bibliotecas (aprovadas pelo João)
+
+Em ordem de prioridade:
+
+- [x] **Vercel Analytics + Speed Insights** — `<Analytics />` e `<SpeedInsights />` no layout principal (precisa ligar no painel da Vercel)
+- [x] **Sonner** — os avisos rápidos (toast) do site agora são do Sonner; o jeito de usar (`aviso()`, `useToast()`, `avisar()`) continua o mesmo
+- [x] **Sentry** — código pronto, falta o DSN do João (`NEXT_PUBLIC_SENTRY_DSN` na Vercel). Avisa quando der erro no site em produção; sem a variável fica desligado. Versão mínima: sem source maps e sem token
+- [ ] **React Hook Form + zod** — formulários mais leves e com mensagens de erro bonitas (junto do item 21)
+- [ ] **TanStack Query no admin** — dados em cache que atualizam sozinhos
+- [ ] **Recharts no painel de visitantes** — gráficos mais bonitos e interativos
+- [ ] **Leaflet / react-leaflet** — mapa grátis para os pontos de entrega (resolve o item 17)
+- [ ] **Framer Motion nas páginas públicas** — animações suaves
+- [ ] **jsPDF: certificado/selo de parceiro** (item 14) — página "em desenvolvimento" que gera o selo e pede para entrar em contato com a autarquia AMAB; sem Resend por enquanto
+- [ ] **Capacitor: app de celular** (item 28, no fim)
+
+Ficam para depois: **next-intl** (site em outra língua) e **Resend** (envio de e-mails).
+
 ## Observações
 
 - **Regra de testes de tela (a partir do item 10):** layout responsivo para todos os aparelhos, mas o teste de rolagem lateral é feito só em **celular 390x844** e **computador 1366x768**, com um único `tsc` + `next build` numa cópia limpa em /tmp.
