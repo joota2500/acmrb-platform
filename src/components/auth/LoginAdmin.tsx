@@ -25,7 +25,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Crown, Eye, EyeOff, Loader2, Lock, Mail, ShieldCheck } from "lucide-react";
 
 import Button from "@/components/ui/Button";
-import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
+import Captcha, { MSG_CAPTCHA, MSG_CAPTCHA_RECUSADO, ehErroCaptcha, useCaptcha } from "@/components/ui/Captcha";
 import Campo from "@/components/ui/Campo";
 import Input from "@/components/ui/Input";
 import MfaPortao from "@/components/admin/MfaPortao";
@@ -102,6 +102,11 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
       const captchaToken = captcha.token;
       captcha.resetar();
       const { data, error } = await supabase.auth.signInWithPassword({ email: alvo, password: senha, options: { captchaToken } });
+      // recusado pelo captcha: não é senha errada (não conta como tentativa)
+      if (ehErroCaptcha(error)) {
+        void avisar(MSG_CAPTCHA_RECUSADO, "aviso");
+        return;
+      }
       if (error || !data.session) {
         void registrarResultado("login", alvo, false, `senha ou conta inválida (${modo})`);
         void avisar(MSG_INVALIDO, "erro", "Não foi possível entrar");
@@ -154,6 +159,11 @@ export default function LoginAdmin({ modo }: { modo: Modo }) {
       const captchaToken = captcha.token;
       captcha.resetar();
       const { error } = await supabase.auth.resetPasswordForEmail(alvo, { redirectTo: urlRedefinir(), captchaToken });
+      if (ehErroCaptcha(error)) {
+        setEspera(0);
+        void avisar(MSG_CAPTCHA_RECUSADO, "aviso");
+        return;
+      }
       if (error && /rate|limit/i.test(error.message)) {
         void avisar("Muitos envios em pouco tempo. Aguarde alguns minutos.", "aviso");
         return;

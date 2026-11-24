@@ -42,7 +42,7 @@ import {
 } from "lucide-react";
 
 import Button from "@/components/ui/Button";
-import Captcha, { MSG_CAPTCHA, useCaptcha } from "@/components/ui/Captcha";
+import Captcha, { MSG_CAPTCHA, MSG_CAPTCHA_RECUSADO, ehErroCaptcha, useCaptcha } from "@/components/ui/Captcha";
 import { cn } from "@/utils/cn";
 import { supabase } from "@/lib/supabase";
 import { podeTentar, registrarResultado } from "@/services/loginSeguro";
@@ -70,6 +70,7 @@ const TITULOS: Record<Modo, { titulo: string; sub: string }> = {
 function mensagemErroCadastro(error: { status?: number; code?: string; message: string }): string {
   const cod = error.code ?? "";
   const msg = error.message ?? "";
+  if (ehErroCaptcha(error)) return MSG_CAPTCHA_RECUSADO;
   if (cod === "user_already_exists" || cod === "email_exists" || /already|registered|exists/i.test(msg))
     return "Este e-mail já tem cadastro. Tente entrar ou recuperar a senha.";
   if (cod.includes("rate_limit") || error.status === 429 || /rate|limit/i.test(msg))
@@ -181,6 +182,8 @@ export default function LoginPage() {
       password: r.data.senha,
       options: { captchaToken },
     });
+    // recusado pelo captcha: não é senha errada (não conta como tentativa)
+    if (ehErroCaptcha(error)) return setAviso({ tipo: "erro", texto: MSG_CAPTCHA_RECUSADO });
     if (error || !data.user) {
       void registrarResultado("login", r.data.email, false, error && /confirm/i.test(error.message) ? "e-mail não confirmado" : "senha ou conta inválida");
       if (error && /confirm/i.test(error.message)) {
@@ -290,6 +293,10 @@ export default function LoginPage() {
     const captchaToken = captcha.token;
     captcha.resetar();
     const { error } = await supabase.auth.resetPasswordForEmail(r.data.email, { redirectTo: urlRedefinir(), captchaToken });
+    if (ehErroCaptcha(error)) {
+      setEspera(0);
+      return setAviso({ tipo: "erro", texto: MSG_CAPTCHA_RECUSADO });
+    }
     if (error && /rate|limit/i.test(error.message)) {
       return setAviso({ tipo: "erro", texto: "Muitos envios em pouco tempo. Aguarde alguns minutos." });
     }
