@@ -122,7 +122,13 @@ export async function middleware(req: NextRequest) {
       const efetivos = f.bloqueios.filter((b) => !b.ate || Date.parse(b.ate) > agora);
       if (efetivos.length) {
         const rede = efetivos.some((b) => b.ip_hash) ? ipDe(req) : null;
-        const hashRede = rede ? await hashDoIpEdge(rede) : null;
+        // sem HASH_SECRET o hash falha: avisa no log e confere só pelo aparelho
+        const hashRede = rede
+          ? await hashDoIpEdge(rede).catch(() => {
+              console.error("[middleware] HASH_SECRET não configurado: bloqueio por rede desligado.");
+              return null;
+            })
+          : null;
         bloqueio = efetivos.find((b) => (did && b.dispositivo_id === did) || (hashRede && b.ip_hash === hashRede)) ?? null;
       }
     }

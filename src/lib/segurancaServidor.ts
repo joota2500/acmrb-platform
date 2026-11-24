@@ -23,9 +23,21 @@ export function ipDaRequisicao(req: Request): string | null {
   return ip ? ip.slice(0, 64) : null;
 }
 
-/** Hash com segredo do servidor (HASH_SECRET, ou a própria chave do servidor como reserva) */
+/**
+ * Segredo do hash: HASH_SECRET (o certo) ou, como reserva, a chave do
+ * servidor. NÃO existe mais um valor fixo no código: se faltar segredo,
+ * avisa no log e devolve null (quem chama decide falhar fechado).
+ */
+function segredoDoHash(): string | null {
+  const segredo = process.env.HASH_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!segredo) console.error("[seguranca] HASH_SECRET não configurado: hashes desligados.");
+  return segredo || null;
+}
+
+/** Hash com segredo do servidor. Sem segredo lança erro (falha fechada: a rota responde 500, não grava nada) */
 export function hashar(valor: string): string {
-  const segredo = process.env.HASH_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || "acmrb";
+  const segredo = segredoDoHash();
+  if (!segredo) throw new Error("HASH_SECRET não configurado");
   return createHmac("sha256", segredo).update(valor.trim().toLowerCase()).digest("hex").slice(0, 40);
 }
 
