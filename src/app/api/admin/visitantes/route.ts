@@ -43,7 +43,12 @@ function origemDoSite(req: Request) {
 }
 
 /** Mensagem curta e segura vinda do Supabase (nunca contém chaves) */
-const motivo = (e: { message?: string } | null | undefined) => (e?.message ?? "motivo desconhecido").slice(0, 160);
+/** Erro do Supabase: o texto técnico vai só para o log do servidor (Vercel → Logs).
+ *  Para a tela volta uma frase fixa, sem detalhes do banco. */
+const motivo = (e: { message?: string } | null | undefined) => {
+  console.error("[api/admin/visitantes]", e?.message ?? "motivo desconhecido");
+  return "detalhes no log do servidor";
+};
 
 /** Apaga as fotos de coleta do visitante (pasta = id do usuário) para não travar a exclusão */
 async function apagarFotos(admin: SupabaseClient, authId: string) {
@@ -207,7 +212,8 @@ export async function DELETE(req: Request) {
       // Não apaga o perfil (senão a conta voltaria sozinha no próximo login): bloqueia e avisa o motivo
       await admin.auth.admin.updateUserById(linha.auth_user_id, { ban_duration: BLOQUEIO }).catch(() => null);
       await admin.from("visitantes").update({ ativo: false }).eq("id", id);
-      await auditar(admin, ator.email, "visitante_excluir_falhou", linha.email, { motivo: motivo(error) });
+      // a auditoria é interna (só o deus vê), então guarda o motivo real
+      await auditar(admin, ator.email, "visitante_excluir_falhou", linha.email, { motivo: (error.message ?? "").slice(0, 160) });
       return erro(`O Supabase recusou a exclusão da conta (${motivo(error)}). Ela foi apenas bloqueada.`, 500);
     }
   }
