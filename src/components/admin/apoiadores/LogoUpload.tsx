@@ -34,14 +34,14 @@ export default function LogoUpload({ valor, pasta, onChange, onErro }: Props) {
   }
 
   return (
-    <div className="admap-logo">
-      <div className="admap-logo__preview">
+    <div className="flex flex-wrap items-center gap-4">
+      <div className="flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-dashed border-brand-line bg-[repeating-linear-gradient(45deg,#f3f4f6_0_10px,#eef2f1_10px_20px)] p-1.5 text-ink-muted">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        {valor ? <img src={valor} alt="Prévia da logo" /> : <ImagePlus size={26} aria-hidden="true" />}
+        {valor ? <img src={valor} alt="Prévia da logo" className="size-full rounded-xl bg-white object-contain" /> : <ImagePlus size={26} aria-hidden="true" />}
       </div>
-      <div className="admap-logo__actions">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-2">
         <Button type="button" variante="secundario" tamanho="pequeno" onClick={() => input.current?.click()} disabled={enviando}>
-          {enviando ? <Loader2 size={16} className="admap-spin" aria-hidden="true" /> : <ImagePlus size={16} aria-hidden="true" />}
+          {enviando ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <ImagePlus size={16} aria-hidden="true" />}
           {valor ? "Trocar logo" : "Enviar logo"}
         </Button>
         {valor && (
@@ -49,7 +49,7 @@ export default function LogoUpload({ valor, pasta, onChange, onErro }: Props) {
             <Trash2 size={16} aria-hidden="true" /> Remover
           </Button>
         )}
-        <small>PNG, JPG, WEBP ou SVG · até 2 MB</small>
+        <small className="basis-full text-[0.76rem] text-ink-muted">PNG, JPG, WEBP ou SVG · até 2 MB</small>
       </div>
       <input ref={input} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" hidden onChange={(e) => escolher(e.target.files?.[0])} />
     </div>

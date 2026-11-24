@@ -45,7 +45,7 @@ Combinado: termina um item, marca aqui com [x] e passa para o próximo.
 
 ### Front (visual e componentes)
 - [x] 5. **Admin: notícias** — lista e editor refeitos só com Tailwind (cartões de números com ícone, filtros num cartão, lista com miniatura e botões de ação, editor em blocos com rodapé fixo); `admin-noticias.css` apagado. Todas as funções continuam iguais
-- [ ] 6. Admin: apoiadores
+- [x] 6. **Admin: apoiadores e logística reversa** — as duas telas refeitas só com Tailwind no padrão do painel de notícias (topo com botão de novo, cartões de números, filtros num cartão, lista com logo e selos coloridos, botões só com ícone no celular, esqueleto ao carregar, estados vazio/erro/sem permissão, formulário em blocos na gaveta com rodapé fixo); `admin-apoiadores.css` apagado (classes em `components/admin/apoiadores/estilos.ts`). Mesmas funções e gravação só nas tabelas (nunca nas views públicas). Sem rolagem lateral de 360 a 1366 px
 - [ ] 7. Admin: coletas e calendário
 - [ ] 8. Admin: mensagens
 - [ ] 9. Admin: visitantes
