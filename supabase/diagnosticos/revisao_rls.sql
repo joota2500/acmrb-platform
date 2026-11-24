@@ -2,8 +2,11 @@
 -- ACMRB — Revisão de segurança do banco (SOMENTE LEITURA)
 -- ----------------------------------------------------------
 -- Cole no Supabase → SQL Editor e rode. Não altera nada.
--- Cada bloco devolve uma tabela; o ideal é que os blocos 1, 2, 4 e 5
+-- Cada bloco devolve uma tabela; o ideal é que os blocos 1, 2, 4, 9 e 10
 -- venham VAZIOS (ou só com itens que você conhece e aceitou).
+-- O bloco 5 mostra as views "do dono" (de propósito, para mostrar só as
+-- colunas seguras); o bloco 9 confere que elas são SÓ LEITURA.
+-- As correções estão em migrations/20261124100000_revisao_rls.sql.
 -- ==========================================================
 
 -- 1. Tabelas do schema public SEM RLS ligada (qualquer um com a chave
@@ -60,3 +63,22 @@ select email, role, ativo from public.admins order by role;
 select tablename, cmd, count(*) as politicas
 from pg_policies where schemaname = 'public'
 group by 1, 2 order by 1, 2;
+
+-- 9. Views que ainda aceitam escrita do site (GRAVE se aparecer: views
+--    "do dono" ignoram a RLS, então escrever por elas apaga/altera dados)
+select c.relname as view_aceita_escrita,
+       has_table_privilege('anon', c.oid, 'INSERT, UPDATE, DELETE') as anon,
+       has_table_privilege('authenticated', c.oid, 'INSERT, UPDATE, DELETE') as logado
+from pg_class c join pg_namespace n on n.oid = c.relnamespace
+where n.nspname = 'public' and c.relkind = 'v'
+  and (has_table_privilege('anon', c.oid, 'INSERT, UPDATE, DELETE')
+       or has_table_privilege('authenticated', c.oid, 'INSERT, UPDATE, DELETE'))
+order by 1;
+
+-- 10. Funções nossas sem search_path fixo (aviso do Supabase)
+select p.oid::regprocedure as funcao_sem_search_path
+from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' and p.prokind = 'f'
+  and not exists (select 1 from pg_depend d where d.objid = p.oid and d.deptype = 'e')
+  and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')
+order by 1;
